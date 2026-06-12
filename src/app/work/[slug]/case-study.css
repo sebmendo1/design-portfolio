@@ -1,0 +1,102 @@
+.case-study {
+  background: #ffffff;
+  min-height: 100vh;
+}
+
+/* Header row: back link + meta */
+.case-study__header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 24px 32px 0;
+}
+
+.case-study__back {
+  font-size: 14px;
+  font-weight: 500;
+  color: #000000;
+  text-decoration: none;
+  opacity: 0.5;
+  transition: opacity var(--transition-fast);
+}
+
+.case-study__back:hover {
+  opacity: 1;
+}
+
+.case-study__meta {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+}
+
+.case-study__company,
+.case-study__year,
+.case-study__role {
+  font-size: 13px;
+  color: #666666;
+}
+
+.case-study__company::after,
+.case-study__year::after {
+  content: '·';
+  margin-left: 16px;
+  opacity: 0.4;
+}
+
+/* Title + tagline */
+.case-study__title {
+  font-size: clamp(32px, 5vw, 56px);
+  font-weight: 500;
+  color: #000000;
+  line-height: 1.1;
+  letter-spacing: -0.02em;
+  padding: 48px 32px 16px;
+  max-width: 900px;
+}
+
+.case-study__tagline {
+  font-size: 18px;
+  color: #666666;
+  padding: 0 32px 24px;
+  max-width: 680px;
+  line-height: 1.6;
+}
+
+/* Tags */
+.case-study__tags {
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
+  padding: 0 32px 48px;
+}
+
+.case-study__tag {
+  font-size: 13px;
+  font-weight: 500;
+  color: #000000;
+  background: #f4f3f2;
+  border-radius: 100px;
+  padding: 4px 12px;
+}
+
+@media (max-width: 768px) {
+  .case-study__header {
+    padding: 16px 20px 0;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 8px;
+  }
+
+  .case-study__title {
+    padding: 32px 20px 12px;
+  }
+
+  .case-study__tagline {
+    padding: 0 20px 20px;
+  }
+
+  .case-study__tags {
+    padding: 0 20px 32px;
+  }
+}

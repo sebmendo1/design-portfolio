@@ -1,0 +1,343 @@
+/* ─── Scroll track: the tall div that drives the scroll progress ─────────── */
+.cs-track {
+  position: relative;
+}
+
+/* ─── Layout: sticky stage pinned to the viewport while track scrolls ──────── */
+.cs-layout {
+  position: sticky;
+  top: 0;
+  height: 100dvh;
+  display: grid;
+  grid-template-columns: 1fr 50vw;
+  gap: 48px;
+  padding: 24px 32px;
+  box-sizing: border-box;
+  align-items: stretch;
+  background: #ffffff;
+  overflow: hidden;
+}
+
+/* ─── Left: text column — sections stack absolutely in the same spot ────────── */
+.cs-text-col {
+  position: relative;
+}
+
+/* Each section is pinned to the same coordinates; framer applies opacity + y */
+.cs-section {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  padding-right: 32px;
+  will-change: opacity, transform;
+}
+
+.cs-section__label {
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: #999999;
+  margin: 0 0 20px;
+}
+
+.cs-section__headline {
+  font-size: clamp(24px, 2.8vw, 40px);
+  font-weight: 500;
+  color: #000000;
+  line-height: 1.2;
+  letter-spacing: -0.015em;
+  margin: 0 0 24px;
+  max-width: 520px;
+}
+
+.cs-section__body {
+  font-size: 18px;
+  font-weight: 400;
+  color: #555555;
+  line-height: 1.65;
+  max-width: 520px;
+  margin: 0;
+}
+
+/* ─── Right: device column — fills column height, no animation ──────────────── */
+.cs-visual-col {
+  display: flex;
+  align-items: stretch;
+}
+
+.cs-device-card {
+  background: #f4f3f2;
+  border-radius: 24px;
+  padding: 32px 24px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex: 1;
+  box-sizing: border-box;
+  overflow: hidden;
+}
+
+/* ─── Reduced-motion / static fallback ──────────────────────────────────────── */
+.cs-layout--static {
+  position: static;
+  height: auto;
+  overflow: visible;
+  align-items: start;
+  padding-bottom: 120px;
+}
+
+.cs-text-col--static {
+  position: static;
+}
+
+.cs-section--static {
+  position: static;
+  padding: 80px 32px 80px 0;
+  border-top: 1px solid #f0f0f0;
+}
+
+.cs-section--static:first-child {
+  border-top: none;
+  padding-top: 48px;
+}
+
+/* ─── Browser mockup ─────────────────────────────────────────────────────── */
+.cs-browser {
+  background: #ffffff;
+  border-radius: 8px;
+  overflow: hidden;
+  box-shadow:
+    0 2px 8px rgba(0, 0, 0, 0.08),
+    0 0 0 1px rgba(0, 0, 0, 0.06);
+  max-width: 100%;
+}
+
+.cs-browser__chrome {
+  height: 34px;
+  background: #ebebeb;
+  display: flex;
+  align-items: center;
+  padding: 0 10px;
+  gap: 5px;
+  border-bottom: 1px solid #dcdcdc;
+}
+
+.cs-dot {
+  display: block;
+  width: 11px;
+  height: 11px;
+  border-radius: 50%;
+  flex-shrink: 0;
+}
+
+.cs-dot--red    { background: #ff5f57; }
+.cs-dot--yellow { background: #febc2e; }
+.cs-dot--green  { background: #28c840; }
+
+.cs-browser__url {
+  flex: 1;
+  max-width: 160px;
+  height: 18px;
+  background: #f2f2f2;
+  border-radius: 4px;
+  margin: 0 auto;
+}
+
+.cs-browser__screen {
+  height: 260px;
+  background: #fafafa;
+  overflow: hidden;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+/* ─── iPhone 17 Pro mockup ───────────────────────────────────────────────── */
+/*
+  Fixed-px values throughout — % padding computes against parent width (not self),
+  and % border-radius on non-square elements creates elliptical corners.
+  Reference: ~12px bezel on a ~430px-wide phone = 2.8%.
+  At render width ~325px → 9px padding. Screen radius = outer (42px) - padding (9px) = 33px.
+*/
+.cs-phone {
+  aspect-ratio: 71.5 / 149.6;
+  height: min(calc(100dvh - 130px), 680px);
+  width: auto;
+  position: relative;
+  border-radius: 46px;
+  background:
+    linear-gradient(
+      160deg,
+      rgba(255, 255, 255, 0.06) 0%,
+      transparent 35%,
+      transparent 65%,
+      rgba(255, 255, 255, 0.03) 100%
+    ),
+    linear-gradient(to bottom, #2e2e30 0%, #1d1d1f 5%, #1a1a1c 95%, #2c2c2e 100%);
+  padding: 9px;
+  box-sizing: border-box;
+  box-shadow:
+    0 0 0 0.5px rgba(255, 255, 255, 0.1),
+    0 0 0 1px rgba(0, 0, 0, 0.55),
+    0 40px 100px rgba(0, 0, 0, 0.36),
+    0 10px 30px rgba(0, 0, 0, 0.18);
+}
+
+.cs-phone::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  border-radius: 46px;
+  background: linear-gradient(
+    148deg,
+    rgba(255, 255, 255, 0.07) 0%,
+    rgba(255, 255, 255, 0.02) 30%,
+    transparent 60%
+  );
+  pointer-events: none;
+  z-index: 10;
+}
+
+/* Screen radius = body radius - padding so the inset matches perfectly */
+.cs-phone__screen {
+  width: 100%;
+  height: 100%;
+  border-radius: 37px;
+  overflow: hidden;
+  background: #000000;
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.cs-phone__screen-fill {
+  width: 100%;
+  height: 100%;
+  background: #0a0a0a;
+}
+
+/* Dynamic Island */
+.cs-phone__island {
+  position: absolute;
+  top: 12px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 30%;
+  height: 24px;
+  background: #000000;
+  border-radius: 50px;
+  z-index: 5;
+}
+
+.cs-phone__btn {
+  position: absolute;
+  border-radius: 2px;
+}
+
+/* Action button */
+.cs-phone__btn--action {
+  left: -3px;
+  top: 11%;
+  width: 3px;
+  height: 5%;
+  background: linear-gradient(to right, #2a2a2c, #1e1e20, #2a2a2c);
+  box-shadow: -1px 0 2px rgba(0, 0, 0, 0.6);
+}
+
+/* Volume up */
+.cs-phone__btn--vol-up {
+  left: -3px;
+  top: 21%;
+  width: 3px;
+  height: 8%;
+  background: linear-gradient(to right, #2a2a2c, #1e1e20, #2a2a2c);
+  box-shadow: -1px 0 2px rgba(0, 0, 0, 0.6);
+}
+
+/* Volume down */
+.cs-phone__btn--vol-down {
+  left: -3px;
+  top: 32%;
+  width: 3px;
+  height: 8%;
+  background: linear-gradient(to right, #2a2a2c, #1e1e20, #2a2a2c);
+  box-shadow: -1px 0 2px rgba(0, 0, 0, 0.6);
+}
+
+/* Power — right rail, taller */
+.cs-phone__btn--power {
+  right: -3px;
+  top: 25%;
+  width: 3px;
+  height: 13%;
+  background: linear-gradient(to left, #2a2a2c, #1e1e20, #2a2a2c);
+  box-shadow: 1px 0 2px rgba(0, 0, 0, 0.6);
+}
+
+/* ─── Device image ───────────────────────────────────────────────────────── */
+.cs-device-img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+}
+
+/* ─── Responsive ─────────────────────────────────────────────────────────── */
+@media (max-width: 900px) {
+  /* On mobile the animated layout falls back to static stacking */
+  .cs-layout {
+    position: static;
+    height: auto;
+    grid-template-columns: 1fr;
+    padding: 20px 20px 80px;
+    gap: 0;
+    overflow: visible;
+    align-items: start;
+  }
+
+  .cs-visual-col {
+    order: -1;
+    margin-bottom: 48px;
+  }
+
+  .cs-device-card {
+    min-height: 400px;
+    padding: 24px 16px;
+    flex: none;
+    width: 100%;
+  }
+
+  .cs-phone {
+    height: min(calc(100vw * 149.6 / 71.5 * 0.7), 520px);
+  }
+
+  .cs-text-col {
+    position: static;
+  }
+
+  .cs-section {
+    position: static;
+    padding: 48px 0;
+    border-top: 1px solid #f0f0f0;
+    will-change: auto;
+    /* reset framer transforms on mobile */
+    opacity: 1 !important;
+    transform: none !important;
+  }
+
+  .cs-section:first-child {
+    border-top: none;
+  }
+
+  .cs-section__headline {
+    max-width: 100%;
+  }
+
+  .cs-section__body {
+    max-width: 100%;
+  }
+}

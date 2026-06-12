@@ -1,0 +1,35 @@
+.work-page {
+  background: #ffffff;
+  min-height: 100vh;
+}
+
+.work-page__bio {
+  padding: 64px 24px 32px;
+}
+
+.work-page__bio-text {
+  font-size: 28px;
+  font-weight: 500;
+  color: #000000;
+  max-width: 904px;
+  line-height: normal;
+}
+
+.work-page__grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 24px;
+  padding: 12px 24px 48px;
+}
+
+@media (max-width: 768px) {
+  .work-page__bio-text {
+    font-size: 20px;
+  }
+
+  .work-page__grid {
+    grid-template-columns: 1fr;
+    gap: 16px;
+    padding: 8px 16px 32px;
+  }
+}

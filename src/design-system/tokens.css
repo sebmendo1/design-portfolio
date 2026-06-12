@@ -1,0 +1,104 @@
+/* Design Tokens — ultra minimalist: white, black, gray only */
+:root {
+  /* Colors */
+  --color-background-page: #ffffff;
+  --color-background-nav-active: #000000;
+  --color-primary: #000000;
+  --color-primary-hover: #333333;
+  --color-background-content-light: #ffffff;
+  --color-background-content: #ffffff;
+  --background-primary: #ffffff;
+  --color-background-placeholder: #d9d9d9;
+  --color-background-section: #f9f9f9;
+  --color-background-project-highlight: #f4f3f2;
+  --color-background-icon-container: #e8e8e8;
+
+  --color-text-primary: #000000;
+  --color-text-secondary: #666666;
+  --color-text-nav-active: #ffffff;
+  --color-text-nav-inactive: #000000;
+  --color-icon: #999999;
+  --color-pagination-active: #000000;
+  --color-pagination-inactive: #cccccc;
+
+  --color-error: #b42318;
+  --color-error-muted: color-mix(in srgb, var(--color-error) 18%, white);
+
+  /* Typography — fluid between ~320px and ~1440px */
+  --font-family-primary: 'GT America Trial', system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+
+  --fluid-min: 20rem;
+  --fluid-max: 90rem;
+  --fluid-slope: calc((100vw - var(--fluid-min)) / (var(--fluid-max) - var(--fluid-min)));
+
+  --font-size-nav: clamp(0.875rem, calc(0.875rem + (0.9375rem - 0.875rem) * var(--fluid-slope)), 0.9375rem);
+  --font-size-display: clamp(2rem, calc(2rem + (4rem - 2rem) * var(--fluid-slope)), 4rem);
+  --font-size-heading-xl: clamp(1.875rem, calc(1.875rem + (3.5rem - 1.875rem) * var(--fluid-slope)), 3.5rem);
+  --font-size-heading-lg: clamp(1.625rem, calc(1.625rem + (2.5rem - 1.625rem) * var(--fluid-slope)), 2.5rem);
+  --font-size-heading-md: clamp(1.375rem, calc(1.375rem + (2rem - 1.375rem) * var(--fluid-slope)), 2rem);
+  --font-size-heading-sm: clamp(1.125rem, calc(1.125rem + (1.5rem - 1.125rem) * var(--fluid-slope)), 1.5rem);
+  --font-size-body: clamp(1rem, calc(1rem + (1.125rem - 1rem) * var(--fluid-slope)), 1.125rem);
+  --font-size-body-sm: clamp(0.875rem, calc(0.875rem + (0.9375rem - 0.875rem) * var(--fluid-slope)), 0.9375rem);
+  --font-size-caption: clamp(0.75rem, calc(0.75rem + (0.8125rem - 0.75rem) * var(--fluid-slope)), 0.8125rem);
+  --font-size-quote: clamp(1rem, calc(1rem + (1.25rem - 1rem) * var(--fluid-slope)), 1.25rem);
+
+  --font-weight-regular: 400;
+  --font-weight-medium: 500;
+  --font-weight-semibold: 600;
+  --font-weight-bold: 700;
+
+  --line-height-heading: 1.2;
+  --line-height-body: 1.6;
+  --line-height-nav: 1.4;
+  --line-height-tight: 1.3;
+  --line-height-loose: 1.8;
+
+  --letter-spacing-nav: -0.01em;
+  --letter-spacing-tight: -0.02em;
+  --letter-spacing-normal: 0;
+  --letter-spacing-wide: 0.01em;
+
+  /* Spacing */
+  --spacing-xs: 0.5rem;
+  --spacing-sm: 1rem;
+  --spacing-md: 2rem;
+  --spacing-lg: 4rem;
+  --spacing-xl: 6rem;
+
+  --padding-nav-thing-x: 1.5rem;
+  --padding-nav-thing-y: 0.75rem;
+  --padding-container: 2rem;
+
+  /* Border Radius */
+  --border-radius-pill: 9999px;
+  --border-radius-lg: 2rem;
+  --border-radius-md: 1rem;
+  --border-radius-sm: 0.5rem;
+
+  /* Shadows — neutral only */
+  --shadow-sm: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
+  --shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.08);
+  --shadow-nav-tab: 0px 8px 16px 0px rgba(51, 51, 51, 0.06);
+
+  /* Transitions */
+  --transition-fast: 150ms cubic-bezier(0.4, 0, 0.2, 1);
+  --transition-base: 250ms cubic-bezier(0.4, 0, 0.2, 1);
+  --transition-slow: 350ms cubic-bezier(0.4, 0, 0.2, 1);
+  --transition-ease-out: 300ms cubic-bezier(0, 0, 0.2, 1);
+
+  --animation-duration-fast: 150ms;
+  --animation-duration-base: 250ms;
+  --animation-duration-slow: 350ms;
+
+  --selection-bg: rgba(0, 0, 0, 0.08);
+}
+
+::selection {
+  background-color: var(--selection-bg);
+  color: var(--color-text-primary);
+}
+
+::-moz-selection {
+  background-color: var(--selection-bg);
+  color: var(--color-text-primary);
+}

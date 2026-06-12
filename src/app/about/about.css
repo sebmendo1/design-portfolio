@@ -1,0 +1,30 @@
+.about-page {
+  background: #ffffff;
+  min-height: 100vh;
+}
+
+.about-page__content {
+  max-width: 752px;
+  margin: 0 auto;
+  padding: 64px 24px 32px;
+}
+
+.about-page__heading {
+  font-size: 28px;
+  font-weight: 500;
+  color: #000000;
+  line-height: 1.35;
+  margin-bottom: 24px;
+}
+
+.about-page__bio {
+  font-size: var(--font-size-body);
+  color: #666666;
+  line-height: var(--line-height-body);
+}
+
+@media (max-width: 768px) {
+  .about-page__heading {
+    font-size: 22px;
+  }
+}

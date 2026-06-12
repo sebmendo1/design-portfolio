@@ -1,0 +1,125 @@
+.phone-mockup {
+  position: relative;
+  width: 240px;
+  height: 494px;
+  flex-shrink: 0;
+}
+
+/* Outer frame — dark titanium, matches cs-phone / pc-phone design language.
+   At 240×494px: outer 34px, padding 7px, screen 27px (proportional to cs-phone). */
+.phone-mockup__frame {
+  position: absolute;
+  inset: 0;
+  border-radius: 34px;
+  background:
+    linear-gradient(
+      160deg,
+      rgba(255, 255, 255, 0.06) 0%,
+      transparent 35%,
+      transparent 65%,
+      rgba(255, 255, 255, 0.03) 100%
+    ),
+    linear-gradient(to bottom, #2e2e30 0%, #1d1d1f 5%, #1a1a1c 95%, #2c2c2e 100%);
+  box-shadow:
+    0 0 0 0.5px rgba(255, 255, 255, 0.1),
+    0 0 0 1px rgba(0, 0, 0, 0.55),
+    0 24px 60px rgba(0, 0, 0, 0.3),
+    0 6px 18px rgba(0, 0, 0, 0.16);
+  overflow: hidden;
+}
+
+/* Chamfer highlight */
+.phone-mockup__frame::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  border-radius: 34px;
+  background: linear-gradient(
+    148deg,
+    rgba(255, 255, 255, 0.07) 0%,
+    rgba(255, 255, 255, 0.02) 30%,
+    transparent 60%
+  );
+  pointer-events: none;
+  z-index: 10;
+}
+
+/* Screen — inset by 7px, radius = 34 - 7 = 27px */
+.phone-mockup__screen {
+  position: absolute;
+  top: 7px;
+  left: 7px;
+  right: 7px;
+  bottom: 7px;
+  background: #000000;
+  border-radius: 27px;
+  overflow: hidden;
+}
+
+/* Dynamic Island */
+.phone-mockup__dynamic-island {
+  position: absolute;
+  top: 10px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 30%;
+  height: 16px;
+  background: #000000;
+  border-radius: 50px;
+  z-index: 2;
+}
+
+.phone-mockup__screen-content {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+}
+
+.phone-mockup__screen-placeholder {
+  width: 100%;
+  height: 100%;
+  background: #0a0a0a;
+}
+
+/* Side buttons */
+.phone-mockup__btn {
+  position: absolute;
+  border-radius: 2px;
+}
+
+.phone-mockup__btn--power {
+  right: -2.5px;
+  top: 122px;
+  width: 2.5px;
+  height: 62px;
+  background: linear-gradient(to left, #2a2a2c, #1e1e20, #2a2a2c);
+  box-shadow: 0.5px 0 1.5px rgba(0, 0, 0, 0.6);
+}
+
+.phone-mockup__btn--action {
+  left: -2.5px;
+  top: 52px;
+  width: 2.5px;
+  height: 22px;
+  background: linear-gradient(to right, #2a2a2c, #1e1e20, #2a2a2c);
+  box-shadow: -0.5px 0 1.5px rgba(0, 0, 0, 0.6);
+}
+
+.phone-mockup__btn--vol-up {
+  left: -2.5px;
+  top: 100px;
+  width: 2.5px;
+  height: 40px;
+  background: linear-gradient(to right, #2a2a2c, #1e1e20, #2a2a2c);
+  box-shadow: -0.5px 0 1.5px rgba(0, 0, 0, 0.6);
+}
+
+.phone-mockup__btn--vol-down {
+  left: -2.5px;
+  top: 152px;
+  width: 2.5px;
+  height: 40px;
+  background: linear-gradient(to right, #2a2a2c, #1e1e20, #2a2a2c);
+  box-shadow: -0.5px 0 1.5px rgba(0, 0, 0, 0.6);
+}

@@ -1,0 +1,27 @@
+.contact-cta {
+  width: 100%;
+  max-width: 752px;
+  margin: 64px auto 96px;
+  padding: 0 24px;
+}
+
+.contact-cta__link {
+  display: inline-block;
+  padding: 12px 24px;
+  background: #000000;
+  color: #ffffff;
+  border-radius: 100px;
+  font-size: var(--font-size-body);
+  font-weight: var(--font-weight-medium);
+  text-decoration: none;
+  transition: opacity var(--transition-fast);
+}
+
+.contact-cta__link:hover {
+  opacity: 0.8;
+}
+
+.contact-cta__link:focus-visible {
+  outline: 2px solid #000000;
+  outline-offset: 2px;
+}
