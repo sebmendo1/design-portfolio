@@ -39,10 +39,10 @@
   border-radius: 16px;
 }
 
-/* Wrapper owns the 60% width; img fills it at 100% so SVG attribute
+/* Wrapper owns the 50% width; img fills it at 100% so SVG attribute
    dimensions can never override the constraint. */
 .project-card__image-wrap {
-  width: 60%;
+  width: 80%;
   flex-shrink: 0;
 }
 
@@ -182,7 +182,7 @@
 /* Height is 76% of card height so phone and browser sit at the same
    visual weight. aspect-ratio drives the width from the height. */
 .pc-phone {
-  height: 80%;
+  height: 84%;
   aspect-ratio: 71.5 / 149.6;
   width: auto;
   position: relative;

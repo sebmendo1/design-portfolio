@@ -103,7 +103,7 @@ export const projects: Project[] = [
     company: 'Personal Project',
     role: 'Designer & Developer',
     tags: ['AI', 'Design Systems', 'B2B'],
-    preview: { frame: 'fill', src: '/assets/autods-m.svg' },
+    preview: { frame: 'image', src: '/assets/autods-m.svg' },
     slug: 'autods-m-ai',
     styles: { backgroundColor: '#f4f3f2' },
     caseStudy: {
@@ -168,7 +168,7 @@ export const projects: Project[] = [
       slug: 'casey-ai',
       title: 'Casey AI',
       trackHeightVh: 600,
-      stage: { centerpiece: { frame: 'phone', width: 260, src: '/assets/casey-ai.png' } },
+      stage: { centerpiece: { frame: 'phone', width: 260, video: '/assets/casey-rcs.mov' } },
       beats: [
         { id: 'summary',   headline: 'A voice and RCS-powered AI banking assistant for conversational money management.', body: 'Casey AI lets Chase customers manage their finances through natural conversation: checking balances, moving money, and asking questions the way they would with a knowledgeable person. The design challenge was making AI-driven financial tasks feel as safe as they are fast.', range: [0, 0.15] },
         { id: 'challenge', label: 'Challenge', headline: 'Financial AI that feels safe, not just smart.', body: 'Casey AI is a voice and RCS-powered banking assistant that lets Chase customers manage their money through natural conversation. The design challenge was making AI-driven financial tasks feel safe, trustworthy, and effortlessly simple, without sacrificing the precision financial transactions require.', range: [0.15, 0.32] },
