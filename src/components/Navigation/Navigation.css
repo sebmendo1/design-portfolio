@@ -26,11 +26,20 @@
   font-weight: 500;
   color: #000000;
   text-decoration: none;
-  transition: background var(--transition-fast);
+  position: relative;
 }
 
-.nav__tab--active {
+.nav__tab-pill {
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
   background: #ffffff;
+  z-index: 0;
+}
+
+.nav__tab-text {
+  position: relative;
+  z-index: 1;
 }
 
 .nav__tab:focus-visible {

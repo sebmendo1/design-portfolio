@@ -1,6 +1,6 @@
 export type Beat = {
   id: string;
-  label: string;    // section label, e.g. "CHALLENGE"
+  label?: string;   // section label e.g. "CHALLENGE" — omit for unlabelled beats like Summary
   headline: string; // punchy one-liner for animated stage
   body?: string;    // full paragraph for text-scroll mode
   range: [number, number];
@@ -24,6 +24,8 @@ export type Cluster = {
 
 export type CaseStudyCenterpiece = {
   src?: string;
+  video?: string;
+  url?: string;
   width: number;
   frame: 'phone' | 'browser' | 'none';
 };

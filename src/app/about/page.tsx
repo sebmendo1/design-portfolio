@@ -11,7 +11,6 @@ export default function AboutPage() {
   return (
     <div className="about-page">
       <Navigation />
-
       <div className="about-page__content">
         <h1 className="about-page__heading">
           Sebastian Mendo is a Senior Product Designer specialized in building

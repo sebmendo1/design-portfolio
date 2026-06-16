@@ -18,6 +18,11 @@
 
 html {
   -webkit-text-size-adjust: 100%;
+  scrollbar-width: none;          /* Firefox + Chrome 121+ + Safari 18+ */
+}
+
+html::-webkit-scrollbar {
+  display: none;                  /* Chrome / Safari / Edge */
 }
 
 body {

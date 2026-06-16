@@ -1,6 +1,6 @@
 'use client';
 
-import { useRef } from 'react';
+import { useRef, type ReactNode } from 'react';
 import {
   motion,
   useScroll,
@@ -14,23 +14,51 @@ import './CaseStudyScrolly.css';
 
 // ─── Device frames (static — no animation) ───────────────────────────────────
 
-function BrowserFrame({ width, src }: { width: number; src?: string }) {
+function BrowserFrame({ src, video, url }: { width: number; src?: string; video?: string; url?: string }) {
   return (
-    <div className="cs-browser" style={{ width }}>
+    <div className="cs-browser">
       <div className="cs-browser__chrome">
-        <span className="cs-dot cs-dot--red" />
-        <span className="cs-dot cs-dot--yellow" />
-        <span className="cs-dot cs-dot--green" />
-        <div className="cs-browser__url" />
+        <div className="cs-browser__dots">
+          <span className="cs-dot cs-dot--red" />
+          <span className="cs-dot cs-dot--yellow" />
+          <span className="cs-dot cs-dot--green" />
+        </div>
+        <div className="cs-browser__nav">
+          <svg className="cs-browser__nav-icon" viewBox="0 0 16 16" fill="none">
+            <path d="M10 3L5 8l5 5" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/>
+          </svg>
+          <svg className="cs-browser__nav-icon" viewBox="0 0 16 16" fill="none">
+            <path d="M6 3l5 5-5 5" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/>
+          </svg>
+        </div>
+        <div className="cs-browser__url-bar">
+          <svg className="cs-browser__lock" viewBox="0 0 12 14" fill="none">
+            <rect x="1.5" y="6" width="9" height="7" rx="1.5" stroke="currentColor" strokeWidth="1.2"/>
+            <path d="M4 6V4a2 2 0 0 1 4 0v2" stroke="currentColor" strokeWidth="1.2" strokeLinecap="round"/>
+          </svg>
+          <span className="cs-browser__url-text">{url ?? 'help.salesforce.com'}</span>
+        </div>
+        <div className="cs-browser__spacer" />
       </div>
       <div className="cs-browser__screen">
-        {src && <img src={src} alt="" className="cs-device-img" loading="lazy" />}
+        {video ? (
+          <video
+            className="cs-device-video"
+            src={video}
+            autoPlay
+            loop
+            muted
+            playsInline
+          />
+        ) : src ? (
+          <img src={src} alt="" className="cs-device-img" loading="lazy" />
+        ) : null}
       </div>
     </div>
   );
 }
 
-function PhoneFrame({ src }: { width: number; src?: string }) {
+function PhoneFrame({ src, video }: { width: number; src?: string; video?: string }) {
   return (
     <div className="cs-phone">
       <div className="cs-phone__btn cs-phone__btn--action" />
@@ -39,10 +67,20 @@ function PhoneFrame({ src }: { width: number; src?: string }) {
       <div className="cs-phone__btn cs-phone__btn--power" />
       <div className="cs-phone__screen">
         <div className="cs-phone__island" />
-        {src
-          ? <img src={src} alt="" className="cs-device-img" loading="lazy" />
-          : <div className="cs-phone__screen-fill" />
-        }
+        {video ? (
+          <video
+            className="cs-device-video"
+            src={video}
+            autoPlay
+            loop
+            muted
+            playsInline
+          />
+        ) : src ? (
+          <img src={src} alt="" className="cs-device-img" loading="lazy" />
+        ) : (
+          <div className="cs-phone__screen-fill" />
+        )}
       </div>
     </div>
   );
@@ -50,10 +88,11 @@ function PhoneFrame({ src }: { width: number; src?: string }) {
 
 // ─── Animated text section ────────────────────────────────────────────────────
 
-function TextSection({ beat, smooth, isFirst }: {
+function TextSection({ beat, smooth, isFirst, slot }: {
   beat: Beat;
   smooth: MotionValue<number>;
   isFirst: boolean;
+  slot?: ReactNode;
 }) {
   const [a, b] = beat.range;
   const fadeIn  = Math.min(a + 0.07, b);
@@ -72,34 +111,39 @@ function TextSection({ beat, smooth, isFirst }: {
   );
 
   return (
-    <motion.section className="cs-section" style={{ opacity, y }}>
-      <p className="cs-section__label">{beat.label}</p>
+    <motion.section className={`cs-section${isFirst ? ' cs-section--hero' : ''}`} style={{ opacity, y }}>
+      {beat.label && <p className="cs-section__label">{beat.label}</p>}
       <h2 className="cs-section__headline">{beat.headline}</h2>
       {beat.body && <p className="cs-section__body">{beat.body}</p>}
+      {isFirst && slot && <div className="cs-section__slot">{slot}</div>}
     </motion.section>
   );
 }
 
 // ─── Reduced-motion fallback ──────────────────────────────────────────────────
 
-function StaticFallback({ config }: { config: CaseStudyConfig }) {
-  const { frame, width, src } = config.stage.centerpiece;
+function StaticFallback({ config, slot }: { config: CaseStudyConfig; slot?: ReactNode }) {
+  const { frame, width, src, video, url } = config.stage.centerpiece;
   return (
     <div className="cs-layout cs-layout--static">
       <div className="cs-text-col cs-text-col--static">
-        {config.beats.map((beat) => (
-          <section key={beat.id} className="cs-section cs-section--static">
-            <p className="cs-section__label">{beat.label}</p>
+        {config.beats.map((beat, i) => (
+          <section key={beat.id} className={`cs-section cs-section--static${i === 0 ? ' cs-section--hero' : ''}`}>
+            {beat.label && <p className="cs-section__label">{beat.label}</p>}
             <h2 className="cs-section__headline">{beat.headline}</h2>
             {beat.body && <p className="cs-section__body">{beat.body}</p>}
+            {i === 0 && slot && <div className="cs-section__slot">{slot}</div>}
           </section>
         ))}
       </div>
       <div className="cs-visual-col">
         <div className="cs-sticky">
           <div className="cs-device-card">
-            {frame === 'browser' && <BrowserFrame width={width} src={src} />}
-            {frame === 'phone'   && <PhoneFrame   width={width} src={src} />}
+            {frame === 'browser' && <BrowserFrame width={width} src={src} video={video} url={url} />}
+            {frame === 'phone'   && <PhoneFrame   width={width} src={src} video={video} />}
+            {frame === 'none' && src && (
+              <img src={src} alt="" className="cs-device-standalone-img" loading="lazy" />
+            )}
           </div>
         </div>
       </div>
@@ -109,7 +153,7 @@ function StaticFallback({ config }: { config: CaseStudyConfig }) {
 
 // ─── Main export ──────────────────────────────────────────────────────────────
 
-export function CaseStudyScrolly({ config }: { config: CaseStudyConfig }) {
+export function CaseStudyScrolly({ config, slot }: { config: CaseStudyConfig; slot?: ReactNode }) {
   const shouldReduce = useReducedMotion();
   const trackRef = useRef<HTMLDivElement>(null);
 
@@ -124,9 +168,9 @@ export function CaseStudyScrolly({ config }: { config: CaseStudyConfig }) {
     restDelta: 0.001,
   });
 
-  const { frame, width, src } = config.stage.centerpiece;
+  const { frame, width, src, video, url } = config.stage.centerpiece;
 
-  if (shouldReduce) return <StaticFallback config={config} />;
+  if (shouldReduce) return <StaticFallback config={config} slot={slot} />;
 
   return (
     <div
@@ -143,6 +187,7 @@ export function CaseStudyScrolly({ config }: { config: CaseStudyConfig }) {
               beat={beat}
               smooth={smooth}
               isFirst={i === 0}
+              slot={slot}
             />
           ))}
         </div>
@@ -150,8 +195,11 @@ export function CaseStudyScrolly({ config }: { config: CaseStudyConfig }) {
         {/* Right: device frame — no animation, just static inside card */}
         <div className="cs-visual-col">
           <div className="cs-device-card">
-            {frame === 'browser' && <BrowserFrame width={width} src={src} />}
-            {frame === 'phone'   && <PhoneFrame   width={width} src={src} />}
+            {frame === 'browser' && <BrowserFrame width={width} src={src} video={video} url={url} />}
+            {frame === 'phone'   && <PhoneFrame   width={width} src={src} video={video} />}
+            {frame === 'none' && src && (
+              <img src={src} alt="" className="cs-device-standalone-img" loading="lazy" />
+            )}
           </div>
         </div>
       </div>

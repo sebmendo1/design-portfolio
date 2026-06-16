@@ -12,16 +12,21 @@
 }
 
 .case-study__back {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
   font-size: 14px;
   font-weight: 500;
   color: #000000;
   text-decoration: none;
-  opacity: 0.5;
-  transition: opacity var(--transition-fast);
+  background: #f4f3f2;
+  border-radius: 100px;
+  padding: 8px 16px;
+  transition: background var(--transition-fast);
 }
 
 .case-study__back:hover {
-  opacity: 1;
+  background: #e8e7e6;
 }
 
 .case-study__meta {

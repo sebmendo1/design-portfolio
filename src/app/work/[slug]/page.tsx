@@ -1,8 +1,8 @@
 import { notFound } from 'next/navigation';
 import Link from 'next/link';
 import type { Metadata } from 'next';
-import { Navigation } from '@/components/Navigation/Navigation';
 import { CaseStudyScrolly } from '@/components/CaseStudyScrolly/CaseStudyScrolly';
+import { CaseyActions } from '@/components/CaseyActions/CaseyActions';
 import { projects } from '@/data/projects';
 import './case-study.css';
 
@@ -31,16 +31,17 @@ export default async function CaseStudyPage({ params }: Props) {
 
   return (
     <div className="case-study">
-      <Navigation />
-
       <div className="case-study__header">
         <Link href="/" className="case-study__back">
-          ← Work
+          ← Go back
         </Link>
       </div>
 
       {project.scrollyConfig && (
-        <CaseStudyScrolly config={project.scrollyConfig} />
+        <CaseStudyScrolly
+          config={project.scrollyConfig}
+          slot={project.slug === 'casey-ai' ? <CaseyActions /> : undefined}
+        />
       )}
     </div>
   );

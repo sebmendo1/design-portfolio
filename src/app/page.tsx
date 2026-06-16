@@ -8,13 +8,13 @@ export default function WorkPage() {
     <div className="work-page">
       <Navigation />
 
-      <section className="work-page__bio" aria-label="Bio">
+      <div className="work-page__bio">
         <p className="work-page__bio-text">
-          Sebastian Mendo is a Senior Product Designer building agentic
-          experiences across tech and finance. He&rsquo;s currently designing
-          core agentic banking flows for JPMorgan Chase.
+          Sebastian Mendo is a Senior Product Designer specialized in building
+          AI-first digital products. Currently designing core agentic flows at
+          JPMorgan Chase. Previously at Salesforce and Writer AI.
         </p>
-      </section>
+      </div>
 
       <main className="work-page__grid" aria-label="Portfolio projects">
         {projects.map((project) => (

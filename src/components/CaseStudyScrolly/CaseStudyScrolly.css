@@ -62,6 +62,26 @@
   margin: 0;
 }
 
+.cs-section__slot {
+  margin-top: 32px;
+}
+
+/* Summary (first) beat rendered at hero scale */
+.cs-section--hero .cs-section__headline {
+  font-size: clamp(28px, 3.8vw, 52px);
+  letter-spacing: -0.025em;
+  line-height: 1.15;
+  max-width: 600px;
+}
+
+.cs-section--hero .cs-section__body {
+  font-size: 20px;
+  line-height: 1.6;
+  color: #666666;
+  max-width: 560px;
+  margin-top: 4px;
+}
+
 /* ─── Right: device column — fills column height, no animation ──────────────── */
 .cs-visual-col {
   display: flex;
@@ -105,110 +125,176 @@
 }
 
 /* ─── Browser mockup ─────────────────────────────────────────────────────── */
+/*
+  aspect-ratio is on the SCREEN, not the frame. The 42px chrome bar sits on
+  top, making the total frame slightly taller. This ensures the content area
+  exactly matches the video's 1280×854 ratio — no stretch, no bars.
+*/
 .cs-browser {
+  width: 100%;
+  max-height: 100%;
+  display: flex;
+  flex-direction: column;
   background: #ffffff;
-  border-radius: 8px;
+  border-radius: 12px;
   overflow: hidden;
   box-shadow:
-    0 2px 8px rgba(0, 0, 0, 0.08),
-    0 0 0 1px rgba(0, 0, 0, 0.06);
-  max-width: 100%;
+    0 0 0 1px rgba(0, 0, 0, 0.09),
+    0 8px 32px rgba(0, 0, 0, 0.1);
 }
 
 .cs-browser__chrome {
-  height: 34px;
-  background: #ebebeb;
+  height: 42px;
+  min-height: 42px;
+  background: #e8e8e8;
   display: flex;
   align-items: center;
-  padding: 0 10px;
-  gap: 5px;
-  border-bottom: 1px solid #dcdcdc;
+  padding: 0 14px;
+  gap: 8px;
+  border-bottom: 1px solid #d0d0d0;
+  flex-shrink: 0;
+}
+
+.cs-browser__dots {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  flex-shrink: 0;
 }
 
 .cs-dot {
   display: block;
-  width: 11px;
-  height: 11px;
+  width: 12px;
+  height: 12px;
   border-radius: 50%;
   flex-shrink: 0;
 }
 
-.cs-dot--red    { background: #ff5f57; }
-.cs-dot--yellow { background: #febc2e; }
-.cs-dot--green  { background: #28c840; }
+.cs-dot--red    { background: #ff5f57; box-shadow: inset 0 0 0 0.5px rgba(0,0,0,0.12); }
+.cs-dot--yellow { background: #febc2e; box-shadow: inset 0 0 0 0.5px rgba(0,0,0,0.12); }
+.cs-dot--green  { background: #28c840; box-shadow: inset 0 0 0 0.5px rgba(0,0,0,0.12); }
 
-.cs-browser__url {
-  flex: 1;
-  max-width: 160px;
-  height: 18px;
-  background: #f2f2f2;
-  border-radius: 4px;
-  margin: 0 auto;
-}
-
-.cs-browser__screen {
-  height: 260px;
-  background: #fafafa;
-  overflow: hidden;
+.cs-browser__nav {
   display: flex;
   align-items: center;
-  justify-content: center;
+  gap: 2px;
+  flex-shrink: 0;
 }
 
-/* ─── iPhone 17 Pro mockup ───────────────────────────────────────────────── */
+.cs-browser__nav-icon {
+  width: 20px;
+  height: 20px;
+  color: #888888;
+  flex-shrink: 0;
+}
+
+/* URL bar — centered in the chrome, fixed max width */
+.cs-browser__url-bar {
+  flex: 1;
+  max-width: 340px;
+  height: 26px;
+  background: #ffffff;
+  border-radius: 6px;
+  border: 1px solid rgba(0, 0, 0, 0.12);
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  padding: 0 10px;
+  margin: 0 auto;
+  box-shadow: inset 0 1px 2px rgba(0, 0, 0, 0.04);
+}
+
+.cs-browser__lock {
+  width: 10px;
+  height: 12px;
+  color: #888888;
+  flex-shrink: 0;
+}
+
+.cs-browser__url-text {
+  font-size: 11.5px;
+  color: #333333;
+  font-family: -apple-system, 'SF Pro Text', system-ui, sans-serif;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  letter-spacing: 0.01em;
+}
+
+.cs-browser__spacer {
+  flex: 0 0 68px; /* balances the dots+nav on the left */
+}
+
+/* Content area sized to the video's native ratio — no stretch, no bars */
+.cs-browser__screen {
+  width: 100%;
+  aspect-ratio: 1280 / 854;
+  flex: 0 0 auto;
+  overflow: hidden;
+  background: #ffffff;
+  position: relative;
+}
+
+.cs-device-video {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+}
+
+/* ─── iPhone mockup — 393 × 874 logical-pixel ratio ─────────────────────── */
 /*
-  Fixed-px values throughout — % padding computes against parent width (not self),
-  and % border-radius on non-square elements creates elliptical corners.
-  Reference: ~12px bezel on a ~430px-wide phone = 2.8%.
-  At render width ~325px → 9px padding. Screen radius = outer (42px) - padding (9px) = 33px.
+  Frame-surrounds-content: the dark titanium body IS the frame via background.
+  Screen is inset 9px from all edges — content lives fully inside the bezel,
+  never clipped by it. No inset-shadow overlay needed.
+  Aspect ratio matches iPhone screen dimensions: 393 × 874 px.
 */
 .cs-phone {
-  aspect-ratio: 71.5 / 149.6;
-  height: min(calc(100dvh - 130px), 680px);
+  aspect-ratio: 393 / 874;
+  height: min(calc(100dvh - 90px), 918px);
   width: auto;
   position: relative;
-  border-radius: 46px;
-  background:
-    linear-gradient(
-      160deg,
-      rgba(255, 255, 255, 0.06) 0%,
-      transparent 35%,
-      transparent 65%,
-      rgba(255, 255, 255, 0.03) 100%
-    ),
-    linear-gradient(to bottom, #2e2e30 0%, #1d1d1f 5%, #1a1a1c 95%, #2c2c2e 100%);
-  padding: 9px;
-  box-sizing: border-box;
+  /*
+    border-radius as % of each axis so corners stay proportional at any size.
+    46px at 393px wide = 11.7%; 46px at 874px tall = 5.27%.
+  */
+  border-radius: 11.7% / 5.27%;
+  background: #1a1a1c;
   box-shadow:
+    inset 0 0 0 1px rgba(255, 255, 255, 0.1),
     0 0 0 0.5px rgba(255, 255, 255, 0.1),
     0 0 0 1px rgba(0, 0, 0, 0.55),
     0 40px 100px rgba(0, 0, 0, 0.36),
     0 10px 30px rgba(0, 0, 0, 0.18);
 }
 
+/* Chamfer gloss — must match body radius exactly */
 .cs-phone::before {
   content: '';
   position: absolute;
   inset: 0;
-  border-radius: 46px;
+  border-radius: 11.7% / 5.27%;
   background: linear-gradient(
     148deg,
-    rgba(255, 255, 255, 0.07) 0%,
-    rgba(255, 255, 255, 0.02) 30%,
-    transparent 60%
+    rgba(255, 255, 255, 0.04) 0%,
+    rgba(255, 255, 255, 0.01) 30%,
+    transparent 55%
   );
   pointer-events: none;
-  z-index: 10;
+  z-index: 5;
 }
 
-/* Screen radius = body radius - padding so the inset matches perfectly */
+/*
+  Screen inset 9px. Screen dims ≈ 375×856px.
+  37px at 375px wide = 9.87%; 37px at 856px tall = 4.32%.
+  Slightly less than body radius keeps content clear of the chamfer.
+*/
 .cs-phone__screen {
-  width: 100%;
-  height: 100%;
-  border-radius: 37px;
+  position: absolute;
+  inset: 9px;
+  border-radius: 9.87% / 4.32%;
   overflow: hidden;
   background: #000000;
-  position: relative;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -220,14 +306,18 @@
   background: #0a0a0a;
 }
 
-/* Dynamic Island */
+/*
+  Dynamic Island: width already % of screen width.
+  height/top in % of screen HEIGHT (856px at full size):
+  24px/856 = 2.8%, 12px/856 = 1.4%. clamp floors for tiny phones.
+*/
 .cs-phone__island {
   position: absolute;
-  top: 12px;
+  top: clamp(6px, 1.4%, 12px);
   left: 50%;
   transform: translateX(-50%);
   width: 30%;
-  height: 24px;
+  height: clamp(10px, 2.8%, 24px);
   background: #000000;
   border-radius: 50px;
   z-index: 5;
@@ -286,58 +376,109 @@
   display: block;
 }
 
-/* ─── Responsive ─────────────────────────────────────────────────────────── */
+/* Standalone image — no stencil, same shadow language as the browser frame */
+.cs-device-standalone-img {
+  width: 100%;
+  height: auto;
+  max-height: 100%;
+  object-fit: contain;
+  display: block;
+  border-radius: 12px;
+  box-shadow:
+    0 0 0 1px rgba(0, 0, 0, 0.09),
+    0 8px 32px rgba(0, 0, 0, 0.1);
+}
+
+/* ─── Responsive: mobile top/bottom split ────────────────────────────────── */
+/*
+  Device frame pinned in the top half, animated text in the bottom half.
+  Framer Motion's scroll pipeline already runs at every width — the only fix
+  is removing the !important overrides that were suppressing its output.
+*/
 @media (max-width: 900px) {
-  /* On mobile the animated layout falls back to static stacking */
+
+  /* Keep sticky pinning; switch to 2-row grid (visual top, text bottom) */
   .cs-layout {
-    position: static;
-    height: auto;
+    position: sticky;
+    top: 0;
+    height: 100dvh;
     grid-template-columns: 1fr;
-    padding: 20px 20px 80px;
+    grid-template-rows: 50dvh 50dvh;
     gap: 0;
-    overflow: visible;
-    align-items: start;
+    padding: 0;
+    overflow: hidden;
+    align-items: stretch;
   }
 
+  /* Visual goes to top row */
   .cs-visual-col {
     order: -1;
-    margin-bottom: 48px;
   }
 
   .cs-device-card {
-    min-height: 400px;
-    padding: 24px 16px;
-    flex: none;
-    width: 100%;
+    border-radius: 0;
+    padding: 20px 24px;
   }
 
+  /* Phone: height-driven to fit the top 50dvh; percentage border-radius scales automatically */
   .cs-phone {
-    height: min(calc(100vw * 149.6 / 71.5 * 0.7), 520px);
+    height: min(calc(50dvh - 72px), 500px);
   }
 
+  /* Thinner bezel at mobile — 9px reads as chunky when phone is ~140px wide */
+  .cs-phone__screen {
+    inset: 5px;
+  }
+
+  /* Text column: position:relative required so absolute children resolve against it */
   .cs-text-col {
-    position: static;
+    position: relative;
+    overflow: hidden;
   }
 
+  /* Sections: restore absolute stacking, remove the !important overrides */
   .cs-section {
-    position: static;
-    padding: 48px 0;
-    border-top: 1px solid #f0f0f0;
-    will-change: auto;
-    /* reset framer transforms on mobile */
-    opacity: 1 !important;
-    transform: none !important;
-  }
-
-  .cs-section:first-child {
+    position: absolute;
+    inset: 0;
+    padding: 28px 24px;
+    padding-right: 24px;
     border-top: none;
+    will-change: opacity, transform;
   }
 
   .cs-section__headline {
+    font-size: clamp(20px, 5vw, 32px);
     max-width: 100%;
+    margin-bottom: 16px;
+  }
+
+  .cs-section--hero .cs-section__headline {
+    font-size: clamp(22px, 5.5vw, 36px);
   }
 
   .cs-section__body {
+    font-size: 15px;
+    line-height: 1.6;
     max-width: 100%;
+  }
+
+  .cs-section__label {
+    margin-bottom: 12px;
+  }
+}
+
+/* Very small phones (SE, Galaxy A): floor sizes */
+@media (max-width: 390px) {
+  .cs-section {
+    padding: 20px;
+  }
+
+  .cs-section__headline {
+    font-size: 19px;
+    margin-bottom: 12px;
+  }
+
+  .cs-section__body {
+    font-size: 14px;
   }
 }
