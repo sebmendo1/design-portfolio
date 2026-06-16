@@ -82,6 +82,28 @@
   margin-top: 4px;
 }
 
+/* Outro "View all projects" button */
+.cs-outro__btn {
+  display: inline-flex;
+  align-items: center;
+  padding: 12px 24px;
+  background: #000000;
+  color: #ffffff;
+  border-radius: 100px;
+  font-size: 15px;
+  font-weight: 500;
+  text-decoration: none;
+  transition: opacity 0.15s ease;
+}
+
+.cs-outro__btn:hover {
+  opacity: 0.75;
+}
+
+.cs-section--outro-static {
+  border-top: 1px solid #f0f0f0;
+}
+
 /* ─── Right: device column — fills column height, no animation ──────────────── */
 .cs-visual-col {
   display: flex;
@@ -251,7 +273,7 @@
 */
 .cs-phone {
   aspect-ratio: 393 / 874;
-  height: min(calc(100dvh - 90px), 918px);
+  height: min(calc(100dvh - 90px), 964px);
   width: auto;
   position: relative;
   /*
@@ -422,7 +444,7 @@
 
   /* Phone: height-driven to fit the top 50dvh; percentage border-radius scales automatically */
   .cs-phone {
-    height: min(calc(50dvh - 72px), 500px);
+    height: min(calc(50dvh - 72px), 525px);
   }
 
   /* Thinner bezel at mobile — 9px reads as chunky when phone is ~140px wide */

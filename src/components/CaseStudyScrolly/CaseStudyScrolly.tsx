@@ -1,6 +1,7 @@
 'use client';
 
 import { useRef, type ReactNode } from 'react';
+import Link from 'next/link';
 import {
   motion,
   useScroll,
@@ -120,6 +121,23 @@ function TextSection({ beat, smooth, isFirst, slot }: {
   );
 }
 
+// ─── Outro: fades in over the last ~12% of the scroll track ─────────────────
+
+function OutroSection({ smooth }: { smooth: MotionValue<number> }) {
+  const opacity = useTransform(smooth, [0.88, 0.96], [0, 1]);
+  const y       = useTransform(smooth, [0.88, 0.96], [16, 0]);
+
+  return (
+    <motion.section className="cs-section cs-section--outro" style={{ opacity, y }}>
+      <p className="cs-section__label">More work</p>
+      <h2 className="cs-section__headline">See the rest of my projects.</h2>
+      <div className="cs-section__slot">
+        <Link href="/" className="cs-outro__btn">View all projects</Link>
+      </div>
+    </motion.section>
+  );
+}
+
 // ─── Reduced-motion fallback ──────────────────────────────────────────────────
 
 function StaticFallback({ config, slot }: { config: CaseStudyConfig; slot?: ReactNode }) {
@@ -135,6 +153,13 @@ function StaticFallback({ config, slot }: { config: CaseStudyConfig; slot?: Reac
             {i === 0 && slot && <div className="cs-section__slot">{slot}</div>}
           </section>
         ))}
+        <section className="cs-section cs-section--static cs-section--outro-static">
+          <p className="cs-section__label">More work</p>
+          <h2 className="cs-section__headline">See the rest of my projects.</h2>
+          <div className="cs-section__slot">
+            <Link href="/" className="cs-outro__btn">View all projects</Link>
+          </div>
+        </section>
       </div>
       <div className="cs-visual-col">
         <div className="cs-sticky">
@@ -190,6 +215,7 @@ export function CaseStudyScrolly({ config, slot }: { config: CaseStudyConfig; sl
               slot={slot}
             />
           ))}
+          <OutroSection smooth={smooth} />
         </div>
 
         {/* Right: device frame — no animation, just static inside card */}
