@@ -1,10 +1,10 @@
 'use client';
 
-import { useRef, type ReactNode } from 'react';
+import { useRef, useState, useEffect, useCallback, type ReactNode } from 'react';
 import Link from 'next/link';
 import {
   motion,
-  useScroll,
+  useMotionValue,
   useSpring,
   useTransform,
   useReducedMotion,
@@ -110,9 +110,11 @@ function TextSection({ beat, smooth, isFirst, slot }: {
     [a,              fadeIn, fadeOut, b],
     [isFirst ? 0 : 20, 0,    0,     -20],
   );
+  // Sections at opacity 0 are invisible but still block pointer events without this.
+  const pointerEvents = useTransform(opacity, (o: number) => (o > 0.05 ? 'auto' : 'none'));
 
   return (
-    <motion.section className={`cs-section${isFirst ? ' cs-section--hero' : ''}`} style={{ opacity, y }}>
+    <motion.section className={`cs-section${isFirst ? ' cs-section--hero' : ''}`} style={{ opacity, y, pointerEvents }}>
       {beat.label && <p className="cs-section__label">{beat.label}</p>}
       <h2 className="cs-section__headline">{beat.headline}</h2>
       {beat.body && <p className="cs-section__body">{beat.body}</p>}
@@ -180,18 +182,88 @@ function StaticFallback({ config, slot }: { config: CaseStudyConfig; slot?: Reac
 
 export function CaseStudyScrolly({ config, slot }: { config: CaseStudyConfig; slot?: ReactNode }) {
   const shouldReduce = useReducedMotion();
-  const trackRef = useRef<HTMLDivElement>(null);
+  const containerRef = useRef<HTMLDivElement>(null);
 
-  const { scrollYProgress } = useScroll({
-    target: trackRef,
-    offset: ['start start', 'end end'],
-  });
+  // Beat midpoints — the progress value that places each beat fully in view
+  const beatTargets = config.beats.map(b => (b.range[0] + b.range[1]) / 2);
 
-  const smooth = useSpring(scrollYProgress, {
-    stiffness: 100,
-    damping: 30,
-    restDelta: 0.001,
-  });
+  const [activeBeatIndex, setActiveBeatIndex] = useState(0);
+  const activeBeatIndexRef = useRef(0);       // mirror for event handlers (avoids stale closure)
+  const isLockedRef        = useRef(false);   // debounce: block rapid-fire wheel events
+  const touchStartY        = useRef<number | null>(null);
+
+  const targetProgress = useMotionValue(0);
+  const smooth = useSpring(targetProgress, { stiffness: 100, damping: 30, restDelta: 0.001 });
+
+  // Keep ref in sync with state so event handlers always read the current index
+  useEffect(() => { activeBeatIndexRef.current = activeBeatIndex; }, [activeBeatIndex]);
+
+  // Push new target into the MotionValue; spring animates toward it
+  useEffect(() => {
+    const t = activeBeatIndex < config.beats.length
+      ? beatTargets[activeBeatIndex]
+      : 1.0;
+    targetProgress.set(t);
+  // beatTargets is derived from config.beats which doesn't change; safe to omit
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [activeBeatIndex]);
+
+  const advanceBeat = useCallback((direction: 1 | -1) => {
+    if (isLockedRef.current) return;
+    setActiveBeatIndex(prev => {
+      const next = prev + direction;
+      if (next < 0 || next > config.beats.length) return prev;
+      isLockedRef.current = true;
+      setTimeout(() => { isLockedRef.current = false; }, 700);
+      return next;
+    });
+  }, [config.beats.length]);
+
+  const handleWheel = useCallback((e: WheelEvent) => {
+    const atStart = activeBeatIndexRef.current === 0;
+    const atEnd   = activeBeatIndexRef.current === config.beats.length;
+    // At boundaries, let native page scroll take over
+    if ((atStart && e.deltaY < 0) || (atEnd && e.deltaY > 0)) return;
+    e.preventDefault();
+    advanceBeat(e.deltaY > 0 ? 1 : -1);
+  }, [advanceBeat, config.beats.length]);
+
+  const handleKeyDown = useCallback((e: KeyboardEvent) => {
+    if (e.key === 'ArrowDown' || e.key === ' ') { e.preventDefault(); advanceBeat(1); }
+    else if (e.key === 'ArrowUp')               { e.preventDefault(); advanceBeat(-1); }
+  }, [advanceBeat]);
+
+  const handleTouchStart = useCallback((e: TouchEvent) => {
+    touchStartY.current = e.touches[0].clientY;
+  }, []);
+
+  const handleTouchEnd = useCallback((e: TouchEvent) => {
+    if (touchStartY.current === null) return;
+    const delta = touchStartY.current - e.changedTouches[0].clientY;
+    touchStartY.current = null;
+    if (Math.abs(delta) < 40) return;
+    const swipeUp = delta > 0;
+    const atStart = activeBeatIndexRef.current === 0;
+    const atEnd   = activeBeatIndexRef.current === config.beats.length;
+    if ((atStart && !swipeUp) || (atEnd && swipeUp)) return;
+    advanceBeat(swipeUp ? 1 : -1);
+  }, [advanceBeat, config.beats.length]);
+
+  useEffect(() => {
+    if (shouldReduce || window.innerWidth <= 900) return;
+    const el = containerRef.current;
+    if (!el) return;
+    el.addEventListener('wheel',      handleWheel,      { passive: false });
+    el.addEventListener('keydown',    handleKeyDown);
+    el.addEventListener('touchstart', handleTouchStart, { passive: true });
+    el.addEventListener('touchend',   handleTouchEnd,   { passive: true });
+    return () => {
+      el.removeEventListener('wheel',      handleWheel);
+      el.removeEventListener('keydown',    handleKeyDown);
+      el.removeEventListener('touchstart', handleTouchStart);
+      el.removeEventListener('touchend',   handleTouchEnd);
+    };
+  }, [shouldReduce, handleWheel, handleKeyDown, handleTouchStart, handleTouchEnd]);
 
   const { frame, width, src, video, url } = config.stage.centerpiece;
 
@@ -199,9 +271,10 @@ export function CaseStudyScrolly({ config, slot }: { config: CaseStudyConfig; sl
 
   return (
     <div
-      ref={trackRef}
+      ref={containerRef}
       className="cs-track"
-      style={{ height: `${config.trackHeightVh}vh` }}
+      tabIndex={0}
+      aria-label="Case study navigation"
     >
       <div className="cs-layout">
         {/* Left: sticky panel with crossfading text sections */}

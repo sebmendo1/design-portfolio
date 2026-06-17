@@ -1,6 +1,8 @@
-/* ─── Scroll track: the tall div that drives the scroll progress ─────────── */
+/* ─── Scroll track: viewport-height container for the sticky layout ─────── */
 .cs-track {
   position: relative;
+  min-height: 100dvh;
+  outline: none;
 }
 
 /* ─── Layout: sticky stage pinned to the viewport while track scrolls ──────── */

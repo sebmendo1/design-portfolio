@@ -40,3 +40,9 @@ yarn-error.log*
 *.tsbuildinfo
 next-env.d.ts
 media/
+
+# Binary media — hosted on Vercel Blob; keep locally for dev but don't commit
+public/assets/*.mov
+public/assets/*.mp4
+public/assets/*.m4a
+.env*.local

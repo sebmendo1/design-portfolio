@@ -1,6 +1,7 @@
 'use client';
 
 import { useRef, useState } from 'react';
+import { ASSETS } from '@/data/assets';
 import './CaseyActions.css';
 
 const SMS_NUMBER = '+14696639288';
@@ -11,15 +12,19 @@ export function CaseyActions() {
   const audioRef = useRef<HTMLAudioElement>(null);
   const [playing, setPlaying] = useState(false);
 
-  function toggleAudio() {
+  async function toggleAudio() {
     const audio = audioRef.current;
     if (!audio) return;
     if (playing) {
       audio.pause();
       setPlaying(false);
     } else {
-      audio.play();
-      setPlaying(true);
+      try {
+        await audio.play();
+        setPlaying(true);
+      } catch {
+        setPlaying(false);
+      }
     }
   }
 
@@ -27,8 +32,9 @@ export function CaseyActions() {
     <div className="casey-actions">
       <audio
         ref={audioRef}
-        src="/assets/casey-intro.m4a"
+        src={ASSETS.audio.caseyIntro}
         onEnded={() => setPlaying(false)}
+        preload="metadata"
       />
 
       <button

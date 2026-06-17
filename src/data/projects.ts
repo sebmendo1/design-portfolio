@@ -1,5 +1,6 @@
 import type { CSSProperties } from 'react';
 import type { CaseStudyConfig } from '@/components/CaseStudyScrolly/types';
+import { ASSETS } from '@/data/assets';
 
 export interface ProjectStyles {
   backgroundColor?: string;
@@ -67,7 +68,7 @@ export const projects: Project[] = [
       slug: 'memento-ai',
       title: 'Memento AI',
       trackHeightVh: 600,
-      stage: { centerpiece: { frame: 'phone', width: 260, video: '/assets/memento-demo.mov' } },
+      stage: { centerpiece: { frame: 'phone', width: 260, video: ASSETS.video.mementoDemo } },
       beats: [
         { id: 'summary',   headline: 'AI as a slow, therapeutic mirror for self-reflection.', body: 'I designed and engineered Memento, a native iOS journaling app utilizing a localized RAG architecture to provide contextual, fully cited AI reflections grounded exclusively in the user\'s own writing.', range: [0, 0.15] },
         { id: 'tldr',      label: 'TL;DR',     headline: 'Psychological safety is the foundational requirement of any journal.', body: 'The product vision was to shift AI from a high-speed productivity utility into a slow, therapeutic mirror. I owned the entire stack, from UI design to the data embedding pipeline, building an experience that feels purely meditative rather than transactional. I rejected push notifications and streaks in favor of a minimalist loop where writing naturally begets more writing.', range: [0.15, 0.32] },
@@ -168,7 +169,7 @@ export const projects: Project[] = [
       slug: 'casey-ai',
       title: 'Casey AI',
       trackHeightVh: 600,
-      stage: { centerpiece: { frame: 'phone', width: 260, video: '/assets/casey-rcs.mov' } },
+      stage: { centerpiece: { frame: 'phone', width: 260, video: ASSETS.video.caseyRcs } },
       beats: [
         { id: 'summary',   headline: 'A voice and RCS-powered AI banking assistant for conversational money management.', body: 'Casey AI lets Chase customers manage their finances through natural conversation: checking balances, moving money, and asking questions the way they would with a knowledgeable person. The design challenge was making AI-driven financial tasks feel as safe as they are fast.', range: [0, 0.15] },
         { id: 'challenge', label: 'Challenge', headline: 'Financial AI that feels safe, not just smart.', body: 'Casey AI is a voice and RCS-powered banking assistant that lets Chase customers manage their money through natural conversation. The design challenge was making AI-driven financial tasks feel safe, trustworthy, and effortlessly simple, without sacrificing the precision financial transactions require.', range: [0.15, 0.32] },
@@ -306,7 +307,7 @@ export const projects: Project[] = [
     company: 'Salesforce',
     role: 'Product Designer',
     tags: ['Research', 'Interaction Design', 'AI UX'],
-    preview: { frame: 'browser', video: '/assets/salesforce-help.mp4', url: 'help.salesforce.com/s/contactsupport' },
+    preview: { frame: 'browser', video: ASSETS.video.salesforceHelp, url: 'help.salesforce.com/s/contactsupport' },
     slug: 'salesforce-help',
     styles: { backgroundColor: '#f4f3f2' },
     caseStudy: {
@@ -320,7 +321,7 @@ export const projects: Project[] = [
       slug: 'salesforce-help',
       title: 'Salesforce Help',
       trackHeightVh: 600,
-      stage: { centerpiece: { frame: 'browser', width: 400, video: '/assets/salesforce-help.mp4', url: 'help.salesforce.com/s/contactsupport' } },
+      stage: { centerpiece: { frame: 'browser', width: 400, video: ASSETS.video.salesforceHelp, url: 'help.salesforce.com/s/contactsupport' } },
       beats: [
         { id: 'summary',   headline: 'A redesigned Contact Support experience that uses Einstein AI to route customers to the right channel.', body: 'Salesforce Help replaced a wall of support options with a conversational interface: describing your issue routes you directly to the best channel for your situation. No menus, no guessing, no defaulting to the slowest path.', range: [0, 0.15] },
         { id: 'challenge', label: 'Challenge', headline: 'Stop making customers guess how to get help.', body: 'Salesforce offered every support channel a customer could want, and that was the problem. Landing on the Contact Support page meant a wall of options with no signal of which fit the issue, which were available on your plan, or which would be fastest. Customers defaulted to opening a case, often the slowest path, even when chat would have resolved them in minutes.', range: [0.15, 0.32] },
