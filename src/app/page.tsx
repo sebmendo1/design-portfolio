@@ -11,7 +11,7 @@ export default function WorkPage() {
       <div className="work-page__bio">
         <p className="work-page__bio-text">
           Sebastian Mendo is a Senior Product Designer specialized in building
-          AI-first digital products. Currently designing core agentic flows at
+          AI-first digital products. Currently designing core agentic experiences at
           JPMorgan Chase. Previously at Salesforce and Writer AI.
         </p>
       </div>
