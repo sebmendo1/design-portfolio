@@ -7,8 +7,9 @@ export const ASSETS = {
     caseyIntro: 'https://cjeb7madwget0lzn.public.blob.vercel-storage.com/casey-intro.m4a',
   },
   video: {
-    caseyRcs:       'https://cjeb7madwget0lzn.public.blob.vercel-storage.com/casey-rcs.mov',
-    mementoDemo:    'https://cjeb7madwget0lzn.public.blob.vercel-storage.com/memento-demo.mov',
-    salesforceHelp: 'https://cjeb7madwget0lzn.public.blob.vercel-storage.com/salesforce-help.mp4',
+    caseyRcs:        'https://cjeb7madwget0lzn.public.blob.vercel-storage.com/casey-rcs.mp4',
+    mementoDemo:     'https://cjeb7madwget0lzn.public.blob.vercel-storage.com/memento-demo.mp4',
+    salesforceHelp:  'https://cjeb7madwget0lzn.public.blob.vercel-storage.com/salesforce-help.mp4',
+    chaseMyHomeDemo: '/assets/chase-myhome-demo.mov',
   },
 } as const;

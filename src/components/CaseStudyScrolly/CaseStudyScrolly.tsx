@@ -50,6 +50,7 @@ function BrowserFrame({ src, video, url }: { width: number; src?: string; video?
             loop
             muted
             playsInline
+            preload="none"
           />
         ) : src ? (
           <img src={src} alt="" className="cs-device-img" loading="lazy" />
@@ -76,6 +77,7 @@ function PhoneFrame({ src, video }: { width: number; src?: string; video?: strin
             loop
             muted
             playsInline
+            preload="none"
           />
         ) : src ? (
           <img src={src} alt="" className="cs-device-img" loading="lazy" />
@@ -126,11 +128,12 @@ function TextSection({ beat, smooth, isFirst, slot }: {
 // ─── Outro: fades in over the last ~12% of the scroll track ─────────────────
 
 function OutroSection({ smooth }: { smooth: MotionValue<number> }) {
-  const opacity = useTransform(smooth, [0.88, 0.96], [0, 1]);
-  const y       = useTransform(smooth, [0.88, 0.96], [16, 0]);
+  const opacity       = useTransform(smooth, [0.88, 0.96], [0, 1]);
+  const y             = useTransform(smooth, [0.88, 0.96], [16, 0]);
+  const pointerEvents = useTransform(opacity, (o: number) => (o > 0.05 ? 'auto' : 'none'));
 
   return (
-    <motion.section className="cs-section cs-section--outro" style={{ opacity, y }}>
+    <motion.section className="cs-section cs-section--outro" style={{ opacity, y, pointerEvents }}>
       <p className="cs-section__label">More work</p>
       <h2 className="cs-section__headline">See the rest of my projects.</h2>
       <div className="cs-section__slot">
@@ -189,8 +192,9 @@ export function CaseStudyScrolly({ config, slot }: { config: CaseStudyConfig; sl
 
   const [activeBeatIndex, setActiveBeatIndex] = useState(0);
   const activeBeatIndexRef = useRef(0);       // mirror for event handlers (avoids stale closure)
-  const isLockedRef        = useRef(false);   // debounce: block rapid-fire wheel events
+  const isLockedRef        = useRef(false);   // block events during spring animation
   const touchStartY        = useRef<number | null>(null);
+  const wheelAccumRef      = useRef(0);       // accumulated pixel delta — beat advances at threshold
 
   const targetProgress = useMotionValue(0);
   const smooth = useSpring(targetProgress, { stiffness: 100, damping: 30, restDelta: 0.001 });
@@ -222,10 +226,25 @@ export function CaseStudyScrolly({ config, slot }: { config: CaseStudyConfig; sl
   const handleWheel = useCallback((e: WheelEvent) => {
     const atStart = activeBeatIndexRef.current === 0;
     const atEnd   = activeBeatIndexRef.current === config.beats.length;
-    // At boundaries, let native page scroll take over
     if ((atStart && e.deltaY < 0) || (atEnd && e.deltaY > 0)) return;
     e.preventDefault();
-    advanceBeat(e.deltaY > 0 ? 1 : -1);
+
+    // Normalise deltaMode so line/page wheels map to approximate pixel values
+    const delta = e.deltaMode === 1 ? e.deltaY * 40
+                : e.deltaMode === 2 ? e.deltaY * 500
+                : e.deltaY;
+
+    // Reset accumulator on direction reversal
+    if ((wheelAccumRef.current > 0 && delta < 0) || (wheelAccumRef.current < 0 && delta > 0)) {
+      wheelAccumRef.current = 0;
+    }
+    wheelAccumRef.current += delta;
+
+    // ~250px equivalent = 1.5–2 deliberate swipes / 2 mouse-wheel clicks before advancing
+    if (Math.abs(wheelAccumRef.current) >= 250) {
+      wheelAccumRef.current = 0;
+      advanceBeat(delta > 0 ? 1 : -1);
+    }
   }, [advanceBeat, config.beats.length]);
 
   const handleKeyDown = useCallback((e: KeyboardEvent) => {

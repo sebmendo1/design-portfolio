@@ -220,7 +220,7 @@ export const projects: Project[] = [
       slug: 'chase-myhome',
       title: 'Chase MyHome App',
       trackHeightVh: 600,
-      stage: { centerpiece: { frame: 'phone', width: 260, src: '/assets/chase-myhome.png' } },
+      stage: { centerpiece: { frame: 'phone', width: 260, video: ASSETS.video.chaseMyHomeDemo } },
       beats: [
         { id: 'summary',   headline: 'A unified homeownership platform connecting mortgage, equity, and market insights.', body: "Chase MyHome gives customers a complete, active view of their home as a financial asset, tracking value, equity, and payment progress in one place. For most Americans, their home is their largest investment, yet they've had almost no tools to manage it.", range: [0, 0.15] },
         { id: 'challenge', label: 'Challenge', headline: 'Your largest asset, with almost no tools to manage it.', body: 'Chase MyHome is a unified homeownership platform that connects mortgage, equity, and market insights in a single app experience. For most Americans, their home is their largest financial asset, but they have almost no tools to manage it actively. MyHome changes that.', range: [0.15, 0.32] },
