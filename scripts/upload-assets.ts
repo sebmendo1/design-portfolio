@@ -9,10 +9,11 @@ import { readFileSync } from 'fs';
 import path from 'path';
 
 const ASSETS = [
-  { name: 'casey-intro.m4a',     type: 'audio/mp4' },
-  { name: 'casey-rcs.mp4',       type: 'video/mp4' },
-  { name: 'memento-demo.mp4',    type: 'video/mp4' },
-  { name: 'salesforce-help.mp4', type: 'video/mp4' },
+  { name: 'casey-intro.m4a',        type: 'audio/mp4' },
+  { name: 'casey-rcs.mp4',          type: 'video/mp4' },
+  { name: 'memento-demo.mp4',       type: 'video/mp4' },
+  { name: 'salesforce-help.mp4',    type: 'video/mp4' },
+  { name: 'chase-myhome-demo.mov',  type: 'video/quicktime' },
 ] as const;
 
 (async () => {

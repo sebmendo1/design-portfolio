@@ -10,6 +10,6 @@ export const ASSETS = {
     caseyRcs:        'https://cjeb7madwget0lzn.public.blob.vercel-storage.com/casey-rcs.mp4',
     mementoDemo:     'https://cjeb7madwget0lzn.public.blob.vercel-storage.com/memento-demo.mp4',
     salesforceHelp:  'https://cjeb7madwget0lzn.public.blob.vercel-storage.com/salesforce-help.mp4',
-    chaseMyHomeDemo: '/assets/chase-myhome-demo.mov',
+    chaseMyHomeDemo: 'https://cjeb7madwget0lzn.public.blob.vercel-storage.com/chase-myhome-demo.mov',
   },
 } as const;
