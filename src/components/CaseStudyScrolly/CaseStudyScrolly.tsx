@@ -11,11 +11,42 @@ import {
   type MotionValue,
 } from 'framer-motion';
 import type { CaseStudyConfig, Beat } from './types';
+import { getVideoPoster } from '@/data/assets';
+import { OptimizedImage } from '@/components/OptimizedImage/OptimizedImage';
 import './CaseStudyScrolly.css';
+
+const MOBILE_MAX_WIDTH = 900;
+
+function useIsMobileLayout(): boolean {
+  const [isMobile, setIsMobile] = useState(false);
+
+  useEffect(() => {
+    const mq = window.matchMedia(`(max-width: ${MOBILE_MAX_WIDTH}px)`);
+    const update = () => setIsMobile(mq.matches);
+    update();
+    mq.addEventListener('change', update);
+    return () => mq.removeEventListener('change', update);
+  }, []);
+
+  return isMobile;
+}
 
 // ─── Device frames (static — no animation) ───────────────────────────────────
 
-function BrowserFrame({ src, video, url }: { width: number; src?: string; video?: string; url?: string }) {
+function BrowserFrame({
+  src,
+  video,
+  url,
+  title,
+}: {
+  width: number;
+  src?: string;
+  video?: string;
+  url?: string;
+  title: string;
+}) {
+  const poster = video ? getVideoPoster(video) : undefined;
+
   return (
     <div className="cs-browser">
       <div className="cs-browser__chrome">
@@ -46,6 +77,7 @@ function BrowserFrame({ src, video, url }: { width: number; src?: string; video?
           <video
             className="cs-device-video"
             src={video}
+            poster={poster}
             autoPlay
             loop
             muted
@@ -53,14 +85,32 @@ function BrowserFrame({ src, video, url }: { width: number; src?: string; video?
             preload="none"
           />
         ) : src ? (
-          <img src={src} alt="" className="cs-device-img" loading="lazy" />
+          <OptimizedImage
+            src={src}
+            alt={`${title} interface screenshot`}
+            width={800}
+            height={500}
+            className="cs-device-img"
+            sizes="50vw"
+          />
         ) : null}
       </div>
     </div>
   );
 }
 
-function PhoneFrame({ src, video }: { width: number; src?: string; video?: string }) {
+function PhoneFrame({
+  src,
+  video,
+  title,
+}: {
+  width: number;
+  src?: string;
+  video?: string;
+  title: string;
+}) {
+  const poster = video ? getVideoPoster(video) : undefined;
+
   return (
     <div className="cs-phone">
       <div className="cs-phone__btn cs-phone__btn--action" />
@@ -73,6 +123,7 @@ function PhoneFrame({ src, video }: { width: number; src?: string; video?: strin
           <video
             className="cs-device-video"
             src={video}
+            poster={poster}
             autoPlay
             loop
             muted
@@ -80,7 +131,14 @@ function PhoneFrame({ src, video }: { width: number; src?: string; video?: strin
             preload="none"
           />
         ) : src ? (
-          <img src={src} alt="" className="cs-device-img" loading="lazy" />
+          <OptimizedImage
+            src={src}
+            alt={`${title} app screenshot`}
+            width={260}
+            height={520}
+            className="cs-device-img"
+            sizes="50vw"
+          />
         ) : (
           <div className="cs-phone__screen-fill" />
         )}
@@ -118,7 +176,11 @@ function TextSection({ beat, smooth, isFirst, slot }: {
   return (
     <motion.section className={`cs-section${isFirst ? ' cs-section--hero' : ''}`} style={{ opacity, y, pointerEvents }}>
       {beat.label && <p className="cs-section__label">{beat.label}</p>}
-      <h2 className="cs-section__headline">{beat.headline}</h2>
+      {isFirst ? (
+        <h1 className="cs-section__headline">{beat.headline}</h1>
+      ) : (
+        <h2 className="cs-section__headline">{beat.headline}</h2>
+      )}
       {beat.body && <p className="cs-section__body">{beat.body}</p>}
       {isFirst && slot && <div className="cs-section__slot">{slot}</div>}
     </motion.section>
@@ -147,13 +209,19 @@ function OutroSection({ smooth }: { smooth: MotionValue<number> }) {
 
 function StaticFallback({ config, slot }: { config: CaseStudyConfig; slot?: ReactNode }) {
   const { frame, width, src, video, url } = config.stage.centerpiece;
+  const title = config.title;
+
   return (
     <div className="cs-layout cs-layout--static">
       <div className="cs-text-col cs-text-col--static">
         {config.beats.map((beat, i) => (
           <section key={beat.id} className={`cs-section cs-section--static${i === 0 ? ' cs-section--hero' : ''}`}>
             {beat.label && <p className="cs-section__label">{beat.label}</p>}
-            <h2 className="cs-section__headline">{beat.headline}</h2>
+            {i === 0 ? (
+              <h1 className="cs-section__headline">{beat.headline}</h1>
+            ) : (
+              <h2 className="cs-section__headline">{beat.headline}</h2>
+            )}
             {beat.body && <p className="cs-section__body">{beat.body}</p>}
             {i === 0 && slot && <div className="cs-section__slot">{slot}</div>}
           </section>
@@ -169,10 +237,21 @@ function StaticFallback({ config, slot }: { config: CaseStudyConfig; slot?: Reac
       <div className="cs-visual-col">
         <div className="cs-sticky">
           <div className="cs-device-card">
-            {frame === 'browser' && <BrowserFrame width={width} src={src} video={video} url={url} />}
-            {frame === 'phone'   && <PhoneFrame   width={width} src={src} video={video} />}
+            {frame === 'browser' && (
+              <BrowserFrame width={width} src={src} video={video} url={url} title={title} />
+            )}
+            {frame === 'phone' && (
+              <PhoneFrame width={width} src={src} video={video} title={title} />
+            )}
             {frame === 'none' && src && (
-              <img src={src} alt="" className="cs-device-standalone-img" loading="lazy" />
+              <OptimizedImage
+                src={src}
+                alt={`${title} product screenshot`}
+                width={400}
+                height={400}
+                className="cs-device-standalone-img"
+                sizes="100vw"
+              />
             )}
           </div>
         </div>
@@ -185,6 +264,8 @@ function StaticFallback({ config, slot }: { config: CaseStudyConfig; slot?: Reac
 
 export function CaseStudyScrolly({ config, slot }: { config: CaseStudyConfig; slot?: ReactNode }) {
   const shouldReduce = useReducedMotion();
+  const isMobile = useIsMobileLayout();
+  const useStaticLayout = shouldReduce || isMobile;
   const containerRef = useRef<HTMLDivElement>(null);
 
   // Beat midpoints — the progress value that places each beat fully in view
@@ -269,7 +350,7 @@ export function CaseStudyScrolly({ config, slot }: { config: CaseStudyConfig; sl
   }, [advanceBeat, config.beats.length]);
 
   useEffect(() => {
-    if (shouldReduce || window.innerWidth <= 900) return;
+    if (useStaticLayout) return;
     const el = containerRef.current;
     if (!el) return;
     el.addEventListener('wheel',      handleWheel,      { passive: false });
@@ -282,11 +363,12 @@ export function CaseStudyScrolly({ config, slot }: { config: CaseStudyConfig; sl
       el.removeEventListener('touchstart', handleTouchStart);
       el.removeEventListener('touchend',   handleTouchEnd);
     };
-  }, [shouldReduce, handleWheel, handleKeyDown, handleTouchStart, handleTouchEnd]);
+  }, [useStaticLayout, handleWheel, handleKeyDown, handleTouchStart, handleTouchEnd]);
 
   const { frame, width, src, video, url } = config.stage.centerpiece;
+  const title = config.title;
 
-  if (shouldReduce) return <StaticFallback config={config} slot={slot} />;
+  if (useStaticLayout) return <StaticFallback config={config} slot={slot} />;
 
   return (
     <div
@@ -313,10 +395,21 @@ export function CaseStudyScrolly({ config, slot }: { config: CaseStudyConfig; sl
         {/* Right: device frame — no animation, just static inside card */}
         <div className="cs-visual-col">
           <div className="cs-device-card">
-            {frame === 'browser' && <BrowserFrame width={width} src={src} video={video} url={url} />}
-            {frame === 'phone'   && <PhoneFrame   width={width} src={src} video={video} />}
+            {frame === 'browser' && (
+              <BrowserFrame width={width} src={src} video={video} url={url} title={title} />
+            )}
+            {frame === 'phone' && (
+              <PhoneFrame width={width} src={src} video={video} title={title} />
+            )}
             {frame === 'none' && src && (
-              <img src={src} alt="" className="cs-device-standalone-img" loading="lazy" />
+              <OptimizedImage
+                src={src}
+                alt={`${title} product screenshot`}
+                width={400}
+                height={400}
+                className="cs-device-standalone-img"
+                sizes="50vw"
+              />
             )}
           </div>
         </div>

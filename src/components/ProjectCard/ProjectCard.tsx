@@ -1,12 +1,14 @@
 import Link from 'next/link';
 import type { Project, ProjectPreview } from '@/data/projects';
+import { getVideoPoster } from '@/data/assets';
+import { OptimizedImage } from '@/components/OptimizedImage/OptimizedImage';
 import './ProjectCard.css';
 
 interface ProjectCardProps {
   project: Project;
 }
 
-function PreviewPhone({ src }: { src?: string }) {
+function PreviewPhone({ src, title }: { src?: string; title: string }) {
   return (
     <div className="pc-phone">
       <div className="pc-phone__btn pc-phone__btn--action" />
@@ -15,13 +17,24 @@ function PreviewPhone({ src }: { src?: string }) {
       <div className="pc-phone__btn pc-phone__btn--power" />
       <div className="pc-phone__screen">
         <div className="pc-phone__island" />
-        {src && <img src={src} alt="" className="pc-phone__img" loading="lazy" />}
+        {src && (
+          <OptimizedImage
+            src={src}
+            alt={`${title} app preview`}
+            width={260}
+            height={520}
+            className="pc-phone__img"
+            sizes="(max-width: 768px) 50vw, 33vw"
+          />
+        )}
       </div>
     </div>
   );
 }
 
 function PreviewBrowser({ video, url }: { video?: string; url?: string }) {
+  const poster = video ? getVideoPoster(video) : undefined;
+
   return (
     <div className="pc-browser">
       <div className="pc-browser__chrome">
@@ -40,10 +53,12 @@ function PreviewBrowser({ video, url }: { video?: string; url?: string }) {
           <video
             className="pc-browser__video"
             src={video}
+            poster={poster}
             autoPlay
             loop
             muted
             playsInline
+            preload="none"
           />
         )}
       </div>
@@ -55,7 +70,7 @@ function CardVisual({ preview, title }: { preview?: ProjectPreview; title: strin
   if (!preview) return null;
 
   if (preview.frame === 'phone') {
-    return <PreviewPhone src={preview.src} />;
+    return <PreviewPhone src={preview.src} title={title} />;
   }
 
   if (preview.frame === 'browser') {
@@ -65,13 +80,29 @@ function CardVisual({ preview, title }: { preview?: ProjectPreview; title: strin
   if (preview.frame === 'image' && preview.src) {
     return (
       <div className="project-card__image-wrap">
-        <img src={preview.src} alt={title} className="project-card__image" loading="lazy" />
+        <OptimizedImage
+          src={preview.src}
+          alt={title}
+          width={400}
+          height={300}
+          className="project-card__image"
+          sizes="(max-width: 768px) 100vw, 50vw"
+        />
       </div>
     );
   }
 
   if (preview.frame === 'fill' && preview.src) {
-    return <img src={preview.src} alt={title} className="project-card__image--fill" loading="lazy" />;
+    return (
+      <OptimizedImage
+        src={preview.src}
+        alt={title}
+        width={600}
+        height={400}
+        className="project-card__image--fill"
+        sizes="(max-width: 768px) 100vw, 50vw"
+      />
+    );
   }
 
   return null;

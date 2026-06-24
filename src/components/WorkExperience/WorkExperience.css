@@ -33,28 +33,12 @@
   gap: 16px;
 }
 
-.work-experience__logo-wrap {
+.work-experience__logo-placeholder {
   width: 40px;
   height: 40px;
   border-radius: 8px;
-  background: #f4f3f2;
-  flex-shrink: 0;
-  overflow: hidden;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-}
-
-.work-experience__logo-placeholder {
-  width: 100%;
-  height: 100%;
   background: #e8e8e8;
-}
-
-.work-experience__logo-img {
-  width: 100%;
-  height: 100%;
-  object-fit: cover;
+  flex-shrink: 0;
 }
 
 .work-experience__details {

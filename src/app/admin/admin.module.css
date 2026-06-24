@@ -1,0 +1,336 @@
+/* Admin root */
+.root {
+  min-height: 100dvh;
+  background: #0f0f0f;
+  color: #e0e0e0;
+}
+
+/* Header */
+.header {
+  position: sticky;
+  top: 0;
+  z-index: 10;
+  background: #0f0f0f;
+  border-bottom: 1px solid #1e1e1e;
+  padding: 0 32px;
+  height: 52px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.logo {
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: #444;
+}
+
+.logoutBtn {
+  background: none;
+  border: 1px solid #2a2a2a;
+  color: #666;
+  padding: 5px 14px;
+  border-radius: 6px;
+  cursor: pointer;
+  font-size: 12px;
+  font-family: inherit;
+  transition: border-color 0.15s, color 0.15s;
+}
+
+.logoutBtn:hover {
+  border-color: #444;
+  color: #bbb;
+}
+
+/* Page container */
+.container {
+  max-width: 860px;
+  margin: 0 auto;
+  padding: 48px 32px;
+}
+
+.pageTitle {
+  font-size: 20px;
+  font-weight: 600;
+  color: #f0f0f0;
+  margin-bottom: 28px;
+}
+
+/* Project grid (list page) */
+.projectGrid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+  gap: 10px;
+}
+
+.projectCard {
+  background: #161616;
+  border: 1px solid #222;
+  border-radius: 10px;
+  padding: 20px;
+  text-decoration: none;
+  color: inherit;
+  display: block;
+  transition: border-color 0.15s, background 0.15s;
+}
+
+.projectCard:hover {
+  border-color: #3a3a3a;
+  background: #1c1c1c;
+}
+
+.projectCardTitle {
+  font-size: 14px;
+  font-weight: 600;
+  color: #e0e0e0;
+  margin-bottom: 6px;
+}
+
+.projectCardSlug {
+  font-size: 11px;
+  color: #444;
+  font-family: 'SF Mono', 'Menlo', monospace;
+}
+
+/* Back link */
+.backLink {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 13px;
+  color: #555;
+  text-decoration: none;
+  margin-bottom: 24px;
+  transition: color 0.15s;
+}
+
+.backLink:hover {
+  color: #999;
+}
+
+/* Editor sections */
+.section {
+  background: #161616;
+  border: 1px solid #222;
+  border-radius: 12px;
+  padding: 24px;
+  margin-bottom: 16px;
+}
+
+.sectionTitle {
+  font-size: 10px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.12em;
+  color: #444;
+  margin-bottom: 20px;
+}
+
+/* Beat cards */
+.beatCard {
+  border: 1px solid #222;
+  border-radius: 8px;
+  padding: 16px;
+  margin-bottom: 10px;
+  background: #111;
+}
+
+.beatLabel {
+  display: inline-block;
+  font-size: 9px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.12em;
+  color: #666;
+  background: #1e1e1e;
+  border: 1px solid #2a2a2a;
+  padding: 2px 8px;
+  border-radius: 4px;
+  margin-bottom: 12px;
+  font-family: 'SF Mono', 'Menlo', monospace;
+}
+
+/* Fields */
+.fieldGroup {
+  margin-bottom: 12px;
+}
+
+.fieldGroup:last-child {
+  margin-bottom: 0;
+}
+
+.fieldLabel {
+  display: block;
+  font-size: 10px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  color: #555;
+  margin-bottom: 6px;
+}
+
+.input {
+  width: 100%;
+  background: #0a0a0a;
+  border: 1px solid #222;
+  border-radius: 6px;
+  padding: 9px 12px;
+  color: #e0e0e0;
+  font-size: 14px;
+  font-family: inherit;
+  line-height: 1.4;
+  transition: border-color 0.15s;
+  outline: none;
+}
+
+.input:focus {
+  border-color: #5a5a5a;
+}
+
+.input::selection {
+  background: rgba(99, 102, 241, 0.35);
+  color: #fff;
+}
+
+.textarea {
+  width: 100%;
+  background: #0a0a0a;
+  border: 1px solid #222;
+  border-radius: 6px;
+  padding: 9px 12px;
+  color: #e0e0e0;
+  font-size: 14px;
+  font-family: inherit;
+  line-height: 1.6;
+  resize: vertical;
+  min-height: 80px;
+  transition: border-color 0.15s;
+  outline: none;
+}
+
+.textarea:focus {
+  border-color: #5a5a5a;
+}
+
+.textarea::selection {
+  background: rgba(99, 102, 241, 0.35);
+  color: #fff;
+}
+
+/* Media grid */
+.mediaGrid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 14px;
+}
+
+@media (max-width: 600px) {
+  .mediaGrid {
+    grid-template-columns: 1fr;
+  }
+}
+
+/* Save row */
+.saveRow {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-top: 20px;
+}
+
+.saveBtn {
+  background: #4f46e5;
+  color: #fff;
+  border: none;
+  padding: 9px 20px;
+  border-radius: 7px;
+  font-size: 13px;
+  font-weight: 600;
+  font-family: inherit;
+  cursor: pointer;
+  transition: background 0.15s;
+}
+
+.saveBtn:hover:not(:disabled) {
+  background: #4338ca;
+}
+
+.saveBtn:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.statusMsg {
+  font-size: 13px;
+}
+
+.statusSaved {
+  color: #34d399;
+}
+
+.statusError {
+  color: #f87171;
+}
+
+/* Login page */
+.loginRoot {
+  min-height: 100dvh;
+  background: #0f0f0f;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 24px;
+}
+
+.loginCard {
+  background: #161616;
+  border: 1px solid #222;
+  border-radius: 14px;
+  padding: 36px;
+  width: 100%;
+  max-width: 360px;
+}
+
+.loginTitle {
+  font-size: 17px;
+  font-weight: 600;
+  color: #f0f0f0;
+  margin-bottom: 4px;
+}
+
+.loginSubtitle {
+  font-size: 13px;
+  color: #555;
+  margin-bottom: 28px;
+}
+
+.loginError {
+  font-size: 13px;
+  color: #f87171;
+  background: rgba(248, 113, 113, 0.08);
+  border: 1px solid rgba(248, 113, 113, 0.2);
+  border-radius: 6px;
+  padding: 10px 12px;
+  margin-bottom: 16px;
+}
+
+.loginSubmit {
+  width: 100%;
+  background: #4f46e5;
+  color: #fff;
+  border: none;
+  padding: 11px;
+  border-radius: 8px;
+  font-size: 14px;
+  font-weight: 600;
+  font-family: inherit;
+  cursor: pointer;
+  margin-top: 16px;
+  transition: background 0.15s;
+}
+
+.loginSubmit:hover {
+  background: #4338ca;
+}

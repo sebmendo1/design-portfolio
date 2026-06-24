@@ -1,6 +1,6 @@
 .case-study {
   background: #ffffff;
-  min-height: 100vh;
+  min-height: 100dvh;
 }
 
 /* Header row: back link + meta */
@@ -27,6 +27,11 @@
 
 .case-study__back:hover {
   background: #e8e7e6;
+}
+
+.case-study__back:focus-visible {
+  outline: 2px solid #000000;
+  outline-offset: 2px;
 }
 
 .case-study__meta {
@@ -94,6 +99,7 @@
   }
 
   .case-study__title {
+    font-size: clamp(26px, 6.5vw, 48px);
     padding: 32px 20px 12px;
   }
 
@@ -105,4 +111,8 @@
     padding: 0 20px 32px;
   }
 
+  .case-study__company::after,
+  .case-study__year::after {
+    margin-left: 8px;
+  }
 }

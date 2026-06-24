@@ -5,6 +5,11 @@
   outline: none;
 }
 
+.cs-track:focus-visible {
+  outline: 2px solid #000000;
+  outline-offset: 4px;
+}
+
 /* ─── Layout: sticky stage pinned to the viewport while track scrolls ──────── */
 .cs-layout {
   position: sticky;
@@ -66,6 +71,10 @@
 
 .cs-section__slot {
   margin-top: 32px;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 16px;
 }
 
 /* Summary (first) beat rendered at hero scale */
@@ -413,61 +422,90 @@
     0 8px 32px rgba(0, 0, 0, 0.1);
 }
 
-/* ─── Responsive: mobile top/bottom split ────────────────────────────────── */
+/* ─── Responsive: mobile vertical stack ──────────────────────────────────── */
 /*
-  Device frame pinned in the top half, animated text in the bottom half.
-  Framer Motion's scroll pipeline already runs at every width — the only fix
-  is removing the !important overrides that were suppressing its output.
+  On mobile the scroll-jacking handlers are disabled (see CaseStudyScrolly.tsx),
+  so the pinned crossfade never advances — every beat would sit invisible and
+  absolutely stacked on top of the first. Instead we unpin the stage and lay
+  everything out in normal document flow: device on top, then each beat in its
+  own vertical block. The !important rules below override Framer Motion's inline
+  opacity/transform so all beats stay visible. This path also fixes the
+  reduced-motion static fallback, which shares these class names.
 */
 @media (max-width: 900px) {
 
-  /* Keep sticky pinning; switch to 2-row grid (visual top, text bottom) */
-  .cs-layout {
-    position: sticky;
-    top: 0;
-    height: 100dvh;
-    grid-template-columns: 1fr;
-    grid-template-rows: 50dvh 50dvh;
+  /* Unpin the track so the page scrolls naturally instead of being height-locked */
+  .cs-track {
+    min-height: 0;
+  }
+
+  /* Single-column vertical flow (overrides both the grid and the sticky pin) */
+  .cs-layout,
+  .cs-layout--static {
+    position: static;
+    display: flex;
+    flex-direction: column;
+    height: auto;
+    grid-template-columns: none;
+    grid-template-rows: none;
     gap: 0;
-    padding: 0;
-    overflow: hidden;
+    padding: 0 0 64px;
+    overflow: visible;
     align-items: stretch;
   }
 
-  /* Visual goes to top row */
+  /* Device visual sits at the top of the stack, framed with breathing room */
   .cs-visual-col {
     order: -1;
+    padding: 20px 24px 8px;
+    box-sizing: border-box;
   }
 
   .cs-device-card {
-    border-radius: 0;
+    border-radius: 24px;
     padding: 20px 24px;
   }
 
-  /* Phone: height-driven to fit the top 50dvh; percentage border-radius scales automatically */
+  /* Phone: height-driven within the viewport so it never dominates the stack */
   .cs-phone {
-    height: min(calc(50dvh - 72px), 525px);
+    height: min(58vh, 480px);
+    width: auto;
   }
 
-  /* Thinner bezel at mobile — 9px reads as chunky when phone is ~140px wide */
+  /* Thinner bezel at mobile — 9px reads as chunky when the phone is small */
   .cs-phone__screen {
     inset: 5px;
   }
 
-  /* Text column: position:relative required so absolute children resolve against it */
-  .cs-text-col {
-    position: relative;
-    overflow: hidden;
+  /* Text column flows normally so its children stack rather than overlap */
+  .cs-text-col,
+  .cs-text-col--static {
+    position: static;
+    overflow: visible;
   }
 
-  /* Sections: restore absolute stacking, remove the !important overrides */
-  .cs-section {
-    position: absolute;
-    inset: 0;
-    padding: 28px 24px;
-    padding-right: 24px;
+  /*
+    Force every beat into static flow and fully visible. The !important flags
+    override Framer Motion's per-beat inline opacity/transform/pointer-events,
+    which on desktop drive the crossfade but on mobile would hide all but one.
+  */
+  .cs-section,
+  .cs-section--static {
+    position: static !important;
+    inset: auto !important;
+    opacity: 1 !important;
+    transform: none !important;
+    pointer-events: auto !important;
+    padding: 32px 24px;
+    border-top: 1px solid #f0f0f0;
+    will-change: auto;
+  }
+
+  /* First beat leads the stack — no divider above it */
+  .cs-text-col > .cs-section:first-child,
+  .cs-text-col--static > .cs-section:first-child {
     border-top: none;
-    will-change: opacity, transform;
+    padding-top: 24px;
   }
 
   .cs-section__headline {
@@ -478,6 +516,7 @@
 
   .cs-section--hero .cs-section__headline {
     font-size: clamp(22px, 5.5vw, 36px);
+    margin-bottom: 12px;
   }
 
   .cs-section__body {
@@ -488,6 +527,10 @@
 
   .cs-section__label {
     margin-bottom: 12px;
+  }
+
+  .cs-section--hero .cs-section__body {
+    font-size: 16px;
   }
 }
 

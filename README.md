@@ -1,36 +1,70 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# Portfolio 2026
 
-## Getting Started
+Personal portfolio for Sebastian Mendo — Next.js 16, React 19, Vercel Blob CMS.
 
-First, run the development server:
+## Requirements
+
+- Node.js 20+
+- npm 10+
+
+## Environment variables
+
+Set these in Vercel (Production + Preview) and in `.env.local` for local dev:
+
+| Variable | Required | Description |
+|----------|----------|-------------|
+| `ADMIN_SECRET` | Yes (prod) | Strong password for `/admin` CMS login |
+| `BLOB_READ_WRITE_TOKEN` | Yes (prod) | Vercel Blob token for CMS + media |
+| `NEXT_PUBLIC_SITE_URL` | Recommended | Canonical URL, e.g. `https://your-domain.vercel.app` |
+
+If `NEXT_PUBLIC_SITE_URL` is unset, the app falls back to `VERCEL_PROJECT_PRODUCTION_URL` or `VERCEL_URL`.
+
+## Development
 
 ```bash
+npm install
 npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+Open [http://localhost:3000](http://localhost:3000).
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+## Scripts
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+| Command | Description |
+|---------|-------------|
+| `npm run dev` | Start dev server |
+| `npm run build` | Production build |
+| `npm run start` | Serve production build |
+| `npm run lint` | ESLint |
+| `npm run typecheck` | TypeScript check |
 
-## Learn More
+## Media pipeline
 
-To learn more about Next.js, take a look at the following resources:
+- **Static images/logos:** `public/assets/` (committed PNG/WebP/SVG)
+- **Videos/audio:** Vercel Blob CDN — URLs in `src/data/assets.ts`
+- **Upload to Blob:** `export $(grep -v '^#' .env.local | xargs) && npx tsx scripts/upload-assets.ts`
+- **Normalize logos:** `bash scripts/normalize-logos.sh`
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+After transcoding or adding media locally, re-run the upload script and update `src/data/assets.ts` if URLs change.
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+## CMS
 
-## Deploy on Vercel
+- Admin UI: `/admin/login`
+- Protected by `src/proxy.ts` (session cookie) + server-action auth in `src/lib/admin-auth.ts`
+- CMS data stored at `cms/projects.json` on Vercel Blob
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+## Deploy (Vercel)
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+1. Link repo to Vercel
+2. Set env vars above
+3. Deploy — `next build` runs automatically
+4. Upload Chase MP4 to Blob if not yet deployed: `npx tsx scripts/upload-assets.ts`
+5. Optionally set custom domain and update `NEXT_PUBLIC_SITE_URL`
+
+## Launch checklist
+
+- [ ] `npm run build` and `npm run lint` pass
+- [ ] `ADMIN_SECRET` and `BLOB_READ_WRITE_TOKEN` set on Vercel
+- [ ] `/sitemap.xml` and `/robots.txt` reachable
+- [ ] `/admin` redirects to login when unauthenticated
+- [ ] Case studies scroll fully on mobile (≤900px)

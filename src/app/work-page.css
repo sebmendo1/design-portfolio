@@ -1,6 +1,6 @@
 .work-page {
   background: #ffffff;
-  min-height: 100vh;
+  min-height: 100dvh;
 }
 
 .work-page__bio {
@@ -23,6 +23,10 @@
 }
 
 @media (max-width: 768px) {
+  .work-page__bio {
+    padding: 32px 16px 20px;
+  }
+
   .work-page__bio-text {
     font-size: 20px;
   }

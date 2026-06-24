@@ -104,7 +104,7 @@ export const projects: Project[] = [
     company: 'Personal Project',
     role: 'Designer & Developer',
     tags: ['AI', 'Design Systems', 'B2B'],
-    preview: { frame: 'image', src: '/assets/autods-m.svg' },
+    preview: { frame: 'image', src: '/assets/autods-m.webp' },
     slug: 'autods-m-ai',
     styles: { backgroundColor: '#f4f3f2' },
     caseStudy: {
@@ -118,7 +118,7 @@ export const projects: Project[] = [
       slug: 'autods-m-ai',
       title: 'AutoDSM AI',
       trackHeightVh: 600,
-      stage: { centerpiece: { frame: 'none', width: 400, src: '/assets/autods-m.svg' } },
+      stage: { centerpiece: { frame: 'none', width: 400, src: '/assets/autods-m.webp' } },
       beats: [
         { id: 'summary',   headline: 'An AI-powered design system manager that keeps tokens, components, and documentation in sync.', body: 'AutoDSM AI detects when design and code drift apart by scanning Figma and GitHub simultaneously, then resolves conflicts and updates documentation automatically. It lives inside the tools designers and engineers already use: no new dashboards, no new workflows.', range: [0, 0.15] },
         { id: 'challenge', label: 'Challenge', headline: 'Design system drift is invisible until it\'s catastrophic.', body: 'AutoDSM AI is an intelligent design system manager that keeps tokens, components, and documentation in sync across design tools and codebases. It was born from a real frustration: design system drift is invisible until it becomes catastrophic.', range: [0.15, 0.32] },

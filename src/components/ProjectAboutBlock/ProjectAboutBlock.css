@@ -1,0 +1,38 @@
+.project-about {
+  display: inline-flex;
+  align-items: center;
+  gap: 14px;
+  padding: 12px 16px;
+  background: #f4f3f2;
+  border-radius: 12px;
+  max-width: 100%;
+}
+
+.project-about__details {
+  display: flex;
+  flex-direction: column;
+  gap: 1px;
+  min-width: 0;
+}
+
+.project-about__label {
+  font-size: 10px;
+  font-weight: 600;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: #999999;
+  margin: 0;
+}
+
+.project-about__company {
+  font-size: 14px;
+  font-weight: 600;
+  color: #000000;
+  margin: 0;
+}
+
+.project-about__meta {
+  font-size: 13px;
+  color: #666666;
+  margin: 0;
+}

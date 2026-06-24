@@ -1,6 +1,6 @@
 .about-page {
   background: #ffffff;
-  min-height: 100vh;
+  min-height: 100dvh;
 }
 
 .about-page__content {
@@ -24,6 +24,10 @@
 }
 
 @media (max-width: 768px) {
+  .about-page__content {
+    padding: 32px 16px 24px;
+  }
+
   .about-page__heading {
     font-size: 22px;
   }
