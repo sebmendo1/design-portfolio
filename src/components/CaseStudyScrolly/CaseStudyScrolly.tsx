@@ -13,23 +13,8 @@ import {
 import type { CaseStudyConfig, Beat } from './types';
 import { getVideoPoster } from '@/data/assets';
 import { OptimizedImage } from '@/components/OptimizedImage/OptimizedImage';
+import { PhoneStencil } from '@/components/PhoneStencil/PhoneStencil';
 import './CaseStudyScrolly.css';
-
-const MOBILE_MAX_WIDTH = 900;
-
-function useIsMobileLayout(): boolean {
-  const [isMobile, setIsMobile] = useState(false);
-
-  useEffect(() => {
-    const mq = window.matchMedia(`(max-width: ${MOBILE_MAX_WIDTH}px)`);
-    const update = () => setIsMobile(mq.matches);
-    update();
-    mq.addEventListener('change', update);
-    return () => mq.removeEventListener('change', update);
-  }, []);
-
-  return isMobile;
-}
 
 // ─── Device frames (static — no animation) ───────────────────────────────────
 
@@ -39,7 +24,6 @@ function BrowserFrame({
   url,
   title,
 }: {
-  width: number;
   src?: string;
   video?: string;
   url?: string;
@@ -99,54 +83,6 @@ function BrowserFrame({
   );
 }
 
-function PhoneFrame({
-  src,
-  video,
-  title,
-}: {
-  width: number;
-  src?: string;
-  video?: string;
-  title: string;
-}) {
-  const poster = video ? getVideoPoster(video) : undefined;
-
-  return (
-    <div className="cs-phone">
-      <div className="cs-phone__btn cs-phone__btn--action" />
-      <div className="cs-phone__btn cs-phone__btn--vol-up" />
-      <div className="cs-phone__btn cs-phone__btn--vol-down" />
-      <div className="cs-phone__btn cs-phone__btn--power" />
-      <div className="cs-phone__screen">
-        <div className="cs-phone__island" />
-        {video ? (
-          <video
-            className="cs-device-video"
-            src={video}
-            poster={poster}
-            autoPlay
-            loop
-            muted
-            playsInline
-            preload="none"
-          />
-        ) : src ? (
-          <OptimizedImage
-            src={src}
-            alt={`${title} app screenshot`}
-            width={260}
-            height={520}
-            className="cs-device-img"
-            sizes="50vw"
-          />
-        ) : (
-          <div className="cs-phone__screen-fill" />
-        )}
-      </div>
-    </div>
-  );
-}
-
 // ─── Animated text section ────────────────────────────────────────────────────
 
 function TextSection({ beat, smooth, isFirst, slot }: {
@@ -187,6 +123,27 @@ function TextSection({ beat, smooth, isFirst, slot }: {
   );
 }
 
+// ─── Mobile beat progress dots ───────────────────────────────────────────────
+
+function BeatDots({ total, active, onSelect }: {
+  total: number;
+  active: number;
+  onSelect: (i: number) => void;
+}) {
+  const clamped = Math.min(active, total - 1);
+  return (
+    <div className="cs-beat-dots" aria-hidden="true">
+      {Array.from({ length: total }).map((_, i) => (
+        <button
+          key={i}
+          className={`cs-beat-dot${i === clamped ? ' cs-beat-dot--active' : ''}`}
+          onClick={() => onSelect(i)}
+        />
+      ))}
+    </div>
+  );
+}
+
 // ─── Outro: fades in over the last ~12% of the scroll track ─────────────────
 
 function OutroSection({ smooth }: { smooth: MotionValue<number> }) {
@@ -208,7 +165,7 @@ function OutroSection({ smooth }: { smooth: MotionValue<number> }) {
 // ─── Reduced-motion fallback ──────────────────────────────────────────────────
 
 function StaticFallback({ config, slot }: { config: CaseStudyConfig; slot?: ReactNode }) {
-  const { frame, width, src, video, url } = config.stage.centerpiece;
+  const { frame, src, video, url, screenAspectRatio } = config.stage.centerpiece;
   const title = config.title;
 
   return (
@@ -238,10 +195,17 @@ function StaticFallback({ config, slot }: { config: CaseStudyConfig; slot?: Reac
         <div className="cs-sticky">
           <div className="cs-device-card">
             {frame === 'browser' && (
-              <BrowserFrame width={width} src={src} video={video} url={url} title={title} />
+              <BrowserFrame src={src} video={video} url={url} title={title} />
             )}
             {frame === 'phone' && (
-              <PhoneFrame width={width} src={src} video={video} title={title} />
+              <PhoneStencil
+                src={src}
+                video={video}
+                poster={video ? getVideoPoster(video) : undefined}
+                alt={`${title} app screenshot`}
+                screenAspectRatio={screenAspectRatio}
+                variant="case-study"
+              />
             )}
             {frame === 'none' && src && (
               <OptimizedImage
@@ -264,8 +228,6 @@ function StaticFallback({ config, slot }: { config: CaseStudyConfig; slot?: Reac
 
 export function CaseStudyScrolly({ config, slot }: { config: CaseStudyConfig; slot?: ReactNode }) {
   const shouldReduce = useReducedMotion();
-  const isMobile = useIsMobileLayout();
-  const useStaticLayout = shouldReduce || isMobile;
   const containerRef = useRef<HTMLDivElement>(null);
 
   // Beat midpoints — the progress value that places each beat fully in view
@@ -349,26 +311,37 @@ export function CaseStudyScrolly({ config, slot }: { config: CaseStudyConfig; sl
     advanceBeat(swipeUp ? 1 : -1);
   }, [advanceBeat, config.beats.length]);
 
+  const handleTouchMove = useCallback((e: TouchEvent) => {
+    if (touchStartY.current === null) return;
+    const atStart = activeBeatIndexRef.current === 0;
+    const atEnd   = activeBeatIndexRef.current === config.beats.length;
+    const delta = touchStartY.current - e.touches[0].clientY;
+    if ((atStart && delta < 0) || (atEnd && delta > 0)) return;
+    e.preventDefault();
+  }, [config.beats.length]);
+
   useEffect(() => {
-    if (useStaticLayout) return;
+    if (shouldReduce) return;
     const el = containerRef.current;
     if (!el) return;
     el.addEventListener('wheel',      handleWheel,      { passive: false });
     el.addEventListener('keydown',    handleKeyDown);
     el.addEventListener('touchstart', handleTouchStart, { passive: true });
+    el.addEventListener('touchmove',  handleTouchMove,  { passive: false });
     el.addEventListener('touchend',   handleTouchEnd,   { passive: true });
     return () => {
       el.removeEventListener('wheel',      handleWheel);
       el.removeEventListener('keydown',    handleKeyDown);
       el.removeEventListener('touchstart', handleTouchStart);
+      el.removeEventListener('touchmove',  handleTouchMove);
       el.removeEventListener('touchend',   handleTouchEnd);
     };
-  }, [useStaticLayout, handleWheel, handleKeyDown, handleTouchStart, handleTouchEnd]);
+  }, [shouldReduce, handleWheel, handleKeyDown, handleTouchStart, handleTouchMove, handleTouchEnd]);
 
-  const { frame, width, src, video, url } = config.stage.centerpiece;
+  const { frame, src, video, url, screenAspectRatio } = config.stage.centerpiece;
   const title = config.title;
 
-  if (useStaticLayout) return <StaticFallback config={config} slot={slot} />;
+  if (shouldReduce) return <StaticFallback config={config} slot={slot} />;
 
   return (
     <div
@@ -390,16 +363,30 @@ export function CaseStudyScrolly({ config, slot }: { config: CaseStudyConfig; sl
             />
           ))}
           <OutroSection smooth={smooth} />
+          <BeatDots
+            total={config.beats.length}
+            active={activeBeatIndex}
+            onSelect={setActiveBeatIndex}
+          />
         </div>
 
         {/* Right: device frame — no animation, just static inside card */}
         <div className="cs-visual-col">
+          {/* Floating back button — only visible on mobile (hidden via CSS on desktop) */}
+          <Link href="/" className="cs-mobile-back">← Back</Link>
           <div className="cs-device-card">
             {frame === 'browser' && (
-              <BrowserFrame width={width} src={src} video={video} url={url} title={title} />
+              <BrowserFrame src={src} video={video} url={url} title={title} />
             )}
             {frame === 'phone' && (
-              <PhoneFrame width={width} src={src} video={video} title={title} />
+              <PhoneStencil
+                src={src}
+                video={video}
+                poster={video ? getVideoPoster(video) : undefined}
+                alt={`${title} app screenshot`}
+                screenAspectRatio={screenAspectRatio}
+                variant="case-study"
+              />
             )}
             {frame === 'none' && src && (
               <OptimizedImage

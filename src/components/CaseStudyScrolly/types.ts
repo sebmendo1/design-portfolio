@@ -28,6 +28,7 @@ export type CaseStudyCenterpiece = {
   url?: string;
   width: number;
   frame: 'phone' | 'browser' | 'none';
+  screenAspectRatio?: number;
 };
 
 export type CaseStudyConfig = {

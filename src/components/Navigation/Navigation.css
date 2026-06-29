@@ -7,44 +7,58 @@
   background: #ffffff;
 }
 
-.nav__tabs {
+.nav__brand-wrap,
+.nav__contact-wrap {
+  display: flex;
+  align-items: center;
+}
+
+.nav__brand {
   display: inline-flex;
   align-items: center;
   gap: 4px;
   padding: 4px;
   background: rgba(38, 38, 38, 0.08);
   border-radius: 100px;
-}
-
-.nav__tab {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  padding: 8px 12px;
-  border-radius: 1000px;
-  font-size: 16px;
-  font-weight: 500;
-  color: #000000;
   text-decoration: none;
-  position: relative;
+  color: #000000;
+  transition: opacity var(--transition-fast);
 }
 
-.nav__tab-pill {
-  position: absolute;
-  inset: 0;
-  border-radius: inherit;
-  background: #ffffff;
-  z-index: 0;
+.nav__brand:hover {
+  opacity: 0.85;
 }
 
-.nav__tab-text {
-  position: relative;
-  z-index: 1;
-}
-
-.nav__tab:focus-visible {
+.nav__brand:focus-visible {
   outline: 2px solid #000000;
   outline-offset: 2px;
+}
+
+.nav__brand-avatar {
+  position: relative;
+  width: 36px;
+  height: 36px;
+  flex-shrink: 0;
+  overflow: hidden;
+  border-radius: 100px;
+}
+
+.nav__brand-avatar-img {
+  width: 128.57%;
+  height: 134.02%;
+  max-width: none;
+  object-fit: cover;
+  position: absolute;
+  left: -14.29%;
+  top: -19.69%;
+}
+
+.nav__brand-text {
+  padding: 8px;
+  font-size: 16px;
+  font-weight: 500;
+  line-height: normal;
+  white-space: nowrap;
 }
 
 .nav__contact {
@@ -77,9 +91,14 @@
     padding: 0 16px;
   }
 
-  .nav__tab {
+  .nav__brand-text {
     font-size: 14px;
-    padding: 7px 10px;
+    padding: 7px 8px;
+  }
+
+  .nav__brand-avatar {
+    width: 32px;
+    height: 32px;
   }
 
   .nav__contact {
@@ -93,14 +112,19 @@
     gap: 8px;
   }
 
-  .nav__tabs {
+  .nav__brand {
     gap: 2px;
     padding: 3px;
   }
 
-  .nav__tab {
+  .nav__brand-text {
     font-size: 13px;
-    padding: 6px 8px;
+    padding: 6px;
+  }
+
+  .nav__brand-avatar {
+    width: 28px;
+    height: 28px;
   }
 
   .nav__contact {

@@ -2,34 +2,12 @@ import Link from 'next/link';
 import type { Project, ProjectPreview } from '@/data/projects';
 import { getVideoPoster } from '@/data/assets';
 import { OptimizedImage } from '@/components/OptimizedImage/OptimizedImage';
+import { PhoneStencil } from '@/components/PhoneStencil/PhoneStencil';
 import './ProjectCard.css';
 
 interface ProjectCardProps {
   project: Project;
-}
-
-function PreviewPhone({ src, title }: { src?: string; title: string }) {
-  return (
-    <div className="pc-phone">
-      <div className="pc-phone__btn pc-phone__btn--action" />
-      <div className="pc-phone__btn pc-phone__btn--vol-up" />
-      <div className="pc-phone__btn pc-phone__btn--vol-down" />
-      <div className="pc-phone__btn pc-phone__btn--power" />
-      <div className="pc-phone__screen">
-        <div className="pc-phone__island" />
-        {src && (
-          <OptimizedImage
-            src={src}
-            alt={`${title} app preview`}
-            width={260}
-            height={520}
-            className="pc-phone__img"
-            sizes="(max-width: 768px) 50vw, 33vw"
-          />
-        )}
-      </div>
-    </div>
-  );
+  onNavigate?: (href: string) => void;
 }
 
 function PreviewBrowser({ video, url }: { video?: string; url?: string }) {
@@ -70,7 +48,14 @@ function CardVisual({ preview, title }: { preview?: ProjectPreview; title: strin
   if (!preview) return null;
 
   if (preview.frame === 'phone') {
-    return <PreviewPhone src={preview.src} title={title} />;
+    return (
+      <PhoneStencil
+        src={preview.src}
+        alt={`${title} app preview`}
+        screenAspectRatio={preview.screenAspectRatio}
+        variant="card"
+      />
+    );
   }
 
   if (preview.frame === 'browser') {
@@ -108,14 +93,20 @@ function CardVisual({ preview, title }: { preview?: ProjectPreview; title: strin
   return null;
 }
 
-export function ProjectCard({ project }: ProjectCardProps) {
+export function ProjectCard({ project, onNavigate }: ProjectCardProps) {
   const bg = project.styles?.backgroundColor ?? '#f4f3f2';
+  const href = `/work/${project.slug}`;
 
   return (
     <Link
-      href={`/work/${project.slug}`}
+      href={href}
       className="project-card"
       style={{ backgroundColor: bg }}
+      onClick={(event) => {
+        if (!onNavigate) return;
+        event.preventDefault();
+        onNavigate(href);
+      }}
     >
       <div className="project-card__visual">
         <CardVisual preview={project.preview} title={project.title} />

@@ -1,6 +1,7 @@
 import type { CSSProperties } from 'react';
 import type { CaseStudyConfig } from '@/components/CaseStudyScrolly/types';
 import { ASSETS } from '@/data/assets';
+import { PHONE_SCREEN_AR } from '@/components/PhoneStencil/phone-aspect-ratios';
 
 export interface ProjectStyles {
   backgroundColor?: string;
@@ -21,6 +22,7 @@ export interface ProjectPreview {
   src?: string;
   video?: string;
   url?: string;
+  screenAspectRatio?: number;
 }
 
 export interface Project {
@@ -53,7 +55,7 @@ export const projects: Project[] = [
     role: 'Designer & Developer',
     tags: ['AI', 'Mobile', 'Personal'],
     thumbnail: '/assets/memento-ai.png',
-    preview: { frame: 'phone', src: '/assets/memento-ai.png' },
+    preview: { frame: 'phone', src: '/assets/memento-ai.png', screenAspectRatio: PHONE_SCREEN_AR.mementoPreview },
     slug: 'memento-ai',
     styles: { backgroundColor: '#f4f3f2' },
     caseStudy: {
@@ -68,7 +70,14 @@ export const projects: Project[] = [
       slug: 'memento-ai',
       title: 'Memento AI',
       trackHeightVh: 600,
-      stage: { centerpiece: { frame: 'phone', width: 260, video: ASSETS.video.mementoDemo } },
+      stage: {
+        centerpiece: {
+          frame: 'phone',
+          width: 260,
+          video: ASSETS.video.mementoDemo,
+          screenAspectRatio: PHONE_SCREEN_AR.mementoDemo,
+        },
+      },
       beats: [
         { id: 'summary',   headline: 'AI as a slow, therapeutic mirror for self-reflection.', body: 'I designed and engineered Memento, a native iOS journaling app utilizing a localized RAG architecture to provide contextual, fully cited AI reflections grounded exclusively in the user\'s own writing.', range: [0, 0.15] },
         { id: 'tldr',      label: 'TL;DR',     headline: 'Psychological safety is the foundational requirement of any journal.', body: 'The product vision was to shift AI from a high-speed productivity utility into a slow, therapeutic mirror. I owned the entire stack, from UI design to the data embedding pipeline, building an experience that feels purely meditative rather than transactional. I rejected push notifications and streaks in favor of a minimalist loop where writing naturally begets more writing.', range: [0.15, 0.32] },
@@ -155,7 +164,7 @@ export const projects: Project[] = [
     role: 'Senior Product Designer',
     tags: ['Agentic AI', 'Voice', 'RCS', 'Banking'],
     thumbnail: '/assets/casey-ai.png',
-    preview: { frame: 'phone', src: '/assets/casey-ai.png' },
+    preview: { frame: 'phone', src: '/assets/casey-ai.png', screenAspectRatio: PHONE_SCREEN_AR.caseyPreview },
     slug: 'casey-ai',
     styles: { backgroundColor: '#f4f3f2' },
     caseStudy: {
@@ -169,7 +178,14 @@ export const projects: Project[] = [
       slug: 'casey-ai',
       title: 'Casey AI',
       trackHeightVh: 600,
-      stage: { centerpiece: { frame: 'phone', width: 260, video: ASSETS.video.caseyRcs } },
+      stage: {
+        centerpiece: {
+          frame: 'phone',
+          width: 260,
+          video: ASSETS.video.caseyRcs,
+          screenAspectRatio: PHONE_SCREEN_AR.caseyRcs,
+        },
+      },
       beats: [
         { id: 'summary',   headline: 'A voice and RCS-powered AI banking assistant for conversational money management.', body: 'Casey AI lets Chase customers manage their finances through natural conversation: checking balances, moving money, and asking questions the way they would with a knowledgeable person. The design challenge was making AI-driven financial tasks feel as safe as they are fast.', range: [0, 0.15] },
         { id: 'challenge', label: 'Challenge', headline: 'Financial AI that feels safe, not just smart.', body: 'Casey AI is a voice and RCS-powered banking assistant that lets Chase customers manage their money through natural conversation. The design challenge was making AI-driven financial tasks feel safe, trustworthy, and effortlessly simple, without sacrificing the precision financial transactions require.', range: [0.15, 0.32] },
@@ -206,7 +222,7 @@ export const projects: Project[] = [
     role: 'Senior Product Designer',
     tags: ['Mobile', 'Banking', 'Home Ownership'],
     thumbnail: '/assets/chase-myhome.png',
-    preview: { frame: 'phone', src: '/assets/chase-myhome.png' },
+    preview: { frame: 'phone', src: '/assets/chase-myhome.png', screenAspectRatio: PHONE_SCREEN_AR.chasePreview },
     slug: 'chase-myhome',
     styles: { backgroundColor: '#f4f3f2' },
     caseStudy: {
@@ -220,7 +236,14 @@ export const projects: Project[] = [
       slug: 'chase-myhome',
       title: 'Chase MyHome App',
       trackHeightVh: 600,
-      stage: { centerpiece: { frame: 'phone', width: 260, video: ASSETS.video.chaseMyHomeDemo } },
+      stage: {
+        centerpiece: {
+          frame: 'phone',
+          width: 260,
+          video: ASSETS.video.chaseMyHomeDemo,
+          screenAspectRatio: PHONE_SCREEN_AR.chaseMyHomeDemo,
+        },
+      },
       beats: [
         { id: 'summary',   headline: 'A unified homeownership platform connecting mortgage, equity, and market insights.', body: "Chase MyHome gives customers a complete, active view of their home as a financial asset, tracking value, equity, and payment progress in one place. For most Americans, their home is their largest investment, yet they've had almost no tools to manage it.", range: [0, 0.15] },
         { id: 'challenge', label: 'Challenge', headline: 'Your largest asset, with almost no tools to manage it.', body: 'Chase MyHome is a unified homeownership platform that connects mortgage, equity, and market insights in a single app experience. For most Americans, their home is their largest financial asset, but they have almost no tools to manage it actively. MyHome changes that.', range: [0.15, 0.32] },
@@ -257,7 +280,7 @@ export const projects: Project[] = [
     role: 'Senior Product Designer',
     tags: ['Agentic AI', 'Banking', 'Mortgage'],
     thumbnail: '/assets/agentic-home-lending.png',
-    preview: { frame: 'phone', src: '/assets/agentic-home-lending.png' },
+    preview: { frame: 'phone', src: '/assets/agentic-home-lending.png', screenAspectRatio: PHONE_SCREEN_AR.agenticPreview },
     slug: 'agentic-home-lending',
     styles: { backgroundColor: '#f4f3f2' },
     caseStudy: {
@@ -271,7 +294,14 @@ export const projects: Project[] = [
       slug: 'agentic-home-lending',
       title: 'Agentic Home Lending',
       trackHeightVh: 600,
-      stage: { centerpiece: { frame: 'phone', width: 260, src: '/assets/agentic-home-lending.png' } },
+      stage: {
+        centerpiece: {
+          frame: 'phone',
+          width: 260,
+          src: '/assets/agentic-home-lending.png',
+          screenAspectRatio: PHONE_SCREEN_AR.agenticPreview,
+        },
+      },
       beats: [
         { id: 'summary',   headline: 'AI-guided mortgage origination that turns a months-long process into days.', body: "Agentic Home Lending redesigns the JPMorgan Chase mortgage experience using AI that proactively works on the applicant's behalf, gathering documents, flagging issues early, and surfacing alternatives before problems arise. The goal was to make a 45-day process feel guided, not grueling.", range: [0, 0.15] },
         { id: 'challenge', label: 'Challenge', headline: '45 days of back-and-forth document exchanges.', body: 'Agentic Home Lending redesigns the JPMorgan Chase mortgage origination experience using agentic AI, turning a process that previously took 45 days of back-and-forth document exchanges into a guided, intelligent flow that adapts to each applicant\'s unique situation.', range: [0.15, 0.32] },

@@ -23,6 +23,7 @@ interface OptimizedImageProps {
   sizes?: string;
   priority?: boolean;
   fill?: boolean;
+  onLoadingComplete?: (img: HTMLImageElement) => void;
 }
 
 export function OptimizedImage({
@@ -34,6 +35,7 @@ export function OptimizedImage({
   sizes,
   priority,
   fill,
+  onLoadingComplete,
 }: OptimizedImageProps) {
   const cleanSrc = stripQuery(src);
 
@@ -47,6 +49,7 @@ export function OptimizedImage({
         sizes={sizes ?? '100vw'}
         priority={priority}
         unoptimized={!isOptimizableRemote(cleanSrc) && cleanSrc.endsWith('.svg')}
+        onLoadingComplete={onLoadingComplete}
       />
     );
   }
@@ -61,6 +64,7 @@ export function OptimizedImage({
       sizes={sizes}
       priority={priority}
       unoptimized={cleanSrc.endsWith('.svg')}
+      onLoadingComplete={onLoadingComplete}
     />
   );
 }

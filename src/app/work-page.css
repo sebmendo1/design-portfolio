@@ -3,6 +3,10 @@
   min-height: 100dvh;
 }
 
+.work-page__content {
+  display: block;
+}
+
 .work-page__bio {
   padding: 64px 24px 32px;
 }
@@ -13,6 +17,29 @@
   color: #000000;
   max-width: 904px;
   line-height: normal;
+}
+
+.work-page__bio-cursor {
+  display: inline-block;
+  margin-left: 1px;
+  font-weight: 400;
+  animation: work-page-bio-cursor-blink 0.9s step-end infinite;
+}
+
+@keyframes work-page-bio-cursor-blink {
+  0%,
+  100% {
+    opacity: 1;
+  }
+
+  50% {
+    opacity: 0;
+  }
+}
+
+.work-page__card-reveal {
+  display: block;
+  min-height: 0;
 }
 
 .work-page__grid {

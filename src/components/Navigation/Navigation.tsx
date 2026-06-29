@@ -1,50 +1,55 @@
 'use client';
 
 import Link from 'next/link';
-import { usePathname } from 'next/navigation';
-import { motion } from 'framer-motion';
+import Image from 'next/image';
+import { motion, useReducedMotion } from 'framer-motion';
+import { DISSOLVE_DURATION, DISSOLVE_EASE } from '@/components/DissolveIn/DissolveIn';
 import './Navigation.css';
 
 export function Navigation() {
-  const pathname = usePathname();
-  const workActive = pathname === '/' || pathname.startsWith('/work');
-  const aboutActive = pathname === '/about';
+  const shouldReduce = useReducedMotion();
 
   return (
     <nav className="nav" aria-label="Primary">
-      <div className="nav__tabs">
-        <Link
-          href="/"
-          className={`nav__tab${workActive ? ' nav__tab--active' : ''}`}
-          aria-current={workActive ? 'page' : undefined}
-        >
-          {workActive && (
-            <motion.span
-              layoutId="nav-pill"
-              className="nav__tab-pill"
-              transition={{ type: 'spring', stiffness: 400, damping: 30 }}
+      <motion.div
+        className="nav__brand-wrap"
+        initial={shouldReduce ? false : { opacity: 0, y: -10 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={
+          shouldReduce
+            ? { duration: 0 }
+            : { duration: DISSOLVE_DURATION, delay: 0.08, ease: DISSOLVE_EASE }
+        }
+      >
+        <Link href="/" className="nav__brand" aria-label="SebMendoDesign home">
+          <span className="nav__brand-avatar">
+            <Image
+              src="/assets/nav-avatar.png"
+              alt=""
+              width={36}
+              height={36}
+              className="nav__brand-avatar-img"
+              priority
             />
-          )}
-          <span className="nav__tab-text">Work</span>
+          </span>
+          <span className="nav__brand-text">SebMendoDesign</span>
         </Link>
-        <Link
-          href="/about"
-          className={`nav__tab${aboutActive ? ' nav__tab--active' : ''}`}
-          aria-current={aboutActive ? 'page' : undefined}
-        >
-          {aboutActive && (
-            <motion.span
-              layoutId="nav-pill"
-              className="nav__tab-pill"
-              transition={{ type: 'spring', stiffness: 400, damping: 30 }}
-            />
-          )}
-          <span className="nav__tab-text">About</span>
-        </Link>
-      </div>
-      <a href="mailto:contact@sebastianmendo.design" className="nav__contact">
-        Contact me
-      </a>
+      </motion.div>
+
+      <motion.div
+        className="nav__contact-wrap"
+        initial={shouldReduce ? false : { opacity: 0, y: -10 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={
+          shouldReduce
+            ? { duration: 0 }
+            : { duration: DISSOLVE_DURATION, delay: 0.16, ease: DISSOLVE_EASE }
+        }
+      >
+        <a href="mailto:contact@sebastianmendo.design" className="nav__contact">
+          Contact me
+        </a>
+      </motion.div>
     </nav>
   );
 }

@@ -1,9 +1,6 @@
 import { notFound } from 'next/navigation';
-import Link from 'next/link';
 import type { Metadata } from 'next';
-import { CaseStudyScrolly } from '@/components/CaseStudyScrolly/CaseStudyScrolly';
-import { CaseyActions } from '@/components/CaseyActions/CaseyActions';
-import { ProjectAboutBlock } from '@/components/ProjectAboutBlock/ProjectAboutBlock';
+import { CaseStudyPageContent } from '@/components/CaseStudyPageContent/CaseStudyPageContent';
 import { projects } from '@/data/projects';
 import { getMergedProject } from '@/lib/cms-data';
 import './case-study.css';
@@ -44,27 +41,5 @@ export default async function CaseStudyPage({ params }: Props) {
   const project = await getMergedProject(slug);
   if (!project) notFound();
 
-  return (
-    <div className="case-study">
-      <div className="case-study__header">
-        <Link href="/" className="case-study__back">
-          ← Go back
-        </Link>
-      </div>
-
-      <main id="main-content">
-        {project.scrollyConfig && (
-          <CaseStudyScrolly
-            config={project.scrollyConfig}
-            slot={
-              <>
-                <ProjectAboutBlock project={project} />
-                {project.slug === 'casey-ai' && <CaseyActions />}
-              </>
-            }
-          />
-        )}
-      </main>
-    </div>
-  );
+  return <CaseStudyPageContent project={project} />;
 }

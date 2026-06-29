@@ -90,6 +90,13 @@
   padding: 4px 12px;
 }
 
+/* Hide the native header on mobile — the scrolly provides a floating back button */
+@media (max-width: 900px) {
+  .case-study__header {
+    display: none;
+  }
+}
+
 @media (max-width: 768px) {
   .case-study__header {
     padding: 16px 20px 0;

@@ -37,6 +37,21 @@ body {
   min-height: 100dvh;
 }
 
+.page-loading,
+.case-loading {
+  min-height: 100dvh;
+  background: #ffffff;
+}
+
+.case-study__header-reveal,
+.case-study__main-reveal {
+  display: block;
+}
+
+.case-study__content {
+  display: block;
+}
+
 .skip-link {
   position: absolute;
   top: -100%;
