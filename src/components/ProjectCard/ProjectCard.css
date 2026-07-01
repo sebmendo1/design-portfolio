@@ -2,31 +2,13 @@
   --card-inset: 32px;
   display: block;
   width: 100%;
-  aspect-ratio: var(--card-aspect, 10 / 13);
-  min-height: 280px;
+  height: 564px;
   min-width: 1px;
   background: #f4f3f2;
   border-radius: 16px;
   overflow: hidden;
   position: relative;
   text-decoration: none;
-}
-
-/* Height scales with preview frame proportions */
-.project-card--phone {
-  --card-aspect: 10 / 13;
-}
-
-.project-card--browser {
-  --card-aspect: 16 / 11;
-}
-
-.project-card--image {
-  --card-aspect: 5 / 4;
-}
-
-.project-card--fill {
-  --card-aspect: 3 / 2;
 }
 
 .project-card:focus-visible {
@@ -199,8 +181,25 @@
 
 @media (max-width: 768px) {
   .project-card {
-    --card-inset: 32px;
-    min-height: 240px;
+    height: auto;
+    aspect-ratio: var(--card-aspect, 10 / 13);
+    min-height: 320px;
+  }
+
+  .project-card--phone {
+    --card-aspect: 10 / 13;
+  }
+
+  .project-card--browser {
+    --card-aspect: 16 / 11;
+  }
+
+  .project-card--image {
+    --card-aspect: 5 / 4;
+  }
+
+  .project-card--fill {
+    --card-aspect: 3 / 2;
   }
 }
 
