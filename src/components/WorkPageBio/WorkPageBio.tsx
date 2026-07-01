@@ -3,7 +3,16 @@
 import { useEffect, useState } from 'react';
 import { useReducedMotion } from 'framer-motion';
 
-const CHAR_MS = 15;
+const CHAR_MIN_MS = 6;
+const CHAR_MAX_MS = 52;
+
+/** Ease-out delay: fast at start, slower toward the end. */
+function getCharDelay(revealedCount: number, total: number): number {
+  if (total <= 1) return CHAR_MIN_MS;
+  const progress = revealedCount / (total - 1);
+  const eased = 1 - (1 - progress) ** 2;
+  return CHAR_MIN_MS + (CHAR_MAX_MS - CHAR_MIN_MS) * eased;
+}
 
 type WorkPageBioProps = {
   text: string;
@@ -24,13 +33,13 @@ export function WorkPageBio({ text, onComplete }: WorkPageBioProps) {
       count += 1;
       setTypedCount(count);
       if (count < text.length) {
-        timeoutId = setTimeout(tick, CHAR_MS);
+        timeoutId = setTimeout(tick, getCharDelay(count, text.length));
       } else {
         onComplete?.();
       }
     };
 
-    timeoutId = setTimeout(tick, CHAR_MS);
+    timeoutId = setTimeout(tick, getCharDelay(0, text.length));
 
     return () => clearTimeout(timeoutId);
   }, [shouldReduce, text, onComplete]);

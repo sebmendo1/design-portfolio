@@ -96,11 +96,12 @@ function CardVisual({ preview, title }: { preview?: ProjectPreview; title: strin
 export function ProjectCard({ project, onNavigate }: ProjectCardProps) {
   const bg = project.styles?.backgroundColor ?? '#f4f3f2';
   const href = `/work/${project.slug}`;
+  const frame = project.preview?.frame ?? 'phone';
 
   return (
     <Link
       href={href}
-      className="project-card"
+      className={`project-card project-card--${frame}`}
       style={{ backgroundColor: bg }}
       onClick={(event) => {
         if (!onNavigate) return;

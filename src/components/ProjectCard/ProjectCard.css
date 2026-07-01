@@ -1,6 +1,9 @@
 .project-card {
+  --card-inset: 32px;
   display: block;
-  height: 564px;
+  width: 100%;
+  aspect-ratio: var(--card-aspect, 10 / 13);
+  min-height: 280px;
   min-width: 1px;
   background: #f4f3f2;
   border-radius: 16px;
@@ -9,17 +12,34 @@
   text-decoration: none;
 }
 
+/* Height scales with preview frame proportions */
+.project-card--phone {
+  --card-aspect: 10 / 13;
+}
+
+.project-card--browser {
+  --card-aspect: 16 / 11;
+}
+
+.project-card--image {
+  --card-aspect: 5 / 4;
+}
+
+.project-card--fill {
+  --card-aspect: 3 / 2;
+}
+
 .project-card:focus-visible {
   outline: 2px solid #000000;
   outline-offset: 2px;
 }
 
-/* Visual area — fills card, centers phone or image */
+/* Visual area — inset frame with min spacing from card edges */
 .project-card__visual {
   container-type: size;
   container-name: card-visual;
   position: absolute;
-  inset: 0;
+  inset: var(--card-inset);
   display: flex;
   align-items: center;
   justify-content: center;
@@ -30,7 +50,7 @@
   filter: blur(10px);
 }
 
-/* Full-bleed image — no shadow, no padding, no stencil frame */
+/* Full-bleed image fills the inset visual area */
 .project-card__image--fill {
   position: absolute;
   inset: 0;
@@ -38,11 +58,9 @@
   height: 100%;
   object-fit: cover;
   display: block;
-  border-radius: 16px;
+  border-radius: 8px;
 }
 
-/* Wrapper owns the 50% width; img fills it at 100% so SVG attribute
-   dimensions can never override the constraint. */
 .project-card__image-wrap {
   width: 80%;
   flex-shrink: 0;
@@ -66,11 +84,12 @@
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  padding: 24px;
+  padding: var(--card-inset);
   text-align: center;
   opacity: 0;
   transition: opacity 0.25s ease;
   z-index: 2;
+  box-sizing: border-box;
 }
 
 .project-card:hover .project-card__meta {
@@ -93,8 +112,6 @@
 }
 
 /* ─── Card-scale browser mockup ─────────────────────────────────────────── */
-/* Width 82% of card gives a browser that matches phone visual weight.
-   Screen aspect-ratio 16:10 gives enough height without cropping content. */
 .pc-browser {
   width: 82%;
   display: flex;
@@ -182,7 +199,8 @@
 
 @media (max-width: 768px) {
   .project-card {
-    height: 320px;
+    --card-inset: 32px;
+    min-height: 240px;
   }
 }
 
@@ -195,7 +213,7 @@
     opacity: 1;
     background: linear-gradient(to top, rgba(255, 255, 255, 0.95) 0%, transparent 100%);
     justify-content: flex-end;
-    padding: 16px 20px 20px;
+    padding: var(--card-inset);
     text-align: left;
     align-items: flex-start;
   }
