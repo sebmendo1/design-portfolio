@@ -1,13 +1,5 @@
 @import '../design-system/tokens.css';
 
-@font-face {
-  font-family: 'GT America Trial';
-  src: local('GT America Trial Medium'), local('GTAmericaTrial-Md');
-  font-weight: 500;
-  font-style: normal;
-  font-display: swap;
-}
-
 *,
 *::before,
 *::after {
@@ -93,6 +85,15 @@ h4,
 h5,
 h6 {
   overflow-wrap: break-word;
+}
+
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
+  font-weight: 600;
 }
 
 a {
