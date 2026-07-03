@@ -110,7 +110,9 @@ export function ProjectCard({ project, onNavigate }: ProjectCardProps) {
       }}
     >
       <div className="project-card__visual">
-        <CardVisual preview={project.preview} title={project.title} />
+        <div className="project-card__visual-inner">
+          <CardVisual preview={project.preview} title={project.title} />
+        </div>
       </div>
       <div className="project-card__meta">
         <span className="project-card__title">{project.title}</span>
