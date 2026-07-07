@@ -115,6 +115,10 @@
   border-top: 1px solid #f0f0f0;
 }
 
+.cs-section--outro {
+  z-index: 1;
+}
+
 /* ─── Right: device column — fills column height, no animation ──────────────── */
 .cs-visual-col {
   display: flex;

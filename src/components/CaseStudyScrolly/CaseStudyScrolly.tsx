@@ -85,26 +85,40 @@ function BrowserFrame({
 
 // ─── Animated text section ────────────────────────────────────────────────────
 
-function TextSection({ beat, smooth, isFirst, slot }: {
+function TextSection({ beat, smooth, isFirst, isLast, outroBlend, slot }: {
   beat: Beat;
   smooth: MotionValue<number>;
   isFirst: boolean;
+  isLast: boolean;
+  outroBlend: MotionValue<number>;
   slot?: ReactNode;
 }) {
   const [a, b] = beat.range;
   const fadeIn  = Math.min(a + 0.07, b);
   const fadeOut = Math.max(b - 0.07, fadeIn);
 
-  // First beat is visible from progress 0; all others fade in from their range start
-  const opacity = useTransform(
+  // Last beat holds at full opacity through its range; exits only via outro crossfade
+  const rangeOpacity = useTransform(
     smooth,
-    [a,             fadeIn, fadeOut, b],
-    [isFirst ? 1 : 0, 1,    1,      0],
+    isLast
+      ? [a, fadeIn, b]
+      : [a, fadeIn, fadeOut, b],
+    isLast
+      ? [isFirst ? 1 : 0, 1, 1]
+      : [isFirst ? 1 : 0, 1, 1, 0],
+  );
+  const opacity = useTransform(
+    [rangeOpacity, outroBlend],
+    ([range, blend]: number[]) => (isLast ? range * (1 - blend) : range),
   );
   const y = useTransform(
     smooth,
-    [a,              fadeIn, fadeOut, b],
-    [isFirst ? 0 : 20, 0,    0,     -20],
+    isLast
+      ? [a, fadeIn, b]
+      : [a, fadeIn, fadeOut, b],
+    isLast
+      ? [isFirst ? 0 : 20, 0, 0]
+      : [isFirst ? 0 : 20, 0, 0, -20],
   );
   // Sections at opacity 0 are invisible but still block pointer events without this.
   const pointerEvents = useTransform(opacity, (o: number) => (o > 0.05 ? 'auto' : 'none'));
@@ -144,11 +158,11 @@ function BeatDots({ total, active, onSelect }: {
   );
 }
 
-// ─── Outro: fades in over the last ~12% of the scroll track ─────────────────
+// ─── Outro: crossfades in as smooth progresses from last beat to 1.0 ────────
 
-function OutroSection({ smooth }: { smooth: MotionValue<number> }) {
-  const opacity       = useTransform(smooth, [0.88, 0.96], [0, 1]);
-  const y             = useTransform(smooth, [0.88, 0.96], [16, 0]);
+function OutroSection({ outroBlend }: { outroBlend: MotionValue<number> }) {
+  const opacity       = outroBlend;
+  const y             = useTransform(outroBlend, [0, 1], [16, 0]);
   const pointerEvents = useTransform(opacity, (o: number) => (o > 0.05 ? 'auto' : 'none'));
 
   return (
@@ -241,6 +255,8 @@ export function CaseStudyScrolly({ config, slot }: { config: CaseStudyConfig; sl
 
   const targetProgress = useMotionValue(0);
   const smooth = useSpring(targetProgress, { stiffness: 100, damping: 30, restDelta: 0.001 });
+  const lastBeatTarget = beatTargets[config.beats.length - 1];
+  const outroBlend = useTransform(smooth, [lastBeatTarget, 1], [0, 1]);
 
   // Keep ref in sync with state so event handlers always read the current index
   useEffect(() => { activeBeatIndexRef.current = activeBeatIndex; }, [activeBeatIndex]);
@@ -359,10 +375,12 @@ export function CaseStudyScrolly({ config, slot }: { config: CaseStudyConfig; sl
               beat={beat}
               smooth={smooth}
               isFirst={i === 0}
+              isLast={i === config.beats.length - 1}
+              outroBlend={outroBlend}
               slot={slot}
             />
           ))}
-          <OutroSection smooth={smooth} />
+          <OutroSection outroBlend={outroBlend} />
           <BeatDots
             total={config.beats.length}
             active={activeBeatIndex}
