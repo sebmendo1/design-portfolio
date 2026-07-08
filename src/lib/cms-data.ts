@@ -1,5 +1,5 @@
 import { put, list } from '@vercel/blob';
-import { projects, type Project } from '@/data/projects';
+import { projects, sortProjectsByFeaturedOrder, type Project } from '@/data/projects';
 
 export type CmsBeat = {
   id: string;
@@ -102,7 +102,9 @@ function mergeProject(base: Project, cms: CmsProjectData | undefined): Project {
 
 export async function getMergedProjects(): Promise<Project[]> {
   const data = await getProjectsData();
-  return projects.map((p) => mergeProject(p, data[p.slug]));
+  return sortProjectsByFeaturedOrder(
+    projects.map((p) => mergeProject(p, data[p.slug])),
+  );
 }
 
 export async function getMergedProject(slug: string): Promise<Project | undefined> {

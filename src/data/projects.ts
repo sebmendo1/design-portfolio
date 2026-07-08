@@ -379,3 +379,24 @@ export const projects: Project[] = [
     },
   },
 ];
+
+/** Featured card order: Chase projects first, then Memento, then the rest. */
+export const PROJECT_ORDER = [
+  'casey-ai',
+  'chase-myhome',
+  'agentic-home-lending',
+  'memento-ai',
+  'autods-m-ai',
+  'salesforce-help',
+] as const;
+
+export function sortProjectsByFeaturedOrder(items: Project[]): Project[] {
+  const rank = new Map<string, number>(
+    PROJECT_ORDER.map((slug, index) => [slug, index]),
+  );
+  return [...items].sort(
+    (a, b) =>
+      (rank.get(a.slug) ?? PROJECT_ORDER.length) -
+      (rank.get(b.slug) ?? PROJECT_ORDER.length),
+  );
+}

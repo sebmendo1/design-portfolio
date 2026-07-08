@@ -65,6 +65,24 @@ After transcoding or adding media locally, re-run the upload script and update `
 
 - [ ] `npm run build` and `npm run lint` pass
 - [ ] `ADMIN_SECRET` and `BLOB_READ_WRITE_TOKEN` set on Vercel
+- [ ] `NEXT_PUBLIC_SITE_URL` matches the live domain (canonicals + absolute URLs correct)
 - [ ] `/sitemap.xml` and `/robots.txt` reachable
+- [ ] `/llms.txt`, `/llms-full.txt`, `/content.json` return 200 with correct `Content-Type` in production
+- [ ] Google [Rich Results Test](https://search.google.com/test/rich-results) passes for home + one case study
+- [ ] JSON-LD validates at [validator.schema.org](https://validator.schema.org/)
+- [ ] View-source of a case study shows full beat text (SSR sr-only article present)
+- [ ] `robots.txt` shows intended AI-bot policy
 - [ ] `/admin` redirects to login when unauthenticated
 - [ ] Case studies scroll fully on mobile (≤900px)
+
+### Post-deploy smoke tests
+
+Replace `DOMAIN` with your production URL:
+
+```bash
+curl -s https://DOMAIN/llms.txt | head -30
+curl -s https://DOMAIN/llms-full.txt | wc -l
+curl -sI https://DOMAIN/content.json | grep -i content-type
+curl -s https://DOMAIN/content.json | jq '.projects | length'
+curl -s https://DOMAIN/robots.txt
+```

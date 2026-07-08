@@ -1,8 +1,14 @@
 import { notFound } from 'next/navigation';
 import type { Metadata } from 'next';
 import { CaseStudyPageContent } from '@/components/CaseStudyPageContent/CaseStudyPageContent';
+import { CaseStudySrArticle } from '@/components/CaseStudySrArticle/CaseStudySrArticle';
+import { StructuredData } from '@/components/StructuredData/StructuredData';
 import { projects } from '@/data/projects';
 import { getMergedProject } from '@/lib/cms-data';
+import { exportMergedProject } from '@/lib/content-export';
+import { buildCreativeWorkGraph } from '@/lib/json-ld';
+import { canonicalPath } from '@/lib/metadata';
+import { getSiteUrl } from '@/lib/site';
 import './case-study.css';
 
 export const revalidate = 60;
@@ -21,9 +27,13 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   if (!project) return {};
   const title = project.title;
   const description = project.description ?? project.tagline;
+  const siteUrl = getSiteUrl();
   return {
     title,
     description,
+    ...canonicalPath(`/work/${slug}`),
+    authors: [{ name: 'Sebastian Mendo', url: siteUrl }],
+    keywords: project.tags,
     openGraph: {
       title: `${title} — Sebastian Mendo`,
       description,
@@ -41,5 +51,13 @@ export default async function CaseStudyPage({ params }: Props) {
   const project = await getMergedProject(slug);
   if (!project) notFound();
 
-  return <CaseStudyPageContent project={project} />;
+  const exported = exportMergedProject(project);
+
+  return (
+    <>
+      <StructuredData data={buildCreativeWorkGraph(exported)} />
+      <CaseStudySrArticle project={exported} />
+      <CaseStudyPageContent project={project} />
+    </>
+  );
 }

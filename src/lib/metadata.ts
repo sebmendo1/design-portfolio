@@ -1,6 +1,15 @@
 import type { Metadata } from 'next';
 import { getSiteUrl, SITE_DESCRIPTION, SITE_NAME, SITE_TITLE } from '@/lib/site';
 
+export function canonicalPath(path: string): Pick<Metadata, 'alternates'> {
+  const normalized = path.startsWith('/') ? path : `/${path}`;
+  return {
+    alternates: {
+      canonical: normalized,
+    },
+  };
+}
+
 export function createMetadata(overrides: Metadata = {}): Metadata {
   const siteUrl = getSiteUrl();
 
