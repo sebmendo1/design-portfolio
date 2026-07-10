@@ -1,68 +1,64 @@
 'use client';
 
-import { useEffect, useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import { useReducedMotion } from 'framer-motion';
 
-const CHAR_MIN_MS = 6;
-const CHAR_MAX_MS = 52;
-
-/** Ease-out delay: fast at start, slower toward the end. */
-function getCharDelay(revealedCount: number, total: number): number {
-  if (total <= 1) return CHAR_MIN_MS;
-  const progress = revealedCount / (total - 1);
-  const eased = 1 - (1 - progress) ** 2;
-  return CHAR_MIN_MS + (CHAR_MAX_MS - CHAR_MIN_MS) * eased;
-}
+/** Steady cadence between word reveals, matching ChatGPT's streaming feel. */
+const WORD_INTERVAL_MS = 55;
 
 type WorkPageBioProps = {
   text: string;
   onComplete?: () => void;
 };
 
+/** Split into word + trailing-whitespace units so words animate but spacing stays intact. */
+function splitIntoUnits(text: string): { word: string; space: string }[] {
+  const units: { word: string; space: string }[] = [];
+  const regex = /(\S+)(\s*)/g;
+  let match: RegExpExecArray | null;
+  while ((match = regex.exec(text)) !== null) {
+    units.push({ word: match[1], space: match[2] });
+  }
+  return units;
+}
+
 export function WorkPageBio({ text, onComplete }: WorkPageBioProps) {
   const shouldReduce = useReducedMotion();
-  const [typedCount, setTypedCount] = useState(0);
-
-  useEffect(() => {
-    if (shouldReduce) return;
-
-    let count = 0;
-    let timeoutId: ReturnType<typeof setTimeout>;
-
-    const tick = () => {
-      count += 1;
-      setTypedCount(count);
-      if (count < text.length) {
-        timeoutId = setTimeout(tick, getCharDelay(count, text.length));
-      } else {
-        onComplete?.();
-      }
-    };
-
-    timeoutId = setTimeout(tick, getCharDelay(0, text.length));
-
-    return () => clearTimeout(timeoutId);
-  }, [shouldReduce, text, onComplete]);
+  const units = useMemo(() => splitIntoUnits(text), [text]);
+  const [revealedCount, setRevealedCount] = useState(0);
 
   useEffect(() => {
     if (shouldReduce) {
       onComplete?.();
+      return;
     }
-  }, [shouldReduce, onComplete]);
 
-  const visibleCount = shouldReduce ? text.length : typedCount;
-  const isComplete = visibleCount >= text.length;
-  const visibleText = text.slice(0, visibleCount);
+    let count = 0;
+    const intervalId = setInterval(() => {
+      count += 1;
+      setRevealedCount(count);
+      if (count >= units.length) {
+        clearInterval(intervalId);
+        onComplete?.();
+      }
+    }, WORD_INTERVAL_MS);
+
+    return () => clearInterval(intervalId);
+  }, [shouldReduce, units, onComplete]);
+
+  const visibleCount = shouldReduce ? units.length : revealedCount;
 
   return (
     <div className="work-page__bio">
       <h1 className="work-page__bio-text" aria-label={text}>
-        {visibleText}
-        {!shouldReduce && !isComplete && (
-          <span className="work-page__bio-cursor" aria-hidden="true">
-            |
+        {units.slice(0, visibleCount).map((unit, index) => (
+          <span key={index}>
+            <span className="work-page__bio-word" aria-hidden="true">
+              {unit.word}
+            </span>
+            {unit.space}
           </span>
-        )}
+        ))}
       </h1>
     </div>
   );

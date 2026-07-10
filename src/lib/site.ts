@@ -19,8 +19,10 @@ export const SITE_DESCRIPTION =
 
 export const SITE_CONTACT_EMAIL = 'contact@sebastianmendo.design';
 
-/** Profile URLs for JSON-LD sameAs — add links when available. */
-export const SITE_SOCIAL_LINKS: string[] = [];
+/** Profile URLs for JSON-LD sameAs and external identity links. */
+export const SITE_LINKEDIN_URL = 'https://www.linkedin.com/in/sebastianmendo/';
+
+export const SITE_SOCIAL_LINKS: string[] = [SITE_LINKEDIN_URL];
 
 export const WORK_PAGE_BIO =
   'Sebastian is a Senior Product Designer building core agentic banking experiences for millions of users at JPMorgan Chase. Previously at Salesforce, and Writer AI.';

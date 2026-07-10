@@ -18,27 +18,34 @@
 
 .work-page__bio-text {
   font-size: 28px;
-  font-weight: 600;
+  font-weight: 500;
   color: #000000;
   max-width: 904px;
   line-height: normal;
 }
 
-.work-page__bio-cursor {
+.work-page__bio-word {
   display: inline-block;
-  margin-left: 1px;
-  font-weight: 400;
-  animation: work-page-bio-cursor-blink 0.9s step-end infinite;
+  animation: work-page-bio-word-in 0.28s ease-out both;
 }
 
-@keyframes work-page-bio-cursor-blink {
-  0%,
-  100% {
-    opacity: 1;
+@keyframes work-page-bio-word-in {
+  from {
+    opacity: 0;
+    filter: blur(4px);
+    transform: translateY(2px);
   }
 
-  50% {
-    opacity: 0;
+  to {
+    opacity: 1;
+    filter: blur(0);
+    transform: translateY(0);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .work-page__bio-word {
+    animation: none;
   }
 }
 
