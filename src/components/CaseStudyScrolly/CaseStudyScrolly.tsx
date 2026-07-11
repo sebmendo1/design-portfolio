@@ -1,6 +1,6 @@
 'use client';
 
-import { useRef, useState, useEffect, useCallback, type ReactNode } from 'react';
+import { useRef, useState, useEffect, useCallback, useMemo, type ReactNode } from 'react';
 import Link from 'next/link';
 import {
   motion,
@@ -8,9 +8,15 @@ import {
   useSpring,
   useTransform,
   useReducedMotion,
+  useMotionValueEvent,
   type MotionValue,
 } from 'framer-motion';
 import type { CaseStudyConfig, Beat } from './types';
+import {
+  splitIntoUnits,
+  streamDurationMs,
+  StreamingText,
+} from '@/components/StreamingText/StreamingText';
 import { getVideoPoster } from '@/data/assets';
 import { OptimizedImage } from '@/components/OptimizedImage/OptimizedImage';
 import { PhoneStencil } from '@/components/PhoneStencil/PhoneStencil';
@@ -96,6 +102,18 @@ function TextSection({ beat, smooth, isFirst, isLast, outroBlend, slot }: {
   const [a, b] = beat.range;
   const fadeIn  = Math.min(a + 0.07, b);
   const fadeOut = Math.max(b - 0.07, fadeIn);
+  const [streamReveal, setStreamReveal] = useState(isFirst);
+
+  const labelUnits = useMemo(
+    () => (beat.label ? splitIntoUnits(beat.label) : []),
+    [beat.label],
+  );
+  const headlineUnits = useMemo(
+    () => splitIntoUnits(beat.headline),
+    [beat.headline],
+  );
+  const headlineDelayMs = streamDurationMs(labelUnits.length);
+  const bodyDelayMs = headlineDelayMs + streamDurationMs(headlineUnits.length);
 
   // Last beat holds at full opacity through its range; exits only via outro crossfade
   const rangeOpacity = useTransform(
@@ -123,52 +141,73 @@ function TextSection({ beat, smooth, isFirst, isLast, outroBlend, slot }: {
   // Sections at opacity 0 are invisible but still block pointer events without this.
   const pointerEvents = useTransform(opacity, (o: number) => (o > 0.05 ? 'auto' : 'none'));
 
+  useMotionValueEvent(opacity, 'change', (latest) => {
+    if (latest > 0.5) {
+      setStreamReveal(true);
+    }
+  });
+
   return (
     <motion.section className={`cs-section${isFirst ? ' cs-section--hero' : ''}`} style={{ opacity, y, pointerEvents }}>
-      {beat.label && <p className="cs-section__label">{beat.label}</p>}
-      {isFirst ? (
-        <h1 className="cs-section__headline">{beat.headline}</h1>
-      ) : (
-        <h2 className="cs-section__headline">{beat.headline}</h2>
+      {beat.label && (
+        <StreamingText
+          as="p"
+          className="cs-section__label"
+          text={beat.label}
+          reveal={streamReveal}
+        />
       )}
-      {beat.body && <p className="cs-section__body">{beat.body}</p>}
+      <StreamingText
+        as={isFirst ? 'h1' : 'h2'}
+        className="cs-section__headline"
+        text={beat.headline}
+        reveal={streamReveal}
+        startDelayMs={headlineDelayMs}
+      />
+      {beat.body && (
+        <StreamingText
+          as="p"
+          className="cs-section__body"
+          text={beat.body}
+          reveal={streamReveal}
+          startDelayMs={bodyDelayMs}
+        />
+      )}
       {isFirst && slot && <div className="cs-section__slot">{slot}</div>}
     </motion.section>
-  );
-}
-
-// ─── Mobile beat progress dots ───────────────────────────────────────────────
-
-function BeatDots({ total, active, onSelect }: {
-  total: number;
-  active: number;
-  onSelect: (i: number) => void;
-}) {
-  const clamped = Math.min(active, total - 1);
-  return (
-    <div className="cs-beat-dots" aria-hidden="true">
-      {Array.from({ length: total }).map((_, i) => (
-        <button
-          key={i}
-          className={`cs-beat-dot${i === clamped ? ' cs-beat-dot--active' : ''}`}
-          onClick={() => onSelect(i)}
-        />
-      ))}
-    </div>
   );
 }
 
 // ─── Outro: crossfades in as smooth progresses from last beat to 1.0 ────────
 
 function OutroSection({ outroBlend }: { outroBlend: MotionValue<number> }) {
+  const [streamReveal, setStreamReveal] = useState(false);
   const opacity       = outroBlend;
   const y             = useTransform(outroBlend, [0, 1], [16, 0]);
   const pointerEvents = useTransform(opacity, (o: number) => (o > 0.05 ? 'auto' : 'none'));
+  const labelDelayMs = streamDurationMs(splitIntoUnits('More work').length);
+
+  useMotionValueEvent(outroBlend, 'change', (latest) => {
+    if (latest > 0.5) {
+      setStreamReveal(true);
+    }
+  });
 
   return (
     <motion.section className="cs-section cs-section--outro" style={{ opacity, y, pointerEvents }}>
-      <p className="cs-section__label">More work</p>
-      <h2 className="cs-section__headline">See the rest of my projects.</h2>
+      <StreamingText
+        as="p"
+        className="cs-section__label"
+        text="More work"
+        reveal={streamReveal}
+      />
+      <StreamingText
+        as="h2"
+        className="cs-section__headline"
+        text="See the rest of my projects."
+        reveal={streamReveal}
+        startDelayMs={labelDelayMs}
+      />
       <div className="cs-section__slot">
         <Link href="/" className="cs-outro__btn">View all projects</Link>
       </div>
@@ -381,11 +420,6 @@ export function CaseStudyScrolly({ config, slot }: { config: CaseStudyConfig; sl
             />
           ))}
           <OutroSection outroBlend={outroBlend} />
-          <BeatDots
-            total={config.beats.length}
-            active={activeBeatIndex}
-            onSelect={setActiveBeatIndex}
-          />
         </div>
 
         {/* Right: device frame — no animation, just static inside card */}

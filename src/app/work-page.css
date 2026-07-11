@@ -12,6 +12,26 @@
   width: 100%;
 }
 
+.work-page__nav-sticky {
+  position: sticky;
+  top: 0;
+  z-index: 20;
+  background: #ffffff;
+}
+
+@media (min-width: 769px) {
+  .work-page__nav-sticky {
+    transition:
+      padding 0.35s ease,
+      background-color 0.35s ease;
+  }
+
+  .work-page__nav-sticky--floating {
+    padding: 12px 24px 0;
+    background: transparent;
+  }
+}
+
 .work-page__bio {
   padding: 64px 24px 32px;
 }
@@ -22,31 +42,6 @@
   color: #000000;
   max-width: 904px;
   line-height: normal;
-}
-
-.work-page__bio-word {
-  display: inline-block;
-  animation: work-page-bio-word-in 0.28s ease-out both;
-}
-
-@keyframes work-page-bio-word-in {
-  from {
-    opacity: 0;
-    filter: blur(4px);
-    transform: translateY(2px);
-  }
-
-  to {
-    opacity: 1;
-    filter: blur(0);
-    transform: translateY(0);
-  }
-}
-
-@media (prefers-reduced-motion: reduce) {
-  .work-page__bio-word {
-    animation: none;
-  }
 }
 
 .work-page__card-reveal {

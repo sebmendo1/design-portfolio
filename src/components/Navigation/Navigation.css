@@ -85,6 +85,22 @@
   outline-offset: 2px;
 }
 
+.nav--floating {
+  background: transparent;
+}
+
+.nav-glass {
+  box-shadow:
+    0 8px 32px rgba(0, 0, 0, 0.08),
+    0 0 0 1px rgba(255, 255, 255, 0.6) inset;
+}
+
+@media (min-width: 769px) {
+  .nav--floating {
+    height: 72px;
+  }
+}
+
 @media (max-width: 640px) {
   .nav {
     height: 68px;

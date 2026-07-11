@@ -5,7 +5,6 @@ import { motion } from 'framer-motion';
 import { DissolveIn, DISSOLVE_STAGGER } from '@/components/DissolveIn/DissolveIn';
 import { CaseStudyScrolly } from '@/components/CaseStudyScrolly/CaseStudyScrolly';
 import { CaseyActions } from '@/components/CaseyActions/CaseyActions';
-import { ProjectAboutBlock } from '@/components/ProjectAboutBlock/ProjectAboutBlock';
 import { useDissolveNavigate } from '@/hooks/useDissolveNavigate';
 import type { Project } from '@/data/projects';
 
@@ -39,12 +38,7 @@ export function CaseStudyPageContent({ project }: CaseStudyPageContentProps) {
             {project.scrollyConfig && (
               <CaseStudyScrolly
                 config={project.scrollyConfig}
-                slot={
-                  <>
-                    <ProjectAboutBlock project={project} />
-                    {project.slug === 'casey-ai' && <CaseyActions />}
-                  </>
-                }
+                slot={project.slug === 'casey-ai' ? <CaseyActions /> : undefined}
               />
             )}
           </main>

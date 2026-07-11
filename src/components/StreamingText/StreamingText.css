@@ -1,0 +1,24 @@
+.streaming-text__word {
+  display: inline-block;
+  animation: streaming-text-word-in 0.28s ease-out both;
+}
+
+@keyframes streaming-text-word-in {
+  from {
+    opacity: 0;
+    filter: blur(4px);
+    transform: translateY(2px);
+  }
+
+  to {
+    opacity: 1;
+    filter: blur(0);
+    transform: translateY(0);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .streaming-text__word {
+    animation: none;
+  }
+}

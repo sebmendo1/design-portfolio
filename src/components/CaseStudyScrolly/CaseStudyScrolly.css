@@ -51,13 +51,12 @@
 }
 
 .cs-section__headline {
-  font-size: clamp(24px, 2.8vw, 40px);
-  font-weight: 600;
+  font-size: 28px;
+  font-weight: 500;
   color: #000000;
-  line-height: 1.2;
-  letter-spacing: -0.015em;
+  line-height: normal;
   margin: 0 0 24px;
-  max-width: 520px;
+  max-width: 904px;
 }
 
 .cs-section__body {
@@ -77,14 +76,7 @@
   gap: 16px;
 }
 
-/* Summary (first) beat rendered at hero scale */
-.cs-section--hero .cs-section__headline {
-  font-size: clamp(28px, 3.8vw, 52px);
-  letter-spacing: -0.025em;
-  line-height: 1.15;
-  max-width: 600px;
-}
-
+/* Summary (first) beat — same headline scale as the work page bio */
 .cs-section--hero .cs-section__body {
   font-size: 20px;
   line-height: 1.6;
@@ -294,11 +286,6 @@
   display: none;
 }
 
-/* ─── Beat progress dots (hidden on desktop) ────────────────────────────────── */
-.cs-beat-dots {
-  display: none;
-}
-
 /* Standalone image — no stencil, same shadow language as the browser frame */
 .cs-device-standalone-img {
   width: 100%;
@@ -377,13 +364,9 @@
   }
 
   .cs-layout:not(.cs-layout--static) .cs-section__headline {
-    font-size: clamp(20px, 5vw, 32px);
+    font-size: 20px;
     max-width: 100%;
     margin-bottom: 16px;
-  }
-
-  .cs-layout:not(.cs-layout--static) .cs-section--hero .cs-section__headline {
-    font-size: clamp(22px, 5.5vw, 36px);
   }
 
   .cs-layout:not(.cs-layout--static) .cs-section__body {
@@ -423,33 +406,6 @@
     border: 1px solid rgba(0, 0, 0, 0.08);
     box-shadow: 0 1px 4px rgba(0, 0, 0, 0.1);
     pointer-events: auto;
-  }
-
-  /* ─── Beat dots ── visible only in mobile stepper ────────────────────── */
-  .cs-beat-dots {
-    display: flex;
-    align-items: center;
-    gap: 8px;
-    position: absolute;
-    bottom: max(20px, env(safe-area-inset-bottom));
-    left: 24px;
-    z-index: 5;
-  }
-
-  .cs-beat-dot {
-    width: 7px;
-    height: 7px;
-    border-radius: 50%;
-    border: 1.5px solid rgba(0, 0, 0, 0.35);
-    background: transparent;
-    padding: 0;
-    cursor: pointer;
-    transition: background 0.2s ease, border-color 0.2s ease;
-  }
-
-  .cs-beat-dot--active {
-    background: #000000;
-    border-color: #000000;
   }
 
   /* Reduced-motion fallback: stacked scrollable layout */
@@ -507,7 +463,7 @@
   }
 
   .cs-layout:not(.cs-layout--static) .cs-section__headline {
-    font-size: 19px;
+    font-size: 20px;
     margin-bottom: 12px;
   }
 
@@ -520,7 +476,7 @@
   }
 
   .cs-section--static .cs-section__headline {
-    font-size: 19px;
+    font-size: 20px;
     margin-bottom: 12px;
   }
 
