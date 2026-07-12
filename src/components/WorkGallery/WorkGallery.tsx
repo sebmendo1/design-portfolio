@@ -12,11 +12,17 @@ import { WorkPageBio } from '@/components/WorkPageBio/WorkPageBio';
 import type { Project } from '@/data/projects';
 import './WorkGallery.css';
 
-/** ~480px of wheel delta ≈ 3–4 deliberate swipes before advancing a project. */
+/** ~480px of horizontal wheel delta before advancing a project. */
 const WHEEL_THRESHOLD = 480;
-/** Minimum vertical swipe distance (px) to advance on touch. */
+/** Minimum horizontal swipe distance (px) to advance on touch. */
 const TOUCH_THRESHOLD = 96;
 const ADVANCE_LOCK_MS = 850;
+
+function normalizeWheelDelta(delta: number, deltaMode: number): number {
+  if (deltaMode === 1) return delta * 40;
+  if (deltaMode === 2) return delta * 500;
+  return delta;
+}
 
 type WorkGalleryProps = {
   bioText: string;
@@ -38,6 +44,7 @@ export function WorkGallery({
 
   const activeIndexRef = useRef(0);
   const isLockedRef = useRef(false);
+  const touchStartX = useRef<number | null>(null);
   const touchStartY = useRef<number | null>(null);
   const wheelAccumRef = useRef(0);
 
@@ -97,32 +104,31 @@ export function WorkGallery({
 
   const handleWheel = useCallback(
     (event: WheelEvent) => {
+      const deltaX = normalizeWheelDelta(event.deltaX, event.deltaMode);
+      const deltaY = normalizeWheelDelta(event.deltaY, event.deltaMode);
+
+      // Only capture predominantly horizontal scroll; let vertical pass through.
+      if (Math.abs(deltaX) <= Math.abs(deltaY)) return;
+
       const atStart = activeIndexRef.current === 0;
       const atEnd = activeIndexRef.current === projects.length - 1;
 
-      if ((atStart && event.deltaY < 0) || (atEnd && event.deltaY > 0)) return;
+      if ((atStart && deltaX < 0) || (atEnd && deltaX > 0)) return;
 
       event.preventDefault();
 
-      const delta =
-        event.deltaMode === 1
-          ? event.deltaY * 40
-          : event.deltaMode === 2
-            ? event.deltaY * 500
-            : event.deltaY;
-
       if (
-        (wheelAccumRef.current > 0 && delta < 0) ||
-        (wheelAccumRef.current < 0 && delta > 0)
+        (wheelAccumRef.current > 0 && deltaX < 0) ||
+        (wheelAccumRef.current < 0 && deltaX > 0)
       ) {
         wheelAccumRef.current = 0;
       }
 
-      wheelAccumRef.current += delta;
+      wheelAccumRef.current += deltaX;
 
       if (Math.abs(wheelAccumRef.current) >= WHEEL_THRESHOLD) {
         wheelAccumRef.current = 0;
-        advance(delta > 0 ? 1 : -1);
+        advance(deltaX > 0 ? 1 : -1);
       }
     },
     [advance, projects.length],
@@ -130,17 +136,13 @@ export function WorkGallery({
 
   const handleKeyDown = useCallback(
     (event: KeyboardEvent) => {
-      if (
-        event.key === 'ArrowDown' ||
-        event.key === 'ArrowRight' ||
-        event.key === ' '
-      ) {
+      if (event.key === 'ArrowRight') {
         event.preventDefault();
         advance(1);
         return;
       }
 
-      if (event.key === 'ArrowUp' || event.key === 'ArrowLeft') {
+      if (event.key === 'ArrowLeft') {
         event.preventDefault();
         advance(-1);
       }
@@ -149,18 +151,23 @@ export function WorkGallery({
   );
 
   const handleTouchStart = useCallback((event: TouchEvent) => {
+    touchStartX.current = event.touches[0].clientX;
     touchStartY.current = event.touches[0].clientY;
   }, []);
 
   const handleTouchMove = useCallback(
     (event: TouchEvent) => {
-      if (touchStartY.current === null) return;
+      if (touchStartX.current === null || touchStartY.current === null) return;
+
+      const deltaX = touchStartX.current - event.touches[0].clientX;
+      const deltaY = touchStartY.current - event.touches[0].clientY;
+
+      if (Math.abs(deltaX) <= Math.abs(deltaY)) return;
 
       const atStart = activeIndexRef.current === 0;
       const atEnd = activeIndexRef.current === projects.length - 1;
-      const delta = touchStartY.current - event.touches[0].clientY;
 
-      if ((atStart && delta < 0) || (atEnd && delta > 0)) return;
+      if ((atStart && deltaX < 0) || (atEnd && deltaX > 0)) return;
 
       event.preventDefault();
     },
@@ -169,20 +176,22 @@ export function WorkGallery({
 
   const handleTouchEnd = useCallback(
     (event: TouchEvent) => {
-      if (touchStartY.current === null) return;
+      if (touchStartX.current === null || touchStartY.current === null) return;
 
-      const delta = touchStartY.current - event.changedTouches[0].clientY;
+      const deltaX = touchStartX.current - event.changedTouches[0].clientX;
+      const deltaY = touchStartY.current - event.changedTouches[0].clientY;
+      touchStartX.current = null;
       touchStartY.current = null;
 
-      if (Math.abs(delta) < TOUCH_THRESHOLD) return;
+      if (Math.abs(deltaX) < TOUCH_THRESHOLD || Math.abs(deltaX) <= Math.abs(deltaY)) return;
 
-      const swipeUp = delta > 0;
+      const swipeLeft = deltaX > 0;
       const atStart = activeIndexRef.current === 0;
       const atEnd = activeIndexRef.current === projects.length - 1;
 
-      if ((atStart && !swipeUp) || (atEnd && swipeUp)) return;
+      if ((atStart && !swipeLeft) || (atEnd && swipeLeft)) return;
 
-      advance(swipeUp ? 1 : -1);
+      advance(swipeLeft ? 1 : -1);
     },
     [advance, projects.length],
   );
