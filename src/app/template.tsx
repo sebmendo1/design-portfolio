@@ -1,9 +1,9 @@
 'use client';
 
+import { Suspense, useEffect } from 'react';
 import { usePathname } from 'next/navigation';
-import { useEffect } from 'react';
 
-export default function Template({ children }: { children: React.ReactNode }) {
+function RouteTemplate({ children }: { children: React.ReactNode }) {
   const pathname = usePathname();
 
   useEffect(() => {
@@ -14,5 +14,13 @@ export default function Template({ children }: { children: React.ReactNode }) {
     <div className="route-template" key={pathname}>
       {children}
     </div>
+  );
+}
+
+export default function Template({ children }: { children: React.ReactNode }) {
+  return (
+    <Suspense fallback={<div className="route-template">{children}</div>}>
+      <RouteTemplate>{children}</RouteTemplate>
+    </Suspense>
   );
 }
