@@ -38,6 +38,7 @@ export function CaseStudyPageContent({ project }: CaseStudyPageContentProps) {
             {project.scrollyConfig && (
               <CaseStudyScrolly
                 config={project.scrollyConfig}
+                onHomeNavigate={navigate}
                 slot={project.slug === 'casey-ai' ? <CaseyActions /> : undefined}
               />
             )}

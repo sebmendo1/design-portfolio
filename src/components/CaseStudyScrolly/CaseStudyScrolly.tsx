@@ -25,7 +25,7 @@ import './CaseStudyScrolly.css';
 /** Trackpad travel (px) that initiates a section change. */
 const SCROLL_INITIATE_PX = 80;
 /** Pause after section text finishes before the next scroll is accepted. */
-const SCROLL_COOLDOWN_MS = 3000;
+const SCROLL_COOLDOWN_MS = 1000;
 
 function beatStreamDurationMs(beat: Beat): number {
   const labelCount = beat.label ? splitIntoUnits(beat.label).length : 0;
@@ -212,16 +212,44 @@ function TextSection({ beat, smooth, isFirst, isLast, isActive, outroBlend, slot
   );
 }
 
+// ─── Home navigation (dissolve exit when provided) ────────────────────────────
+
+function HomeLink({
+  className,
+  children,
+  onHomeNavigate,
+}: {
+  className: string;
+  children: ReactNode;
+  onHomeNavigate?: (href: string) => void;
+}) {
+  return (
+    <Link
+      href="/"
+      className={className}
+      onClick={(event) => {
+        if (!onHomeNavigate) return;
+        event.preventDefault();
+        onHomeNavigate('/');
+      }}
+    >
+      {children}
+    </Link>
+  );
+}
+
 // ─── Outro: crossfades in as smooth progresses from last beat to 1.0 ────────
 
 function OutroSection({
   outroBlend,
   isActive,
   hasStreamedRef,
+  onHomeNavigate,
 }: {
   outroBlend: MotionValue<number>;
   isActive: boolean;
   hasStreamedRef: RefObject<boolean>;
+  onHomeNavigate?: (href: string) => void;
 }) {
   const [hasStreamed, setHasStreamed] = useState(() => hasStreamedRef.current);
   const opacity       = outroBlend;
@@ -255,7 +283,9 @@ function OutroSection({
         onComplete={markStreamed}
       />
       <div className="cs-section__slot">
-        <Link href="/" className="cs-outro__btn">View all projects</Link>
+        <HomeLink className="cs-outro__btn" onHomeNavigate={onHomeNavigate}>
+          View all projects
+        </HomeLink>
       </div>
     </motion.section>
   );
@@ -263,7 +293,15 @@ function OutroSection({
 
 // ─── Reduced-motion fallback ──────────────────────────────────────────────────
 
-function StaticFallback({ config, slot }: { config: CaseStudyConfig; slot?: ReactNode }) {
+function StaticFallback({
+  config,
+  slot,
+  onHomeNavigate,
+}: {
+  config: CaseStudyConfig;
+  slot?: ReactNode;
+  onHomeNavigate?: (href: string) => void;
+}) {
   const { frame, src, video, url, screenAspectRatio } = config.stage.centerpiece;
   const title = config.title;
 
@@ -287,7 +325,9 @@ function StaticFallback({ config, slot }: { config: CaseStudyConfig; slot?: Reac
           <p className="cs-section__label">More work</p>
           <h2 className="cs-section__headline">See the rest of my projects.</h2>
           <div className="cs-section__slot">
-            <Link href="/" className="cs-outro__btn">View all projects</Link>
+            <HomeLink className="cs-outro__btn" onHomeNavigate={onHomeNavigate}>
+              View all projects
+            </HomeLink>
           </div>
         </section>
       </div>
@@ -327,7 +367,15 @@ function StaticFallback({ config, slot }: { config: CaseStudyConfig; slot?: Reac
 
 // ─── Main export ──────────────────────────────────────────────────────────────
 
-export function CaseStudyScrolly({ config, slot }: { config: CaseStudyConfig; slot?: ReactNode }) {
+export function CaseStudyScrolly({
+  config,
+  slot,
+  onHomeNavigate,
+}: {
+  config: CaseStudyConfig;
+  slot?: ReactNode;
+  onHomeNavigate?: (href: string) => void;
+}) {
   const shouldReduce = useReducedMotion();
   const containerRef = useRef<HTMLDivElement>(null);
 
@@ -535,7 +583,9 @@ export function CaseStudyScrolly({ config, slot }: { config: CaseStudyConfig; sl
   const { frame, src, video, url, screenAspectRatio } = config.stage.centerpiece;
   const title = config.title;
 
-  if (shouldReduce) return <StaticFallback config={config} slot={slot} />;
+  if (shouldReduce) {
+    return <StaticFallback config={config} slot={slot} onHomeNavigate={onHomeNavigate} />;
+  }
 
   return (
     <article className="cs-article" aria-label={config.title}>
@@ -565,13 +615,16 @@ export function CaseStudyScrolly({ config, slot }: { config: CaseStudyConfig; sl
             outroBlend={outroBlend}
             isActive={activeIndex === config.beats.length}
             hasStreamedRef={sectionStreamedRefs.current[config.beats.length]}
+            onHomeNavigate={onHomeNavigate}
           />
         </div>
 
         {/* Right: device frame — no animation, just static inside card */}
         <div className="cs-visual-col">
           {/* Floating back button — only visible on mobile (hidden via CSS on desktop) */}
-          <Link href="/" className="cs-mobile-back">← Back</Link>
+          <HomeLink className="cs-mobile-back" onHomeNavigate={onHomeNavigate}>
+            ← Back
+          </HomeLink>
           <div className="cs-device-card">
             {frame === 'browser' && (
               <BrowserFrame src={src} video={video} url={url} title={title} />

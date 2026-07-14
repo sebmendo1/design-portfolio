@@ -239,11 +239,9 @@ export function StreamingBioText({ onComplete }: StreamingBioTextProps) {
   onCompleteRef.current = onComplete;
 
   useEffect(() => {
-    if (streamStateRef.current === 'done') {
-      return;
-    }
-
+    streamStateRef.current = 'idle';
     hasCompletedRef.current = false;
+    setRevealedCount(0);
 
     if (skipAnimation) {
       streamStateRef.current = 'done';

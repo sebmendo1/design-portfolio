@@ -1,6 +1,6 @@
 'use client';
 
-import { useCallback, useRef, useState } from 'react';
+import { useCallback, useEffect, useRef, useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { useReducedMotion } from 'framer-motion';
 import { DISSOLVE_EASE, DISSOLVE_EXIT_DURATION } from '@/components/DissolveIn/DissolveIn';
@@ -9,8 +9,17 @@ export function useDissolveNavigate() {
   const router = useRouter();
   const shouldReduce = useReducedMotion();
   const [exitHref, setExitHref] = useState<string | null>(null);
+  const exitHrefRef = useRef<string | null>(null);
   const hasNavigatedRef = useRef(false);
   const isExiting = exitHref !== null;
+
+  const completeExit = useCallback(() => {
+    const href = exitHrefRef.current;
+    if (!href || hasNavigatedRef.current) return;
+
+    hasNavigatedRef.current = true;
+    router.push(href);
+  }, [router]);
 
   const navigate = useCallback(
     (href: string) => {
@@ -18,17 +27,28 @@ export function useDissolveNavigate() {
         router.push(href);
         return;
       }
-      if (isExiting) return;
+      if (exitHrefRef.current) return;
+
+      hasNavigatedRef.current = false;
+      exitHrefRef.current = href;
       setExitHref(href);
     },
-    [isExiting, router, shouldReduce],
+    [router, shouldReduce],
   );
 
+  useEffect(() => {
+    if (!exitHref || shouldReduce) return;
+
+    const fallbackMs = DISSOLVE_EXIT_DURATION * 1000 + 100;
+    const fallbackId = window.setTimeout(completeExit, fallbackMs);
+
+    return () => window.clearTimeout(fallbackId);
+  }, [completeExit, exitHref, shouldReduce]);
+
   const onExitComplete = useCallback(() => {
-    if (!exitHref || hasNavigatedRef.current) return;
-    hasNavigatedRef.current = true;
-    router.push(exitHref);
-  }, [exitHref, router]);
+    if (!exitHrefRef.current) return;
+    completeExit();
+  }, [completeExit]);
 
   const motionProps = {
     animate:
@@ -39,7 +59,7 @@ export function useDissolveNavigate() {
       duration: shouldReduce ? 0 : isExiting ? DISSOLVE_EXIT_DURATION : 0,
       ease: DISSOLVE_EASE,
     },
-    onAnimationComplete: onExitComplete,
+    onAnimationComplete: isExiting ? onExitComplete : undefined,
     style: { pointerEvents: isExiting ? ('none' as const) : undefined },
   };
 
