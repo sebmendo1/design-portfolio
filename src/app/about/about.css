@@ -14,13 +14,29 @@
   font-weight: 600;
   color: #000000;
   line-height: 1.35;
-  margin-bottom: 24px;
+  margin-bottom: 28px;
 }
 
 .about-page__bio {
   font-size: var(--font-size-body);
-  color: #666666;
+  color: #333333;
   line-height: var(--line-height-body);
+  margin: 0 0 20px;
+}
+
+.about-page__bio:last-of-type {
+  margin-bottom: 28px;
+}
+
+.about-page__linkedin {
+  font-size: var(--font-size-body-sm);
+  margin: 0;
+}
+
+.about-page__linkedin a {
+  color: #000000;
+  text-decoration: underline;
+  text-underline-offset: 3px;
 }
 
 @media (max-width: 768px) {

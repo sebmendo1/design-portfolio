@@ -1,15 +1,16 @@
 import type { Metadata } from 'next';
-import { Navigation } from '@/components/Navigation/Navigation';
+import Link from 'next/link';
+import { AboutPageLayout } from '@/components/AboutPage/AboutPageLayout';
 import { StructuredData } from '@/components/StructuredData/StructuredData';
-import { WorkExperience } from '@/components/WorkExperience/WorkExperience';
+import { WorkTimeline } from '@/components/WorkTimeline/WorkTimeline';
 import { ContactCTA } from '@/components/ContactCTA/ContactCTA';
-import { buildPortfolioExport } from '@/lib/content-export';
-import { buildProfilePageGraph } from '@/lib/json-ld';
+import { PROFILE } from '@/data/profile';
+import { buildProfilePageGraphFromProfile } from '@/lib/json-ld';
 import { canonicalPath, createMetadata } from '@/lib/metadata';
+import { SITE_LINKEDIN_URL } from '@/lib/site';
 import './about.css';
 
-const ABOUT_DESCRIPTION =
-  'Sebastian Mendo is a Senior Product Designer at JPMorgan Chase, previously at Salesforce, Chorus AI, Writer, and Shift.';
+const ABOUT_DESCRIPTION = PROFILE.aboutIntro.paragraphs[0];
 
 export const metadata: Metadata = createMetadata({
   title: 'About',
@@ -21,28 +22,31 @@ export const metadata: Metadata = createMetadata({
   },
 });
 
-export default async function AboutPage() {
-  const portfolio = await buildPortfolioExport();
+export default function AboutPage() {
+  const { aboutIntro } = PROFILE;
 
   return (
     <div className="about-page">
-      <StructuredData data={buildProfilePageGraph(portfolio)} />
-      <Navigation />
-      <main id="main-content">
+      <StructuredData data={buildProfilePageGraphFromProfile()} />
+      <AboutPageLayout>
         <div className="about-page__content">
-          <h1 className="about-page__heading">
-            Sebastian Mendo is a Senior Product Designer specialized in building
-            AI-first digital products.
-          </h1>
-          <p className="about-page__bio">
-            Currently designing core agentic flows at JPMorgan Chase. Previously at
-            Salesforce, Chorus AI, Writer, and Shift.
+          <h1 className="about-page__heading">{aboutIntro.title}</h1>
+          {aboutIntro.paragraphs.map((paragraph) => (
+            <p key={paragraph} className="about-page__bio">
+              {paragraph}
+            </p>
+          ))}
+
+          <p className="about-page__linkedin">
+            <Link href={SITE_LINKEDIN_URL} rel="me">
+              LinkedIn
+            </Link>
           </p>
         </div>
 
-        <WorkExperience />
+        <WorkTimeline />
         <ContactCTA />
-      </main>
+      </AboutPageLayout>
     </div>
   );
 }

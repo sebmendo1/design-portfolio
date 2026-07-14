@@ -16,7 +16,11 @@ const inter = Inter({
 export const metadata: Metadata = createMetadata({
   alternates: {
     types: {
-      'text/plain': [{ url: '/llms.txt', title: 'LLM-readable index' }],
+      'text/plain': [
+        { url: '/llms.txt', title: 'LLM-readable index' },
+        { url: '/llms-full.txt', title: 'LLM-readable full corpus' },
+      ],
+      'application/json': [{ url: '/content.json', title: 'Structured portfolio content' }],
     },
   },
 });

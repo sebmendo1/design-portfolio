@@ -1,7 +1,6 @@
 import { notFound } from 'next/navigation';
 import type { Metadata } from 'next';
 import { CaseStudyPageContent } from '@/components/CaseStudyPageContent/CaseStudyPageContent';
-import { CaseStudySrArticle } from '@/components/CaseStudySrArticle/CaseStudySrArticle';
 import { StructuredData } from '@/components/StructuredData/StructuredData';
 import { projects } from '@/data/projects';
 import { getMergedProject } from '@/lib/cms-data';
@@ -10,8 +9,6 @@ import { buildCreativeWorkGraph } from '@/lib/json-ld';
 import { canonicalPath } from '@/lib/metadata';
 import { getSiteUrl } from '@/lib/site';
 import './case-study.css';
-
-export const revalidate = 60;
 
 interface Props {
   params: Promise<{ slug: string }>;
@@ -56,7 +53,6 @@ export default async function CaseStudyPage({ params }: Props) {
   return (
     <>
       <StructuredData data={buildCreativeWorkGraph(exported)} />
-      <CaseStudySrArticle project={exported} />
       <CaseStudyPageContent project={project} />
     </>
   );

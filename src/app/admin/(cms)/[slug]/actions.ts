@@ -1,12 +1,34 @@
 'use server';
-import { revalidatePath } from 'next/cache';
+
+import { revalidatePath, updateTag } from 'next/cache';
 import {
+  CMS_PROJECTS_TAG,
   updateProjectBeats,
   updateProjectMedia,
   type CmsBeat,
   type CmsMediaData,
 } from '@/lib/cms-data';
 import { requireAdminSession, sanitizeMediaData } from '@/lib/admin-auth';
+
+const PUBLIC_PATHS = [
+  '/',
+  '/about',
+  '/llms.txt',
+  '/llms-full.txt',
+  '/content.json',
+  '/sitemap.xml',
+  '/robots.txt',
+] as const;
+
+function revalidatePublicContent(slug?: string) {
+  updateTag(CMS_PROJECTS_TAG);
+  for (const path of PUBLIC_PATHS) {
+    revalidatePath(path);
+  }
+  if (slug) {
+    revalidatePath(`/work/${slug}`);
+  }
+}
 
 export async function saveBeatsAction(
   slug: string,
@@ -15,8 +37,7 @@ export async function saveBeatsAction(
   try {
     await requireAdminSession();
     await updateProjectBeats(slug, beats);
-    revalidatePath(`/work/${slug}`);
-    revalidatePath('/');
+    revalidatePublicContent(slug);
     return { success: true };
   } catch (err) {
     if (err instanceof Error && err.message === 'Unauthorized') {
@@ -34,8 +55,7 @@ export async function saveMediaAction(
     await requireAdminSession();
     const safe = sanitizeMediaData(media);
     await updateProjectMedia(slug, safe);
-    revalidatePath(`/work/${slug}`);
-    revalidatePath('/');
+    revalidatePublicContent(slug);
     return { success: true };
   } catch (err) {
     if (err instanceof Error && err.message === 'Unauthorized') {

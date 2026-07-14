@@ -1,10 +1,14 @@
-const LOGO_VERSION = '4';
+const LOGO_VERSION = '7';
 
 const LOGO_PATHS: Record<string, string> = {
   'JPMorgan Chase': '/assets/logos/chase.png',
+  Chase: '/assets/logos/chase.png',
   Salesforce: '/assets/logos/salesforce.png',
-  'Writer.com': '/assets/logos/writer.png',
-  'Chorus AI': '/assets/logos/chorus-ai.svg',
+  'Writer AI': '/assets/logos/writer.webp',
+  'Writer.com': '/assets/logos/writer.webp',
+  WRITER: '/assets/logos/writer.webp',
+  'Chorus AI': '/assets/logos/chorus-ai.png',
+  'Chorus.ai': '/assets/logos/chorus-ai.png',
   Shift: '/assets/logos/shift.png',
 };
 

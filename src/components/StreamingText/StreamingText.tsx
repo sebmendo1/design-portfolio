@@ -34,6 +34,8 @@ type StreamingTextProps = {
   text: string;
   className?: string;
   reveal?: boolean;
+  /** Show full text immediately without re-running the stream animation. */
+  instant?: boolean;
   startDelayMs?: number;
   onComplete?: () => void;
   'aria-label'?: string;
@@ -44,21 +46,21 @@ export function StreamingText({
   text,
   className,
   reveal = true,
+  instant = false,
   startDelayMs = 0,
   onComplete,
   'aria-label': ariaLabel,
 }: StreamingTextProps) {
   const shouldReduce = useReducedMotion();
   const units = useMemo(() => splitIntoUnits(text), [text]);
+  const skipAnimation = instant || !reveal || shouldReduce;
   const [revealedCount, setRevealedCount] = useState(0);
   const hasCompletedRef = useRef(false);
 
   useEffect(() => {
     hasCompletedRef.current = false;
 
-    if (!reveal) return;
-
-    if (shouldReduce) {
+    if (skipAnimation) {
       queueMicrotask(() => {
         if (!hasCompletedRef.current) {
           hasCompletedRef.current = true;
@@ -103,18 +105,25 @@ export function StreamingText({
       clearTimeout(startTimeoutId);
       if (intervalId) clearInterval(intervalId);
     };
-  }, [reveal, shouldReduce, units, startDelayMs, onComplete, text]);
+  }, [instant, skipAnimation, units, startDelayMs, onComplete, text]);
 
-  const visibleCount = shouldReduce ? units.length : revealedCount;
+  const visibleCount = !reveal ? 0 : skipAnimation ? units.length : revealedCount;
 
   return (
     <Tag className={className} aria-label={ariaLabel ?? text}>
-      {units.slice(0, visibleCount).map((unit, index) => (
-        <span key={index}>
+      {units.map((unit, index) => (
+        <span
+          key={index}
+          className={
+            index < visibleCount
+              ? 'streaming-text__unit streaming-text__unit--visible'
+              : 'streaming-text__unit streaming-text__unit--pending'
+          }
+        >
           <span className="streaming-text__word" aria-hidden="true">
             {unit.word}
           </span>
-          {unit.space}
+          {index < visibleCount ? unit.space : null}
         </span>
       ))}
     </Tag>

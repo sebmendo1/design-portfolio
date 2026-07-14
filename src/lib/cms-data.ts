@@ -1,3 +1,5 @@
+import { cache } from 'react';
+import { unstable_cache } from 'next/cache';
 import { put, list } from '@vercel/blob';
 import { projects, sortProjectsByFeaturedOrder, type Project } from '@/data/projects';
 
@@ -21,6 +23,7 @@ type CmsData = Record<string, CmsProjectData>;
 
 const BLOB_PATH = 'cms/projects.json';
 const BLOB_TIMEOUT_MS = 5_000;
+export const CMS_PROJECTS_TAG = 'cms-projects';
 
 async function withTimeout<T>(promise: Promise<T>, fallback: T): Promise<T> {
   let timeoutId: ReturnType<typeof setTimeout> | undefined;
@@ -36,7 +39,7 @@ async function withTimeout<T>(promise: Promise<T>, fallback: T): Promise<T> {
   }
 }
 
-async function getProjectsData(): Promise<CmsData> {
+async function fetchProjectsDataUncached(): Promise<CmsData> {
   if (!process.env.BLOB_READ_WRITE_TOKEN) return {};
   try {
     const { blobs } = await withTimeout(list({ prefix: BLOB_PATH }), {
@@ -47,7 +50,7 @@ async function getProjectsData(): Promise<CmsData> {
     if (blobs.length === 0) return {};
     const res = await withTimeout(
       fetch(blobs[0].url, {
-        cache: 'no-store',
+        next: { revalidate: 3600, tags: [CMS_PROJECTS_TAG] },
         signal: AbortSignal.timeout(BLOB_TIMEOUT_MS),
       }),
       null,
@@ -58,6 +61,12 @@ async function getProjectsData(): Promise<CmsData> {
     return {};
   }
 }
+
+const getCachedProjectsData = unstable_cache(
+  fetchProjectsDataUncached,
+  ['portfolio-cms-projects'],
+  { revalidate: 3600, tags: [CMS_PROJECTS_TAG] },
+);
 
 async function saveProjectsData(data: CmsData): Promise<void> {
   await put(BLOB_PATH, JSON.stringify(data, null, 2), {
@@ -100,28 +109,35 @@ function mergeProject(base: Project, cms: CmsProjectData | undefined): Project {
   };
 }
 
-export async function getMergedProjects(): Promise<Project[]> {
-  const data = await getProjectsData();
+async function buildMergedProjects(data: CmsData): Promise<Project[]> {
   return sortProjectsByFeaturedOrder(
     projects.map((p) => mergeProject(p, data[p.slug])),
   );
 }
 
-export async function getMergedProject(slug: string): Promise<Project | undefined> {
-  const base = projects.find((p) => p.slug === slug);
-  if (!base) return undefined;
-  const data = await getProjectsData();
-  return mergeProject(base, data[slug]);
+export const getCachedMergedProjects = cache(async (): Promise<Project[]> => {
+  const data = await getCachedProjectsData();
+  return buildMergedProjects(data);
+});
+
+/** @deprecated Use getCachedMergedProjects */
+export async function getMergedProjects(): Promise<Project[]> {
+  return getCachedMergedProjects();
 }
 
+export const getMergedProject = cache(async (slug: string): Promise<Project | undefined> => {
+  const merged = await getCachedMergedProjects();
+  return merged.find((p) => p.slug === slug);
+});
+
 export async function updateProjectBeats(slug: string, beats: CmsBeat[]): Promise<void> {
-  const data = await getProjectsData();
+  const data = await fetchProjectsDataUncached();
   data[slug] = { ...data[slug], beats };
   await saveProjectsData(data);
 }
 
 export async function updateProjectMedia(slug: string, media: CmsMediaData): Promise<void> {
-  const data = await getProjectsData();
+  const data = await fetchProjectsDataUncached();
   data[slug] = { ...data[slug], ...media };
   await saveProjectsData(data);
 }

@@ -12,25 +12,72 @@
   margin-bottom: 32px;
 }
 
-.work-experience__list {
+.work-experience__subheading {
+  font-size: var(--font-size-body);
+  font-weight: var(--font-weight-semibold);
+  color: #000000;
+  margin: 0 0 12px;
+}
+
+.work-experience__impact,
+.work-experience__operating {
+  margin-bottom: 40px;
+}
+
+.work-experience__impact-list {
+  list-style: none;
+  margin: 0;
+  padding: 0;
   display: flex;
   flex-direction: column;
-  gap: 1px;
+  gap: 12px;
+}
+
+.work-experience__impact-item {
+  font-size: var(--font-size-body-sm);
+  color: #333333;
+  line-height: var(--line-height-body);
+}
+
+.work-experience__list-items {
+  margin: 0;
+  padding-left: 20px;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.work-experience__list-items li {
+  font-size: var(--font-size-body-sm);
+  color: #444444;
+  line-height: var(--line-height-body);
+}
+
+.work-experience__roles {
+  display: flex;
+  flex-direction: column;
+  gap: 0;
   border-top: 1px solid #e8e8e8;
 }
 
-.work-experience__item {
+.work-experience__role {
+  padding: 28px 0;
+  border-bottom: 1px solid #e8e8e8;
+}
+
+.work-experience__role-header {
   display: flex;
   justify-content: space-between;
-  align-items: center;
-  padding: 20px 0;
-  border-bottom: 1px solid #e8e8e8;
+  align-items: flex-start;
+  gap: 16px;
+  margin-bottom: 12px;
 }
 
 .work-experience__company-info {
   display: flex;
-  align-items: center;
+  align-items: flex-start;
   gap: 16px;
+  min-width: 0;
 }
 
 .work-experience__logo-placeholder {
@@ -45,6 +92,7 @@
   display: flex;
   flex-direction: column;
   gap: 2px;
+  min-width: 0;
 }
 
 .work-experience__company {
@@ -54,7 +102,13 @@
   margin: 0;
 }
 
-.work-experience__role {
+.work-experience__role-title {
+  font-size: var(--font-size-body-sm);
+  color: #333333;
+  margin: 0;
+}
+
+.work-experience__location {
   font-size: var(--font-size-body-sm);
   color: #666666;
   margin: 0;
@@ -64,16 +118,54 @@
   font-size: var(--font-size-body-sm);
   color: #666666;
   white-space: nowrap;
+  flex-shrink: 0;
+}
+
+.work-experience__summary {
+  font-size: var(--font-size-body-sm);
+  color: #444444;
+  line-height: var(--line-height-body);
+  margin: 0 0 16px;
+}
+
+.work-experience__block {
+  margin-bottom: 16px;
+}
+
+.work-experience__block-title {
+  font-size: 12px;
+  font-weight: var(--font-weight-semibold);
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  color: #666666;
+  margin: 0 0 8px;
+}
+
+.work-experience__projects {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+  margin-top: 8px;
+}
+
+.work-experience__project-link {
+  font-size: var(--font-size-body-sm);
+  color: #000000;
+  text-decoration: underline;
+  text-underline-offset: 3px;
+}
+
+.work-experience__project-link:hover {
+  opacity: 0.7;
 }
 
 @media (max-width: 600px) {
-  .work-experience__item {
+  .work-experience__role-header {
     flex-direction: column;
-    align-items: flex-start;
-    gap: 12px;
+    gap: 8px;
   }
 
   .work-experience__period {
-    align-self: flex-end;
+    align-self: flex-start;
   }
 }

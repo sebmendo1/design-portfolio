@@ -1,4 +1,15 @@
-.streaming-text__word {
+.streaming-text__unit--pending .streaming-text__word {
+  opacity: 0;
+  filter: blur(4px);
+  transform: translateY(2px);
+}
+
+.streaming-text__unit--pending {
+  opacity: 0;
+  pointer-events: none;
+}
+
+.streaming-text__unit--visible .streaming-text__word {
   display: inline-block;
   animation: streaming-text-word-in 0.28s ease-out both;
 }
@@ -18,7 +29,13 @@
 }
 
 @media (prefers-reduced-motion: reduce) {
-  .streaming-text__word {
+  .streaming-text__unit--pending .streaming-text__word {
+    opacity: 1;
+    filter: none;
+    transform: none;
+  }
+
+  .streaming-text__unit--visible .streaming-text__word {
     animation: none;
   }
 }

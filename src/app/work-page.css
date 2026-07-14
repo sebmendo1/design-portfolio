@@ -12,26 +12,6 @@
   width: 100%;
 }
 
-.work-page__nav-sticky {
-  position: sticky;
-  top: 0;
-  z-index: 20;
-  background: #ffffff;
-}
-
-@media (min-width: 769px) {
-  .work-page__nav-sticky {
-    transition:
-      padding 0.35s ease,
-      background-color 0.35s ease;
-  }
-
-  .work-page__nav-sticky--floating {
-    padding: 12px 24px 0;
-    background: transparent;
-  }
-}
-
 .work-page__bio {
   padding: 64px 24px 32px;
 }
@@ -40,8 +20,55 @@
   font-size: 28px;
   font-weight: 500;
   color: #000000;
-  max-width: 904px;
-  line-height: normal;
+  max-width: min(904px, var(--work-page-bio-width, 100%));
+  line-height: calc(1em + 6px);
+  text-wrap: pretty;
+}
+
+.work-page__bio-link {
+  color: inherit;
+  text-decoration: underline;
+  text-decoration-thickness: 1px;
+  text-underline-offset: 0.14em;
+}
+
+.work-page__bio-link:hover {
+  opacity: 0.72;
+}
+
+.work-page__bio-link:focus-visible {
+  outline: 2px solid #000000;
+  outline-offset: 2px;
+  border-radius: 2px;
+}
+
+.work-page__bio-link .streaming-text__word {
+  text-decoration: inherit;
+}
+
+.work-page__bio-link-text {
+  display: inline;
+}
+
+.streaming-text__unit--pending {
+  opacity: 0;
+  pointer-events: none;
+}
+
+.streaming-text__unit--visible .work-page__bio-link-text .streaming-text__word {
+  display: inline;
+  animation: streaming-text-word-in 0.28s ease-out both;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .streaming-text__unit--pending {
+    opacity: 1;
+    pointer-events: auto;
+  }
+
+  .streaming-text__unit--visible .work-page__bio-link-text .streaming-text__word {
+    animation: none;
+  }
 }
 
 .work-page__card-reveal {
@@ -49,6 +76,11 @@
   width: 100%;
   min-width: 0;
   min-height: 0;
+}
+
+.work-page__card-reveal-inner {
+  display: block;
+  width: 100%;
 }
 
 .work-page__grid {
@@ -71,6 +103,10 @@
     height: 100%;
   }
 
+  .work-page__card-reveal-inner {
+    height: 100%;
+  }
+
   .work-page__card-reveal .project-card {
     height: 100%;
   }
@@ -83,6 +119,7 @@
 
   .work-page__bio-text {
     font-size: 20px;
+    line-height: calc(1em + 6px);
   }
 
   .work-page__grid {

@@ -2,21 +2,26 @@
 
 import { useCallback, useEffect, useRef, useState, type CSSProperties } from 'react';
 import {
+  animate,
   motion,
   useMotionValue,
-  useSpring,
   useTransform,
 } from 'framer-motion';
 import { AnimatedProjectCard } from '@/components/AnimatedProjectCard/AnimatedProjectCard';
 import { WorkPageBio } from '@/components/WorkPageBio/WorkPageBio';
-import type { Project } from '@/data/projects';
+import type { ProjectCardSummary } from '@/lib/project-cards';
+import { useHorizontalCarouselTouch } from '@/hooks/useHorizontalCarouselTouch';
 import './WorkGallery.css';
 
 /** ~480px of horizontal wheel delta before advancing a project. */
 const WHEEL_THRESHOLD = 480;
-/** Minimum horizontal swipe distance (px) to advance on touch. */
-const TOUCH_THRESHOLD = 96;
-const ADVANCE_LOCK_MS = 850;
+
+const SNAP_SPRING = {
+  type: 'spring' as const,
+  stiffness: 340,
+  damping: 38,
+  restDelta: 0.5,
+};
 
 function normalizeWheelDelta(delta: number, deltaMode: number): number {
   if (deltaMode === 1) return delta * 40;
@@ -26,7 +31,7 @@ function normalizeWheelDelta(delta: number, deltaMode: number): number {
 
 type WorkGalleryProps = {
   bioText: string;
-  projects: Project[];
+  projects: ProjectCardSummary[];
   onProjectNavigate?: (href: string) => void;
 };
 
@@ -38,34 +43,53 @@ export function WorkGallery({
   const containerRef = useRef<HTMLDivElement>(null);
   const viewportRef = useRef<HTMLDivElement>(null);
   const panelWidthRef = useRef(0);
+  const animationRef = useRef<ReturnType<typeof animate> | null>(null);
   const [panelWidth, setPanelWidth] = useState(0);
-  const [cardsReady, setCardsReady] = useState(false);
   const [activeIndex, setActiveIndex] = useState(0);
 
   const activeIndexRef = useRef(0);
-  const isLockedRef = useRef(false);
-  const touchStartX = useRef<number | null>(null);
-  const touchStartY = useRef<number | null>(null);
   const wheelAccumRef = useRef(0);
 
-  const targetIndex = useMotionValue(0);
-  const smoothIndex = useSpring(targetIndex, {
-    stiffness: 320,
-    damping: 42,
-    restDelta: 0.0001,
-  });
-  const translateX = useTransform(
-    smoothIndex,
-    (index) => -index * panelWidthRef.current,
-  );
+  const scrollX = useMotionValue(0);
+  const translateX = useTransform(scrollX, (x) => -x);
 
   useEffect(() => {
     activeIndexRef.current = activeIndex;
   }, [activeIndex]);
 
-  useEffect(() => {
-    targetIndex.set(activeIndex);
-  }, [activeIndex, targetIndex]);
+  const cancelAnimation = useCallback(() => {
+    animationRef.current?.stop();
+    animationRef.current = null;
+  }, []);
+
+  const snapToIndex = useCallback(
+    (index: number) => {
+      const clamped = Math.max(0, Math.min(projects.length - 1, index));
+      const target = clamped * panelWidthRef.current;
+
+      activeIndexRef.current = clamped;
+      setActiveIndex(clamped);
+
+      if (panelWidthRef.current === 0) {
+        scrollX.set(target);
+        return;
+      }
+
+      cancelAnimation();
+      animationRef.current = animate(scrollX, target, SNAP_SPRING);
+    },
+    [cancelAnimation, projects.length, scrollX],
+  );
+
+  const { isDragging, touchDraggedRef, isDraggingRef } = useHorizontalCarouselTouch({
+    containerRef,
+    scrollX,
+    panelWidthRef,
+    panelCount: projects.length,
+    activeIndexRef,
+    snapToIndex,
+    cancelAnimation,
+  });
 
   useEffect(() => {
     const viewport = viewportRef.current;
@@ -83,23 +107,16 @@ export function WorkGallery({
     return () => observer.disconnect();
   }, []);
 
+  useEffect(() => {
+    if (panelWidth <= 0 || isDraggingRef.current) return;
+    scrollX.set(activeIndexRef.current * panelWidth);
+  }, [panelWidth, scrollX, isDraggingRef]);
+
   const advance = useCallback(
     (direction: 1 | -1) => {
-      if (isLockedRef.current) return;
-
-      setActiveIndex((prev) => {
-        const next = prev + direction;
-        if (next < 0 || next >= projects.length) return prev;
-
-        isLockedRef.current = true;
-        window.setTimeout(() => {
-          isLockedRef.current = false;
-        }, ADVANCE_LOCK_MS);
-
-        return next;
-      });
+      snapToIndex(activeIndexRef.current + direction);
     },
-    [projects.length],
+    [snapToIndex],
   );
 
   const handleWheel = useCallback(
@@ -107,7 +124,6 @@ export function WorkGallery({
       const deltaX = normalizeWheelDelta(event.deltaX, event.deltaMode);
       const deltaY = normalizeWheelDelta(event.deltaY, event.deltaMode);
 
-      // Only capture predominantly horizontal scroll; let vertical pass through.
       if (Math.abs(deltaX) <= Math.abs(deltaY)) return;
 
       const atStart = activeIndexRef.current === 0;
@@ -150,80 +166,26 @@ export function WorkGallery({
     [advance],
   );
 
-  const handleTouchStart = useCallback((event: TouchEvent) => {
-    touchStartX.current = event.touches[0].clientX;
-    touchStartY.current = event.touches[0].clientY;
-  }, []);
-
-  const handleTouchMove = useCallback(
-    (event: TouchEvent) => {
-      if (touchStartX.current === null || touchStartY.current === null) return;
-
-      const deltaX = touchStartX.current - event.touches[0].clientX;
-      const deltaY = touchStartY.current - event.touches[0].clientY;
-
-      if (Math.abs(deltaX) <= Math.abs(deltaY)) return;
-
-      const atStart = activeIndexRef.current === 0;
-      const atEnd = activeIndexRef.current === projects.length - 1;
-
-      if ((atStart && deltaX < 0) || (atEnd && deltaX > 0)) return;
-
-      event.preventDefault();
-    },
-    [projects.length],
-  );
-
-  const handleTouchEnd = useCallback(
-    (event: TouchEvent) => {
-      if (touchStartX.current === null || touchStartY.current === null) return;
-
-      const deltaX = touchStartX.current - event.changedTouches[0].clientX;
-      const deltaY = touchStartY.current - event.changedTouches[0].clientY;
-      touchStartX.current = null;
-      touchStartY.current = null;
-
-      if (Math.abs(deltaX) < TOUCH_THRESHOLD || Math.abs(deltaX) <= Math.abs(deltaY)) return;
-
-      const swipeLeft = deltaX > 0;
-      const atStart = activeIndexRef.current === 0;
-      const atEnd = activeIndexRef.current === projects.length - 1;
-
-      if ((atStart && !swipeLeft) || (atEnd && swipeLeft)) return;
-
-      advance(swipeLeft ? 1 : -1);
-    },
-    [advance, projects.length],
-  );
-
   useEffect(() => {
     const container = containerRef.current;
     if (!container) return;
 
     container.addEventListener('wheel', handleWheel, { passive: false });
     container.addEventListener('keydown', handleKeyDown);
-    container.addEventListener('touchstart', handleTouchStart, { passive: true });
-    container.addEventListener('touchmove', handleTouchMove, { passive: false });
-    container.addEventListener('touchend', handleTouchEnd, { passive: true });
 
     return () => {
       container.removeEventListener('wheel', handleWheel);
       container.removeEventListener('keydown', handleKeyDown);
-      container.removeEventListener('touchstart', handleTouchStart);
-      container.removeEventListener('touchmove', handleTouchMove);
-      container.removeEventListener('touchend', handleTouchEnd);
     };
-  }, [
-    handleWheel,
-    handleKeyDown,
-    handleTouchStart,
-    handleTouchMove,
-    handleTouchEnd,
-  ]);
+  }, [handleWheel, handleKeyDown]);
 
-  const handleBioComplete = useCallback(() => {
-    setCardsReady(true);
-  }, []);
+  const handleProjectNavigate = useCallback(
+    (href: string) => {
+      if (touchDraggedRef.current) return;
+      onProjectNavigate?.(href);
+    },
+    [onProjectNavigate, touchDraggedRef],
+  );
 
   const activeProject = projects[activeIndex];
 
@@ -237,14 +199,14 @@ export function WorkGallery({
       <div className="work-gallery__stage">
         <div className="work-gallery__bio-inset">
           <div className="work-gallery__bio">
-            <WorkPageBio text={bioText} onComplete={handleBioComplete} />
+            <WorkPageBio text={bioText} />
           </div>
         </div>
 
         <div className="work-gallery__cards-inset">
           <div
             ref={viewportRef}
-            className="work-gallery__viewport"
+            className={`work-gallery__viewport${isDragging ? ' work-gallery__viewport--dragging' : ''}`}
             style={
               panelWidth > 0
                 ? ({ '--panel-width': `${panelWidth}px` } as CSSProperties)
@@ -260,23 +222,23 @@ export function WorkGallery({
               aria-live="polite"
               aria-atomic="true"
             >
-            {projects.map((project, index) => (
-              <div
-                key={project.id}
-                className="work-gallery__panel"
-                style={panelWidth > 0 ? { width: panelWidth } : undefined}
-                aria-label={`${project.title}${index === activeIndex ? ', current project' : ''}`}
-              >
-                <div className="work-gallery__panel-inset">
-                  <AnimatedProjectCard
-                    project={project}
-                    index={index}
-                    reveal={cardsReady}
-                    onNavigate={onProjectNavigate}
-                  />
+              {projects.map((project, index) => (
+                <div
+                  key={project.id}
+                  className="work-gallery__panel"
+                  style={panelWidth > 0 ? { width: panelWidth } : undefined}
+                  aria-label={`${project.title}${index === activeIndex ? ', current project' : ''}`}
+                >
+                  <div className="work-gallery__panel-inset">
+                    <AnimatedProjectCard
+                      project={project}
+                      index={index}
+                      reveal
+                      onNavigate={handleProjectNavigate}
+                    />
+                  </div>
                 </div>
-              </div>
-            ))}
+              ))}
             </motion.div>
           </div>
         </div>

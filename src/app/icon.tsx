@@ -13,15 +13,17 @@ export default function Icon() {
           display: 'flex',
           alignItems: 'center',
           justifyContent: 'center',
-          background: '#000000',
-          borderRadius: 8,
-          color: '#ffffff',
-          fontSize: 18,
-          fontWeight: 600,
-          fontFamily: 'system-ui, sans-serif',
+          background: '#ffffff',
         }}
       >
-        SM
+        <div
+          style={{
+            width: 10,
+            height: 10,
+            borderRadius: '50%',
+            background: '#000000',
+          }}
+        />
       </div>
     ),
     { ...size },

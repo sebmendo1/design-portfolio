@@ -1,6 +1,6 @@
 'use client';
 
-import { useRef, useState, useEffect, useCallback, useMemo, type ReactNode } from 'react';
+import { useRef, useState, useEffect, useCallback, useMemo, type ReactNode, type RefObject } from 'react';
 import Link from 'next/link';
 import {
   motion,
@@ -8,7 +8,6 @@ import {
   useSpring,
   useTransform,
   useReducedMotion,
-  useMotionValueEvent,
   type MotionValue,
 } from 'framer-motion';
 import type { CaseStudyConfig, Beat } from './types';
@@ -18,9 +17,40 @@ import {
   StreamingText,
 } from '@/components/StreamingText/StreamingText';
 import { getVideoPoster } from '@/data/assets';
+import { LazyAutoplayVideo } from '@/components/LazyAutoplayVideo/LazyAutoplayVideo';
 import { OptimizedImage } from '@/components/OptimizedImage/OptimizedImage';
 import { PhoneStencil } from '@/components/PhoneStencil/PhoneStencil';
 import './CaseStudyScrolly.css';
+
+/** Trackpad travel (px) that initiates a section change. */
+const SCROLL_INITIATE_PX = 80;
+/** Pause after section text finishes before the next scroll is accepted. */
+const SCROLL_COOLDOWN_MS = 3000;
+
+function beatStreamDurationMs(beat: Beat): number {
+  const labelCount = beat.label ? splitIntoUnits(beat.label).length : 0;
+  const headlineCount = splitIntoUnits(beat.headline).length;
+  const bodyCount = beat.body ? splitIntoUnits(beat.body).length : 0;
+  const headlineStart = streamDurationMs(labelCount);
+  const bodyStart = headlineStart + streamDurationMs(headlineCount);
+
+  if (bodyCount > 0) {
+    return bodyStart + streamDurationMs(bodyCount);
+  }
+  return headlineStart + streamDurationMs(headlineCount);
+}
+
+function outroStreamDurationMs(): number {
+  const labelCount = splitIntoUnits('More work').length;
+  const headlineStart = streamDurationMs(labelCount);
+  return headlineStart + streamDurationMs(splitIntoUnits('See the rest of my projects.').length);
+}
+
+function normalizeWheelDelta(deltaY: number, deltaMode: number): number {
+  if (deltaMode === 1) return deltaY * 40;
+  if (deltaMode === 2) return deltaY * 500;
+  return deltaY;
+}
 
 // ─── Device frames (static — no animation) ───────────────────────────────────
 
@@ -64,15 +94,10 @@ function BrowserFrame({
       </div>
       <div className="cs-browser__screen">
         {video ? (
-          <video
+          <LazyAutoplayVideo
             className="cs-device-video"
             src={video}
             poster={poster}
-            autoPlay
-            loop
-            muted
-            playsInline
-            preload="none"
           />
         ) : src ? (
           <OptimizedImage
@@ -91,29 +116,27 @@ function BrowserFrame({
 
 // ─── Animated text section ────────────────────────────────────────────────────
 
-function TextSection({ beat, smooth, isFirst, isLast, outroBlend, slot }: {
+function TextSection({ beat, smooth, isFirst, isLast, isActive, outroBlend, slot, hasStreamedRef }: {
   beat: Beat;
   smooth: MotionValue<number>;
   isFirst: boolean;
   isLast: boolean;
+  isActive: boolean;
   outroBlend: MotionValue<number>;
   slot?: ReactNode;
+  hasStreamedRef: RefObject<boolean>;
 }) {
+  const [hasStreamed, setHasStreamed] = useState(() => hasStreamedRef.current);
   const [a, b] = beat.range;
-  const fadeIn  = Math.min(a + 0.07, b);
-  const fadeOut = Math.max(b - 0.07, fadeIn);
-  const [streamReveal, setStreamReveal] = useState(isFirst);
+  const fadeSpan = Math.min(0.14, (b - a) * 0.38);
+  const fadeIn  = Math.min(a + fadeSpan, b);
+  const fadeOut = Math.max(b - fadeSpan, fadeIn);
 
-  const labelUnits = useMemo(
-    () => (beat.label ? splitIntoUnits(beat.label) : []),
-    [beat.label],
-  );
-  const headlineUnits = useMemo(
-    () => splitIntoUnits(beat.headline),
-    [beat.headline],
-  );
-  const headlineDelayMs = streamDurationMs(labelUnits.length);
-  const bodyDelayMs = headlineDelayMs + streamDurationMs(headlineUnits.length);
+  const markStreamed = useCallback(() => {
+    if (hasStreamedRef.current) return;
+    hasStreamedRef.current = true;
+    setHasStreamed(true);
+  }, [hasStreamedRef]);
 
   // Last beat holds at full opacity through its range; exits only via outro crossfade
   const rangeOpacity = useTransform(
@@ -135,17 +158,23 @@ function TextSection({ beat, smooth, isFirst, isLast, outroBlend, slot }: {
       ? [a, fadeIn, b]
       : [a, fadeIn, fadeOut, b],
     isLast
-      ? [isFirst ? 0 : 20, 0, 0]
-      : [isFirst ? 0 : 20, 0, 0, -20],
+      ? [isFirst ? 0 : 28, 0, 0]
+      : [isFirst ? 0 : 28, 0, 0, -28],
   );
   // Sections at opacity 0 are invisible but still block pointer events without this.
   const pointerEvents = useTransform(opacity, (o: number) => (o > 0.05 ? 'auto' : 'none'));
 
-  useMotionValueEvent(opacity, 'change', (latest) => {
-    if (latest > 0.5) {
-      setStreamReveal(true);
-    }
-  });
+  const labelUnits = useMemo(
+    () => (beat.label ? splitIntoUnits(beat.label) : []),
+    [beat.label],
+  );
+  const headlineUnits = useMemo(
+    () => splitIntoUnits(beat.headline),
+    [beat.headline],
+  );
+  const headlineDelayMs = streamDurationMs(labelUnits.length);
+  const bodyDelayMs = headlineDelayMs + streamDurationMs(headlineUnits.length);
+  const showInstant = hasStreamed && isActive;
 
   return (
     <motion.section className={`cs-section${isFirst ? ' cs-section--hero' : ''}`} style={{ opacity, y, pointerEvents }}>
@@ -154,23 +183,28 @@ function TextSection({ beat, smooth, isFirst, isLast, outroBlend, slot }: {
           as="p"
           className="cs-section__label"
           text={beat.label}
-          reveal={streamReveal}
+          reveal={isActive}
+          instant={showInstant}
         />
       )}
       <StreamingText
         as={isFirst ? 'h1' : 'h2'}
         className="cs-section__headline"
         text={beat.headline}
-        reveal={streamReveal}
+        reveal={isActive}
+        instant={showInstant}
         startDelayMs={headlineDelayMs}
+        onComplete={beat.body ? undefined : markStreamed}
       />
       {beat.body && (
         <StreamingText
           as="p"
           className="cs-section__body"
           text={beat.body}
-          reveal={streamReveal}
+          reveal={isActive}
+          instant={showInstant}
           startDelayMs={bodyDelayMs}
+          onComplete={markStreamed}
         />
       )}
       {isFirst && slot && <div className="cs-section__slot">{slot}</div>}
@@ -180,18 +214,27 @@ function TextSection({ beat, smooth, isFirst, isLast, outroBlend, slot }: {
 
 // ─── Outro: crossfades in as smooth progresses from last beat to 1.0 ────────
 
-function OutroSection({ outroBlend }: { outroBlend: MotionValue<number> }) {
-  const [streamReveal, setStreamReveal] = useState(false);
+function OutroSection({
+  outroBlend,
+  isActive,
+  hasStreamedRef,
+}: {
+  outroBlend: MotionValue<number>;
+  isActive: boolean;
+  hasStreamedRef: RefObject<boolean>;
+}) {
+  const [hasStreamed, setHasStreamed] = useState(() => hasStreamedRef.current);
   const opacity       = outroBlend;
   const y             = useTransform(outroBlend, [0, 1], [16, 0]);
   const pointerEvents = useTransform(opacity, (o: number) => (o > 0.05 ? 'auto' : 'none'));
   const labelDelayMs = streamDurationMs(splitIntoUnits('More work').length);
+  const showInstant = hasStreamed && isActive;
 
-  useMotionValueEvent(outroBlend, 'change', (latest) => {
-    if (latest > 0.5) {
-      setStreamReveal(true);
-    }
-  });
+  const markStreamed = useCallback(() => {
+    if (hasStreamedRef.current) return;
+    hasStreamedRef.current = true;
+    setHasStreamed(true);
+  }, [hasStreamedRef]);
 
   return (
     <motion.section className="cs-section cs-section--outro" style={{ opacity, y, pointerEvents }}>
@@ -199,14 +242,17 @@ function OutroSection({ outroBlend }: { outroBlend: MotionValue<number> }) {
         as="p"
         className="cs-section__label"
         text="More work"
-        reveal={streamReveal}
+        reveal={isActive}
+        instant={showInstant}
       />
       <StreamingText
         as="h2"
         className="cs-section__headline"
         text="See the rest of my projects."
-        reveal={streamReveal}
+        reveal={isActive}
+        instant={showInstant}
         startDelayMs={labelDelayMs}
+        onComplete={markStreamed}
       />
       <div className="cs-section__slot">
         <Link href="/" className="cs-outro__btn">View all projects</Link>
@@ -222,7 +268,8 @@ function StaticFallback({ config, slot }: { config: CaseStudyConfig; slot?: Reac
   const title = config.title;
 
   return (
-    <div className="cs-layout cs-layout--static">
+    <article className="cs-article" aria-label={config.title}>
+      <div className="cs-layout cs-layout--static">
       <div className="cs-text-col cs-text-col--static">
         {config.beats.map((beat, i) => (
           <section key={beat.id} className={`cs-section cs-section--static${i === 0 ? ' cs-section--hero' : ''}`}>
@@ -273,7 +320,8 @@ function StaticFallback({ config, slot }: { config: CaseStudyConfig; slot?: Reac
           </div>
         </div>
       </div>
-    </div>
+      </div>
+    </article>
   );
 }
 
@@ -283,97 +331,187 @@ export function CaseStudyScrolly({ config, slot }: { config: CaseStudyConfig; sl
   const shouldReduce = useReducedMotion();
   const containerRef = useRef<HTMLDivElement>(null);
 
-  // Beat midpoints — the progress value that places each beat fully in view
-  const beatTargets = config.beats.map(b => (b.range[0] + b.range[1]) / 2);
+  const snapTargets = useMemo(
+    () => [...config.beats.map((beat) => (beat.range[0] + beat.range[1]) / 2), 1],
+    [config.beats],
+  );
 
-  const [activeBeatIndex, setActiveBeatIndex] = useState(0);
-  const activeBeatIndexRef = useRef(0);       // mirror for event handlers (avoids stale closure)
-  const isLockedRef        = useRef(false);   // block events during spring animation
-  const touchStartY        = useRef<number | null>(null);
-  const wheelAccumRef      = useRef(0);       // accumulated pixel delta — beat advances at threshold
+  const [activeIndex, setActiveIndex] = useState(0);
+  const activeIndexRef = useRef(0);
+  const wheelAccumRef = useRef(0);
+  const scrollLockedRef = useRef(true);
+  const unlockTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+  const lastTouchYRef = useRef<number | null>(null);
+  const sectionStreamedRefs = useRef(
+    Array.from({ length: config.beats.length + 1 }, () => ({ current: false })),
+  );
 
-  const targetProgress = useMotionValue(0);
-  const smooth = useSpring(targetProgress, { stiffness: 100, damping: 30, restDelta: 0.001 });
-  const lastBeatTarget = beatTargets[config.beats.length - 1];
+  const targetProgress = useMotionValue(snapTargets[0]);
+  const smooth = useSpring(targetProgress, {
+    stiffness: 240,
+    damping: 34,
+    mass: 0.75,
+    restDelta: 0.0005,
+  });
+  const lastBeatTarget = snapTargets[snapTargets.length - 2] ?? 0.9;
   const outroBlend = useTransform(smooth, [lastBeatTarget, 1], [0, 1]);
 
-  // Keep ref in sync with state so event handlers always read the current index
-  useEffect(() => { activeBeatIndexRef.current = activeBeatIndex; }, [activeBeatIndex]);
-
-  // Push new target into the MotionValue; spring animates toward it
-  useEffect(() => {
-    const t = activeBeatIndex < config.beats.length
-      ? beatTargets[activeBeatIndex]
-      : 1.0;
-    targetProgress.set(t);
-  // beatTargets is derived from config.beats which doesn't change; safe to omit
-  // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [activeBeatIndex]);
-
-  const advanceBeat = useCallback((direction: 1 | -1) => {
-    if (isLockedRef.current) return;
-    setActiveBeatIndex(prev => {
-      const next = prev + direction;
-      if (next < 0 || next > config.beats.length) return prev;
-      isLockedRef.current = true;
-      setTimeout(() => { isLockedRef.current = false; }, 700);
-      return next;
-    });
-  }, [config.beats.length]);
-
-  const handleWheel = useCallback((e: WheelEvent) => {
-    const atStart = activeBeatIndexRef.current === 0;
-    const atEnd   = activeBeatIndexRef.current === config.beats.length;
-    if ((atStart && e.deltaY < 0) || (atEnd && e.deltaY > 0)) return;
-    e.preventDefault();
-
-    // Normalise deltaMode so line/page wheels map to approximate pixel values
-    const delta = e.deltaMode === 1 ? e.deltaY * 40
-                : e.deltaMode === 2 ? e.deltaY * 500
-                : e.deltaY;
-
-    // Reset accumulator on direction reversal
-    if ((wheelAccumRef.current > 0 && delta < 0) || (wheelAccumRef.current < 0 && delta > 0)) {
-      wheelAccumRef.current = 0;
+  const cancelScrollUnlock = useCallback(() => {
+    if (unlockTimerRef.current) {
+      clearTimeout(unlockTimerRef.current);
+      unlockTimerRef.current = null;
     }
-    wheelAccumRef.current += delta;
-
-    // ~250px equivalent = 1.5–2 deliberate swipes / 2 mouse-wheel clicks before advancing
-    if (Math.abs(wheelAccumRef.current) >= 250) {
-      wheelAccumRef.current = 0;
-      advanceBeat(delta > 0 ? 1 : -1);
-    }
-  }, [advanceBeat, config.beats.length]);
-
-  const handleKeyDown = useCallback((e: KeyboardEvent) => {
-    if (e.key === 'ArrowDown' || e.key === ' ') { e.preventDefault(); advanceBeat(1); }
-    else if (e.key === 'ArrowUp')               { e.preventDefault(); advanceBeat(-1); }
-  }, [advanceBeat]);
-
-  const handleTouchStart = useCallback((e: TouchEvent) => {
-    touchStartY.current = e.touches[0].clientY;
   }, []);
 
-  const handleTouchEnd = useCallback((e: TouchEvent) => {
-    if (touchStartY.current === null) return;
-    const delta = touchStartY.current - e.changedTouches[0].clientY;
-    touchStartY.current = null;
-    if (Math.abs(delta) < 40) return;
-    const swipeUp = delta > 0;
-    const atStart = activeBeatIndexRef.current === 0;
-    const atEnd   = activeBeatIndexRef.current === config.beats.length;
-    if ((atStart && !swipeUp) || (atEnd && swipeUp)) return;
-    advanceBeat(swipeUp ? 1 : -1);
-  }, [advanceBeat, config.beats.length]);
+  const scheduleScrollUnlock = useCallback(
+    (sectionIndex: number) => {
+      scrollLockedRef.current = true;
+      cancelScrollUnlock();
 
-  const handleTouchMove = useCallback((e: TouchEvent) => {
-    if (touchStartY.current === null) return;
-    const atStart = activeBeatIndexRef.current === 0;
-    const atEnd   = activeBeatIndexRef.current === config.beats.length;
-    const delta = touchStartY.current - e.touches[0].clientY;
-    if ((atStart && delta < 0) || (atEnd && delta > 0)) return;
-    e.preventDefault();
-  }, [config.beats.length]);
+      const alreadyStreamed = sectionStreamedRefs.current[sectionIndex]?.current ?? false;
+      const streamMs = shouldReduce || alreadyStreamed
+        ? 0
+        : sectionIndex < config.beats.length
+          ? beatStreamDurationMs(config.beats[sectionIndex])
+          : outroStreamDurationMs();
+
+      unlockTimerRef.current = setTimeout(() => {
+        scrollLockedRef.current = false;
+      }, streamMs + SCROLL_COOLDOWN_MS);
+    },
+    [cancelScrollUnlock, config.beats, shouldReduce],
+  );
+
+  const snapToIndex = useCallback(
+    (index: number) => {
+      const clamped = Math.max(0, Math.min(snapTargets.length - 1, index));
+      if (clamped === activeIndexRef.current) {
+        wheelAccumRef.current = 0;
+        return;
+      }
+
+      scrollLockedRef.current = true;
+      activeIndexRef.current = clamped;
+      setActiveIndex(clamped);
+      wheelAccumRef.current = 0;
+      targetProgress.set(snapTargets[clamped]);
+      scheduleScrollUnlock(clamped);
+    },
+    [scheduleScrollUnlock, snapTargets, targetProgress],
+  );
+
+  const applyScrollDelta = useCallback(
+    (delta: number) => {
+      if (scrollLockedRef.current) return false;
+
+      const index = activeIndexRef.current;
+      const atStart = index === 0 && delta < 0;
+      const atEnd = index === snapTargets.length - 1 && delta > 0;
+      if (atStart || atEnd) return false;
+
+      if (
+        (wheelAccumRef.current > 0 && delta < 0)
+        || (wheelAccumRef.current < 0 && delta > 0)
+      ) {
+        wheelAccumRef.current = 0;
+      }
+
+      wheelAccumRef.current += delta;
+
+      if (Math.abs(wheelAccumRef.current) >= SCROLL_INITIATE_PX) {
+        scrollLockedRef.current = true;
+        const direction = wheelAccumRef.current > 0 ? 1 : -1;
+        snapToIndex(index + direction);
+        return true;
+      }
+
+      return true;
+    },
+    [snapTargets.length, snapToIndex],
+  );
+
+  const nudgeProgress = useCallback(
+    (direction: 1 | -1) => {
+      if (scrollLockedRef.current) return;
+      wheelAccumRef.current = 0;
+      snapToIndex(activeIndexRef.current + direction);
+    },
+    [snapToIndex],
+  );
+
+  useEffect(() => {
+    scheduleScrollUnlock(0);
+    return cancelScrollUnlock;
+  }, [cancelScrollUnlock, scheduleScrollUnlock]);
+
+  const handleWheel = useCallback(
+    (e: WheelEvent) => {
+      const delta = normalizeWheelDelta(e.deltaY, e.deltaMode);
+      const index = activeIndexRef.current;
+      const atStart = index === 0 && delta < 0;
+      const atEnd = index === snapTargets.length - 1 && delta > 0;
+      if (atStart || atEnd) return;
+
+      if (scrollLockedRef.current) {
+        e.preventDefault();
+        return;
+      }
+
+      if (applyScrollDelta(delta)) {
+        e.preventDefault();
+      }
+    },
+    [applyScrollDelta, snapTargets.length],
+  );
+
+  const handleKeyDown = useCallback(
+    (e: KeyboardEvent) => {
+      if (e.key === 'ArrowDown' || e.key === ' ') {
+        e.preventDefault();
+        nudgeProgress(1);
+      } else if (e.key === 'ArrowUp') {
+        e.preventDefault();
+        nudgeProgress(-1);
+      }
+    },
+    [nudgeProgress],
+  );
+
+  const handleTouchStart = useCallback((e: TouchEvent) => {
+    lastTouchYRef.current = e.touches[0].clientY;
+  }, []);
+
+  const handleTouchMove = useCallback(
+    (e: TouchEvent) => {
+      if (lastTouchYRef.current === null) return;
+
+      const y = e.touches[0].clientY;
+      const delta = lastTouchYRef.current - y;
+      lastTouchYRef.current = y;
+
+      const index = activeIndexRef.current;
+      const atStart = index === 0 && delta < 0;
+      const atEnd = index === snapTargets.length - 1 && delta > 0;
+      if (atStart || atEnd) return;
+
+      if (scrollLockedRef.current) {
+        e.preventDefault();
+        return;
+      }
+
+      if (applyScrollDelta(delta)) {
+        e.preventDefault();
+      }
+    },
+    [applyScrollDelta, snapTargets.length],
+  );
+
+  const handleTouchEnd = useCallback(() => {
+    lastTouchYRef.current = null;
+    if (!scrollLockedRef.current) {
+      wheelAccumRef.current = 0;
+    }
+  }, []);
 
   useEffect(() => {
     if (shouldReduce) return;
@@ -385,13 +523,14 @@ export function CaseStudyScrolly({ config, slot }: { config: CaseStudyConfig; sl
     el.addEventListener('touchmove',  handleTouchMove,  { passive: false });
     el.addEventListener('touchend',   handleTouchEnd,   { passive: true });
     return () => {
+      cancelScrollUnlock();
       el.removeEventListener('wheel',      handleWheel);
       el.removeEventListener('keydown',    handleKeyDown);
       el.removeEventListener('touchstart', handleTouchStart);
       el.removeEventListener('touchmove',  handleTouchMove);
       el.removeEventListener('touchend',   handleTouchEnd);
     };
-  }, [shouldReduce, handleWheel, handleKeyDown, handleTouchStart, handleTouchMove, handleTouchEnd]);
+  }, [shouldReduce, handleWheel, handleKeyDown, handleTouchStart, handleTouchMove, handleTouchEnd, cancelScrollUnlock]);
 
   const { frame, src, video, url, screenAspectRatio } = config.stage.centerpiece;
   const title = config.title;
@@ -399,12 +538,13 @@ export function CaseStudyScrolly({ config, slot }: { config: CaseStudyConfig; sl
   if (shouldReduce) return <StaticFallback config={config} slot={slot} />;
 
   return (
-    <div
-      ref={containerRef}
-      className="cs-track"
-      tabIndex={0}
-      aria-label="Case study navigation"
-    >
+    <article className="cs-article" aria-label={config.title}>
+      <div
+        ref={containerRef}
+        className="cs-track"
+        tabIndex={0}
+        aria-label="Case study navigation"
+      >
       <div className="cs-layout">
         {/* Left: sticky panel with crossfading text sections */}
         <div className="cs-text-col">
@@ -415,11 +555,17 @@ export function CaseStudyScrolly({ config, slot }: { config: CaseStudyConfig; sl
               smooth={smooth}
               isFirst={i === 0}
               isLast={i === config.beats.length - 1}
+              isActive={activeIndex === i}
               outroBlend={outroBlend}
               slot={slot}
+              hasStreamedRef={sectionStreamedRefs.current[i]}
             />
           ))}
-          <OutroSection outroBlend={outroBlend} />
+          <OutroSection
+            outroBlend={outroBlend}
+            isActive={activeIndex === config.beats.length}
+            hasStreamedRef={sectionStreamedRefs.current[config.beats.length]}
+          />
         </div>
 
         {/* Right: device frame — no animation, just static inside card */}
@@ -453,6 +599,7 @@ export function CaseStudyScrolly({ config, slot }: { config: CaseStudyConfig; sl
           </div>
         </div>
       </div>
-    </div>
+      </div>
+    </article>
   );
 }

@@ -2,6 +2,7 @@
 
 import { useRef, type CSSProperties } from 'react';
 import { OptimizedImage } from '@/components/OptimizedImage/OptimizedImage';
+import { LazyAutoplayVideo } from '@/components/LazyAutoplayVideo/LazyAutoplayVideo';
 import { useContentAspectRatio } from './useContentAspectRatio';
 import { usePhoneBodyWidth } from './usePhoneBodyWidth';
 import './phone-stencil.css';
@@ -51,15 +52,10 @@ export function PhoneStencil({
         <div className="phone-stencil__screen">
           <div className="phone-stencil__island" aria-hidden="true" />
           {video ? (
-            <video
+            <LazyAutoplayVideo
               className="phone-stencil__media"
               src={video}
               poster={poster}
-              autoPlay
-              loop
-              muted
-              playsInline
-              preload="none"
               onLoadedMetadata={onVideoMetadata}
             />
           ) : src ? (

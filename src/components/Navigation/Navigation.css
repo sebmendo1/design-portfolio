@@ -7,10 +7,44 @@
   background: #ffffff;
 }
 
+.nav-shell {
+  position: sticky;
+  top: 0;
+  z-index: 20;
+  background: #ffffff;
+}
+
 .nav__brand-wrap,
-.nav__contact-wrap {
+.nav__links-wrap {
   display: flex;
   align-items: center;
+}
+
+.nav__links-wrap {
+  gap: 8px;
+}
+
+.nav__about {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 10px 16px;
+  border-radius: 100px;
+  font-size: 16px;
+  font-weight: 500;
+  color: #262626;
+  text-decoration: none;
+  transition: opacity var(--transition-fast);
+  white-space: nowrap;
+}
+
+.nav__about:hover {
+  opacity: 0.7;
+}
+
+.nav__about:focus-visible {
+  outline: 2px solid #000000;
+  outline-offset: 2px;
 }
 
 .nav__brand {
@@ -85,22 +119,6 @@
   outline-offset: 2px;
 }
 
-.nav--floating {
-  background: transparent;
-}
-
-.nav-glass {
-  box-shadow:
-    0 8px 32px rgba(0, 0, 0, 0.08),
-    0 0 0 1px rgba(255, 255, 255, 0.6) inset;
-}
-
-@media (min-width: 769px) {
-  .nav--floating {
-    height: 72px;
-  }
-}
-
 @media (max-width: 640px) {
   .nav {
     height: 68px;
@@ -118,6 +136,11 @@
   }
 
   .nav__contact {
+    font-size: 14px;
+    padding: 8px 14px;
+  }
+
+  .nav__about {
     font-size: 14px;
     padding: 8px 14px;
   }
@@ -144,6 +167,11 @@
   }
 
   .nav__contact {
+    font-size: 13px;
+    padding: 7px 10px;
+  }
+
+  .nav__about {
     font-size: 13px;
     padding: 7px 10px;
   }

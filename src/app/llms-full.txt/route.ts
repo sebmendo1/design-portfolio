@@ -4,8 +4,6 @@ import {
   toLlmsFullTxt,
 } from '@/lib/content-export';
 
-export const revalidate = 60;
-
 export async function GET() {
   const data = await buildPortfolioExport();
   return new Response(toLlmsFullTxt(data), {

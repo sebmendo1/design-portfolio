@@ -1,24 +1,28 @@
 import type { Metadata } from 'next';
 import { WorkPageShell } from '@/components/WorkPageShell/WorkPageShell';
-import { getMergedProjects } from '@/lib/cms-data';
+import { getCachedMergedProjects } from '@/lib/cms-data';
 import { canonicalPath, createMetadata } from '@/lib/metadata';
-import { SITE_DESCRIPTION, WORK_PAGE_BIO } from '@/lib/site';
+import { toProjectCardSummaries } from '@/lib/project-cards';
+import { SITE_DESCRIPTION, SITE_TITLE, WORK_PAGE_BIO } from '@/lib/site';
 import './work-page.css';
 
-export const revalidate = 60;
-
 export const metadata: Metadata = createMetadata({
-  title: 'Work',
+  title: { absolute: SITE_TITLE },
   description: SITE_DESCRIPTION,
   ...canonicalPath('/'),
   openGraph: {
-    title: 'Work — Sebastian Mendo',
+    title: SITE_TITLE,
     description: SITE_DESCRIPTION,
   },
 });
 
 export default async function WorkPage() {
-  const projects = await getMergedProjects();
+  const projects = await getCachedMergedProjects();
 
-  return <WorkPageShell bioText={WORK_PAGE_BIO} projects={projects} />;
+  return (
+    <WorkPageShell
+      bioText={WORK_PAGE_BIO}
+      projects={toProjectCardSummaries(projects)}
+    />
+  );
 }

@@ -1,12 +1,14 @@
 import Link from 'next/link';
-import type { Project, ProjectPreview } from '@/data/projects';
+import type { ProjectPreview } from '@/data/projects';
 import { getVideoPoster } from '@/data/assets';
 import { OptimizedImage } from '@/components/OptimizedImage/OptimizedImage';
+import { LazyAutoplayVideo } from '@/components/LazyAutoplayVideo/LazyAutoplayVideo';
 import { PhoneStencil } from '@/components/PhoneStencil/PhoneStencil';
+import type { ProjectCardSummary } from '@/lib/project-cards';
 import './ProjectCard.css';
 
 interface ProjectCardProps {
-  project: Project;
+  project: ProjectCardSummary;
   onNavigate?: (href: string) => void;
 }
 
@@ -28,15 +30,10 @@ function PreviewBrowser({ video, url }: { video?: string; url?: string }) {
       </div>
       <div className="pc-browser__screen">
         {video && (
-          <video
+          <LazyAutoplayVideo
             className="pc-browser__video"
             src={video}
             poster={poster}
-            autoPlay
-            loop
-            muted
-            playsInline
-            preload="none"
           />
         )}
       </div>
@@ -115,9 +112,9 @@ export function ProjectCard({ project, onNavigate }: ProjectCardProps) {
         </div>
       </div>
       <div className="project-card__meta">
-        <span className="project-card__title">{project.title}</span>
+        <h2 className="project-card__title">{project.title}</h2>
         {project.company && (
-          <span className="project-card__company">{project.company}</span>
+          <p className="project-card__company">{project.company}</p>
         )}
       </div>
     </Link>

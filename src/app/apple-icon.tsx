@@ -13,15 +13,17 @@ export default function AppleIcon() {
           display: 'flex',
           alignItems: 'center',
           justifyContent: 'center',
-          background: '#000000',
-          borderRadius: 36,
-          color: '#ffffff',
-          fontSize: 72,
-          fontWeight: 600,
-          fontFamily: 'system-ui, sans-serif',
+          background: '#ffffff',
         }}
       >
-        SM
+        <div
+          style={{
+            width: 48,
+            height: 48,
+            borderRadius: '50%',
+            background: '#000000',
+          }}
+        />
       </div>
     ),
     { ...size },

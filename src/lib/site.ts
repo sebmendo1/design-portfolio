@@ -13,7 +13,7 @@ export function getSiteUrl(): string {
 }
 
 export const SITE_NAME = 'Sebastian Mendo';
-export const SITE_TITLE = 'Sebastian Mendo — Senior Product Designer';
+export const SITE_TITLE = 'Sebastian Mendo | Senior Product Designer';
 export const SITE_DESCRIPTION =
   'Portfolio of Sebastian Mendo, Senior Product Designer at JPMorgan Chase. AI-first product design for banking, voice, and enterprise software.';
 
@@ -24,5 +24,29 @@ export const SITE_LINKEDIN_URL = 'https://www.linkedin.com/in/sebastianmendo/';
 
 export const SITE_SOCIAL_LINKS: string[] = [SITE_LINKEDIN_URL];
 
-export const WORK_PAGE_BIO =
-  'Sebastian is a Senior Product Designer building core agentic banking experiences for millions of users at JPMorgan Chase. Previously at Salesforce, and Writer AI.';
+export const WORK_PAGE_BIO_LEAD_PREFIX =
+  'Sebastian is a Senior Product Designer building agentic banking experiences at ';
+
+export const WORK_PAGE_BIO_CURRENT = {
+  label: 'Chase',
+  href: 'https://www.chase.com',
+} as const;
+
+export const WORK_PAGE_BIO_PREVIOUS_INTRO = '. Previously at ';
+
+export const WORK_PAGE_BIO_LINKS = [
+  {
+    label: 'Salesforce',
+    href: 'https://www.salesforce.com',
+  },
+  {
+    label: 'Writer AI',
+    href: 'https://writer.com',
+  },
+  {
+    label: 'Chorus AI',
+    href: 'https://www.chorus.ai',
+  },
+] as const;
+
+export const WORK_PAGE_BIO = `${WORK_PAGE_BIO_LEAD_PREFIX}${WORK_PAGE_BIO_CURRENT.label}${WORK_PAGE_BIO_PREVIOUS_INTRO}${WORK_PAGE_BIO_LINKS.map((link) => link.label).join(' ').replace(/ ([^ ]+)$/, ' and $1')}.`;

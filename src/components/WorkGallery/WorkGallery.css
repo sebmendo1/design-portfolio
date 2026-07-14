@@ -65,6 +65,12 @@
   min-height: 0;
   overflow: hidden;
   isolation: isolate;
+  touch-action: pan-y;
+  overscroll-behavior-x: contain;
+}
+
+.work-gallery__viewport--dragging {
+  touch-action: none;
 }
 
 .work-gallery__panels {

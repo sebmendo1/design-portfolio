@@ -1,5 +1,10 @@
 import type { ExportedProject, PortfolioExport } from '@/lib/content-export';
-import { getSiteUrl, SITE_NAME, SITE_SOCIAL_LINKS } from '@/lib/site';
+import {
+  PROFILE,
+  PROFILE_LAST_UPDATED,
+  PROFILE_ROLES,
+} from '@/data/profile';
+import { getSiteUrl, SITE_CONTACT_EMAIL, SITE_NAME, SITE_SOCIAL_LINKS } from '@/lib/site';
 
 type JsonLd = Record<string, unknown>;
 
@@ -11,18 +16,53 @@ function websiteId(siteUrl: string): string {
   return `${siteUrl}/#website`;
 }
 
+function profilePageId(siteUrl: string): string {
+  return `${siteUrl}/about#profilepage`;
+}
+
+function occupationEntries(): JsonLd[] {
+  return PROFILE_ROLES.map((role) => {
+    if (role.endDate) {
+      return {
+        '@type': 'Role',
+        hasOccupation: {
+          '@type': 'Occupation',
+          name: role.role,
+        },
+        startDate: role.startDate,
+        endDate: role.endDate,
+      };
+    }
+
+    return {
+      '@type': 'Occupation',
+      name: role.role,
+    };
+  });
+}
+
 export function buildSiteGraph(): JsonLd {
   const siteUrl = getSiteUrl();
+  const currentRole = PROFILE_ROLES.find((role) => role.current);
+
   const person: JsonLd = {
     '@type': 'Person',
     '@id': personId(siteUrl),
     name: SITE_NAME,
-    jobTitle: 'Senior Product Designer',
+    jobTitle: currentRole?.role ?? PROFILE.publicTitle,
+    description: PROFILE.executiveSummary,
     url: siteUrl,
+    email: SITE_CONTACT_EMAIL,
+    knowsAbout: [...PROFILE.domains],
     worksFor: {
       '@type': 'Organization',
-      name: 'JPMorgan Chase',
+      name: currentRole?.company ?? 'JPMorgan Chase',
     },
+    alumniOf: PROFILE_ROLES.filter((role) => !role.current).map((role) => ({
+      '@type': 'Organization',
+      name: role.company,
+    })),
+    hasOccupation: occupationEntries(),
   };
 
   if (SITE_SOCIAL_LINKS.length > 0) {
@@ -43,27 +83,27 @@ export function buildSiteGraph(): JsonLd {
   };
 }
 
-export function buildProfilePageGraph(data: PortfolioExport): JsonLd {
+export function buildProfilePageGraphFromProfile(): JsonLd {
   const siteUrl = getSiteUrl();
-  const alumniOf = data.experience
-    .filter((exp) => !exp.current)
-    .map((exp) => ({
-      '@type': 'Organization',
-      name: exp.company,
-    }));
-
-  const currentRole = data.experience.find((exp) => exp.current);
+  const currentRole = PROFILE_ROLES.find((role) => role.current);
 
   const person: JsonLd = {
     '@type': 'Person',
     '@id': personId(siteUrl),
     name: SITE_NAME,
-    jobTitle: currentRole?.role ?? 'Senior Product Designer',
+    jobTitle: currentRole?.role ?? PROFILE.publicTitle,
+    description: PROFILE.executiveSummary,
     worksFor: currentRole
       ? { '@type': 'Organization', name: currentRole.company }
       : undefined,
-    alumniOf: alumniOf.length ? alumniOf : undefined,
+    alumniOf: PROFILE_ROLES.filter((role) => !role.current).map((role) => ({
+      '@type': 'Organization',
+      name: role.company,
+    })),
+    knowsAbout: [...PROFILE.domains],
+    hasOccupation: occupationEntries(),
     url: `${siteUrl}/about`,
+    email: SITE_CONTACT_EMAIL,
   };
 
   if (SITE_SOCIAL_LINKS.length > 0) {
@@ -73,8 +113,17 @@ export function buildProfilePageGraph(data: PortfolioExport): JsonLd {
   return {
     '@context': 'https://schema.org',
     '@type': 'ProfilePage',
+    '@id': profilePageId(siteUrl),
+    url: `${siteUrl}/about`,
+    dateModified: PROFILE_LAST_UPDATED,
     mainEntity: person,
   };
+}
+
+/** @deprecated Use buildProfilePageGraphFromProfile for /about. */
+export function buildProfilePageGraph(data: PortfolioExport): JsonLd {
+  void data;
+  return buildProfilePageGraphFromProfile();
 }
 
 export function buildCreativeWorkGraph(project: ExportedProject): JsonLd {
@@ -103,6 +152,15 @@ export function buildCreativeWorkGraph(project: ExportedProject): JsonLd {
 
   if (project.year) {
     creativeWork.dateCreated = String(project.year);
+  }
+
+  if (project.impact?.length) {
+    creativeWork.additionalProperty = project.impact.map((item) => ({
+      '@type': 'PropertyValue',
+      name: item.metric,
+      value: item.value,
+      description: item.context,
+    }));
   }
 
   const breadcrumbs: JsonLd = {

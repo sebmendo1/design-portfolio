@@ -7,21 +7,34 @@ import {
   DISSOLVE_REVEAL_STAGGER,
 } from '@/components/DissolveIn/DissolveIn';
 import { ProjectCard } from '@/components/ProjectCard/ProjectCard';
-import type { Project } from '@/data/projects';
+import '@/components/StreamingText/StreamingText.css';
+import type { ProjectCardSummary } from '@/lib/project-cards';
 
 type AnimatedProjectCardProps = {
-  project: Project;
+  project: ProjectCardSummary;
   index: number;
-  reveal: boolean;
+  reveal?: boolean;
+  streamIn?: boolean;
   onNavigate?: (href: string) => void;
 };
 
 export function AnimatedProjectCard({
   project,
   index,
-  reveal,
+  reveal = true,
+  streamIn = false,
   onNavigate,
 }: AnimatedProjectCardProps) {
+  if (streamIn) {
+    return (
+      <div className="work-page__card-reveal streaming-text__unit streaming-text__unit--visible">
+        <div className="streaming-text__word work-page__card-reveal-inner">
+          <ProjectCard project={project} onNavigate={onNavigate} />
+        </div>
+      </div>
+    );
+  }
+
   return (
     <DissolveIn
       className="work-page__card-reveal"
