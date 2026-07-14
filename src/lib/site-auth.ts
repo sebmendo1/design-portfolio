@@ -2,9 +2,11 @@ import { createHmac, createHash, randomBytes, timingSafeEqual } from 'crypto';
 
 export const SITE_SESSION_COOKIE = 'site_session';
 
-export function isSiteProtectionEnabled(): boolean {
-  if (process.env.VERCEL_ENV !== 'production') return false;
-  return Boolean(process.env.SITE_PASSWORD);
+const PROTECTED_HOSTS = new Set(['sebmendo.design', 'www.sebmendo.design']);
+
+export function isSiteProtectionEnabled(hostname: string): boolean {
+  if (!process.env.SITE_PASSWORD) return false;
+  return PROTECTED_HOSTS.has(hostname.toLowerCase());
 }
 
 export function createSiteSessionToken(): string {

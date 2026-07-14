@@ -44,7 +44,7 @@ function handleSiteAuth(request: NextRequest): NextResponse | null {
 export function proxy(request: NextRequest) {
   const { pathname } = request.nextUrl;
 
-  if (isSiteProtectionEnabled()) {
+  if (isSiteProtectionEnabled(request.nextUrl.hostname)) {
     const siteResponse = handleSiteAuth(request);
     if (siteResponse) return siteResponse;
   }
