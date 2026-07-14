@@ -1,8 +1,6 @@
 import { siteLoginAction } from './actions';
 import styles from './login.module.css';
 
-export const dynamic = 'force-dynamic';
-
 interface Props {
   searchParams: Promise<{ error?: string; redirect?: string }>;
 }
