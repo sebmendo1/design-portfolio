@@ -1,0 +1,88 @@
+.root {
+  min-height: 100dvh;
+  display: grid;
+  place-items: center;
+  padding: 24px;
+  background: #f4f3f2;
+}
+
+.card {
+  width: min(100%, 360px);
+  padding: 32px 28px;
+  background: rgba(255, 255, 255, 0.96);
+  border: 1px solid rgba(0, 0, 0, 0.08);
+  border-radius: 16px;
+  box-shadow: 0 16px 40px rgba(0, 0, 0, 0.08);
+}
+
+.title {
+  margin: 0 0 8px;
+  font-size: 20px;
+  font-weight: 600;
+  color: #262626;
+}
+
+.subtitle {
+  margin: 0 0 24px;
+  font-size: 14px;
+  line-height: 1.5;
+  color: #666666;
+}
+
+.error {
+  margin: 0 0 16px;
+  font-size: 14px;
+  color: #b42318;
+}
+
+.fieldGroup {
+  margin-bottom: 16px;
+}
+
+.label {
+  display: block;
+  margin-bottom: 8px;
+  font-size: 13px;
+  font-weight: 500;
+  color: #444444;
+}
+
+.input {
+  width: 100%;
+  box-sizing: border-box;
+  padding: 10px 12px;
+  border: 1px solid rgba(0, 0, 0, 0.12);
+  border-radius: 10px;
+  font: inherit;
+  font-size: 15px;
+  color: #262626;
+  background: #ffffff;
+}
+
+.input:focus-visible {
+  outline: 2px solid #000000;
+  outline-offset: 2px;
+}
+
+.submit {
+  width: 100%;
+  padding: 10px 16px;
+  border: none;
+  border-radius: 100px;
+  font: inherit;
+  font-size: 15px;
+  font-weight: 500;
+  color: #ffffff;
+  background: #262626;
+  cursor: pointer;
+  transition: background 0.15s ease;
+}
+
+.submit:hover {
+  background: #1a1a1a;
+}
+
+.submit:focus-visible {
+  outline: 2px solid #000000;
+  outline-offset: 2px;
+}
