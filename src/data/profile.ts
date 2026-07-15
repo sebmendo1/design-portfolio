@@ -42,7 +42,7 @@ export const PROFILE = {
     paragraphs: [
       'I\'m a Senior Product Designer at Chase working on Consumer AI. I\'ve designed and shipped voice agents, RCS bots, and conversational flows within the regulated environment of consumer banking.',
       'Previously, I worked with some incredible people at Salesforce, Writer AI, and Chorus AI, where we designed AI experiences since before the launch of ChatGPT.',
-      'Outside of Chase I like to explore the constraints of design through my own iOS apps, and prototype with Cursor and Claude about as much as I design in Figma. You\'ll likely find me at any run club or marathon event.',
+      'Outside of work, I like to design my own iOS apps, and participate in tech meetups and run clubs',
     ],
   },
   executiveSummary:
