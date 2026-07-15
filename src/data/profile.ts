@@ -40,7 +40,7 @@ export const PROFILE = {
   aboutIntro: {
     title: 'Hey, I\'m Seb.',
     paragraphs: [
-      'I\'m a Senior Product Designer at Chase working on Consumer AI. I\'ve designed and shipped voice agents, RCS bots, and conversational flows within the regulated environment of consumer banking.',
+      'I\'m a Senior Product Designer at Chase working on Consumer AI. I\'ve designed and shipped voice agents, RCS bots, and conversational flows within the regulated environment of consumer banking, partnering with flagship frontier AI labs.',
       'Previously, I worked with some incredible people at Salesforce, Writer AI, and Chorus AI, where we designed AI experiences since before the launch of ChatGPT.',
       'Outside of work, I like to design my own iOS apps, and participate in tech meetups and run clubs',
     ],

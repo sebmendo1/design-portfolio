@@ -3,10 +3,18 @@
   min-height: 100dvh;
 }
 
+.about-page main#main-content {
+  padding-top: 32px;
+}
+
 .about-page__content {
+  width: 100%;
   max-width: 752px;
   margin: 0 auto;
-  padding: 64px 24px 32px;
+  padding: 48px;
+  border: 1px solid #ececec;
+  border-radius: 32px;
+  box-sizing: border-box;
 }
 
 .about-page__heading {
@@ -40,11 +48,15 @@
 }
 
 @media (max-width: 768px) {
-  .about-page__content {
-    padding: 32px 16px 24px;
-  }
-
   .about-page__heading {
     font-size: 22px;
+  }
+}
+
+@media (max-width: 640px) {
+  .about-page__content {
+    margin-left: 16px;
+    margin-right: 16px;
+    padding: 48px 24px;
   }
 }
