@@ -1,0 +1,67 @@
+.scroll-hint {
+  position: absolute;
+  bottom: max(20px, env(safe-area-inset-bottom));
+  left: 50%;
+  transform: translateX(-50%);
+  z-index: 6;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 32px;
+  height: 32px;
+  padding: 0;
+  border: none;
+  border-radius: 100px;
+  background: rgba(0, 0, 0, 0.06);
+  color: #888888;
+  cursor: pointer;
+  pointer-events: auto;
+  transition:
+    background 0.15s ease,
+    color 0.15s ease;
+}
+
+.scroll-hint:hover {
+  background: rgba(0, 0, 0, 0.09);
+  color: #666666;
+}
+
+.scroll-hint:focus-visible {
+  outline: 2px solid #000000;
+  outline-offset: 2px;
+}
+
+.scroll-hint__icon {
+  display: flex;
+  animation: scroll-hint-nudge 2.2s ease-in-out infinite;
+}
+
+@keyframes scroll-hint-nudge {
+  0%,
+  100% {
+    transform: translateY(-1px);
+    opacity: 0.55;
+  }
+
+  50% {
+    transform: translateY(2px);
+    opacity: 0.95;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .scroll-hint__icon {
+    animation: none;
+    opacity: 0.75;
+  }
+}
+
+@media (max-width: 900px) {
+  .scroll-hint {
+    bottom: max(14px, env(safe-area-inset-bottom));
+  }
+}
+
+.scroll-hint--fixed {
+  position: fixed;
+}

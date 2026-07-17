@@ -4,6 +4,7 @@ import { useRef, useState, useEffect, useCallback, useMemo, type ReactNode, type
 import Link from 'next/link';
 import {
   motion,
+  AnimatePresence,
   useMotionValue,
   useSpring,
   useTransform,
@@ -20,6 +21,7 @@ import { getVideoPoster } from '@/data/assets';
 import { LazyAutoplayVideo } from '@/components/LazyAutoplayVideo/LazyAutoplayVideo';
 import { OptimizedImage } from '@/components/OptimizedImage/OptimizedImage';
 import { PhoneStencil } from '@/components/PhoneStencil/PhoneStencil';
+import { ScrollHint } from '@/components/ScrollHint/ScrollHint';
 import './CaseStudyScrolly.css';
 
 /** Trackpad travel (px) that initiates a section change. */
@@ -304,6 +306,18 @@ function StaticFallback({
 }) {
   const { frame, src, video, url, screenAspectRatio } = config.stage.centerpiece;
   const title = config.title;
+  const [showScrollHint, setShowScrollHint] = useState(true);
+
+  useEffect(() => {
+    const onScroll = () => setShowScrollHint(window.scrollY < 48);
+    onScroll();
+    window.addEventListener('scroll', onScroll, { passive: true });
+    return () => window.removeEventListener('scroll', onScroll);
+  }, []);
+
+  const scrollToNext = () => {
+    window.scrollBy({ top: window.innerHeight * 0.45, behavior: 'smooth' });
+  };
 
   return (
     <article className="cs-article" aria-label={config.title}>
@@ -360,6 +374,9 @@ function StaticFallback({
           </div>
         </div>
       </div>
+      <AnimatePresence>
+        {showScrollHint && <ScrollHint fixed onClick={scrollToNext} />}
+      </AnimatePresence>
       </div>
     </article>
   );
@@ -652,6 +669,11 @@ export function CaseStudyScrolly({
           </div>
         </div>
       </div>
+      <AnimatePresence>
+        {activeIndex === 0 && (
+          <ScrollHint onClick={() => nudgeProgress(1)} />
+        )}
+      </AnimatePresence>
       </div>
     </article>
   );
