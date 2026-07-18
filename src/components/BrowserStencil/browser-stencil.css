@@ -1,0 +1,144 @@
+/*
+ * macOS browser stencil — sizes from host container (device-card / card-visual).
+ * --browser-w is set via ResizeObserver (see useBrowserFrameWidth.ts).
+ * Do not add container-type on .browser-stencil — it would steal cqw/cqh from the host.
+ */
+.browser-stencil {
+  --browser-w: 480px;
+  --browser-chrome: clamp(32px, calc(var(--browser-w) * 0.0875), 42px);
+  --content-ar: 1.499;
+  width: min(
+    100cqw,
+    calc((100cqh - var(--browser-chrome)) * var(--content-ar))
+  );
+  max-width: 100%;
+  max-height: 100%;
+  margin-inline: auto;
+  flex-shrink: 0;
+  display: flex;
+  flex-direction: column;
+  background: #ffffff;
+  border-radius: clamp(8px, calc(var(--browser-w) * 0.025), 12px);
+  overflow: hidden;
+  box-shadow:
+    0 0 0 1px rgba(0, 0, 0, 0.09),
+    0 calc(var(--browser-w) * 0.017) calc(var(--browser-w) * 0.067) rgba(0, 0, 0, 0.1);
+}
+
+.browser-stencil__chrome {
+  height: var(--browser-chrome);
+  min-height: var(--browser-chrome);
+  background: #e8e8e8;
+  display: flex;
+  align-items: center;
+  padding: 0 calc(var(--browser-w) * 0.029);
+  gap: calc(var(--browser-w) * 0.017);
+  border-bottom: 1px solid #d0d0d0;
+  flex-shrink: 0;
+}
+
+.browser-stencil__dots {
+  display: flex;
+  align-items: center;
+  gap: calc(var(--browser-w) * 0.0125);
+  flex-shrink: 0;
+}
+
+.browser-stencil__dot {
+  display: block;
+  width: calc(var(--browser-w) * 0.025);
+  height: calc(var(--browser-w) * 0.025);
+  min-width: 8px;
+  min-height: 8px;
+  border-radius: 50%;
+  flex-shrink: 0;
+}
+
+.browser-stencil__dot--red {
+  background: #ff5f57;
+}
+
+.browser-stencil__dot--yellow {
+  background: #febc2e;
+}
+
+.browser-stencil__dot--green {
+  background: #28c840;
+}
+
+.browser-stencil__nav {
+  display: flex;
+  align-items: center;
+  gap: calc(var(--browser-w) * 0.008);
+  margin-left: calc(var(--browser-w) * 0.017);
+  flex-shrink: 0;
+}
+
+.browser-stencil__nav-icon {
+  width: calc(var(--browser-w) * 0.033);
+  height: calc(var(--browser-w) * 0.033);
+  min-width: 12px;
+  min-height: 12px;
+  color: #888888;
+}
+
+.browser-stencil__url-bar {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  gap: calc(var(--browser-w) * 0.0125);
+  background: #ffffff;
+  border-radius: calc(var(--browser-w) * 0.0125);
+  padding: calc(var(--browser-w) * 0.01) calc(var(--browser-w) * 0.021);
+  margin: 0 calc(var(--browser-w) * 0.017);
+  min-width: 0;
+}
+
+.browser-stencil__lock {
+  width: calc(var(--browser-w) * 0.021);
+  height: calc(var(--browser-w) * 0.025);
+  min-width: 8px;
+  min-height: 10px;
+  color: #888888;
+  flex-shrink: 0;
+}
+
+.browser-stencil__url-text {
+  font-size: clamp(10px, calc(var(--browser-w) * 0.025), 12px);
+  color: #555555;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.browser-stencil__spacer {
+  width: calc(var(--browser-w) * 0.125);
+  min-width: 36px;
+  flex-shrink: 0;
+}
+
+.browser-stencil__screen {
+  position: relative;
+  aspect-ratio: var(--content-ar);
+  width: 100%;
+  flex: 0 1 auto;
+  min-height: 0;
+  background: #f8f8f8;
+  overflow: hidden;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.browser-stencil__media {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+  object-position: center;
+  display: block;
+  background: #f8f8f8;
+}
+
+.browser-stencil--case-study {
+  align-self: center;
+}

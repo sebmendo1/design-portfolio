@@ -4,6 +4,7 @@ import { CaseStudyPageContent } from '@/components/CaseStudyPageContent/CaseStud
 import { StructuredData } from '@/components/StructuredData/StructuredData';
 import { projects } from '@/data/projects';
 import { getMergedProject } from '@/lib/cms-data';
+import { resolveCaseStudyConfig } from '@/lib/case-study-config';
 import { exportMergedProject } from '@/lib/content-export';
 import { buildCreativeWorkGraph } from '@/lib/json-ld';
 import { canonicalPath } from '@/lib/metadata';
@@ -49,11 +50,13 @@ export default async function CaseStudyPage({ params }: Props) {
   if (!project) notFound();
 
   const exported = exportMergedProject(project);
+  const caseStudyConfig = resolveCaseStudyConfig(project);
+  if (!caseStudyConfig) notFound();
 
   return (
     <>
       <StructuredData data={buildCreativeWorkGraph(exported)} />
-      <CaseStudyPageContent project={project} />
+      <CaseStudyPageContent project={project} config={caseStudyConfig} />
     </>
   );
 }

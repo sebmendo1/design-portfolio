@@ -1,14 +1,18 @@
 .case-study {
   background: #ffffff;
-  min-height: 100dvh;
+  height: 100dvh;
+  overflow: hidden;
 }
 
-/* Header row: back link + meta */
+.case-study__content,
+.case-study__content > main {
+  height: 100%;
+  overflow: hidden;
+}
+
+/* Header hidden — scrolly uses floating back inside the full-viewport stage */
 .case-study__header {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  padding: 24px 32px 0;
+  display: none;
 }
 
 .case-study__back {
@@ -88,13 +92,6 @@
   background: #f4f3f2;
   border-radius: 100px;
   padding: 4px 12px;
-}
-
-/* Hide the native header on mobile — the scrolly provides a floating back button */
-@media (max-width: 900px) {
-  .case-study__header {
-    display: none;
-  }
 }
 
 @media (max-width: 768px) {

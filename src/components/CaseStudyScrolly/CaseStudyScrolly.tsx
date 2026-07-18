@@ -1,204 +1,49 @@
 'use client';
 
-import { useRef, useState, useEffect, useCallback, useMemo, type ReactNode, type RefObject } from 'react';
+import { Fragment, useEffect, useRef, type ReactNode } from 'react';
 import Link from 'next/link';
-import {
-  motion,
-  AnimatePresence,
-  useScroll,
-  useSpring,
-  useTransform,
-  useReducedMotion,
-  useMotionValueEvent,
-  type MotionValue,
-} from 'framer-motion';
-import type { CaseStudyConfig, Beat } from './types';
-import {
-  splitIntoUnits,
-  streamDurationMs,
-  StreamingText,
-} from '@/components/StreamingText/StreamingText';
+import Lenis from 'lenis';
+import type { CaseStudyConfig } from './types';
 import { getVideoPoster } from '@/data/assets';
-import { LazyAutoplayVideo } from '@/components/LazyAutoplayVideo/LazyAutoplayVideo';
 import { OptimizedImage } from '@/components/OptimizedImage/OptimizedImage';
 import { PhoneStencil } from '@/components/PhoneStencil/PhoneStencil';
-import { ScrollHint } from '@/components/ScrollHint/ScrollHint';
-import { useLenis } from 'lenis/react';
+import { BrowserStencil } from '@/components/BrowserStencil/BrowserStencil';
+import {
+  DissolveIn,
+  DISSOLVE_REVEAL_DURATION,
+  DISSOLVE_REVEAL_EASE,
+  DISSOLVE_REVEAL_STAGGER,
+} from '@/components/DissolveIn/DissolveIn';
 import './CaseStudyScrolly.css';
 
-function resolveActiveIndex(progress: number, beats: Beat[]): number {
-  for (let i = 0; i < beats.length; i++) {
-    const [start, end] = beats[i].range;
-    if (progress >= start && progress < end) return i;
-  }
+const CHASE_HERO_SRC = '/assets/logos/chase-hero.png?v=11';
 
-  const lastEnd = beats[beats.length - 1]?.range[1] ?? 1;
-  if (progress >= lastEnd) return beats.length;
-
-  return 0;
+function isChaseCompany(company?: string): boolean {
+  return company === 'JPMorgan Chase' || company === 'Chase';
 }
 
-// ─── Device frames (static — no animation) ───────────────────────────────────
-
-function BrowserFrame({
-  src,
-  video,
-  url,
-  title,
-}: {
-  src?: string;
-  video?: string;
-  url?: string;
-  title: string;
-}) {
-  const poster = video ? getVideoPoster(video) : undefined;
-
-  return (
-    <div className="cs-browser">
-      <div className="cs-browser__chrome">
-        <div className="cs-browser__dots">
-          <span className="cs-dot cs-dot--red" />
-          <span className="cs-dot cs-dot--yellow" />
-          <span className="cs-dot cs-dot--green" />
-        </div>
-        <div className="cs-browser__nav">
-          <svg className="cs-browser__nav-icon" viewBox="0 0 16 16" fill="none">
-            <path d="M10 3L5 8l5 5" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/>
-          </svg>
-          <svg className="cs-browser__nav-icon" viewBox="0 0 16 16" fill="none">
-            <path d="M6 3l5 5-5 5" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/>
-          </svg>
-        </div>
-        <div className="cs-browser__url-bar">
-          <svg className="cs-browser__lock" viewBox="0 0 12 14" fill="none">
-            <rect x="1.5" y="6" width="9" height="7" rx="1.5" stroke="currentColor" strokeWidth="1.2"/>
-            <path d="M4 6V4a2 2 0 0 1 4 0v2" stroke="currentColor" strokeWidth="1.2" strokeLinecap="round"/>
-          </svg>
-          <span className="cs-browser__url-text">{url ?? 'help.salesforce.com'}</span>
-        </div>
-        <div className="cs-browser__spacer" />
-      </div>
-      <div className="cs-browser__screen">
-        {video ? (
-          <LazyAutoplayVideo
-            className="cs-device-video"
-            src={video}
-            poster={poster}
-          />
-        ) : src ? (
-          <OptimizedImage
-            src={src}
-            alt={`${title} interface screenshot`}
-            width={800}
-            height={500}
-            className="cs-device-img"
-            sizes="50vw"
-          />
-        ) : null}
-      </div>
-    </div>
-  );
+function showsDesktopHeroLogo(company?: string, companyLogo?: string): boolean {
+  return Boolean(companyLogo && (isChaseCompany(company) || company === 'Salesforce'));
 }
 
-// ─── Animated text section ────────────────────────────────────────────────────
+function heroLogoClassName(company?: string, companyLogo?: string): string {
+  const classes = ['cs-section__logo'];
+  if (!showsDesktopHeroLogo(company, companyLogo)) return classes.join(' ');
 
-function TextSection({ beat, smooth, isFirst, isLast, isActive, outroBlend, slot, hasStreamedRef }: {
-  beat: Beat;
-  smooth: MotionValue<number>;
-  isFirst: boolean;
-  isLast: boolean;
-  isActive: boolean;
-  outroBlend: MotionValue<number>;
-  slot?: ReactNode;
-  hasStreamedRef: RefObject<boolean>;
-}) {
-  const [hasStreamed, setHasStreamed] = useState(() => hasStreamedRef.current);
-  const [a, b] = beat.range;
-  const fadeSpan = (b - a) * 0.5;
-  const fadeIn  = Math.min(a + fadeSpan, b);
-  const fadeOut = Math.max(b - fadeSpan, fadeIn);
-
-  const markStreamed = useCallback(() => {
-    if (hasStreamedRef.current) return;
-    hasStreamedRef.current = true;
-    setHasStreamed(true);
-  }, [hasStreamedRef]);
-
-  // Last beat holds at full opacity through its range; exits only via outro crossfade
-  const rangeOpacity = useTransform(
-    smooth,
-    isLast
-      ? [a, fadeIn, b]
-      : [a, fadeIn, fadeOut, b],
-    isLast
-      ? [isFirst ? 1 : 0, 1, 1]
-      : [isFirst ? 1 : 0, 1, 1, 0],
-  );
-  const opacity = useTransform(
-    [rangeOpacity, outroBlend],
-    ([range, blend]: number[]) => (isLast ? range * (1 - blend) : range),
-  );
-  const y = useTransform(
-    smooth,
-    isLast
-      ? [a, fadeIn, b]
-      : [a, fadeIn, fadeOut, b],
-    isLast
-      ? [isFirst ? 0 : 28, 0, 0]
-      : [isFirst ? 0 : 28, 0, 0, -28],
-  );
-  // Sections at opacity 0 are invisible but still block pointer events without this.
-  const pointerEvents = useTransform(opacity, (o: number) => (o > 0.05 ? 'auto' : 'none'));
-
-  const labelUnits = useMemo(
-    () => (beat.label ? splitIntoUnits(beat.label) : []),
-    [beat.label],
-  );
-  const headlineUnits = useMemo(
-    () => splitIntoUnits(beat.headline),
-    [beat.headline],
-  );
-  const headlineDelayMs = streamDurationMs(labelUnits.length);
-  const bodyDelayMs = headlineDelayMs + streamDurationMs(headlineUnits.length);
-  const showInstant = hasStreamed && isActive;
-
-  return (
-    <motion.section className={`cs-section${isFirst ? ' cs-section--hero' : ''}`} style={{ opacity, y, pointerEvents }}>
-      {beat.label && (
-        <StreamingText
-          as="p"
-          className="cs-section__label"
-          text={beat.label}
-          reveal={isActive}
-          instant={showInstant}
-        />
-      )}
-      <StreamingText
-        as={isFirst ? 'h1' : 'h2'}
-        className="cs-section__headline"
-        text={beat.headline}
-        reveal={isActive}
-        instant={showInstant}
-        startDelayMs={headlineDelayMs}
-        onComplete={beat.body ? undefined : markStreamed}
-      />
-      {beat.body && (
-        <StreamingText
-          as="p"
-          className="cs-section__body"
-          text={beat.body}
-          reveal={isActive}
-          instant={showInstant}
-          startDelayMs={bodyDelayMs}
-          onComplete={markStreamed}
-        />
-      )}
-      {isFirst && slot && <div className="cs-section__slot">{slot}</div>}
-    </motion.section>
-  );
+  classes.push('cs-section__logo--brand');
+  if (isChaseCompany(company)) classes.push('cs-section__logo--chase');
+  if (company === 'Salesforce') classes.push('cs-section__logo--salesforce');
+  return classes.join(' ');
 }
 
-// ─── Home navigation (dissolve exit when provided) ────────────────────────────
+/** Wheel travel multiplier when scrolling from outside the text column. */
+const EXTERNAL_SCROLL_BOOST = 1.4;
+
+function normalizeWheelDelta(deltaY: number, deltaMode: number): number {
+  if (deltaMode === 1) return deltaY * 40;
+  if (deltaMode === 2) return deltaY * 500;
+  return deltaY;
+}
 
 function HomeLink({
   className,
@@ -224,274 +69,196 @@ function HomeLink({
   );
 }
 
-// ─── Outro: crossfades in as smooth progresses from last beat to 1.0 ────────
-
-function OutroSection({
-  outroBlend,
-  isActive,
-  hasStreamedRef,
-  onHomeNavigate,
-}: {
-  outroBlend: MotionValue<number>;
-  isActive: boolean;
-  hasStreamedRef: RefObject<boolean>;
-  onHomeNavigate?: (href: string) => void;
-}) {
-  const [hasStreamed, setHasStreamed] = useState(() => hasStreamedRef.current);
-  const opacity       = outroBlend;
-  const y             = useTransform(outroBlend, [0, 1], [16, 0]);
-  const pointerEvents = useTransform(opacity, (o: number) => (o > 0.05 ? 'auto' : 'none'));
-  const labelDelayMs = streamDurationMs(splitIntoUnits('More work').length);
-  const showInstant = hasStreamed && isActive;
-
-  const markStreamed = useCallback(() => {
-    if (hasStreamedRef.current) return;
-    hasStreamedRef.current = true;
-    setHasStreamed(true);
-  }, [hasStreamedRef]);
-
-  return (
-    <motion.section className="cs-section cs-section--outro" style={{ opacity, y, pointerEvents }}>
-      <StreamingText
-        as="p"
-        className="cs-section__label"
-        text="More work"
-        reveal={isActive}
-        instant={showInstant}
-      />
-      <StreamingText
-        as="h2"
-        className="cs-section__headline"
-        text="See the rest of my projects."
-        reveal={isActive}
-        instant={showInstant}
-        startDelayMs={labelDelayMs}
-        onComplete={markStreamed}
-      />
-      <div className="cs-section__slot">
-        <HomeLink className="cs-outro__btn" onHomeNavigate={onHomeNavigate}>
-          View all projects
-        </HomeLink>
-      </div>
-    </motion.section>
-  );
-}
-
-// ─── Reduced-motion fallback ──────────────────────────────────────────────────
-
-function StaticFallback({
-  config,
-  slot,
-  onHomeNavigate,
-}: {
-  config: CaseStudyConfig;
-  slot?: ReactNode;
-  onHomeNavigate?: (href: string) => void;
-}) {
+function DevicePreview({ config }: { config: CaseStudyConfig }) {
   const { frame, src, video, url, screenAspectRatio } = config.stage.centerpiece;
   const title = config.title;
-  const [showScrollHint, setShowScrollHint] = useState(true);
-
-  useEffect(() => {
-    const onScroll = () => setShowScrollHint(window.scrollY < 48);
-    onScroll();
-    window.addEventListener('scroll', onScroll, { passive: true });
-    return () => window.removeEventListener('scroll', onScroll);
-  }, []);
-
-  const scrollToNext = () => {
-    window.scrollBy({ top: window.innerHeight * 0.45, behavior: 'smooth' });
-  };
 
   return (
-    <article className="cs-article" aria-label={config.title}>
-      <div className="cs-layout cs-layout--static">
-      <div className="cs-text-col cs-text-col--static">
-        {config.beats.map((beat, i) => (
-          <section key={beat.id} className={`cs-section cs-section--static${i === 0 ? ' cs-section--hero' : ''}`}>
-            {beat.label && <p className="cs-section__label">{beat.label}</p>}
-            {i === 0 ? (
-              <h1 className="cs-section__headline">{beat.headline}</h1>
-            ) : (
-              <h2 className="cs-section__headline">{beat.headline}</h2>
-            )}
-            {beat.body && <p className="cs-section__body">{beat.body}</p>}
-            {i === 0 && slot && <div className="cs-section__slot">{slot}</div>}
-          </section>
-        ))}
-        <section className="cs-section cs-section--static cs-section--outro-static">
-          <p className="cs-section__label">More work</p>
-          <h2 className="cs-section__headline">See the rest of my projects.</h2>
-          <div className="cs-section__slot">
-            <HomeLink className="cs-outro__btn" onHomeNavigate={onHomeNavigate}>
-              View all projects
-            </HomeLink>
-          </div>
-        </section>
-      </div>
-      <div className="cs-visual-col">
-        <div className="cs-sticky">
-          <div className="cs-device-card">
-            {frame === 'browser' && (
-              <BrowserFrame src={src} video={video} url={url} title={title} />
-            )}
-            {frame === 'phone' && (
-              <PhoneStencil
-                src={src}
-                video={video}
-                poster={video ? getVideoPoster(video) : undefined}
-                alt={`${title} app screenshot`}
-                screenAspectRatio={screenAspectRatio}
-                variant="case-study"
-              />
-            )}
-            {frame === 'none' && src && (
-              <OptimizedImage
-                src={src}
-                alt={`${title} product screenshot`}
-                width={400}
-                height={400}
-                className="cs-device-standalone-img"
-                sizes="100vw"
-              />
-            )}
-          </div>
-        </div>
-      </div>
-      <AnimatePresence>
-        {showScrollHint && <ScrollHint fixed onClick={scrollToNext} />}
-      </AnimatePresence>
-      </div>
-    </article>
+    <div className="cs-device-card">
+      {frame === 'browser' && (
+        <BrowserStencil
+          src={src}
+          video={video}
+          poster={video ? getVideoPoster(video) : undefined}
+          url={url}
+          title={title}
+          screenAspectRatio={screenAspectRatio}
+          variant="case-study"
+        />
+      )}
+      {frame === 'phone' && (
+        <PhoneStencil
+          src={src}
+          video={video}
+          poster={video ? getVideoPoster(video) : undefined}
+          alt={`${title} app screenshot`}
+          screenAspectRatio={screenAspectRatio}
+          variant="case-study"
+        />
+      )}
+      {frame === 'none' && src && (
+        <OptimizedImage
+          src={src}
+          alt={`${title} product screenshot`}
+          width={400}
+          height={400}
+          className="cs-device-standalone-img"
+          sizes="(max-width: 900px) 100vw, 50vw"
+        />
+      )}
+    </div>
   );
 }
-
-// ─── Main export ──────────────────────────────────────────────────────────────
 
 export function CaseStudyScrolly({
   config,
+  company,
+  companyLogo,
   slot,
   onHomeNavigate,
 }: {
   config: CaseStudyConfig;
+  company?: string;
+  companyLogo?: string;
   slot?: ReactNode;
   onHomeNavigate?: (href: string) => void;
 }) {
-  const shouldReduce = useReducedMotion();
-  const lenis = useLenis();
-  const trackRef = useRef<HTMLDivElement>(null);
-  const [activeIndex, setActiveIndex] = useState(0);
-  const [showScrollHint, setShowScrollHint] = useState(true);
-  const sectionStreamedRefs = useRef(
-    Array.from({ length: config.beats.length + 1 }, () => ({ current: false })),
-  );
+  const layoutRef = useRef<HTMLDivElement>(null);
+  const scrollWrapperRef = useRef<HTMLDivElement>(null);
+  const scrollContentRef = useRef<HTMLDivElement>(null);
+  const lenisRef = useRef<Lenis | null>(null);
 
-  const { scrollYProgress } = useScroll({
-    target: trackRef,
-    offset: ['start start', 'end end'],
-  });
+  useEffect(() => {
+    const wrapper = scrollWrapperRef.current;
+    const content = scrollContentRef.current;
+    const layout = layoutRef.current;
+    if (!wrapper || !content || !layout) return;
 
-  const smooth = useSpring(scrollYProgress, {
-    stiffness: 170,
-    damping: 30,
-    mass: 0.6,
-    restDelta: 0.001,
-  });
-
-  const lastBeatEnd = config.beats[config.beats.length - 1]?.range[1] ?? 0.85;
-  const outroBlend = useTransform(smooth, [lastBeatEnd, 1], [0, 1]);
-
-  useMotionValueEvent(smooth, 'change', (progress) => {
-    setActiveIndex(resolveActiveIndex(progress, config.beats));
-  });
-
-  useMotionValueEvent(scrollYProgress, 'change', (progress) => {
-    setShowScrollHint(progress < 0.04);
-  });
-
-  const nudgeScroll = useCallback(() => {
-    const delta = window.innerHeight * 0.15;
-    if (lenis) {
-      lenis.scrollTo(lenis.scroll + delta, { lerp: 0.1 });
+    const prefersReduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    if (prefersReduced) {
+      wrapper.style.overflowY = 'auto';
       return;
     }
-    window.scrollBy({ top: delta, behavior: 'smooth' });
-  }, [lenis]);
 
-  const { frame, src, video, url, screenAspectRatio } = config.stage.centerpiece;
-  const title = config.title;
+    const lenis = new Lenis({
+      wrapper,
+      content,
+      smoothWheel: true,
+      lerp: 0.09,
+    });
+    lenisRef.current = lenis;
 
-  if (shouldReduce) {
-    return <StaticFallback config={config} slot={slot} onHomeNavigate={onHomeNavigate} />;
-  }
+    let rafId = 0;
+    const raf = (time: number) => {
+      lenis.raf(time);
+      rafId = requestAnimationFrame(raf);
+    };
+    rafId = requestAnimationFrame(raf);
+
+    const onLayoutWheel = (event: WheelEvent) => {
+      if (wrapper.contains(event.target as Node)) return;
+      const delta = normalizeWheelDelta(event.deltaY, event.deltaMode) * EXTERNAL_SCROLL_BOOST;
+      lenis.scrollTo(lenis.scroll + delta);
+      event.preventDefault();
+    };
+
+    layout.addEventListener('wheel', onLayoutWheel, { passive: false });
+
+    return () => {
+      cancelAnimationFrame(rafId);
+      layout.removeEventListener('wheel', onLayoutWheel);
+      lenis.destroy();
+      lenisRef.current = null;
+    };
+  }, []);
+
+  useEffect(() => {
+    const layout = layoutRef.current;
+    if (!layout) return;
+
+    const previousOverflow = document.body.style.overflow;
+    document.body.style.overflow = 'hidden';
+
+    return () => {
+      document.body.style.overflow = previousOverflow;
+    };
+  }, []);
 
   return (
     <article className="cs-article" aria-label={config.title}>
-      <div
-        ref={trackRef}
-        className="cs-track"
-        style={{ height: `${config.trackHeightVh}dvh` }}
-      >
-      <div className="cs-layout">
-        {/* Left: sticky panel with crossfading text sections */}
-        <div className="cs-text-col">
-          {config.beats.map((beat, i) => (
-            <TextSection
-              key={beat.id}
-              beat={beat}
-              smooth={smooth}
-              isFirst={i === 0}
-              isLast={i === config.beats.length - 1}
-              isActive={activeIndex === i}
-              outroBlend={outroBlend}
-              slot={slot}
-              hasStreamedRef={sectionStreamedRefs.current[i]}
-            />
-          ))}
-          <OutroSection
-            outroBlend={outroBlend}
-            isActive={activeIndex === config.beats.length}
-            hasStreamedRef={sectionStreamedRefs.current[config.beats.length]}
-            onHomeNavigate={onHomeNavigate}
-          />
-        </div>
+      <div ref={layoutRef} className="cs-layout">
+        <HomeLink className="cs-floating-back" onHomeNavigate={onHomeNavigate}>
+          ← Back
+        </HomeLink>
 
-        {/* Right: device frame — no animation, just static inside card */}
-        <div className="cs-visual-col">
-          {/* Floating back button — only visible on mobile (hidden via CSS on desktop) */}
-          <HomeLink className="cs-mobile-back" onHomeNavigate={onHomeNavigate}>
-            ← Back
-          </HomeLink>
-          <div className="cs-device-card">
-            {frame === 'browser' && (
-              <BrowserFrame src={src} video={video} url={url} title={title} />
-            )}
-            {frame === 'phone' && (
-              <PhoneStencil
-                src={src}
-                video={video}
-                poster={video ? getVideoPoster(video) : undefined}
-                alt={`${title} app screenshot`}
-                screenAspectRatio={screenAspectRatio}
-                variant="case-study"
-              />
-            )}
-            {frame === 'none' && src && (
-              <OptimizedImage
-                src={src}
-                alt={`${title} product screenshot`}
-                width={400}
-                height={400}
-                className="cs-device-standalone-img"
-                sizes="50vw"
-              />
-            )}
+        <DissolveIn
+          className="cs-text-col-viewport"
+          duration={DISSOLVE_REVEAL_DURATION}
+          ease={DISSOLVE_REVEAL_EASE}
+        >
+          <div ref={scrollWrapperRef} className="cs-text-col">
+            <div ref={scrollContentRef} className="cs-text-col__content">
+            {config.beats.map((beat, i) => {
+              if (i === 0) {
+                return (
+                  <Fragment key={beat.id}>
+                    <section className="cs-section cs-section--hero">
+                      {(isChaseCompany(company) || companyLogo) && (
+                        <div className={heroLogoClassName(company, companyLogo)}>
+                          <img
+                            src={isChaseCompany(company) ? CHASE_HERO_SRC : companyLogo!}
+                            alt={company ?? ''}
+                            className="cs-section__logo-img"
+                            width={isChaseCompany(company) ? 1024 : 960}
+                            height={isChaseCompany(company) ? 190 : 672}
+                            decoding="async"
+                          />
+                        </div>
+                      )}
+                      <h1 className="cs-section__headline">{beat.headline}</h1>
+                      {slot && <div className="cs-section__slot">{slot}</div>}
+                    </section>
+                    {beat.body && (
+                      <section className="cs-section cs-section--intro">
+                        <p className="cs-section__body">{beat.body}</p>
+                      </section>
+                    )}
+                  </Fragment>
+                );
+              }
+
+              return (
+                <section key={beat.id} className="cs-section">
+                  {beat.label && <p className="cs-section__label">{beat.label}</p>}
+                  <h2 className="cs-section__headline">{beat.headline}</h2>
+                  {beat.body && <p className="cs-section__body">{beat.body}</p>}
+                </section>
+              );
+            })}
+
+            <section className="cs-section cs-section--outro">
+              <p className="cs-section__label">More work</p>
+              <h2 className="cs-section__headline">See the rest of my projects.</h2>
+              <div className="cs-section__slot">
+                <HomeLink className="cs-outro__btn" onHomeNavigate={onHomeNavigate}>
+                  View all projects
+                </HomeLink>
+              </div>
+            </section>
           </div>
-        </div>
-      </div>
-      <AnimatePresence>
-        {showScrollHint && <ScrollHint onClick={nudgeScroll} />}
-      </AnimatePresence>
+          </div>
+          <div className="cs-text-col__edge cs-text-col__edge--top" aria-hidden="true" />
+          <div className="cs-text-col__edge cs-text-col__edge--bottom" aria-hidden="true" />
+        </DissolveIn>
+
+        <DissolveIn
+          className="cs-visual-col"
+          delay={DISSOLVE_REVEAL_STAGGER}
+          duration={DISSOLVE_REVEAL_DURATION}
+          ease={DISSOLVE_REVEAL_EASE}
+        >
+          <DevicePreview config={config} />
+        </DissolveIn>
       </div>
     </article>
   );

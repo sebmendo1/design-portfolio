@@ -351,7 +351,15 @@ export const projects: Project[] = [
       slug: 'salesforce-help',
       title: 'Salesforce Help',
       trackHeightVh: 600,
-      stage: { centerpiece: { frame: 'browser', width: 400, video: ASSETS.video.salesforceHelp, url: 'help.salesforce.com/s/contactsupport' } },
+      stage: {
+        centerpiece: {
+          frame: 'browser',
+          width: 400,
+          video: ASSETS.video.salesforceHelp,
+          url: 'help.salesforce.com/s/contactsupport',
+          screenAspectRatio: 1280 / 854,
+        },
+      },
       beats: [
         { id: 'summary',   headline: 'A redesigned Contact Support experience that uses Einstein AI to route customers to the right channel.', body: 'Salesforce Help replaced a wall of support options with a conversational interface: describing your issue routes you directly to the best channel for your situation. No menus, no guessing, no defaulting to the slowest path.', range: [0, 0.15] },
         { id: 'challenge', label: 'Challenge', headline: 'Stop making customers guess how to get help.', body: 'Salesforce offered every support channel a customer could want, and that was the problem. Landing on the Contact Support page meant a wall of options with no signal of which fit the issue, which were available on your plan, or which would be fastest. Customers defaulted to opening a case, often the slowest path, even when chat would have resolved them in minutes.', range: [0.15, 0.32] },

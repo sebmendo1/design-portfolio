@@ -1,21 +1,17 @@
-/* ─── Scroll track: viewport-height container for the sticky layout ─────── */
-.cs-track {
-  position: relative;
-  outline: none;
+/* ─── Fixed viewport stage — page does not scroll ─────────────────────────── */
+.cs-article {
+  height: 100%;
+  min-height: 0;
+  overflow: hidden;
 }
 
-.cs-track:focus-visible {
-  outline: none;
-}
-
-/* ─── Layout: sticky stage pinned to the viewport while track scrolls ──────── */
 .cs-layout {
-  position: sticky;
-  top: 0;
-  height: 100dvh;
+  position: relative;
   display: grid;
-  grid-template-columns: 1fr 50vw;
+  grid-template-columns: 1fr min(50vw, 640px);
   gap: 48px;
+  height: 100%;
+  min-height: 0;
   padding: 24px 32px;
   box-sizing: border-box;
   align-items: stretch;
@@ -23,20 +19,82 @@
   overflow: hidden;
 }
 
-/* ─── Left: text column — sections stack absolutely in the same spot ────────── */
-.cs-text-col {
+/* ─── Text column: internal scroll viewport ───────────────────────────────── */
+.cs-text-col-viewport {
   position: relative;
+  container-type: size;
+  height: 100%;
+  min-height: 0;
+  min-width: 0;
+  isolation: isolate;
 }
 
-/* Each section is pinned to the same coordinates; framer applies opacity + y */
-.cs-section {
+.cs-text-col {
+  position: relative;
+  height: 100%;
+  min-height: 0;
+  overflow: hidden;
+  -webkit-mask-image: linear-gradient(
+    to bottom,
+    transparent 0,
+    #000 48px,
+    #000 calc(100% - 48px),
+    transparent 100%
+  );
+  mask-image: linear-gradient(
+    to bottom,
+    transparent 0,
+    #000 48px,
+    #000 calc(100% - 48px),
+    transparent 100%
+  );
+}
+
+.cs-text-col__edge {
   position: absolute;
-  inset: 0;
+  left: 0;
+  right: 0;
+  height: 48px;
+  pointer-events: none;
+  z-index: 3;
+}
+
+.cs-text-col__edge--top {
+  top: 0;
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+  background: linear-gradient(
+    to bottom,
+    rgba(255, 255, 255, 0.97) 0%,
+    rgba(255, 255, 255, 0.55) 45%,
+    rgba(255, 255, 255, 0) 100%
+  );
+}
+
+.cs-text-col__edge--bottom {
+  bottom: 0;
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+  background: linear-gradient(
+    to top,
+    rgba(255, 255, 255, 0.97) 0%,
+    rgba(255, 255, 255, 0.55) 45%,
+    rgba(255, 255, 255, 0) 100%
+  );
+}
+
+.cs-text-col__content {
+  width: 100%;
+  height: fit-content;
+}
+
+.cs-section {
+  box-sizing: border-box;
+  min-height: 100cqh;
   display: flex;
   flex-direction: column;
   justify-content: center;
-  padding-right: 32px;
-  will-change: opacity, transform;
+  padding: 0 32px 0 0;
 }
 
 .cs-section__label {
@@ -74,16 +132,38 @@
   gap: 16px;
 }
 
-/* Summary (first) beat — same headline scale as the work page bio */
-.cs-section--hero .cs-section__body {
+/* Hero company logo — mobile for all brands; desktop for Chase + Salesforce */
+.cs-section__logo {
+  display: none;
+}
+
+.cs-section__logo--brand {
+  display: flex;
+  align-items: center;
+  margin: 0 0 20px;
+}
+
+.cs-section__logo--brand .cs-section__logo-img {
+  display: block;
+  width: auto;
+  height: 36px;
+  max-width: 240px;
+  object-fit: contain;
+  background: transparent;
+}
+
+.cs-section__logo--salesforce .cs-section__logo-img {
+  height: 40px;
+  max-width: 220px;
+}
+
+.cs-section--intro .cs-section__body {
   font-size: 20px;
   line-height: 1.6;
   color: #666666;
   max-width: 560px;
-  margin-top: 4px;
 }
 
-/* Outro "View all projects" button */
 .cs-outro__btn {
   display: inline-flex;
   align-items: center;
@@ -101,16 +181,11 @@
   opacity: 0.75;
 }
 
-.cs-section--outro-static {
-  border-top: 1px solid #f0f0f0;
-}
-
-.cs-section--outro {
-  z-index: 1;
-}
-
-/* ─── Right: device column — fills column height, no animation ──────────────── */
+/* ─── Device column — fixed, does not scroll ──────────────────────────────── */
 .cs-visual-col {
+  height: 100%;
+  min-height: 0;
+  min-width: 0;
   display: flex;
   align-items: stretch;
 }
@@ -125,166 +200,39 @@
   align-items: center;
   justify-content: center;
   flex: 1;
+  min-height: 0;
   box-sizing: border-box;
   overflow: hidden;
 }
 
-/* ─── Reduced-motion / static fallback ──────────────────────────────────────── */
-.cs-layout--static {
-  position: static;
-  height: auto;
-  overflow: visible;
-  align-items: start;
-  padding-bottom: 120px;
-}
-
-.cs-text-col--static {
-  position: static;
-}
-
-.cs-section--static {
-  position: static;
-  padding: 80px 32px 80px 0;
-  border-top: 1px solid #f0f0f0;
-}
-
-.cs-section--static:first-child {
-  border-top: none;
-  padding-top: 48px;
-}
-
-/* ─── Browser mockup ─────────────────────────────────────────────────────── */
-/*
-  aspect-ratio is on the SCREEN, not the frame. The 42px chrome bar sits on
-  top, making the total frame slightly taller. This ensures the content area
-  exactly matches the video's 1280×854 ratio — no stretch, no bars.
-*/
-.cs-browser {
-  width: 100%;
-  max-height: 100%;
-  display: flex;
-  flex-direction: column;
-  background: #ffffff;
-  border-radius: 12px;
-  overflow: hidden;
-  box-shadow:
-    0 0 0 1px rgba(0, 0, 0, 0.09),
-    0 8px 32px rgba(0, 0, 0, 0.1);
-}
-
-.cs-browser__chrome {
-  height: 42px;
-  min-height: 42px;
-  background: #e8e8e8;
-  display: flex;
-  align-items: center;
-  padding: 0 14px;
-  gap: 8px;
-  border-bottom: 1px solid #d0d0d0;
-  flex-shrink: 0;
-}
-
-.cs-browser__dots {
-  display: flex;
-  align-items: center;
-  gap: 6px;
-  flex-shrink: 0;
-}
-
-.cs-dot {
-  display: block;
-  width: 12px;
-  height: 12px;
-  border-radius: 50%;
-  flex-shrink: 0;
-}
-
-.cs-dot--red    { background: #ff5f57; box-shadow: inset 0 0 0 0.5px rgba(0,0,0,0.12); }
-.cs-dot--yellow { background: #febc2e; box-shadow: inset 0 0 0 0.5px rgba(0,0,0,0.12); }
-.cs-dot--green  { background: #28c840; box-shadow: inset 0 0 0 0.5px rgba(0,0,0,0.12); }
-
-.cs-browser__nav {
-  display: flex;
-  align-items: center;
-  gap: 2px;
-  flex-shrink: 0;
-}
-
-.cs-browser__nav-icon {
-  width: 20px;
-  height: 20px;
-  color: #888888;
-  flex-shrink: 0;
-}
-
-/* URL bar — centered in the chrome, fixed max width */
-.cs-browser__url-bar {
-  flex: 1;
-  max-width: 340px;
-  height: 26px;
-  background: #ffffff;
-  border-radius: 6px;
-  border: 1px solid rgba(0, 0, 0, 0.12);
-  display: flex;
+/* ─── Floating back button ────────────────────────────────────────────────── */
+.cs-floating-back {
+  display: inline-flex;
   align-items: center;
   gap: 5px;
-  padding: 0 10px;
-  margin: 0 auto;
-  box-shadow: inset 0 1px 2px rgba(0, 0, 0, 0.04);
+  position: absolute;
+  top: max(24px, env(safe-area-inset-top));
+  left: 32px;
+  z-index: 10;
+  font-size: 14px;
+  font-weight: 500;
+  color: #000000;
+  text-decoration: none;
+  background: #f4f3f2;
+  border-radius: 100px;
+  padding: 8px 16px;
+  transition: background 0.15s ease;
 }
 
-.cs-browser__lock {
-  width: 10px;
-  height: 12px;
-  color: #888888;
-  flex-shrink: 0;
+.cs-floating-back:hover {
+  background: #e8e7e6;
 }
 
-.cs-browser__url-text {
-  font-size: 11.5px;
-  color: #333333;
-  font-family: -apple-system, 'SF Pro Text', system-ui, sans-serif;
-  white-space: nowrap;
-  overflow: hidden;
-  text-overflow: ellipsis;
-  letter-spacing: 0.01em;
+.cs-floating-back:focus-visible {
+  outline: 2px solid #000000;
+  outline-offset: 2px;
 }
 
-.cs-browser__spacer {
-  flex: 0 0 68px; /* balances the dots+nav on the left */
-}
-
-/* Content area sized to the video's native ratio — no stretch, no bars */
-.cs-browser__screen {
-  width: 100%;
-  aspect-ratio: 1280 / 854;
-  flex: 0 0 auto;
-  overflow: hidden;
-  background: #ffffff;
-  position: relative;
-}
-
-.cs-device-video {
-  width: 100%;
-  height: 100%;
-  object-fit: cover;
-  display: block;
-}
-
-/* ─── Device image (browser / standalone) ─────────────────────────────────── */
-.cs-device-img {
-  width: 100%;
-  height: 100%;
-  object-fit: cover;
-  display: block;
-}
-
-/* ─── Mobile-only floating back button (hidden on desktop) ──────────────────── */
-.cs-mobile-back {
-  display: none;
-}
-
-/* Standalone image — no stencil, same shadow language as the browser frame */
 .cs-device-standalone-img {
   width: 100%;
   height: auto;
@@ -297,183 +245,125 @@
     0 8px 32px rgba(0, 0, 0, 0.1);
 }
 
-/* ─── Responsive: mobile top/bottom split (interactive stepper) ───────────── */
-/*
-  Device frame pinned in the top half, animated text crossfades in the bottom half.
-  Framer Motion drives opacity/y on each beat — no !important overrides here.
-  The native case-study header is hidden at this breakpoint; navigation lives
-  inside the scrolly as a floating back button.
-*/
+/* ─── Mobile: device top, scrollable text bottom ──────────────────────────── */
 @media (max-width: 900px) {
-
-  .cs-layout:not(.cs-layout--static) {
-    position: sticky;
-    top: 0;
-    height: 100dvh;
+  .cs-layout {
     grid-template-columns: 1fr;
-    grid-template-rows: 55dvh 45dvh;
+    grid-template-rows: minmax(0, 60dvh) minmax(0, 1fr);
     gap: 0;
     padding: 0;
-    overflow: hidden;
-    align-items: stretch;
+    height: 100%;
+    min-height: 0;
   }
 
-  .cs-layout:not(.cs-layout--static) .cs-visual-col {
+  .cs-floating-back {
+    top: max(16px, env(safe-area-inset-top));
+    left: 16px;
+    font-size: 13px;
+    padding: 7px 14px;
+    background: rgba(255, 255, 255, 0.88);
+    backdrop-filter: blur(8px);
+    -webkit-backdrop-filter: blur(8px);
+    border: 1px solid rgba(0, 0, 0, 0.08);
+    box-shadow: 0 1px 4px rgba(0, 0, 0, 0.1);
+  }
+
+  .cs-floating-back:hover {
+    background: rgba(255, 255, 255, 0.96);
+  }
+
+  .cs-visual-col {
     order: -1;
-    position: relative; /* contains the absolutely-positioned floating back button */
-    display: flex;
-    flex-direction: column;
-    align-items: stretch;
-    overflow: hidden;
+    height: 100%;
     min-height: 0;
   }
 
-  .cs-layout:not(.cs-layout--static) .cs-device-card {
+  .cs-device-card {
     border-radius: 0;
-    flex: 1;
+    height: 100%;
     min-height: 0;
-    /* Reserve space below the floating back button before centering the frame */
-    padding-top: calc(max(16px, env(safe-area-inset-top)) + 40px);
-    padding-right: 16px;
-    padding-bottom: 20px;
-    padding-left: 16px;
-    align-items: center;
-    justify-content: center;
+    padding: calc(max(16px, env(safe-area-inset-top)) + 40px) 16px 16px;
   }
 
-  .cs-layout:not(.cs-layout--static) .cs-text-col {
-    position: relative;
-    overflow: hidden;
-    padding-bottom: max(0px, env(safe-area-inset-bottom));
+  .cs-section {
+    padding: 0 24px;
   }
 
-  .cs-layout:not(.cs-layout--static) .cs-section {
-    position: absolute;
-    inset: 0;
-    padding: 28px 24px;
-    padding-right: 24px;
-    border-top: none;
-    will-change: opacity, transform;
-  }
-
-  .cs-layout:not(.cs-layout--static) .cs-section__headline {
+  .cs-section__headline {
     font-size: 20px;
     max-width: 100%;
     margin-bottom: 16px;
   }
 
-  .cs-layout:not(.cs-layout--static) .cs-section__body {
+  .cs-section__body {
     font-size: 15px;
     line-height: 1.6;
     max-width: 100%;
   }
 
-  /* Hide the first beat's body text on mobile — the slot (company info, audio)
-     occupies that space and carries more useful context at a glance. */
-  .cs-layout:not(.cs-layout--static) .cs-section--hero .cs-section__body {
-    display: none;
-  }
-
-  .cs-layout:not(.cs-layout--static) .cs-section__label {
+  .cs-section__label {
     margin-bottom: 12px;
   }
 
-  /* ─── Floating back button ── visible only in mobile scrolly ──────────── */
-  .cs-mobile-back {
-    display: inline-flex;
+  .cs-section--hero {
     align-items: center;
-    gap: 5px;
-    position: absolute;
-    top: max(16px, env(safe-area-inset-top));
-    left: 16px;
-    z-index: 10;
-    font-size: 13px;
-    font-weight: 500;
-    color: #000000;
-    text-decoration: none;
-    background: rgba(255, 255, 255, 0.88);
-    backdrop-filter: blur(8px);
-    -webkit-backdrop-filter: blur(8px);
-    border-radius: 100px;
-    padding: 7px 14px;
-    border: 1px solid rgba(0, 0, 0, 0.08);
-    box-shadow: 0 1px 4px rgba(0, 0, 0, 0.1);
-    pointer-events: auto;
+    text-align: center;
   }
 
-  /* Reduced-motion fallback: stacked scrollable layout */
-  .cs-layout--static {
-    position: static;
+  .cs-section--hero .cs-section__headline {
+    text-align: center;
+    max-width: 100%;
+  }
+
+  .cs-section--hero .cs-section__slot {
+    align-items: center;
+  }
+
+  .cs-section__logo {
     display: flex;
-    flex-direction: column;
-    height: auto;
-    grid-template-columns: none;
-    grid-template-rows: none;
-    gap: 0;
-    padding: 0 0 64px;
-    overflow: visible;
-    align-items: stretch;
+    align-items: center;
+    justify-content: center;
+    width: 100%;
+    min-height: 40px;
+    margin: 0 0 16px;
   }
 
-  .cs-layout--static .cs-visual-col {
-    order: -1;
-    padding: 20px 24px 8px;
-    box-sizing: border-box;
+  .cs-section__logo-img {
+    display: block;
+    width: auto;
+    height: 32px;
+    max-width: min(220px, 80vw);
+    object-fit: contain;
+    background: transparent;
   }
 
-  .cs-layout--static .cs-device-card {
-    border-radius: 24px;
-    padding: 20px 16px;
-    min-height: min(55dvh, 480px);
+  .cs-text-col__edge {
+    height: 32px;
   }
 
-  .cs-text-col--static {
-    position: static;
-    overflow: visible;
-  }
-
-  .cs-section--static {
-    position: static !important;
-    inset: auto !important;
-    opacity: 1 !important;
-    transform: none !important;
-    pointer-events: auto !important;
-    padding: 32px 24px;
-    border-top: 1px solid #f0f0f0;
-    will-change: auto;
-  }
-
-  .cs-text-col--static > .cs-section--static:first-child {
-    border-top: none;
-    padding-top: 24px;
+  .cs-text-col {
+    height: 100%;
+    min-height: 0;
+    -webkit-mask-image: linear-gradient(
+      to bottom,
+      transparent 0,
+      #000 32px,
+      #000 calc(100% - 32px),
+      transparent 100%
+    );
+    mask-image: linear-gradient(
+      to bottom,
+      transparent 0,
+      #000 32px,
+      #000 calc(100% - 32px),
+      transparent 100%
+    );
   }
 }
 
-/* Very small phones (SE, Galaxy A): floor sizes */
-@media (max-width: 390px) {
-  .cs-layout:not(.cs-layout--static) .cs-section {
-    padding: 20px;
-  }
-
-  .cs-layout:not(.cs-layout--static) .cs-section__headline {
-    font-size: 20px;
-    margin-bottom: 12px;
-  }
-
-  .cs-layout:not(.cs-layout--static) .cs-section__body {
-    font-size: 14px;
-  }
-
-  .cs-section--static {
-    padding: 20px;
-  }
-
-  .cs-section--static .cs-section__headline {
-    font-size: 20px;
-    margin-bottom: 12px;
-  }
-
-  .cs-section--static .cs-section__body {
-    font-size: 14px;
+@media (prefers-reduced-motion: reduce) {
+  .cs-text-col {
+    overflow-y: auto;
+    -webkit-overflow-scrolling: touch;
   }
 }
