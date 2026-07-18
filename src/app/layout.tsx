@@ -2,6 +2,7 @@ import type { Metadata, Viewport } from 'next';
 import { Inter } from 'next/font/google';
 import { Analytics } from '@vercel/analytics/next';
 import { SpeedInsights } from '@vercel/speed-insights/next';
+import { SmoothScroll } from '@/components/SmoothScroll/SmoothScroll';
 import { StructuredData } from '@/components/StructuredData/StructuredData';
 import { buildSiteGraph } from '@/lib/json-ld';
 import { createMetadata } from '@/lib/metadata';
@@ -44,7 +45,7 @@ export default function RootLayout({
         <a href="#main-content" className="skip-link">
           Skip to content
         </a>
-        {children}
+        <SmoothScroll>{children}</SmoothScroll>
         <Analytics />
         <SpeedInsights />
       </body>

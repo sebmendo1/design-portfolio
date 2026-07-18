@@ -1,13 +1,11 @@
 /* ─── Scroll track: viewport-height container for the sticky layout ─────── */
 .cs-track {
   position: relative;
-  min-height: 100dvh;
   outline: none;
 }
 
 .cs-track:focus-visible {
-  outline: 2px solid #000000;
-  outline-offset: 4px;
+  outline: none;
 }
 
 /* ─── Layout: sticky stage pinned to the viewport while track scrolls ──────── */
@@ -307,11 +305,6 @@
   inside the scrolly as a floating back button.
 */
 @media (max-width: 900px) {
-
-  /* Pin the track to exactly one viewport height so sticky works from true top:0 */
-  .cs-track {
-    height: 100dvh;
-  }
 
   .cs-layout:not(.cs-layout--static) {
     position: sticky;

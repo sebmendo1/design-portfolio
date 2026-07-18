@@ -5,10 +5,11 @@ import Link from 'next/link';
 import {
   motion,
   AnimatePresence,
-  useMotionValue,
+  useScroll,
   useSpring,
   useTransform,
   useReducedMotion,
+  useMotionValueEvent,
   type MotionValue,
 } from 'framer-motion';
 import type { CaseStudyConfig, Beat } from './types';
@@ -22,36 +23,19 @@ import { LazyAutoplayVideo } from '@/components/LazyAutoplayVideo/LazyAutoplayVi
 import { OptimizedImage } from '@/components/OptimizedImage/OptimizedImage';
 import { PhoneStencil } from '@/components/PhoneStencil/PhoneStencil';
 import { ScrollHint } from '@/components/ScrollHint/ScrollHint';
+import { useLenis } from 'lenis/react';
 import './CaseStudyScrolly.css';
 
-/** Trackpad travel (px) that initiates a section change. */
-const SCROLL_INITIATE_PX = 80;
-/** Pause after section text finishes before the next scroll is accepted. */
-const SCROLL_COOLDOWN_MS = 1000;
-
-function beatStreamDurationMs(beat: Beat): number {
-  const labelCount = beat.label ? splitIntoUnits(beat.label).length : 0;
-  const headlineCount = splitIntoUnits(beat.headline).length;
-  const bodyCount = beat.body ? splitIntoUnits(beat.body).length : 0;
-  const headlineStart = streamDurationMs(labelCount);
-  const bodyStart = headlineStart + streamDurationMs(headlineCount);
-
-  if (bodyCount > 0) {
-    return bodyStart + streamDurationMs(bodyCount);
+function resolveActiveIndex(progress: number, beats: Beat[]): number {
+  for (let i = 0; i < beats.length; i++) {
+    const [start, end] = beats[i].range;
+    if (progress >= start && progress < end) return i;
   }
-  return headlineStart + streamDurationMs(headlineCount);
-}
 
-function outroStreamDurationMs(): number {
-  const labelCount = splitIntoUnits('More work').length;
-  const headlineStart = streamDurationMs(labelCount);
-  return headlineStart + streamDurationMs(splitIntoUnits('See the rest of my projects.').length);
-}
+  const lastEnd = beats[beats.length - 1]?.range[1] ?? 1;
+  if (progress >= lastEnd) return beats.length;
 
-function normalizeWheelDelta(deltaY: number, deltaMode: number): number {
-  if (deltaMode === 1) return deltaY * 40;
-  if (deltaMode === 2) return deltaY * 500;
-  return deltaY;
+  return 0;
 }
 
 // ─── Device frames (static — no animation) ───────────────────────────────────
@@ -130,7 +114,7 @@ function TextSection({ beat, smooth, isFirst, isLast, isActive, outroBlend, slot
 }) {
   const [hasStreamed, setHasStreamed] = useState(() => hasStreamedRef.current);
   const [a, b] = beat.range;
-  const fadeSpan = Math.min(0.14, (b - a) * 0.38);
+  const fadeSpan = (b - a) * 0.5;
   const fadeIn  = Math.min(a + fadeSpan, b);
   const fadeOut = Math.max(b - fadeSpan, fadeIn);
 
@@ -394,208 +378,45 @@ export function CaseStudyScrolly({
   onHomeNavigate?: (href: string) => void;
 }) {
   const shouldReduce = useReducedMotion();
-  const containerRef = useRef<HTMLDivElement>(null);
-
-  const snapTargets = useMemo(
-    () => [...config.beats.map((beat) => (beat.range[0] + beat.range[1]) / 2), 1],
-    [config.beats],
-  );
-
+  const lenis = useLenis();
+  const trackRef = useRef<HTMLDivElement>(null);
   const [activeIndex, setActiveIndex] = useState(0);
-  const activeIndexRef = useRef(0);
-  const wheelAccumRef = useRef(0);
-  const scrollLockedRef = useRef(true);
-  const unlockTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
-  const lastTouchYRef = useRef<number | null>(null);
+  const [showScrollHint, setShowScrollHint] = useState(true);
   const sectionStreamedRefs = useRef(
     Array.from({ length: config.beats.length + 1 }, () => ({ current: false })),
   );
 
-  const targetProgress = useMotionValue(snapTargets[0]);
-  const smooth = useSpring(targetProgress, {
-    stiffness: 240,
-    damping: 34,
-    mass: 0.75,
-    restDelta: 0.0005,
+  const { scrollYProgress } = useScroll({
+    target: trackRef,
+    offset: ['start start', 'end end'],
   });
-  const lastBeatTarget = snapTargets[snapTargets.length - 2] ?? 0.9;
-  const outroBlend = useTransform(smooth, [lastBeatTarget, 1], [0, 1]);
 
-  const cancelScrollUnlock = useCallback(() => {
-    if (unlockTimerRef.current) {
-      clearTimeout(unlockTimerRef.current);
-      unlockTimerRef.current = null;
+  const smooth = useSpring(scrollYProgress, {
+    stiffness: 170,
+    damping: 30,
+    mass: 0.6,
+    restDelta: 0.001,
+  });
+
+  const lastBeatEnd = config.beats[config.beats.length - 1]?.range[1] ?? 0.85;
+  const outroBlend = useTransform(smooth, [lastBeatEnd, 1], [0, 1]);
+
+  useMotionValueEvent(smooth, 'change', (progress) => {
+    setActiveIndex(resolveActiveIndex(progress, config.beats));
+  });
+
+  useMotionValueEvent(scrollYProgress, 'change', (progress) => {
+    setShowScrollHint(progress < 0.04);
+  });
+
+  const nudgeScroll = useCallback(() => {
+    const delta = window.innerHeight * 0.15;
+    if (lenis) {
+      lenis.scrollTo(lenis.scroll + delta, { lerp: 0.1 });
+      return;
     }
-  }, []);
-
-  const scheduleScrollUnlock = useCallback(
-    (sectionIndex: number) => {
-      scrollLockedRef.current = true;
-      cancelScrollUnlock();
-
-      const alreadyStreamed = sectionStreamedRefs.current[sectionIndex]?.current ?? false;
-      const streamMs = shouldReduce || alreadyStreamed
-        ? 0
-        : sectionIndex < config.beats.length
-          ? beatStreamDurationMs(config.beats[sectionIndex])
-          : outroStreamDurationMs();
-
-      unlockTimerRef.current = setTimeout(() => {
-        scrollLockedRef.current = false;
-      }, streamMs + SCROLL_COOLDOWN_MS);
-    },
-    [cancelScrollUnlock, config.beats, shouldReduce],
-  );
-
-  const snapToIndex = useCallback(
-    (index: number) => {
-      const clamped = Math.max(0, Math.min(snapTargets.length - 1, index));
-      if (clamped === activeIndexRef.current) {
-        wheelAccumRef.current = 0;
-        return;
-      }
-
-      scrollLockedRef.current = true;
-      activeIndexRef.current = clamped;
-      setActiveIndex(clamped);
-      wheelAccumRef.current = 0;
-      targetProgress.set(snapTargets[clamped]);
-      scheduleScrollUnlock(clamped);
-    },
-    [scheduleScrollUnlock, snapTargets, targetProgress],
-  );
-
-  const applyScrollDelta = useCallback(
-    (delta: number) => {
-      if (scrollLockedRef.current) return false;
-
-      const index = activeIndexRef.current;
-      const atStart = index === 0 && delta < 0;
-      const atEnd = index === snapTargets.length - 1 && delta > 0;
-      if (atStart || atEnd) return false;
-
-      if (
-        (wheelAccumRef.current > 0 && delta < 0)
-        || (wheelAccumRef.current < 0 && delta > 0)
-      ) {
-        wheelAccumRef.current = 0;
-      }
-
-      wheelAccumRef.current += delta;
-
-      if (Math.abs(wheelAccumRef.current) >= SCROLL_INITIATE_PX) {
-        scrollLockedRef.current = true;
-        const direction = wheelAccumRef.current > 0 ? 1 : -1;
-        snapToIndex(index + direction);
-        return true;
-      }
-
-      return true;
-    },
-    [snapTargets.length, snapToIndex],
-  );
-
-  const nudgeProgress = useCallback(
-    (direction: 1 | -1) => {
-      if (scrollLockedRef.current) return;
-      wheelAccumRef.current = 0;
-      snapToIndex(activeIndexRef.current + direction);
-    },
-    [snapToIndex],
-  );
-
-  useEffect(() => {
-    scheduleScrollUnlock(0);
-    return cancelScrollUnlock;
-  }, [cancelScrollUnlock, scheduleScrollUnlock]);
-
-  const handleWheel = useCallback(
-    (e: WheelEvent) => {
-      const delta = normalizeWheelDelta(e.deltaY, e.deltaMode);
-      const index = activeIndexRef.current;
-      const atStart = index === 0 && delta < 0;
-      const atEnd = index === snapTargets.length - 1 && delta > 0;
-      if (atStart || atEnd) return;
-
-      if (scrollLockedRef.current) {
-        e.preventDefault();
-        return;
-      }
-
-      if (applyScrollDelta(delta)) {
-        e.preventDefault();
-      }
-    },
-    [applyScrollDelta, snapTargets.length],
-  );
-
-  const handleKeyDown = useCallback(
-    (e: KeyboardEvent) => {
-      if (e.key === 'ArrowDown' || e.key === ' ') {
-        e.preventDefault();
-        nudgeProgress(1);
-      } else if (e.key === 'ArrowUp') {
-        e.preventDefault();
-        nudgeProgress(-1);
-      }
-    },
-    [nudgeProgress],
-  );
-
-  const handleTouchStart = useCallback((e: TouchEvent) => {
-    lastTouchYRef.current = e.touches[0].clientY;
-  }, []);
-
-  const handleTouchMove = useCallback(
-    (e: TouchEvent) => {
-      if (lastTouchYRef.current === null) return;
-
-      const y = e.touches[0].clientY;
-      const delta = lastTouchYRef.current - y;
-      lastTouchYRef.current = y;
-
-      const index = activeIndexRef.current;
-      const atStart = index === 0 && delta < 0;
-      const atEnd = index === snapTargets.length - 1 && delta > 0;
-      if (atStart || atEnd) return;
-
-      if (scrollLockedRef.current) {
-        e.preventDefault();
-        return;
-      }
-
-      if (applyScrollDelta(delta)) {
-        e.preventDefault();
-      }
-    },
-    [applyScrollDelta, snapTargets.length],
-  );
-
-  const handleTouchEnd = useCallback(() => {
-    lastTouchYRef.current = null;
-    if (!scrollLockedRef.current) {
-      wheelAccumRef.current = 0;
-    }
-  }, []);
-
-  useEffect(() => {
-    if (shouldReduce) return;
-    const el = containerRef.current;
-    if (!el) return;
-    el.addEventListener('wheel',      handleWheel,      { passive: false });
-    el.addEventListener('keydown',    handleKeyDown);
-    el.addEventListener('touchstart', handleTouchStart, { passive: true });
-    el.addEventListener('touchmove',  handleTouchMove,  { passive: false });
-    el.addEventListener('touchend',   handleTouchEnd,   { passive: true });
-    return () => {
-      cancelScrollUnlock();
-      el.removeEventListener('wheel',      handleWheel);
-      el.removeEventListener('keydown',    handleKeyDown);
-      el.removeEventListener('touchstart', handleTouchStart);
-      el.removeEventListener('touchmove',  handleTouchMove);
-      el.removeEventListener('touchend',   handleTouchEnd);
-    };
-  }, [shouldReduce, handleWheel, handleKeyDown, handleTouchStart, handleTouchMove, handleTouchEnd, cancelScrollUnlock]);
+    window.scrollBy({ top: delta, behavior: 'smooth' });
+  }, [lenis]);
 
   const { frame, src, video, url, screenAspectRatio } = config.stage.centerpiece;
   const title = config.title;
@@ -607,10 +428,9 @@ export function CaseStudyScrolly({
   return (
     <article className="cs-article" aria-label={config.title}>
       <div
-        ref={containerRef}
+        ref={trackRef}
         className="cs-track"
-        tabIndex={0}
-        aria-label="Case study navigation"
+        style={{ height: `${config.trackHeightVh}dvh` }}
       >
       <div className="cs-layout">
         {/* Left: sticky panel with crossfading text sections */}
@@ -670,9 +490,7 @@ export function CaseStudyScrolly({
         </div>
       </div>
       <AnimatePresence>
-        {activeIndex === 0 && (
-          <ScrollHint onClick={() => nudgeProgress(1)} />
-        )}
+        {showScrollHint && <ScrollHint onClick={nudgeScroll} />}
       </AnimatePresence>
       </div>
     </article>
