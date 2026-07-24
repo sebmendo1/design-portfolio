@@ -388,12 +388,12 @@ export const projects: Project[] = [
   },
 ];
 
-/** Featured card order: Chase projects first, then Memento, then the rest. */
+/** Featured card order: Memento first, then Chase projects, then the rest. */
 export const PROJECT_ORDER = [
+  'memento-ai',
   'casey-ai',
   'chase-myhome',
   'agentic-home-lending',
-  'memento-ai',
   'autods-m-ai',
   'salesforce-help',
 ] as const;
