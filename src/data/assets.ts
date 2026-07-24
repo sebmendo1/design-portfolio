@@ -12,7 +12,7 @@ export const ASSETS = {
     caseyRcs: `${BLOB}/casey-rcs.mp4`,
     mementoDemo: `${BLOB}/memento-demo.mp4`,
     salesforceHelp: `${BLOB}/salesforce-help.mp4`,
-    chaseMyHomeDemo: '/assets/chase-myhome-demo.mp4',
+    chaseMyHomeDemo: `${BLOB}/chase-myhome-demo.mov`,
   },
   posters: {
     caseyRcs: '/assets/posters/casey-rcs.jpg',
