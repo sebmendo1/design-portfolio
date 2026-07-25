@@ -142,3 +142,13 @@
 .browser-stencil--case-study {
   align-self: center;
 }
+
+@media (max-width: 900px) {
+  .browser-stencil--case-study {
+    width: min(
+      100cqw,
+      calc((100cqh - var(--browser-chrome)) * var(--content-ar))
+    );
+    max-height: 100%;
+  }
+}

@@ -36,13 +36,42 @@ function heroLogoClassName(company?: string, companyLogo?: string): string {
   return classes.join(' ');
 }
 
-/** Wheel travel multiplier when scrolling from outside the text column. */
+/** Scroll travel multiplier when scrolling from outside the text column. */
 const EXTERNAL_SCROLL_BOOST = 1.4;
+
+const MOBILE_LAYOUT_QUERY = '(max-width: 900px)';
 
 function normalizeWheelDelta(deltaY: number, deltaMode: number): number {
   if (deltaMode === 1) return deltaY * 40;
   if (deltaMode === 2) return deltaY * 500;
   return deltaY;
+}
+
+/** Native-scroll fallback for reduced motion — forwards touch from the device preview. */
+function attachNativeTouchForwarding(layout: HTMLDivElement, wrapper: HTMLDivElement) {
+  let touchStartY = 0;
+  let scrollStartTop = 0;
+
+  const onLayoutTouchStart = (event: TouchEvent) => {
+    if (wrapper.contains(event.target as Node)) return;
+    touchStartY = event.touches[0].clientY;
+    scrollStartTop = wrapper.scrollTop;
+  };
+
+  const onLayoutTouchMove = (event: TouchEvent) => {
+    if (wrapper.contains(event.target as Node)) return;
+    const deltaY = touchStartY - event.touches[0].clientY;
+    wrapper.scrollTop = scrollStartTop + deltaY * EXTERNAL_SCROLL_BOOST;
+    event.preventDefault();
+  };
+
+  layout.addEventListener('touchstart', onLayoutTouchStart, { passive: true });
+  layout.addEventListener('touchmove', onLayoutTouchMove, { passive: false });
+
+  return () => {
+    layout.removeEventListener('touchstart', onLayoutTouchStart);
+    layout.removeEventListener('touchmove', onLayoutTouchMove);
+  };
 }
 
 function HomeLink({
@@ -134,41 +163,76 @@ export function CaseStudyScrolly({
     const layout = layoutRef.current;
     if (!wrapper || !content || !layout) return;
 
-    const prefersReduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
-    if (prefersReduced) {
-      wrapper.style.overflowY = 'auto';
-      return;
-    }
+    const reducedQuery = window.matchMedia('(prefers-reduced-motion: reduce)');
+    const mobileQuery = window.matchMedia(MOBILE_LAYOUT_QUERY);
 
-    const lenis = new Lenis({
-      wrapper,
-      content,
-      smoothWheel: true,
-      lerp: 0.09,
-    });
-    lenisRef.current = lenis;
+    let cleanupScroll: (() => void) | undefined;
 
-    let rafId = 0;
-    const raf = (time: number) => {
-      lenis.raf(time);
+    const setupScroll = () => {
+      cleanupScroll?.();
+      cleanupScroll = undefined;
+      lenisRef.current = null;
+
+      const prefersReduced = reducedQuery.matches;
+      const isMobileLayout = mobileQuery.matches;
+
+      if (prefersReduced) {
+        wrapper.style.overflowY = 'auto';
+        if (isMobileLayout) {
+          cleanupScroll = attachNativeTouchForwarding(layout, wrapper);
+        }
+        return;
+      }
+
+      wrapper.style.overflowY = '';
+
+      const lenis = new Lenis({
+        wrapper,
+        content,
+        // On mobile, listen on the full layout so swipes on the device preview
+        // drive the same smooth Lenis scroll as the text column (parity with desktop wheel).
+        eventsTarget: isMobileLayout ? layout : wrapper,
+        smoothWheel: true,
+        syncTouch: isMobileLayout,
+        syncTouchLerp: 0.09,
+        touchMultiplier: EXTERNAL_SCROLL_BOOST,
+        lerp: 0.09,
+      });
+      lenisRef.current = lenis;
+
+      let rafId = 0;
+      const raf = (time: number) => {
+        lenis.raf(time);
+        rafId = requestAnimationFrame(raf);
+      };
       rafId = requestAnimationFrame(raf);
-    };
-    rafId = requestAnimationFrame(raf);
 
-    const onLayoutWheel = (event: WheelEvent) => {
-      if (wrapper.contains(event.target as Node)) return;
-      const delta = normalizeWheelDelta(event.deltaY, event.deltaMode) * EXTERNAL_SCROLL_BOOST;
-      lenis.scrollTo(lenis.scroll + delta);
-      event.preventDefault();
+      const onLayoutWheel = (event: WheelEvent) => {
+        if (isMobileLayout || wrapper.contains(event.target as Node)) return;
+        const delta = normalizeWheelDelta(event.deltaY, event.deltaMode) * EXTERNAL_SCROLL_BOOST;
+        lenis.scrollTo(lenis.scroll + delta);
+        event.preventDefault();
+      };
+
+      layout.addEventListener('wheel', onLayoutWheel, { passive: false });
+
+      cleanupScroll = () => {
+        cancelAnimationFrame(rafId);
+        layout.removeEventListener('wheel', onLayoutWheel);
+        lenis.destroy();
+        lenisRef.current = null;
+      };
     };
 
-    layout.addEventListener('wheel', onLayoutWheel, { passive: false });
+    setupScroll();
+    reducedQuery.addEventListener('change', setupScroll);
+    mobileQuery.addEventListener('change', setupScroll);
 
     return () => {
-      cancelAnimationFrame(rafId);
-      layout.removeEventListener('wheel', onLayoutWheel);
-      lenis.destroy();
-      lenisRef.current = null;
+      reducedQuery.removeEventListener('change', setupScroll);
+      mobileQuery.removeEventListener('change', setupScroll);
+      cleanupScroll?.();
+      wrapper.style.overflowY = '';
     };
   }, []);
 
@@ -185,7 +249,7 @@ export function CaseStudyScrolly({
   }, []);
 
   return (
-    <article className="cs-article" aria-label={config.title}>
+    <article className="cs-article" aria-label={config.title} data-lenis-prevent>
       <div ref={layoutRef} className="cs-layout">
         <HomeLink className="cs-floating-back" onHomeNavigate={onHomeNavigate}>
           ← Back
@@ -196,7 +260,7 @@ export function CaseStudyScrolly({
           duration={DISSOLVE_REVEAL_DURATION}
           ease={DISSOLVE_REVEAL_EASE}
         >
-          <div ref={scrollWrapperRef} className="cs-text-col">
+          <div ref={scrollWrapperRef} className="cs-text-col" data-lenis-prevent>
             <div ref={scrollContentRef} className="cs-text-col__content">
             {config.beats.map((beat, i) => {
               if (i === 0) {
