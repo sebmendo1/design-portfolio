@@ -13,12 +13,14 @@ export const ASSETS = {
     mementoDemo: `${BLOB}/memento-demo.mp4`,
     salesforceHelp: `${BLOB}/salesforce-help.mp4`,
     chaseMyHomeDemo: `${BLOB}/chase-myhome-demo.mov`,
+    writerRewrite: `${BLOB}/writer-rewrite.mp4`,
   },
   posters: {
     caseyRcs: '/assets/posters/casey-rcs.jpg',
     mementoDemo: '/assets/posters/memento-demo.jpg',
     salesforceHelp: '/assets/posters/salesforce-help.jpg',
     chaseMyHomeDemo: '/assets/posters/chase-myhome-demo.jpg',
+    writerRewrite: '/assets/posters/writer-rewrite.jpg',
   },
 } as const;
 

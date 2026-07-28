@@ -157,6 +157,11 @@
   max-width: 220px;
 }
 
+.cs-section__logo--writer .cs-section__logo-img {
+  height: 36px;
+  max-width: 200px;
+}
+
 .cs-section--intro .cs-section__body {
   font-size: 20px;
   line-height: 1.6;
@@ -245,8 +250,8 @@
     0 8px 32px rgba(0, 0, 0, 0.1);
 }
 
-/* ─── Mobile: device card top, text strip fills remaining space ───────────── */
-@media (max-width: 900px) {
+/* ─── Portrait mobile: device card top, text strip fills remaining space ──── */
+@media (max-width: 900px) and (orientation: portrait) {
   .cs-layout {
     --cs-mobile-gutter: 16px;
     --cs-mobile-text-height: clamp(280px, 38dvh, 400px);
@@ -390,9 +395,39 @@
   }
 }
 
-@media (max-width: 900px) and (max-height: 700px) {
+@media (max-width: 900px) and (orientation: portrait) and (max-height: 700px) {
   .cs-layout {
     --cs-mobile-text-height: clamp(240px, 42dvh, 320px);
+  }
+}
+
+/* ─── Landscape phones: horizontal stack with tighter spacing ─────────────── */
+@media (max-width: 900px) and (orientation: landscape) {
+  .cs-layout {
+    gap: 16px;
+    padding: 12px 16px;
+  }
+
+  .cs-floating-back {
+    top: max(12px, env(safe-area-inset-top));
+    left: 16px;
+  }
+
+  .cs-device-card {
+    padding: 12px 16px;
+    border-radius: 16px;
+  }
+
+  .cs-section {
+    padding: 0 16px 0 0;
+  }
+
+  .cs-section__headline {
+    font-size: 18px;
+  }
+
+  .cs-section__body {
+    font-size: 14px;
   }
 }
 

@@ -215,6 +215,7 @@ export const PROFILE_ROLES: ProfileRole[] = [
       'Accelerated content approvals through Figma plugin integration',
     ],
     capabilities: ['GenAI UX', 'Enterprise content', 'Design systems', 'Figma plugins'],
+    relatedProjectSlugs: ['writer-ai'],
   },
   {
     id: 'chorus',

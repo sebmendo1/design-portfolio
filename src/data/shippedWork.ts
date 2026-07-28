@@ -104,6 +104,7 @@ export const SHIPPED_WORK: ShippedWorkEntry[] = [
     affiliation: 'Writer',
     sortDate: '2021-04',
     dateLabel: 'April 2021',
+    projectSlug: 'writer-ai',
   },
   {
     id: 'writer-snippets',

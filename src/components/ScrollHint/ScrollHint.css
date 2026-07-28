@@ -56,7 +56,7 @@
   }
 }
 
-@media (max-width: 900px) {
+@media (max-width: 900px) and (orientation: portrait) {
   .scroll-hint {
     bottom: max(14px, env(safe-area-inset-bottom));
   }

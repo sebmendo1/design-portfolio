@@ -2,6 +2,10 @@ import type { CSSProperties } from 'react';
 import type { CaseStudyConfig } from '@/components/CaseStudyScrolly/types';
 import { ASSETS } from '@/data/assets';
 import { PHONE_SCREEN_AR } from '@/components/PhoneStencil/phone-aspect-ratios';
+import {
+  DEFAULT_BROWSER_SCREEN_AR,
+  WRITER_REWRITE_SCREEN_AR,
+} from '@/components/BrowserStencil/browser-aspect-ratios';
 
 export interface ProjectStyles {
   backgroundColor?: string;
@@ -329,6 +333,112 @@ export const projects: Project[] = [
     },
   },
   {
+    id: 'writer-ai',
+    title: 'Writer AI',
+    tagline: 'Turn a highlight into the right rewrite.',
+    description:
+      'Designed and shipped ReWrite for WRITER, on-demand AI rewriting with six intentional transform modes, delivered across the editor, desktop apps, browser extensions, and Figma.',
+    year: 2021,
+    company: 'WRITER',
+    role: 'Product Designer',
+    tags: ['GenAI UX', 'Interaction Design', 'Enterprise content'],
+    preview: {
+      frame: 'browser',
+      video: ASSETS.video.writerRewrite,
+      url: 'writer.com',
+      screenAspectRatio: WRITER_REWRITE_SCREEN_AR,
+    },
+    slug: 'writer-ai',
+    styles: { backgroundColor: '#f4f3f2' },
+    caseStudy: {
+      blocks: [
+        {
+          text: 'Enterprise writers needed to rephrase without losing meaning, tone, or brand voice. A single “rewrite” action was too blunt. The same word covered shortening a sentence, polishing non-native phrasing, enriching thin copy, and shifting tone for a different audience.',
+        },
+        {
+          text: 'I reframed rewrite as a selection-first micro-flow: highlight text, open the W menu, and choose an intentional transform. Each mode maps to a real writing job: Rephrase, Simplify, Polish, Shorten, Enrich, and Modify tone, instead of asking users to prompt their way to the right outcome.',
+        },
+        {
+          text: 'ReWrite shipped across WRITER’s editor, desktop apps, browser extensions, and Figma, available on Starter, Team, and Enterprise plans. The pattern established a controlled GenAI transform model before open-ended chat became the default for content tools.',
+        },
+      ],
+    },
+    scrollyConfig: {
+      slug: 'writer-ai',
+      title: 'Writer AI',
+      trackHeightVh: 600,
+      stage: {
+        centerpiece: {
+          frame: 'browser',
+          width: 400,
+          video: ASSETS.video.writerRewrite,
+          url: 'writer.com',
+          screenAspectRatio: WRITER_REWRITE_SCREEN_AR,
+        },
+      },
+      beats: [
+        {
+          id: 'summary',
+          headline:
+            'Designed and shipped ReWrite, on-demand AI rewriting that turns a highlight into six purposeful rewrite modes.',
+          body: 'ReWrite gives enterprise writers a selection-first rewrite flow: highlight text, open the W menu, and choose the transform that matches the job, from tightening copy to shifting tone, without opening a blank chat box.',
+          range: [0, 0.15],
+        },
+        {
+          id: 'challenge',
+          label: 'Challenge',
+          headline: '“Rewrite” was one action trying to do six different jobs.',
+          body: 'Enterprise writers needed to rephrase without losing meaning, tone, or brand voice. A single rewrite action was too blunt. The same word covered shortening a sentence, polishing non-native phrasing, enriching thin copy, and shifting tone for a different audience.',
+          range: [0.15, 0.32],
+        },
+        {
+          id: 'approach',
+          label: 'Approach',
+          headline: 'Make the intent explicit before the model runs.',
+          body: 'I reframed rewrite as a selection-first micro-flow: highlight text, open the W menu, and choose an intentional transform. Each mode maps to a real writing job instead of asking users to prompt their way to the right outcome.',
+          range: [0.32, 0.5],
+        },
+        {
+          id: 'solution',
+          label: 'Solution',
+          headline: 'Six rewrite modes, one consistent insert flow.',
+          body: 'ReWrite offers Rephrase, Simplify, Polish, Shorten, Enrich, and Modify tone, each generating on-demand alternatives the writer can copy or insert inline. The same flow ships in the WRITER editor, Chrome and Edge extensions, Mac and Windows apps, and Figma, plus surfaces like Google Docs, Notion, and Slack.',
+          range: [0.5, 0.68],
+        },
+        {
+          id: 'outcome',
+          label: 'Outcome',
+          headline: 'Shipped ReWrite across WRITER’s content surfaces.',
+          body: 'ReWrite launched to enterprise content teams on Starter, Team, and Enterprise plans, establishing a pattern for controlled GenAI transforms before open-ended chat became the default for writing tools.',
+          range: [0.68, 0.85],
+        },
+        {
+          id: 'tldr',
+          label: 'TLDR',
+          headline: 'The quick version.',
+          body: 'WRITER writers needed to rephrase without losing voice or control. I designed ReWrite as a highlight → W menu → intentional transform flow with six modes: Rephrase, Simplify, Polish, Shorten, Enrich, and Modify tone, and shipped it across the editor, desktop apps, browser extensions, and Figma.',
+          range: [0.85, 1.0],
+        },
+      ],
+      cards: [
+        { id: 'c1', label: 'Selection flow', seed: 14, enterAt: 0.14, clusterId: 'discovery', bgColor: '#1e2a1e' },
+        { id: 'c2', label: 'Six modes', seed: 25, enterAt: 0.17, clusterId: 'discovery', bgColor: '#1a251a' },
+        { id: 'c3', label: 'W menu', seed: 36, enterAt: 0.2, clusterId: 'research', bgColor: '#1e1e2a' },
+        { id: 'c4', label: 'Modify tone', seed: 47, enterAt: 0.23, clusterId: 'research', bgColor: '#1a1a25' },
+        { id: 'c5', label: 'Editor + extensions', seed: 58, enterAt: 0.26, clusterId: 'shipped', bgColor: '#2a201e' },
+        { id: 'c6', label: 'Figma plugin', seed: 69, enterAt: 0.29, clusterId: 'shipped', bgColor: '#251c1a' },
+        { id: 'c7', label: 'Enterprise plans', seed: 80, enterAt: 0.32, clusterId: 'impact', bgColor: '#1a1e2a' },
+        { id: 'c8', label: 'Insert / copy', seed: 91, enterAt: 0.15, bgColor: '#222222' },
+      ],
+      clusters: [
+        { id: 'discovery', label: 'Discovery', anchor: { x: 18, y: 28 } },
+        { id: 'research', label: 'Research', anchor: { x: 82, y: 28 } },
+        { id: 'shipped', label: 'Shipped', anchor: { x: 18, y: 72 } },
+        { id: 'impact', label: 'Impact', anchor: { x: 82, y: 72 } },
+      ],
+    },
+  },
+  {
     id: 'salesforce-help',
     title: 'Salesforce Help',
     tagline: 'Stop making customers guess how to get help.',
@@ -337,7 +447,12 @@ export const projects: Project[] = [
     company: 'Salesforce',
     role: 'Product Designer',
     tags: ['Research', 'Interaction Design', 'AI UX'],
-    preview: { frame: 'browser', video: ASSETS.video.salesforceHelp, url: 'help.salesforce.com/s/contactsupport' },
+    preview: {
+      frame: 'browser',
+      video: ASSETS.video.salesforceHelp,
+      url: 'help.salesforce.com/s/contactsupport',
+      screenAspectRatio: DEFAULT_BROWSER_SCREEN_AR,
+    },
     slug: 'salesforce-help',
     styles: { backgroundColor: '#f4f3f2' },
     caseStudy: {
@@ -357,7 +472,7 @@ export const projects: Project[] = [
           width: 400,
           video: ASSETS.video.salesforceHelp,
           url: 'help.salesforce.com/s/contactsupport',
-          screenAspectRatio: 1280 / 854,
+          screenAspectRatio: DEFAULT_BROWSER_SCREEN_AR,
         },
       },
       beats: [
@@ -388,14 +503,15 @@ export const projects: Project[] = [
   },
 ];
 
-/** Featured card order: Memento first, then Chase projects, then the rest. */
+/** Featured card order: Memento first, then Casey, then Salesforce & Writer, then Chase projects. */
 export const PROJECT_ORDER = [
   'memento-ai',
   'casey-ai',
+  'salesforce-help',
+  'writer-ai',
   'chase-myhome',
   'agentic-home-lending',
   'autods-m-ai',
-  'salesforce-help',
 ] as const;
 
 export function sortProjectsByFeaturedOrder(items: Project[]): Project[] {

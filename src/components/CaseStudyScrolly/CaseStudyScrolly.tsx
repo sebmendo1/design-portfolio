@@ -14,6 +14,7 @@ import {
   DISSOLVE_REVEAL_EASE,
   DISSOLVE_REVEAL_STAGGER,
 } from '@/components/DissolveIn/DissolveIn';
+import { CASE_STUDY_PORTRAIT_STACK_QUERY } from '@/lib/case-study-layout';
 import './CaseStudyScrolly.css';
 
 const CHASE_HERO_SRC = '/assets/logos/chase-hero.png?v=11';
@@ -23,7 +24,10 @@ function isChaseCompany(company?: string): boolean {
 }
 
 function showsDesktopHeroLogo(company?: string, companyLogo?: string): boolean {
-  return Boolean(companyLogo && (isChaseCompany(company) || company === 'Salesforce'));
+  return Boolean(
+    companyLogo &&
+      (isChaseCompany(company) || company === 'Salesforce' || company === 'WRITER'),
+  );
 }
 
 function heroLogoClassName(company?: string, companyLogo?: string): string {
@@ -33,13 +37,14 @@ function heroLogoClassName(company?: string, companyLogo?: string): string {
   classes.push('cs-section__logo--brand');
   if (isChaseCompany(company)) classes.push('cs-section__logo--chase');
   if (company === 'Salesforce') classes.push('cs-section__logo--salesforce');
+  if (company === 'WRITER') classes.push('cs-section__logo--writer');
   return classes.join(' ');
 }
 
 /** Scroll travel multiplier when scrolling from outside the text column. */
 const EXTERNAL_SCROLL_BOOST = 1.4;
 
-const MOBILE_LAYOUT_QUERY = '(max-width: 900px)';
+const MOBILE_LAYOUT_QUERY = CASE_STUDY_PORTRAIT_STACK_QUERY;
 
 function normalizeWheelDelta(deltaY: number, deltaMode: number): number {
   if (deltaMode === 1) return deltaY * 40;

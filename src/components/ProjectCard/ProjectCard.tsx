@@ -1,6 +1,8 @@
 import Link from 'next/link';
+import type { CSSProperties } from 'react';
 import type { ProjectPreview } from '@/data/projects';
 import { getVideoPoster } from '@/data/assets';
+import { DEFAULT_BROWSER_SCREEN_AR } from '@/components/BrowserStencil/browser-aspect-ratios';
 import { OptimizedImage } from '@/components/OptimizedImage/OptimizedImage';
 import { LazyAutoplayVideo } from '@/components/LazyAutoplayVideo/LazyAutoplayVideo';
 import { PhoneStencil } from '@/components/PhoneStencil/PhoneStencil';
@@ -12,11 +14,23 @@ interface ProjectCardProps {
   onNavigate?: (href: string) => void;
 }
 
-function PreviewBrowser({ video, url }: { video?: string; url?: string }) {
+function PreviewBrowser({
+  video,
+  url,
+  screenAspectRatio,
+}: {
+  video?: string;
+  url?: string;
+  screenAspectRatio?: number;
+}) {
   const poster = video ? getVideoPoster(video) : undefined;
+  const contentAspectRatio = screenAspectRatio ?? DEFAULT_BROWSER_SCREEN_AR;
 
   return (
-    <div className="pc-browser">
+    <div
+      className="pc-browser"
+      style={{ '--content-ar': contentAspectRatio } as CSSProperties}
+    >
       <div className="pc-browser__chrome">
         <div className="pc-browser__dots">
           <span className="pc-dot pc-dot--red" />
@@ -56,7 +70,13 @@ function CardVisual({ preview, title }: { preview?: ProjectPreview; title: strin
   }
 
   if (preview.frame === 'browser') {
-    return <PreviewBrowser video={preview.video} url={preview.url} />;
+    return (
+      <PreviewBrowser
+        video={preview.video}
+        url={preview.url}
+        screenAspectRatio={preview.screenAspectRatio}
+      />
+    );
   }
 
   if (preview.frame === 'image' && preview.src) {
