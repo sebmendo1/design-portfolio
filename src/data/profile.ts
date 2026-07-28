@@ -235,7 +235,7 @@ export const PROFILE_ROLES: ProfileRole[] = [
     ],
     outcomes: [
       'Accelerated feature development through design system foundation',
-      'Company acquired by ZoomInfo in June 2021',
+      'Company acquired by ZoomInfo in July 2021',
     ],
     capabilities: ['Design systems', 'AI SaaS', 'Component libraries'],
   },

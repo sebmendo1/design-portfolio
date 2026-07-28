@@ -99,7 +99,8 @@
 
 .work-experience__company {
   font-size: var(--font-size-body);
-  font-weight: var(--font-weight-semibold);
+  font-variation-settings: var(--font-var-heading);
+  font-weight: normal;
   color: #000000;
   margin: 0;
 }
@@ -136,7 +137,8 @@
 
 .work-experience__block-title {
   font-size: 12px;
-  font-weight: var(--font-weight-semibold);
+  font-variation-settings: var(--font-var-heading);
+  font-weight: normal;
   text-transform: uppercase;
   letter-spacing: 0.04em;
   color: #666666;
