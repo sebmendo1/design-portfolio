@@ -1,4 +1,18 @@
 import type { NextConfig } from 'next';
+import { BLOB_HOST } from './src/data/assets';
+
+const CONTENT_SECURITY_POLICY = [
+  "default-src 'self'",
+  "script-src 'self' 'unsafe-inline'",
+  "style-src 'self' 'unsafe-inline'",
+  `img-src 'self' data: https://${BLOB_HOST}`,
+  `media-src 'self' https://${BLOB_HOST}`,
+  "font-src 'self' data:",
+  "connect-src 'self'",
+  "frame-ancestors 'none'",
+  "base-uri 'self'",
+  "form-action 'self'",
+].join('; ');
 
 const nextConfig: NextConfig = {
   cacheComponents: true,
@@ -7,6 +21,12 @@ const nextConfig: NextConfig = {
   },
   images: {
     formats: ['image/avif', 'image/webp'],
+    localPatterns: [
+      {
+        pathname: '/assets/**',
+        search: '**',
+      },
+    ],
     remotePatterns: [
       {
         protocol: 'https',
@@ -44,6 +64,10 @@ const nextConfig: NextConfig = {
           {
             key: 'Permissions-Policy',
             value: 'camera=(), microphone=(), geolocation=()',
+          },
+          {
+            key: 'Content-Security-Policy',
+            value: CONTENT_SECURITY_POLICY,
           },
         ],
       },

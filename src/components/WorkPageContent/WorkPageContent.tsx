@@ -13,21 +13,23 @@ type WorkPageContentProps = {
   onProjectNavigate?: (href: string) => void;
 };
 
-export function WorkPageContent({ bioText, projects, onProjectNavigate }: WorkPageContentProps) {
-  const shouldReduce = useReducedMotion();
-  const [bioComplete, setBioComplete] = useState(false);
-  const [revealedCount, setRevealedCount] = useState(0);
+type ProjectRevealGridProps = {
+  projects: ProjectCardSummary[];
+  skipAnimation: boolean;
+  onProjectNavigate?: (href: string) => void;
+};
+
+function ProjectRevealGrid({
+  projects,
+  skipAnimation,
+  onProjectNavigate,
+}: ProjectRevealGridProps) {
+  const [revealedCount, setRevealedCount] = useState(() =>
+    skipAnimation ? projects.length : 0,
+  );
 
   useEffect(() => {
-    if (!bioComplete) {
-      setRevealedCount(0);
-      return;
-    }
-
-    if (shouldReduce) {
-      setRevealedCount(projects.length);
-      return;
-    }
+    if (skipAnimation) return;
 
     let count = 0;
     let intervalId: ReturnType<typeof setInterval> | undefined;
@@ -40,37 +42,59 @@ export function WorkPageContent({ bioText, projects, onProjectNavigate }: WorkPa
       }
     };
 
-    tick();
-    if (projects.length > 1) {
-      intervalId = setInterval(tick, WORD_INTERVAL_MS);
-    }
+    const startTimeoutId = setTimeout(() => {
+      tick();
+      if (projects.length > 1) {
+        intervalId = setInterval(tick, WORD_INTERVAL_MS);
+      }
+    }, 0);
 
     return () => {
+      clearTimeout(startTimeoutId);
       if (intervalId) clearInterval(intervalId);
     };
-  }, [bioComplete, projects.length, shouldReduce]);
+  }, [skipAnimation, projects.length]);
+
+  const visibleCount = skipAnimation ? projects.length : revealedCount;
+
+  return (
+    <section className="work-page__grid" aria-label="Portfolio projects">
+      {projects.slice(0, visibleCount).map((project, index) => (
+        <AnimatedProjectCard
+          key={project.id}
+          project={project}
+          index={index}
+          streamIn
+          onNavigate={onProjectNavigate}
+        />
+      ))}
+    </section>
+  );
+}
+
+export function WorkPageContent({ bioText, projects, onProjectNavigate }: WorkPageContentProps) {
+  const shouldReduce = useReducedMotion();
+  const [bioComplete, setBioComplete] = useState(false);
+  const skipAnimation = shouldReduce ?? false;
 
   const handleBioComplete = useCallback(() => {
     setBioComplete(true);
   }, []);
 
-  const visibleProjects = bioComplete ? projects.slice(0, revealedCount) : [];
-
   return (
     <>
       <WorkPageBio text={bioText} onComplete={handleBioComplete} />
 
-      <section className="work-page__grid" aria-label="Portfolio projects">
-        {visibleProjects.map((project, index) => (
-          <AnimatedProjectCard
-            key={project.id}
-            project={project}
-            index={index}
-            streamIn
-            onNavigate={onProjectNavigate}
-          />
-        ))}
-      </section>
+      {bioComplete ? (
+        <ProjectRevealGrid
+          key={String(skipAnimation)}
+          projects={projects}
+          skipAnimation={skipAnimation}
+          onProjectNavigate={onProjectNavigate}
+        />
+      ) : (
+        <section className="work-page__grid" aria-label="Portfolio projects" />
+      )}
     </>
   );
 }

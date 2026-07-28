@@ -2,6 +2,7 @@
 
 import { Fragment, useEffect, useRef, type ReactNode } from 'react';
 import Link from 'next/link';
+import Image from 'next/image';
 import Lenis from 'lenis';
 import type { CaseStudyConfig } from './types';
 import { getVideoPoster } from '@/data/assets';
@@ -274,7 +275,7 @@ export function CaseStudyScrolly({
                     <section className="cs-section cs-section--hero">
                       {(isChaseCompany(company) || companyLogo) && (
                         <div className={heroLogoClassName(company, companyLogo)}>
-                          <img
+                          <Image
                             src={isChaseCompany(company) ? CHASE_HERO_SRC : companyLogo!}
                             alt={company ?? ''}
                             className="cs-section__logo-img"

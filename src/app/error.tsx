@@ -1,13 +1,19 @@
 'use client';
 
 import Link from 'next/link';
+import { useEffect } from 'react';
 
 export default function Error({
+  error,
   reset,
 }: {
   error: Error & { digest?: string };
   reset: () => void;
 }) {
+  useEffect(() => {
+    console.error(error);
+  }, [error]);
+
   return (
     <div className="app-error">
       <h1 className="app-error__title">Something went wrong</h1>

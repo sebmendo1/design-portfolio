@@ -59,7 +59,6 @@ export function Navigation() {
 
   useLayoutEffect(() => {
     if (!isWorkMenuOpen) {
-      setMenuPosition(null);
       return;
     }
 

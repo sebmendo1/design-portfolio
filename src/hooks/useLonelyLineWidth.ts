@@ -1,4 +1,4 @@
-import { useLayoutEffect, useRef, useState, type RefObject } from 'react';
+import { useLayoutEffect, useState, type RefObject } from 'react';
 
 /** Progressive width steps (% of container) when a single word sits alone on a line. */
 const WIDTH_STEPS = [92, 96, 100] as const;
@@ -22,8 +22,6 @@ export function useLonelyLineWidth(
   measureKey: number,
 ): number {
   const [stepIndex, setStepIndex] = useState(0);
-  const stepIndexRef = useRef(stepIndex);
-  stepIndexRef.current = stepIndex;
 
   useLayoutEffect(() => {
     if (measureKey < 0) return;
@@ -32,7 +30,7 @@ export function useLonelyLineWidth(
     if (!el) return;
 
     const measure = () => {
-      if (stepIndexRef.current >= WIDTH_STEPS.length - 1) return;
+      if (stepIndex >= WIDTH_STEPS.length - 1) return;
       if (!hasLonelyLine(el)) return;
       setStepIndex((prev) => Math.min(prev + 1, WIDTH_STEPS.length - 1));
     };

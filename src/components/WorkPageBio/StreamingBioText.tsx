@@ -226,22 +226,26 @@ type StreamingBioTextProps = {
   onComplete?: () => void;
 };
 
-export function StreamingBioText({ onComplete }: StreamingBioTextProps) {
-  const shouldReduce = useReducedMotion();
+type StreamingBioTextInnerProps = {
+  onComplete?: () => void;
+  skipAnimation: boolean;
+};
+
+function StreamingBioTextInner({ onComplete, skipAnimation }: StreamingBioTextInnerProps) {
   const items = useMemo(() => buildBioStreamItems(), []);
-  const skipAnimation = shouldReduce;
   const [revealedCount, setRevealedCount] = useState(0);
   const headingRef = useRef<HTMLHeadingElement>(null);
   const onCompleteRef = useRef(onComplete);
   const hasCompletedRef = useRef(false);
   const streamStateRef = useRef<'idle' | 'running' | 'done'>('idle');
 
-  onCompleteRef.current = onComplete;
+  useEffect(() => {
+    onCompleteRef.current = onComplete;
+  }, [onComplete]);
 
   useEffect(() => {
     streamStateRef.current = 'idle';
     hasCompletedRef.current = false;
-    setRevealedCount(0);
 
     if (skipAnimation) {
       streamStateRef.current = 'done';
@@ -314,5 +318,18 @@ export function StreamingBioText({ onComplete }: StreamingBioTextProps) {
     >
       {renderBioStream(items, visibleCount)}
     </h1>
+  );
+}
+
+export function StreamingBioText({ onComplete }: StreamingBioTextProps) {
+  const shouldReduce = useReducedMotion();
+  const skipAnimation = shouldReduce ?? false;
+
+  return (
+    <StreamingBioTextInner
+      key={String(skipAnimation)}
+      onComplete={onComplete}
+      skipAnimation={skipAnimation}
+    />
   );
 }
