@@ -1,0 +1,14 @@
+@import './tokens.css';
+
+/* Seb Sans Var — headline weights capped at 600; opsz scales with size */
+:root {
+  --font-var-body: 'wght' 430, 'opsz' 14;
+  --font-var-body-sm: 'wght' 455, 'opsz' 14;
+  --font-var-emphasis: 'wght' 530, 'opsz' 14;
+  --font-var-ui: 'wght' 530, 'opsz' 14;
+  --font-var-subhead: 'wght' 600, 'opsz' 16;
+  --font-var-headline: 'wght' 600, 'opsz' 28;
+  --font-var-display: 'wght' 600, 'opsz' 32;
+  --font-var-label: 'wght' 560, 'opsz' 14;
+  --font-var-caption: 'wght' 430, 'opsz' 14;
+}

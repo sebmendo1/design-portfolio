@@ -1,4 +1,5 @@
 @import '../design-system/tokens.css';
+@import '../design-system/seb-sans.css';
 @import 'lenis/dist/lenis.css';
 
 *,
@@ -21,6 +22,7 @@ html::-webkit-scrollbar {
 body {
   font-family: var(--font-family-primary);
   font-size: var(--font-size-body);
+  font-variation-settings: var(--font-var-body);
   line-height: var(--line-height-body);
   background-color: #ffffff;
   color: #000000;
@@ -100,13 +102,47 @@ h6 {
   overflow-wrap: break-word;
 }
 
-h1,
-h2,
-h3,
-h4,
+h1 {
+  font-size: var(--font-size-display);
+  font-variation-settings: var(--font-var-display);
+  font-weight: normal;
+  line-height: var(--line-height-heading);
+  letter-spacing: var(--letter-spacing-tight);
+}
+
+h2 {
+  font-size: var(--font-size-heading-lg);
+  font-variation-settings: var(--font-var-headline);
+  font-weight: normal;
+  line-height: var(--line-height-heading);
+  letter-spacing: var(--letter-spacing-tight);
+}
+
+h3 {
+  font-size: var(--font-size-heading-md);
+  font-variation-settings: var(--font-var-subhead);
+  font-weight: normal;
+  line-height: var(--line-height-heading);
+}
+
+h4 {
+  font-size: var(--font-size-heading-sm);
+  font-variation-settings: var(--font-var-subhead);
+  font-weight: normal;
+  line-height: var(--line-height-tight);
+}
+
 h5,
 h6 {
-  font-weight: 600;
+  font-variation-settings: var(--font-var-label);
+  font-weight: normal;
+  line-height: var(--line-height-nav);
+}
+
+strong,
+b {
+  font-weight: normal;
+  font-variation-settings: var(--font-var-emphasis);
 }
 
 a {

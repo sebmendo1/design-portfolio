@@ -61,7 +61,8 @@
 /* Title + tagline */
 .case-study__title {
   font-size: clamp(32px, 5vw, 56px);
-  font-weight: 600;
+  font-variation-settings: var(--font-var-display);
+  font-weight: normal;
   color: #000000;
   line-height: 1.1;
   letter-spacing: -0.02em;

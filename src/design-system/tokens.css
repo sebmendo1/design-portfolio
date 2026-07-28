@@ -24,8 +24,10 @@
   --color-error: #b42318;
   --color-error-muted: color-mix(in srgb, var(--color-error) 18%, white);
 
-  /* Typography — fluid between ~320px and ~1440px */
-  --font-family-primary: Inter, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+  /* Typography — Seb Sans Var (fluid scale ~320px–1440px) */
+  --font-family-fallback: -apple-system, BlinkMacSystemFont, system-ui, "Segoe UI", Roboto,
+    "Helvetica Neue", Arial, sans-serif;
+  --font-family-primary: var(--font-seb-sans-var), var(--font-family-fallback);
 
   --fluid-min: 20rem;
   --fluid-max: 90rem;
@@ -42,9 +44,10 @@
   --font-size-caption: clamp(0.75rem, calc(0.75rem + (0.8125rem - 0.75rem) * var(--fluid-slope)), 0.8125rem);
   --font-size-quote: clamp(1rem, calc(1rem + (1.25rem - 1rem) * var(--fluid-slope)), 1.25rem);
 
-  --font-weight-regular: 400;
-  --font-weight-medium: 500;
+  --font-weight-regular: 430;
+  --font-weight-medium: 530;
   --font-weight-semibold: 600;
+  --font-weight-headline: 600;
   --font-weight-bold: 700;
 
   --line-height-heading: 1.2;

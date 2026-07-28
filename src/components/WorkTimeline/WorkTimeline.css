@@ -10,7 +10,8 @@
 
 .work-timeline__heading {
   font-size: var(--font-size-heading-sm);
-  font-weight: var(--font-weight-semibold);
+  font-variation-settings: var(--font-var-subhead);
+  font-weight: normal;
   color: #000000;
   margin: 0 0 8px;
 }

@@ -1,18 +1,12 @@
 import type { Metadata, Viewport } from 'next';
-import { Inter } from 'next/font/google';
 import { Analytics } from '@vercel/analytics/next';
 import { SpeedInsights } from '@vercel/speed-insights/next';
 import { SmoothScroll } from '@/components/SmoothScroll/SmoothScroll';
 import { StructuredData } from '@/components/StructuredData/StructuredData';
+import { sebSansVar } from '@/lib/fonts';
 import { buildSiteGraph } from '@/lib/json-ld';
 import { createMetadata } from '@/lib/metadata';
 import './globals.css';
-
-const inter = Inter({
-  subsets: ['latin'],
-  weight: ['400', '500', '600'],
-  display: 'swap',
-});
 
 export const metadata: Metadata = createMetadata({
   alternates: {
@@ -39,7 +33,7 @@ export default function RootLayout({
   children: React.ReactNode;
 }) {
   return (
-    <html lang="en" className={inter.className}>
+    <html lang="en" className={sebSansVar.variable}>
       <body suppressHydrationWarning>
         <StructuredData data={buildSiteGraph()} />
         <a href="#main-content" className="skip-link">

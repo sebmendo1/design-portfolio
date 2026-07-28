@@ -18,7 +18,8 @@
 
 .work-page__bio-text {
   font-size: 28px;
-  font-weight: 500;
+  font-variation-settings: var(--font-var-headline);
+  font-weight: normal;
   color: #000000;
   max-width: min(904px, var(--work-page-bio-width, 100%));
   line-height: calc(1em + 6px);

@@ -22,9 +22,14 @@ const nextConfig: NextConfig = {
   images: {
     formats: ['image/avif', 'image/webp'],
     localPatterns: [
+      // Paths without query strings (e.g. /assets/nav-avatar.png)
       {
         pathname: '/assets/**',
-        search: '**',
+        search: '',
+      },
+      // Paths with cache-bust query strings (e.g. /assets/logos/chase-hero.png?v=11)
+      {
+        pathname: '/assets/**',
       },
     ],
     remotePatterns: [

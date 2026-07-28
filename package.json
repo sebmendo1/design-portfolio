@@ -10,7 +10,9 @@
     "build": "next build",
     "start": "next start",
     "lint": "eslint .",
-    "typecheck": "tsc --noEmit"
+    "typecheck": "tsc --noEmit",
+    "copy-fonts": "mkdir -p src/app/fonts public/fonts/seb-sans && cp node_modules/seb-sans-font/fonts/SebSansVar.woff2 src/app/fonts/ && cp node_modules/seb-sans-font/fonts/SebSansVar.woff2 public/fonts/seb-sans/",
+    "postinstall": "npm run copy-fonts"
   },
   "dependencies": {
     "@vercel/analytics": "^1.6.1",
@@ -21,7 +23,8 @@
     "next": "16.2.9",
     "patch-package": "^8.0.1",
     "react": "19.2.4",
-    "react-dom": "19.2.4"
+    "react-dom": "19.2.4",
+    "seb-sans-font": "^0.7.2"
   },
   "devDependencies": {
     "@types/node": "^20",

@@ -7,14 +7,16 @@
 
 .work-experience__heading {
   font-size: var(--font-size-heading-sm);
-  font-weight: var(--font-weight-semibold);
+  font-variation-settings: var(--font-var-subhead);
+  font-weight: normal;
   color: #000000;
   margin-bottom: 32px;
 }
 
 .work-experience__subheading {
   font-size: var(--font-size-body);
-  font-weight: var(--font-weight-semibold);
+  font-variation-settings: var(--font-var-subhead);
+  font-weight: normal;
   color: #000000;
   margin: 0 0 12px;
 }
