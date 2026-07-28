@@ -161,9 +161,9 @@ export const projects: Project[] = [
   {
     id: 'casey-ai',
     title: 'Casey AI',
-    tagline: 'A voice and RCS-powered AI banking assistant for conversational money management.',
+    tagline: "Chase's first customer-facing AI agent — voice, text, and the pattern the rest are built on.",
     description:
-      "Chase's first customer-facing AI agent—and the foundational design system for all that follow.",
+      "Chase's first customer-facing AI agent, and the pattern the rest are built on.",
     year: 2025,
     company: 'JPMorgan Chase',
     role: 'Senior Product Designer',
@@ -175,13 +175,13 @@ export const projects: Project[] = [
     caseStudy: {
       blocks: [
         {
-          text: 'Casey is an omnichannel conversational agent that interacts with Chase customers via voice and text. We deliberately shipped it in Home Lending first, treating the hardest, most highly regulated room in the bank as our ultimate stress test.',
+          text: "Casey is a conversational agent that talks to Chase customers by voice and by text. Home lending was the first place it shipped, chosen deliberately because it is the hardest room in the bank. Every sentence an AI says to a customer is a sentence the bank said. Voice and text are also the two channels federal law watches most closely, so the real problem was not building an agent that talks well. It was building one that knows what it is not allowed to say.",
         },
         {
-          text: 'A bank cannot simply ship a chatbot, because every sentence an AI generates is a sentence the bank legally said. Instead of designing a localized mortgage feature, I architected Casey as a scalable conversational system with a shared underlying model of what it knows, what it may say, and exactly when it needs to step aside.',
+          text: 'We started with mortgage because it has the most regulation, the biggest dollar amounts, and the longest customer journey in consumer banking. Anything that survives there works anywhere. So I designed Casey as a reusable conversational system rather than a mortgage feature: one agent, two surfaces, and a shared model of what it knows, what it may say, and when it steps aside. Casey can qualify, explain, and schedule. It cannot advise or quote, because that requires a licensed human, so the work went into making that wall feel like a door. Any question beyond its authority, any sign of customer stress, and any repeated confusion routes to a person with the full conversation attached, and that routing logic is the piece every future Casey inherits.',
         },
         {
-          text: 'Casey Voice shipped in January 2026, followed by Casey RCS in May 2026, successfully clearing three distinct regulatory regimes. Chase trademarked the voice, and the interaction patterns I designed are now the official reference model for all agentic AI work across the business.',
+          text: 'Casey Voice shipped July 2025. Casey RCS shipped May 2026 on iOS and Android. Chase trademarked the voice, and the conversational patterns are now the reference model for agentic work across the business. Chase needed a customer-facing AI agent that could not create legal exposure every time it opened its mouth. I designed Casey as a reusable system across voice and text, proved it in home lending because that is the hardest environment in the bank, and spent most of the project on the boundary where an AI hands a person to a licensed human. Both surfaces shipped, Chase trademarked the voice, and the pattern is what the next agents are built on.',
         },
       ],
     },
@@ -201,43 +201,43 @@ export const projects: Project[] = [
         {
           id: 'summary',
           headline:
-            "Chase's first customer-facing AI agent—and the foundational design system for all that follow.",
-          body: 'Casey is an omnichannel conversational agent that interacts with Chase customers via voice and text. We deliberately shipped it in Home Lending first, treating the hardest, most highly regulated room in the bank as our ultimate stress test.',
+            "Chase's first customer-facing AI agent, and the pattern the rest are built on.",
+          body: 'Casey is a conversational agent that talks to Chase customers by voice and by text. Home lending was the first place it shipped, chosen deliberately because it is the hardest room in the bank.',
           range: [0, 0.15],
         },
         {
           id: 'challenge',
           label: 'Challenge',
-          headline: 'Build an agent that knows exactly what it is not allowed to say.',
-          body: "A bank cannot simply ship a chatbot, because every sentence an AI generates is a sentence the bank legally said. Since voice and text are heavily scrutinized by federal law, the core UX challenge wasn't natural language generation, but designing a system that inherently understands its own boundaries. The real design problem was building an agent that knows exactly what it is not allowed to say without frustrating the user.",
+          headline: 'A bank cannot ship a chatbot.',
+          body: 'Every sentence an AI says to a customer is a sentence the bank said. Voice and text are also the two channels federal law watches most closely, so the real problem was not building an agent that talks well. It was building one that knows what it is not allowed to say.',
           range: [0.15, 0.32],
         },
         {
           id: 'approach',
           label: 'Approach',
-          headline: 'Stress-test in Home Lending, then scale everywhere.',
-          body: 'We started with the mortgage journey because it carries the heaviest regulatory burden, knowing that anything surviving there could scale anywhere. Instead of designing a localized mortgage feature, I architected Casey as a scalable conversational system. This meant creating one agent across two surfaces with a shared underlying model of what it knows, what it may say, and exactly when it needs to step aside.',
+          headline: 'Solve it where the stakes are highest, then it travels.',
+          body: 'We started with mortgage because it has the most regulation, the biggest dollar amounts, and the longest customer journey in consumer banking. Anything that survives there works anywhere. So I designed Casey as a reusable conversational system rather than a mortgage feature: one agent, two surfaces, and a shared model of what it knows, what it may say, and when it steps aside.',
           range: [0.32, 0.5],
         },
         {
           id: 'solution',
           label: 'Solution',
-          headline: 'Make the regulatory wall feel like a seamless door.',
-          body: "Because Casey cannot legally advise or quote, the bulk of the interaction design went into making that regulatory wall feel like a seamless door. We designed for graceful degradation, where any question beyond Casey's authority or sign of customer stress automatically triggers a routing protocol. The user is handed off to a licensed human with their full conversational context preserved, establishing the core interaction pattern every future iteration will inherit.",
+          headline: 'The handoff is the product.',
+          body: 'Casey can qualify, explain, and schedule. It cannot advise or quote, because that requires a licensed human, so the work went into making that wall feel like a door. Any question beyond its authority, any sign of customer stress, and any repeated confusion routes to a person with the full conversation attached, and that routing logic is the piece every future Casey inherits.',
           range: [0.5, 0.68],
         },
         {
           id: 'results',
           label: 'Results',
-          headline: 'Both surfaces shipped; the voice was trademarked.',
-          body: "Casey Voice shipped in January 2026, followed by Casey RCS in May 2026, successfully clearing three distinct regulatory regimes. Chase trademarked the voice, proving the system's viability in a high-stakes environment. The interaction patterns I designed are now the official reference model for all agentic AI work across the business.",
+          headline: 'Live on two surfaces. Cleared through three regulatory regimes.',
+          body: 'Casey Voice shipped July 2025. Casey RCS shipped May 2026 on iOS and Android. Chase trademarked the voice, and the conversational patterns are now the reference model for agentic work across the business.',
           range: [0.68, 0.85],
         },
         {
           id: 'tldr',
           label: 'TLDR',
           headline: 'The quick version.',
-          body: "Chase needed a customer-facing AI agent that wouldn't create legal exposure, so I designed Casey as a reusable, omnichannel conversational system. By stress-testing it in Home Lending and focusing the UX heavily on seamless handoffs to licensed humans, we proved the model in the bank's hardest environment. Both surfaces shipped, the voice was trademarked, and this foundational pattern is what all future Chase agents are now built upon.",
+          body: 'Chase needed a customer-facing AI agent that could not create legal exposure every time it opened its mouth. I designed Casey as a reusable system across voice and text, proved it in home lending because that is the hardest environment in the bank, and spent most of the project on the boundary where an AI hands a person to a licensed human. Both surfaces shipped, Chase trademarked the voice, and the pattern is what the next agents are built on.',
           range: [0.85, 1.0],
         },
       ],
@@ -245,11 +245,11 @@ export const projects: Project[] = [
         { id: 'c1', label: 'Regulatory boundaries', seed: 13, enterAt: 0.14, clusterId: 'discovery', bgColor: '#1e1e2a' },
         { id: 'c2', label: 'Home Lending stress test', seed: 24, enterAt: 0.17, clusterId: 'discovery', bgColor: '#1a1a25' },
         { id: 'c3', label: 'Conversational system', seed: 35, enterAt: 0.20, clusterId: 'research', bgColor: '#1e2a1e' },
-        { id: 'c4', label: 'Graceful degradation', seed: 46, enterAt: 0.23, clusterId: 'research', bgColor: '#1a2520' },
+        { id: 'c4', label: 'Handoff routing', seed: 46, enterAt: 0.23, clusterId: 'research', bgColor: '#1a2520' },
         { id: 'c5', label: 'Casey Voice', seed: 57, enterAt: 0.26, clusterId: 'shipped', bgColor: '#2a1e1e' },
         { id: 'c6', label: 'Casey RCS', seed: 68, enterAt: 0.29, clusterId: 'shipped', bgColor: '#251a1a' },
         { id: 'c7', label: 'Trademarked voice', seed: 79, enterAt: 0.32, clusterId: 'impact', bgColor: '#1a1e2a' },
-        { id: 'c8', label: 'Reference model', seed: 90, enterAt: 0.15, bgColor: '#222222' },
+        { id: 'c8', label: 'Pattern for next agents', seed: 90, enterAt: 0.15, bgColor: '#222222' },
       ],
       clusters: [
         { id: 'discovery', label: 'Discovery',   anchor: { x: 18, y: 28 } },

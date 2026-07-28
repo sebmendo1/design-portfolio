@@ -50,7 +50,8 @@ async function fetchProjectsDataUncached(): Promise<CmsData> {
     if (blobs.length === 0) return {};
     const res = await withTimeout(
       fetch(blobs[0].url, {
-        next: { revalidate: 3600, tags: [CMS_PROJECTS_TAG] },
+        // Blob JSON is small and must reflect admin/sync edits immediately.
+        cache: 'no-store',
         signal: AbortSignal.timeout(BLOB_TIMEOUT_MS),
       }),
       null,
@@ -64,8 +65,11 @@ async function fetchProjectsDataUncached(): Promise<CmsData> {
 
 const getCachedProjectsData = unstable_cache(
   fetchProjectsDataUncached,
-  ['portfolio-cms-projects'],
-  { revalidate: 3600, tags: [CMS_PROJECTS_TAG] },
+  ['portfolio-cms-projects-v2'],
+  {
+    revalidate: process.env.NODE_ENV === 'development' ? 1 : 3600,
+    tags: [CMS_PROJECTS_TAG],
+  },
 );
 
 async function saveProjectsData(data: CmsData): Promise<void> {
