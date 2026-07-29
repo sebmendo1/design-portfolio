@@ -1,4 +1,4 @@
-const LOGO_VERSION = '10';
+const LOGO_VERSION = '11';
 
 const LOGO_PATHS: Record<string, string> = {
   'JPMorgan Chase': '/assets/logos/chase.png',
