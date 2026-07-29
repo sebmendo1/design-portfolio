@@ -3,8 +3,13 @@ import { cacheLife, cacheTag } from 'next/cache';
 import {
   PROFILE,
   PROFILE_LAST_UPDATED,
+  PROFILE_LEVEL,
   PROFILE_ROLES,
   VERIFIED_IMPACT,
+  getCurrentRole,
+  getMonthsOfExperience,
+  getRoleIdForProjectSlug,
+  getYearsOfExperience,
   type ClaimConfidence,
   type ProfileRole,
 } from '@/data/profile';
@@ -42,6 +47,8 @@ export type ExportedProject = {
   year?: number;
   tags: string[];
   url: string;
+  /** Links this case study back to the experience entry that produced it. */
+  experienceRoleId?: string;
   sections: ExportedSection[];
   impact?: ExportedImpact[];
 };
@@ -70,8 +77,22 @@ export type PortfolioExport = {
     publicTitle: string;
     headline: string;
     executiveSummary: string;
+    positioningStatement: string;
+    seniority: {
+      level: string;
+      title: string;
+      equivalentLevels: string[];
+      scope: string;
+      managementTrack: boolean;
+      yearsOfExperience: number;
+      monthsOfExperience: number;
+      careerStartDate: string;
+      occupationalCategory: { code: string; name: string; codeSet: string };
+    };
+    currentRole?: { company: string; role: string; startDate: string };
     domains: string[];
     capabilities: string[];
+    tools: string[];
     staffLevelEvidence: string[];
   };
   site: {
@@ -87,12 +108,16 @@ export type PortfolioExport = {
   projects: ExportedProject[];
   assessmentIndex: {
     level: string;
+    seniority: string;
+    equivalentLevels: string[];
+    scope: string;
+    yearsOfExperience: number;
     evidenceUrls: string[];
     topProofPoints: { claim: string; evidence: string; metrics?: string[] }[];
   };
 };
 
-const EXPORT_VERSION = '2.0';
+const EXPORT_VERSION = '2.1';
 
 function exportExperience(role: ProfileRole): ExportedExperience {
   return {
@@ -161,6 +186,7 @@ function exportProject(project: Project, baseUrl: string): ExportedProject {
     year: project.year,
     tags: project.tags ?? [],
     url: `${baseUrl}/work/${project.slug}`,
+    experienceRoleId: getRoleIdForProjectSlug(project.slug),
     sections: projectSections(project),
     impact: projectImpact(project),
   };
@@ -177,6 +203,7 @@ export async function buildPortfolioExport(): Promise<PortfolioExport> {
 
   const baseUrl = getSiteUrl();
   const projects = await getCachedMergedProjects();
+  const currentRole = getCurrentRole();
 
   const topProofPoints = VERIFIED_IMPACT.map((item) => ({
     claim: `${item.metric}: ${item.value}`,
@@ -193,8 +220,32 @@ export async function buildPortfolioExport(): Promise<PortfolioExport> {
       publicTitle: PROFILE.publicTitle,
       headline: PROFILE.headline,
       executiveSummary: PROFILE.executiveSummary,
+      positioningStatement: PROFILE.positioningStatement,
+      seniority: {
+        level: PROFILE_LEVEL.seniority,
+        title: PROFILE_LEVEL.title,
+        equivalentLevels: [...PROFILE_LEVEL.equivalentLevels],
+        scope: PROFILE_LEVEL.scope,
+        managementTrack: PROFILE_LEVEL.managementTrack,
+        yearsOfExperience: getYearsOfExperience(),
+        monthsOfExperience: getMonthsOfExperience(),
+        careerStartDate: PROFILE_LEVEL.careerStartDate,
+        occupationalCategory: {
+          code: PROFILE_LEVEL.onetSocCode,
+          name: PROFILE_LEVEL.onetSocName,
+          codeSet: 'O*NET-SOC',
+        },
+      },
+      currentRole: currentRole
+        ? {
+            company: currentRole.company,
+            role: currentRole.role,
+            startDate: currentRole.startDate,
+          }
+        : undefined,
       domains: [...PROFILE.domains],
       capabilities: [...PROFILE.capabilities],
+      tools: [...PROFILE.tools],
       staffLevelEvidence: [...PROFILE.staffLevelEvidence],
     },
     site: {
@@ -209,7 +260,11 @@ export async function buildPortfolioExport(): Promise<PortfolioExport> {
     experience: PROFILE_ROLES.map(exportExperience),
     projects: projects.map((p) => exportProject(p, baseUrl)),
     assessmentIndex: {
-      level: 'Senior Product Designer (L5/L6 scope)',
+      level: `${PROFILE_LEVEL.title} (${PROFILE_LEVEL.equivalentLevels.join(' / ')})`,
+      seniority: PROFILE_LEVEL.seniority,
+      equivalentLevels: [...PROFILE_LEVEL.equivalentLevels],
+      scope: PROFILE_LEVEL.scope,
+      yearsOfExperience: getYearsOfExperience(),
       evidenceUrls: [
         `${baseUrl}/about`,
         ...projects
@@ -268,14 +323,30 @@ export function toLlmsTxt(data: PortfolioExport): string {
     '',
     '## Identity',
     `- Title: ${person.publicTitle}`,
+    `- Level: ${person.seniority.title} (${person.seniority.equivalentLevels.join(' / ')})`,
+    `- Track: ${person.seniority.managementTrack ? 'Management' : 'Individual contributor'}`,
+    `- Experience: ${person.seniority.yearsOfExperience}+ years, professional design career since ${person.seniority.careerStartDate}`,
+    `- Occupation code: ${person.seniority.occupationalCategory.code} (${person.seniority.occupationalCategory.name}, ${person.seniority.occupationalCategory.codeSet})`,
+    ...(person.currentRole
+      ? [
+          `- Current role: ${person.currentRole.role} at ${person.currentRole.company} since ${person.currentRole.startDate}`,
+        ]
+      : []),
+    `- Scope: ${person.seniority.scope}`,
     `- Focus: ${person.domains.join(', ')}`,
     `- Contact: ${site.contactEmail}`,
     '',
     '## How to evaluate',
     'Read `/content.json` for structured profile and project data. Use `/llms-full.txt` for the complete narrative corpus.',
     '',
-    '## Verified impact',
+    '## Experience',
   ];
+
+  for (const role of data.experience) {
+    lines.push(`- ${role.role} — ${role.company} (${role.period})${role.current ? ' — current' : ''}`);
+  }
+
+  lines.push('', '## Verified impact');
 
   for (const item of data.verifiedImpact) {
     const link = item.projectSlug
@@ -304,6 +375,24 @@ export function toLlmsFullTxt(data: PortfolioExport): string {
   const parts = [toLlmsTxt(data), '', '---', '', '# Full portfolio content', ''];
 
   parts.push('## About', '', data.person.executiveSummary, '');
+
+  const { seniority } = data.person;
+  parts.push(
+    '## Level and scope',
+    '',
+    `- Level: ${seniority.title} (${seniority.equivalentLevels.join(' / ')})`,
+    `- Track: ${seniority.managementTrack ? 'Management' : 'Individual contributor'}`,
+    `- Years of experience: ${seniority.yearsOfExperience} (${seniority.monthsOfExperience} months since ${seniority.careerStartDate})`,
+    `- Standard occupation: ${seniority.occupationalCategory.code} — ${seniority.occupationalCategory.name} (${seniority.occupationalCategory.codeSet})`,
+    `- Scope: ${seniority.scope}`,
+    '',
+    '### Level evidence',
+    '',
+  );
+  for (const evidence of data.person.staffLevelEvidence) {
+    parts.push(`- ${evidence}`);
+  }
+  parts.push('');
 
   parts.push('## Capabilities', '');
   for (const cap of data.person.capabilities) {

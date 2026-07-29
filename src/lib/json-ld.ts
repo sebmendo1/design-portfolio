@@ -1,12 +1,28 @@
 import type { ExportedProject, PortfolioExport } from '@/lib/content-export';
 import {
+  COMPANY_URLS,
   PROFILE,
   PROFILE_LAST_UPDATED,
+  PROFILE_LEVEL,
   PROFILE_ROLES,
+  getAlumniCompanies,
+  getCurrentRole,
+  getMonthsOfExperience,
+  toSchemaEmploymentType,
+  type ProfileRole,
 } from '@/data/profile';
-import { getSiteUrl, SITE_CONTACT_EMAIL, SITE_NAME, SITE_SOCIAL_LINKS } from '@/lib/site';
+import {
+  getSiteUrl,
+  SITE_CONTACT_EMAIL,
+  SITE_DESCRIPTION,
+  SITE_NAME,
+  SITE_SOCIAL_LINKS,
+  SITE_TITLE,
+} from '@/lib/site';
 
 type JsonLd = Record<string, unknown>;
+
+const LANGUAGE = 'en-US';
 
 function personId(siteUrl: string): string {
   return `${siteUrl}/#person`;
@@ -20,103 +36,150 @@ function profilePageId(siteUrl: string): string {
   return `${siteUrl}/about#profilepage`;
 }
 
-function occupationEntries(): JsonLd[] {
-  return PROFILE_ROLES.map((role) => {
-    if (role.endDate) {
-      return {
-        '@type': 'Role',
-        hasOccupation: {
-          '@type': 'Occupation',
-          name: role.role,
-        },
-        startDate: role.startDate,
-        endDate: role.endDate,
-      };
-    }
+function workListId(siteUrl: string): string {
+  return `${siteUrl}/#case-studies`;
+}
 
-    return {
-      '@type': 'Occupation',
-      name: role.role,
+function organizationNode(company: string): JsonLd {
+  const url = COMPANY_URLS[company];
+  return url
+    ? { '@type': 'Organization', name: company, url }
+    : { '@type': 'Organization', name: company };
+}
+
+function placeNode(location?: string): JsonLd | undefined {
+  if (!location) return undefined;
+  return { '@type': 'Place', address: location };
+}
+
+/**
+ * Primary occupation carries the seniority signals: standardized job category,
+ * total months of experience, and the skill set behind the level.
+ */
+function primaryOccupation(): JsonLd {
+  const currentRole = getCurrentRole();
+
+  const occupation: JsonLd = {
+    '@type': 'Occupation',
+    name: PROFILE_LEVEL.title,
+    occupationalCategory: {
+      '@type': 'CategoryCode',
+      codeValue: PROFILE_LEVEL.onetSocCode,
+      name: PROFILE_LEVEL.onetSocName,
+      inCodeSet: { '@type': 'CategoryCodeSet', name: 'O*NET-SOC' },
+    },
+    skills: [...PROFILE.capabilities],
+    qualifications: PROFILE_LEVEL.scope,
+    experienceRequirements: {
+      '@type': 'OccupationalExperienceRequirements',
+      monthsOfExperience: getMonthsOfExperience(),
+    },
+  };
+
+  if (currentRole) {
+    occupation.responsibilities = [...currentRole.responsibilities];
+    const location = placeNode(currentRole.location);
+    if (location) occupation.occupationLocation = location;
+  }
+
+  return occupation;
+}
+
+/** One Role node per position so tenure and scope are readable per employer. */
+function employmentHistory(): JsonLd[] {
+  return PROFILE_ROLES.map((role: ProfileRole) => {
+    const node: JsonLd = {
+      '@type': 'Role',
+      roleName: role.role,
+      startDate: role.startDate,
+      description: `${role.role} at ${role.company} (${role.period}). ${role.summary}`,
+      hasOccupation: {
+        '@type': 'Occupation',
+        name: role.role,
+        skills: [...role.capabilities],
+        responsibilities: [...role.responsibilities],
+        ...(placeNode(role.location) ? { occupationLocation: placeNode(role.location) } : {}),
+      },
     };
+
+    if (role.endDate) node.endDate = role.endDate;
+
+    const employmentType = toSchemaEmploymentType(role.employmentType);
+    if (employmentType) node.employmentType = employmentType;
+
+    return node;
   });
 }
 
-export function buildSiteGraph(): JsonLd {
-  const siteUrl = getSiteUrl();
-  const currentRole = PROFILE_ROLES.find((role) => role.current);
+function personNode(siteUrl: string, url: string): JsonLd {
+  const currentRole = getCurrentRole();
 
   const person: JsonLd = {
     '@type': 'Person',
     '@id': personId(siteUrl),
     name: SITE_NAME,
-    jobTitle: currentRole?.role ?? PROFILE.publicTitle,
+    givenName: 'Sebastian',
+    familyName: 'Mendo',
+    jobTitle: currentRole?.role ?? PROFILE_LEVEL.title,
+    /** Explicit level string so agents do not have to infer seniority. */
+    disambiguatingDescription: `${PROFILE_LEVEL.seniority} level (${PROFILE_LEVEL.equivalentLevels.join(
+      ' / ',
+    )}) individual contributor. ${PROFILE_LEVEL.scope}`,
     description: PROFILE.executiveSummary,
-    url: siteUrl,
+    url,
     email: SITE_CONTACT_EMAIL,
-    knowsAbout: [...PROFILE.domains],
-    worksFor: {
-      '@type': 'Organization',
-      name: currentRole?.company ?? 'JPMorgan Chase',
-    },
-    alumniOf: PROFILE_ROLES.filter((role) => !role.current).map((role) => ({
-      '@type': 'Organization',
-      name: role.company,
-    })),
-    hasOccupation: occupationEntries(),
+    knowsLanguage: LANGUAGE,
+    knowsAbout: [...PROFILE.domains, ...PROFILE.tools],
+    hasOccupation: [primaryOccupation(), ...employmentHistory()],
+    alumniOf: getAlumniCompanies().map(organizationNode),
   };
+
+  if (currentRole) {
+    person.worksFor = organizationNode(currentRole.company);
+  }
 
   if (SITE_SOCIAL_LINKS.length > 0) {
     person.sameAs = SITE_SOCIAL_LINKS;
   }
+
+  return person;
+}
+
+export function buildSiteGraph(): JsonLd {
+  const siteUrl = getSiteUrl();
 
   const website: JsonLd = {
     '@type': 'WebSite',
     '@id': websiteId(siteUrl),
     name: SITE_NAME,
+    alternateName: SITE_TITLE,
+    description: SITE_DESCRIPTION,
     url: siteUrl,
+    inLanguage: LANGUAGE,
     author: { '@id': personId(siteUrl) },
+    publisher: { '@id': personId(siteUrl) },
+    about: { '@id': personId(siteUrl) },
   };
 
   return {
     '@context': 'https://schema.org',
-    '@graph': [person, website],
+    '@graph': [personNode(siteUrl, siteUrl), website],
   };
 }
 
 export function buildProfilePageGraphFromProfile(): JsonLd {
   const siteUrl = getSiteUrl();
-  const currentRole = PROFILE_ROLES.find((role) => role.current);
-
-  const person: JsonLd = {
-    '@type': 'Person',
-    '@id': personId(siteUrl),
-    name: SITE_NAME,
-    jobTitle: currentRole?.role ?? PROFILE.publicTitle,
-    description: PROFILE.executiveSummary,
-    worksFor: currentRole
-      ? { '@type': 'Organization', name: currentRole.company }
-      : undefined,
-    alumniOf: PROFILE_ROLES.filter((role) => !role.current).map((role) => ({
-      '@type': 'Organization',
-      name: role.company,
-    })),
-    knowsAbout: [...PROFILE.domains],
-    hasOccupation: occupationEntries(),
-    url: `${siteUrl}/about`,
-    email: SITE_CONTACT_EMAIL,
-  };
-
-  if (SITE_SOCIAL_LINKS.length > 0) {
-    person.sameAs = SITE_SOCIAL_LINKS;
-  }
 
   return {
     '@context': 'https://schema.org',
     '@type': 'ProfilePage',
     '@id': profilePageId(siteUrl),
     url: `${siteUrl}/about`,
+    name: `About ${SITE_NAME}`,
+    inLanguage: LANGUAGE,
     dateModified: PROFILE_LAST_UPDATED,
-    mainEntity: person,
+    isPartOf: { '@id': websiteId(siteUrl) },
+    mainEntity: personNode(siteUrl, `${siteUrl}/about`),
   };
 }
 
@@ -126,42 +189,76 @@ export function buildProfilePageGraph(data: PortfolioExport): JsonLd {
   return buildProfilePageGraphFromProfile();
 }
 
+function creativeWorkNode(project: ExportedProject, siteUrl: string): JsonLd {
+  const projectUrl = project.url;
+
+  const node: JsonLd = {
+    '@type': 'CreativeWork',
+    '@id': `${projectUrl}#creativework`,
+    name: project.title,
+    headline: project.title,
+    abstract: project.tagline ?? project.description,
+    description: project.description ?? project.tagline,
+    url: projectUrl,
+    inLanguage: LANGUAGE,
+    isPartOf: { '@id': websiteId(siteUrl) },
+    dateModified: PROFILE_LAST_UPDATED,
+    image: `${projectUrl}/opengraph-image`,
+    creator: { '@id': personId(siteUrl) },
+  };
+
+  /** Role wrapper states what I actually did on this project. */
+  node.author = project.role
+    ? {
+        '@type': 'Role',
+        roleName: project.role,
+        author: { '@id': personId(siteUrl) },
+      }
+    : { '@id': personId(siteUrl) };
+
+  if (project.company) {
+    node.about = organizationNode(project.company);
+    node.sourceOrganization = organizationNode(project.company);
+  }
+
+  if (project.tags.length) {
+    node.keywords = project.tags.join(', ');
+  }
+
+  if (project.year) {
+    node.dateCreated = String(project.year);
+    node.copyrightYear = project.year;
+  }
+
+  if (project.impact?.length) {
+    node.additionalProperty = project.impact.map((item) => ({
+      '@type': 'PropertyValue',
+      name: item.metric,
+      value: item.value,
+      description: `${item.context} (confidence: ${item.confidence})`,
+    }));
+  }
+
+  return node;
+}
+
 export function buildCreativeWorkGraph(project: ExportedProject): JsonLd {
   const siteUrl = getSiteUrl();
   const projectUrl = project.url;
 
-  const creativeWork: JsonLd = {
-    '@type': 'CreativeWork',
-    '@id': `${projectUrl}#creativework`,
-    name: project.title,
-    abstract: project.tagline ?? project.description,
-    description: project.description ?? project.tagline,
+  const creativeWork = creativeWorkNode(project, siteUrl);
+  creativeWork.mainEntityOfPage = { '@id': `${projectUrl}#webpage` };
+
+  const webPage: JsonLd = {
+    '@type': 'WebPage',
+    '@id': `${projectUrl}#webpage`,
     url: projectUrl,
-    author: { '@id': personId(siteUrl) },
-    creator: { '@id': personId(siteUrl) },
-    image: `${projectUrl}/opengraph-image`,
+    name: `${project.title} — ${SITE_NAME}`,
+    inLanguage: LANGUAGE,
+    isPartOf: { '@id': websiteId(siteUrl) },
+    about: { '@id': `${projectUrl}#creativework` },
+    dateModified: PROFILE_LAST_UPDATED,
   };
-
-  if (project.company) {
-    creativeWork.about = { '@type': 'Organization', name: project.company };
-  }
-
-  if (project.tags.length) {
-    creativeWork.keywords = project.tags.join(', ');
-  }
-
-  if (project.year) {
-    creativeWork.dateCreated = String(project.year);
-  }
-
-  if (project.impact?.length) {
-    creativeWork.additionalProperty = project.impact.map((item) => ({
-      '@type': 'PropertyValue',
-      name: item.metric,
-      value: item.value,
-      description: item.context,
-    }));
-  }
 
   const breadcrumbs: JsonLd = {
     '@type': 'BreadcrumbList',
@@ -183,6 +280,44 @@ export function buildCreativeWorkGraph(project: ExportedProject): JsonLd {
 
   return {
     '@context': 'https://schema.org',
-    '@graph': [creativeWork, breadcrumbs],
+    '@graph': [creativeWork, webPage, breadcrumbs],
+  };
+}
+
+/** Home page graph: lets an agent enumerate every case study from one fetch. */
+export function buildWorkCollectionGraph(projects: ExportedProject[]): JsonLd {
+  const siteUrl = getSiteUrl();
+
+  const collectionPage: JsonLd = {
+    '@type': 'CollectionPage',
+    '@id': `${siteUrl}/#webpage`,
+    url: siteUrl,
+    name: SITE_TITLE,
+    description: SITE_DESCRIPTION,
+    inLanguage: LANGUAGE,
+    isPartOf: { '@id': websiteId(siteUrl) },
+    about: { '@id': personId(siteUrl) },
+    dateModified: PROFILE_LAST_UPDATED,
+    mainEntity: { '@id': workListId(siteUrl) },
+  };
+
+  const itemList: JsonLd = {
+    '@type': 'ItemList',
+    '@id': workListId(siteUrl),
+    name: 'Case studies',
+    numberOfItems: projects.length,
+    itemListOrder: 'https://schema.org/ItemListOrderAscending',
+    itemListElement: projects.map((project, index) => ({
+      '@type': 'ListItem',
+      position: index + 1,
+      url: project.url,
+      name: project.title,
+      item: creativeWorkNode(project, siteUrl),
+    })),
+  };
+
+  return {
+    '@context': 'https://schema.org',
+    '@graph': [collectionPage, itemList],
   };
 }
