@@ -1,6 +1,6 @@
 'use client';
 
-import { Fragment, useEffect, useRef, type ReactNode } from 'react';
+import { useEffect, useRef, type ReactNode } from 'react';
 import Link from 'next/link';
 import Image from 'next/image';
 import Lenis from 'lenis';
@@ -271,8 +271,8 @@ export function CaseStudyScrolly({
             {config.beats.map((beat, i) => {
               if (i === 0) {
                 return (
-                  <Fragment key={beat.id}>
-                    <section className="cs-section cs-section--hero">
+                  <div key={beat.id} className="cs-section-group cs-section-group--summary">
+                    <section className="cs-section cs-section--title-pane cs-section--hero">
                       {(isChaseCompany(company) || companyLogo) && (
                         <div className={heroLogoClassName(company, companyLogo)}>
                           <Image
@@ -289,20 +289,34 @@ export function CaseStudyScrolly({
                       {slot && <div className="cs-section__slot">{slot}</div>}
                     </section>
                     {beat.body && (
-                      <section className="cs-section cs-section--intro">
+                      <section className="cs-section cs-section--body-pane cs-section--intro">
                         <p className="cs-section__body">{beat.body}</p>
                       </section>
                     )}
-                  </Fragment>
+                  </div>
                 );
               }
 
               return (
-                <section key={beat.id} className="cs-section">
-                  {beat.label && <p className="cs-section__label">{beat.label}</p>}
-                  <h2 className="cs-section__headline">{beat.headline}</h2>
-                  {beat.body && <p className="cs-section__body">{beat.body}</p>}
-                </section>
+                <div key={beat.id} className="cs-section-group">
+                  <section
+                    className="cs-section cs-section--title-pane"
+                    aria-labelledby={`${beat.id}-headline`}
+                  >
+                    {beat.label && <p className="cs-section__label">{beat.label}</p>}
+                    <h2 id={`${beat.id}-headline`} className="cs-section__headline">
+                      {beat.headline}
+                    </h2>
+                  </section>
+                  {beat.body && (
+                    <section
+                      className="cs-section cs-section--body-pane"
+                      aria-labelledby={`${beat.id}-headline`}
+                    >
+                      <p className="cs-section__body">{beat.body}</p>
+                    </section>
+                  )}
+                </div>
               );
             })}
 
