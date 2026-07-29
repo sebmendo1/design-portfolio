@@ -59,7 +59,12 @@ export const projects: Project[] = [
     role: 'Designer & Developer',
     tags: ['AI', 'Mobile', 'Personal'],
     thumbnail: '/assets/memento-ai.png',
-    preview: { frame: 'phone', src: '/assets/memento-ai.png', screenAspectRatio: PHONE_SCREEN_AR.mementoPreview },
+    preview: {
+      frame: 'phone',
+      src: '/assets/memento-ai.png',
+      video: ASSETS.video.mementoDemo,
+      screenAspectRatio: PHONE_SCREEN_AR.mementoDemo,
+    },
     slug: 'memento-ai',
     styles: { backgroundColor: '#f4f3f2' },
     caseStudy: {
@@ -169,7 +174,12 @@ export const projects: Project[] = [
     role: 'Senior Product Designer',
     tags: ['Agentic AI', 'Voice', 'RCS', 'Home Lending'],
     thumbnail: '/assets/casey-ai.png',
-    preview: { frame: 'phone', src: '/assets/casey-ai.png', screenAspectRatio: PHONE_SCREEN_AR.caseyPreview },
+    preview: {
+      frame: 'phone',
+      src: '/assets/casey-ai.png',
+      video: ASSETS.video.caseyRcs,
+      screenAspectRatio: PHONE_SCREEN_AR.caseyRcs,
+    },
     slug: 'casey-ai',
     styles: { backgroundColor: '#f4f3f2' },
     caseStudy: {
@@ -269,7 +279,12 @@ export const projects: Project[] = [
     role: 'Senior Product Designer',
     tags: ['Mobile', 'Banking', 'Home Ownership'],
     thumbnail: '/assets/chase-myhome.png',
-    preview: { frame: 'phone', src: '/assets/chase-myhome.png', screenAspectRatio: PHONE_SCREEN_AR.chasePreview },
+    preview: {
+      frame: 'phone',
+      src: '/assets/chase-myhome.png',
+      video: ASSETS.video.chaseMyHomeDemo,
+      screenAspectRatio: PHONE_SCREEN_AR.chaseMyHomeDemo,
+    },
     slug: 'chase-myhome',
     styles: { backgroundColor: '#f4f3f2' },
     caseStudy: {
