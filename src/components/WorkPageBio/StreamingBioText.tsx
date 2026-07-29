@@ -114,10 +114,8 @@ function BioWord({ item, visible }: { item: BioWordItem; visible: boolean }) {
           : 'streaming-text__unit streaming-text__unit--pending'
       }
     >
-      <span className="streaming-text__word" aria-hidden="true">
-        {item.word}
-      </span>
-      {visible ? item.space : null}
+      <span className="streaming-text__word">{item.word}</span>
+      {item.space}
     </span>
   );
 }
@@ -131,16 +129,11 @@ function BioLinkGroup({
   startIndex: number;
   visibleCount: number;
 }) {
-  const revealed = group.filter((_, index) => startIndex + index < visibleCount);
-  const isComplete = revealed.length === group.length;
-  const unitClass =
-    revealed.length > 0
-      ? 'streaming-text__unit streaming-text__unit--visible'
-      : 'streaming-text__unit streaming-text__unit--pending';
-
-  if (revealed.length === 0) {
-    return <span className={unitClass} aria-hidden="true" />;
-  }
+  const isComplete = startIndex + group.length <= visibleCount;
+  const hasStarted = startIndex < visibleCount;
+  const unitClass = hasStarted
+    ? 'streaming-text__unit streaming-text__unit--visible'
+    : 'streaming-text__unit streaming-text__unit--pending';
 
   const { link } = group[0];
 
@@ -152,20 +145,18 @@ function BioLinkGroup({
         target="_blank"
         rel="noopener noreferrer"
         tabIndex={isComplete ? 0 : -1}
-        aria-hidden={!isComplete}
+        aria-label={link.label}
       >
         <span className="work-page__bio-link-text">
-          {revealed.map((part, index) => {
+          {group.map((part, index) => {
             const globalIndex = startIndex + index;
             const justRevealed = globalIndex === visibleCount - 1;
 
             return (
               <span key={`${part.word}-${index}`}>
-                {index > 0 ? revealed[index - 1].intraSpace : ''}
+                {index > 0 ? group[index - 1].intraSpace : ''}
                 {justRevealed ? (
-                  <span className="streaming-text__word" aria-hidden="true">
-                    {part.word}
-                  </span>
+                  <span className="streaming-text__word">{part.word}</span>
                 ) : (
                   part.word
                 )}
@@ -175,7 +166,7 @@ function BioLinkGroup({
           {isComplete ? <span aria-hidden="true"> ↗</span> : null}
         </span>
       </a>
-      {isComplete ? group[group.length - 1].afterLinkSpace : null}
+      {group[group.length - 1].afterLinkSpace ?? null}
     </span>
   );
 }
