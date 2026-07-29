@@ -22,6 +22,24 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
       priority: 0.8,
     },
     {
+      url: `${base}/seb-sans`,
+      lastModified: profileUpdated,
+      changeFrequency: 'monthly',
+      priority: 0.85,
+    },
+    {
+      url: `${base}/seb-sans/install.json`,
+      lastModified: profileUpdated,
+      changeFrequency: 'monthly',
+      priority: 0.3,
+    },
+    {
+      url: `${base}/seb-sans/llms.txt`,
+      lastModified: profileUpdated,
+      changeFrequency: 'monthly',
+      priority: 0.3,
+    },
+    {
       url: `${base}/llms.txt`,
       lastModified: profileUpdated,
       changeFrequency: 'weekly',

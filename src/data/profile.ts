@@ -31,6 +31,67 @@ export type ProfileRole = {
 
 export const PROFILE_LAST_UPDATED = '2026-07-12';
 
+/**
+ * Seniority signals published in machine-readable form so agents and ATS
+ * parsers can resolve level without inferring it from prose.
+ */
+export const PROFILE_LEVEL = {
+  title: 'Senior Product Designer',
+  seniority: 'Senior',
+  /** Common ladder equivalents recruiters and agents match against. */
+  equivalentLevels: ['Senior', 'L5', 'IC5', 'P4'],
+  scope:
+    'Owns 0-to-1 product areas end to end, leads design for a flagship AI program across multiple surfaces, and mentors other designers without direct reports.',
+  managementTrack: false,
+  /** First professional design role — basis for years-of-experience math. */
+  careerStartDate: '2019-11',
+  /** O*NET-SOC classification for UX / product design work. */
+  onetSocCode: '15-1255.00',
+  onetSocName: 'Web and Digital Interface Designers',
+} as const;
+
+/** Canonical org URLs for structured-data organization nodes. */
+export const COMPANY_URLS: Record<string, string> = {
+  'JPMorgan Chase': 'https://www.chase.com',
+  Salesforce: 'https://www.salesforce.com',
+  WRITER: 'https://writer.com',
+  'Chorus.ai': 'https://www.chorus.ai',
+};
+
+/** schema.org JobPosting-style employment type codes. */
+const SCHEMA_EMPLOYMENT_TYPES: Record<string, string> = {
+  'Full-time': 'FULL_TIME',
+  'Part-time': 'PART_TIME',
+  Contract: 'CONTRACTOR',
+  Internship: 'INTERN',
+};
+
+export function toSchemaEmploymentType(employmentType?: string): string | undefined {
+  if (!employmentType) return undefined;
+  return SCHEMA_EMPLOYMENT_TYPES[employmentType];
+}
+
+function parseMonth(value: string): { year: number; month: number } {
+  const [year, month] = value.split('-').map(Number);
+  return { year, month: month ?? 1 };
+}
+
+/**
+ * Total professional experience in months, counted from the first design role.
+ * Measured against PROFILE_LAST_UPDATED rather than the current clock so
+ * prerendered pages and exports stay deterministic.
+ */
+export function getMonthsOfExperience(asOf: string = PROFILE_LAST_UPDATED): number {
+  const start = parseMonth(PROFILE_LEVEL.careerStartDate);
+  const end = parseMonth(asOf);
+  const months = (end.year - start.year) * 12 + (end.month - start.month);
+  return Math.max(0, months);
+}
+
+export function getYearsOfExperience(asOf: string = PROFILE_LAST_UPDATED): number {
+  return Math.floor(getMonthsOfExperience(asOf) / 12);
+}
+
 export const PROFILE = {
   name: 'Sebastian Mendo',
   publicTitle: 'Senior Product Designer',
@@ -46,7 +107,7 @@ export const PROFILE = {
     ],
   },
   executiveSummary:
-    'Sebastian Mendo is a Senior Product Designer at JPMorgan Chase, where he leads design for Casey AI—Chase\'s first consumer-facing AI agent for home lending—and previously shaped Chase MyHome onboarding and mortgage flows. Before banking, he designed AI-powered enterprise support at Salesforce and early GenAI content tools at WRITER. He combines product strategy, conversational AI UX, regulated design, and hands-on AI-native development.',
+    'Sebastian Mendo is a Senior Product Designer at JPMorgan Chase, where he leads design for Casey AI—Chase\'s first customer-facing AI agent, shipped on voice and RCS and now the reference pattern for agentic work across the business. He previously shaped Chase MyHome onboarding and mortgage flows. Before banking, he designed AI-powered enterprise support at Salesforce and early GenAI content tools at WRITER. He combines product strategy, conversational AI UX, regulated design, and hands-on AI-native development.',
   positioningStatement:
     'Senior Product Designer specialized in agentic AI, voice and conversational UX, and shipping customer-centric products inside highly regulated environments.',
   domains: [
@@ -124,7 +185,7 @@ export const PROFILE_ROLES: ProfileRole[] = [
     location: 'Plano, Texas, United States',
     employmentType: 'Full-time',
     summary:
-      'Leads design for Casey AI, Chase\'s first consumer-facing AI agent for home lending—specialized in voice AI and conversational RCS.',
+      'Leads design for Casey AI, Chase\'s first customer-facing AI agent—shipped on voice and RCS, proven in home lending, and now the reference pattern for agentic work across the business.',
     responsibilities: [
       'Design conversational AI flows for complex banking use cases',
       'Work cross-functionally with AI engineers and Forward Deployed Engineers to ship agentic experiences',
@@ -167,7 +228,7 @@ export const PROFILE_ROLES: ProfileRole[] = [
       'Launched Chase HELOC for CMH customers',
     ],
     capabilities: ['Mobile UX', 'Onboarding', 'Accessibility', 'Design systems', 'Home lending'],
-    relatedProjectSlugs: ['chase-myhome'],
+    relatedProjectSlugs: ['chase-myhome', 'agentic-home-lending'],
   },
   {
     id: 'salesforce',
@@ -261,6 +322,28 @@ export const PROFILE_ROLES: ProfileRole[] = [
     capabilities: ['Analytics UX', 'Enterprise dashboards', 'Business case design'],
   },
 ];
+
+export function getCurrentRole(): ProfileRole | undefined {
+  return PROFILE_ROLES.find((role) => role.current);
+}
+
+/** Past employers, deduped by company and excluding the current employer. */
+export function getAlumniCompanies(): string[] {
+  const currentCompany = getCurrentRole()?.company;
+  const seen = new Set<string>();
+
+  for (const role of PROFILE_ROLES) {
+    if (role.company === currentCompany) continue;
+    seen.add(role.company);
+  }
+
+  return [...seen];
+}
+
+/** Experience role that owns a given case study, for project → role linkage. */
+export function getRoleIdForProjectSlug(slug: string): string | undefined {
+  return PROFILE_ROLES.find((role) => role.relatedProjectSlugs?.includes(slug))?.id;
+}
 
 /** Flat list compatible with legacy WorkExperience consumers. */
 export function getWorkExperienceList() {

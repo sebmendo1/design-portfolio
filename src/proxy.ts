@@ -27,7 +27,7 @@ function handleAdminAuth(request: NextRequest): NextResponse {
 function handleSiteAuth(request: NextRequest): NextResponse | null {
   const { pathname, search } = request.nextUrl;
 
-  if (pathname.startsWith('/login')) {
+  if (pathname.startsWith('/login') || pathname.startsWith('/seb-sans')) {
     return NextResponse.next();
   }
 
