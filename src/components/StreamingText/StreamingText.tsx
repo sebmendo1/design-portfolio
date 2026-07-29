@@ -120,10 +120,8 @@ export function StreamingText({
               : 'streaming-text__unit streaming-text__unit--pending'
           }
         >
-          <span className="streaming-text__word" aria-hidden="true">
-            {unit.word}
-          </span>
-          {index < visibleCount ? unit.space : null}
+          <span className="streaming-text__word">{unit.word}</span>
+          {unit.space}
         </span>
       ))}
     </Tag>
