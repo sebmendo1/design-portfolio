@@ -59,9 +59,13 @@ function CardVisual({ preview, title }: { preview?: ProjectPreview; title: strin
   if (!preview) return null;
 
   if (preview.frame === 'phone') {
+    const poster = preview.video ? getVideoPoster(preview.video) : undefined;
+
     return (
       <PhoneStencil
         src={preview.src}
+        video={preview.video}
+        poster={poster}
         alt={`${title} app preview`}
         screenAspectRatio={preview.screenAspectRatio}
         variant="card"
