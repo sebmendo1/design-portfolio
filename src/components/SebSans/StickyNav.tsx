@@ -43,7 +43,6 @@ export function StickyNav() {
           className={`btn-get-it${channel === 'download' ? ' btn-get-it--active' : ''}`}
           onClick={handleDownload}
           aria-label="Download Seb Sans v0.7.2"
-          aria-pressed={channel === 'download'}
         >
           <span>Download</span>
           <span className="btn-get-it-icon" aria-hidden="true">
