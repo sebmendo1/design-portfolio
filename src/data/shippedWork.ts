@@ -20,12 +20,12 @@ export const SHIPPED_WORK: ShippedWorkEntry[] = [
     projectSlug: 'memento-ai',
   },
   {
-    id: 'autods-m-ai',
+    id: 'autodsm-ai',
     title: 'AutoDSM AI',
     affiliation: 'Side project',
     sortDate: '2026-06',
     dateLabel: 'June 2026',
-    projectSlug: 'autods-m-ai',
+    projectSlug: 'autodsm-ai',
   },
   {
     id: 'agentic-home-lending',

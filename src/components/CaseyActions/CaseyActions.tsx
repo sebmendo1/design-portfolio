@@ -33,6 +33,7 @@ export function CaseyActions() {
       <audio
         ref={audioRef}
         src={ASSETS.audio.caseyIntro}
+        aria-label="Listen to Casey"
         onEnded={() => setPlaying(false)}
         preload="metadata"
       />

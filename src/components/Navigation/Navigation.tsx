@@ -9,6 +9,7 @@ import { OptimizedImage } from '@/components/OptimizedImage/OptimizedImage';
 import { DISSOLVE_DURATION, DISSOLVE_EASE } from '@/components/DissolveIn/DissolveIn';
 import { PROFILE_ROLES } from '@/data/profile';
 import { getCompanyLogo } from '@/data/companyLogos';
+import { SITE_CONTACT_EMAIL } from '@/lib/site';
 import './Navigation.css';
 
 const COMPANY_LOGO_KEY: Record<string, string> = {
@@ -131,25 +132,26 @@ export function Navigation() {
     };
   }, [isWorkMenuOpen]);
 
-  const workMenu =
-    isWorkMenuOpen && menuPosition ? (
-      <>
-        {isMobileMenu && (
-          <button
-            type="button"
-            className="nav__work-backdrop"
-            aria-label="Close My Work menu"
-            onClick={() => setIsWorkMenuOpen(false)}
-          />
-        )}
-        <div
-          ref={workMenuPanelRef}
-          id="nav-work-menu"
-          className={`nav__work-menu${isMobileMenu ? ' nav__work-menu--mobile' : ''}`}
-          aria-label="Companies"
-          role="menu"
-          style={
-            isMobileMenu
+  const workMenu = (
+    <>
+      {isWorkMenuOpen && isMobileMenu && (
+        <button
+          type="button"
+          className="nav__work-backdrop"
+          aria-label="Close My Work menu"
+          onClick={() => setIsWorkMenuOpen(false)}
+        />
+      )}
+      <div
+        ref={workMenuPanelRef}
+        id="nav-work-menu"
+        hidden={!isWorkMenuOpen || !menuPosition}
+        className={`nav__work-menu${isMobileMenu ? ' nav__work-menu--mobile' : ''}`}
+        aria-label="Companies"
+        role="menu"
+        style={
+          isWorkMenuOpen && menuPosition
+            ? isMobileMenu
               ? ({
                   top: menuPosition.top,
                   '--nav-work-menu-top': `${menuPosition.top}px`,
@@ -159,41 +161,42 @@ export function Navigation() {
                   right: menuPosition.right,
                   width: menuPosition.width,
                 }
-          }
-        >
-          {COMPANIES.map((company) => (
-            <Link
-              key={company.name}
-              href={company.href}
-              className="nav__work-item"
-              role="menuitem"
-              onClick={() => setIsWorkMenuOpen(false)}
+            : undefined
+        }
+      >
+        {COMPANIES.map((company) => (
+          <Link
+            key={company.name}
+            href={company.href}
+            className="nav__work-item"
+            role="menuitem"
+            onClick={() => setIsWorkMenuOpen(false)}
+          >
+            <span
+              className={
+                company.logoKey
+                  ? `nav__work-logo nav__work-logo--${company.logoKey}`
+                  : 'nav__work-logo'
+              }
+              aria-hidden="true"
             >
-              <span
-                className={
-                  company.logoKey
-                    ? `nav__work-logo nav__work-logo--${company.logoKey}`
-                    : 'nav__work-logo'
-                }
-                aria-hidden="true"
-              >
-                {company.logo ? (
-                  <OptimizedImage
-                    src={company.logo}
-                    alt=""
-                    width={NAV_WORK_LOGO_SIZE}
-                    height={NAV_WORK_LOGO_SIZE}
-                  />
-                ) : (
-                  <span className="nav__work-logo-fallback">{company.name.charAt(0)}</span>
-                )}
-              </span>
-              <span>{company.name}</span>
-            </Link>
-          ))}
-        </div>
-      </>
-    ) : null;
+              {company.logo ? (
+                <OptimizedImage
+                  src={company.logo}
+                  alt=""
+                  width={NAV_WORK_LOGO_SIZE}
+                  height={NAV_WORK_LOGO_SIZE}
+                />
+              ) : (
+                <span className="nav__work-logo-fallback">{company.name.charAt(0)}</span>
+              )}
+            </span>
+            <span>{company.name}</span>
+          </Link>
+        ))}
+      </div>
+    </>
+  );
 
   return (
     <div className="nav-shell">
@@ -274,14 +277,12 @@ export function Navigation() {
           <Link href="/about" className="nav__about">
             About
           </Link>
-          <a href="mailto:contact@sebastianmendo.design" className="nav__contact">
+          <a href={`mailto:${SITE_CONTACT_EMAIL}`} className="nav__contact">
             Contact me
           </a>
         </motion.div>
       </nav>
-      {typeof document !== 'undefined' && workMenu
-        ? createPortal(workMenu, document.body)
-        : null}
+      {typeof document !== 'undefined' ? createPortal(workMenu, document.body) : null}
     </div>
   );
 }

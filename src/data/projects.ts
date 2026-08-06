@@ -115,7 +115,7 @@ export const projects: Project[] = [
     },
   },
   {
-    id: 'autods-m-ai',
+    id: 'autodsm-ai',
     title: 'AutoDSM AI',
     tagline: 'Build and publish your design system in isolation from the codebase.',
     description: 'Intelligent design system management platform for enterprise product teams.',
@@ -124,7 +124,7 @@ export const projects: Project[] = [
     role: 'Designer & Developer',
     tags: ['AI', 'Design Systems', 'B2B'],
     preview: { frame: 'image', src: '/assets/autods-m.webp' },
-    slug: 'autods-m-ai',
+    slug: 'autodsm-ai',
     styles: { backgroundColor: '#f4f3f2' },
     caseStudy: {
       blocks: [
@@ -134,7 +134,7 @@ export const projects: Project[] = [
       ],
     },
     scrollyConfig: {
-      slug: 'autods-m-ai',
+      slug: 'autodsm-ai',
       title: 'AutoDSM AI',
       trackHeightVh: 600,
       stage: { centerpiece: { frame: 'none', width: 400, src: '/assets/autods-m.webp' } },
@@ -680,7 +680,7 @@ export const PROJECT_ORDER = [
   'chorus-ai',
   'chase-myhome',
   'agentic-home-lending',
-  'autods-m-ai',
+  'autodsm-ai',
 ] as const;
 
 export function sortProjectsByFeaturedOrder(items: Project[]): Project[] {

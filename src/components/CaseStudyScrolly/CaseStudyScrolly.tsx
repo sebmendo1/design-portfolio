@@ -310,9 +310,9 @@ export function CaseStudyScrolly({
                     className="cs-section cs-section--title-pane"
                     aria-labelledby={`${beat.id}-headline`}
                   >
-                    {beat.label && <p className="cs-section__label">{beat.label}</p>}
                     <h2 id={`${beat.id}-headline`} className="cs-section__headline">
-                      {beat.headline}
+                      {beat.label && <span className="cs-section__label">{beat.label}</span>}
+                      <span className="cs-section__headline-text">{beat.headline}</span>
                     </h2>
                   </section>
                   {beat.body && (
@@ -328,8 +328,10 @@ export function CaseStudyScrolly({
             })}
 
             <section className="cs-section cs-section--outro">
-              <p className="cs-section__label">More work</p>
-              <h2 className="cs-section__headline">See the rest of my projects.</h2>
+              <h2 className="cs-section__headline">
+                <span className="cs-section__label">More work</span>
+                <span className="cs-section__headline-text">See the rest of my projects.</span>
+              </h2>
               <div className="cs-section__slot">
                 <HomeLink className="cs-outro__btn" onHomeNavigate={onHomeNavigate}>
                   View all projects

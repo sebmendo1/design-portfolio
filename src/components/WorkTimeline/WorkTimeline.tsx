@@ -18,7 +18,9 @@ export function WorkTimeline() {
                 entry.title
               )}
             </span>
+            <span className="sr-only"> </span>
             <span className="work-timeline__affiliation">{entry.affiliation}</span>
+            <span className="sr-only"> </span>
             {entry.pending ? (
               <span className="work-timeline__date work-timeline__date--pending">Pending</span>
             ) : (
