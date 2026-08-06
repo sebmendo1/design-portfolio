@@ -299,6 +299,7 @@ export const PROFILE_ROLES: ProfileRole[] = [
       'Company acquired by ZoomInfo in July 2021',
     ],
     capabilities: ['Design systems', 'AI SaaS', 'Component libraries'],
+    relatedProjectSlugs: ['chorus-ai'],
   },
   {
     id: 'shift',

@@ -27,7 +27,11 @@ function isChaseCompany(company?: string): boolean {
 function showsDesktopHeroLogo(company?: string, companyLogo?: string): boolean {
   return Boolean(
     companyLogo &&
-      (isChaseCompany(company) || company === 'Salesforce' || company === 'WRITER'),
+      (isChaseCompany(company) ||
+        company === 'Salesforce' ||
+        company === 'WRITER' ||
+        company === 'Chorus.ai' ||
+        company === 'Chorus AI'),
   );
 }
 
@@ -39,6 +43,9 @@ function heroLogoClassName(company?: string, companyLogo?: string): string {
   if (isChaseCompany(company)) classes.push('cs-section__logo--chase');
   if (company === 'Salesforce') classes.push('cs-section__logo--salesforce');
   if (company === 'WRITER') classes.push('cs-section__logo--writer');
+  if (company === 'Chorus.ai' || company === 'Chorus AI') {
+    classes.push('cs-section__logo--chorus');
+  }
   return classes.join(' ');
 }
 

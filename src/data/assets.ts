@@ -14,6 +14,7 @@ export const ASSETS = {
     salesforceHelp: `${BLOB}/salesforce-help.mp4`,
     chaseMyHomeDemo: `${BLOB}/chase-myhome-demo.mp4`,
     writerRewrite: `${BLOB}/writer-rewrite.mp4`,
+    chorusDemo: `${BLOB}/chorus-ai-demo.mp4`,
   },
   posters: {
     caseyRcs: '/assets/posters/casey-rcs.jpg',
@@ -21,6 +22,7 @@ export const ASSETS = {
     salesforceHelp: '/assets/posters/salesforce-help.jpg',
     chaseMyHomeDemo: '/assets/posters/chase-myhome-demo.jpg',
     writerRewrite: '/assets/posters/writer-rewrite.jpg',
+    chorusDemo: '/assets/posters/chorus-ai-demo.jpg',
   },
 } as const;
 

@@ -15,6 +15,7 @@ const ASSETS = [
   { name: 'salesforce-help.mp4', type: 'video/mp4' },
   { name: 'chase-myhome-demo.mp4', type: 'video/mp4' },
   { name: 'writer-rewrite.mp4', type: 'video/mp4' },
+  { name: 'chorus-ai-demo.mp4', type: 'video/mp4' },
 ] as const;
 
 (async () => {

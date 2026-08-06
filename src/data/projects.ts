@@ -5,6 +5,7 @@ import { PHONE_SCREEN_AR } from '@/components/PhoneStencil/phone-aspect-ratios';
 import {
   DEFAULT_BROWSER_SCREEN_AR,
   WRITER_REWRITE_SCREEN_AR,
+  CHORUS_DEMO_SCREEN_AR,
 } from '@/components/BrowserStencil/browser-aspect-ratios';
 
 export interface ProjectStyles {
@@ -52,7 +53,7 @@ export const projects: Project[] = [
   {
     id: 'memento-ai',
     title: 'Memento AI',
-    tagline: 'A native iOS journaling app where localized RAG turns your own writing into a therapeutic mirror.',
+    tagline: 'A private iOS journal that reflects only on your writing.',
     description: 'I designed and engineered Memento, a native iOS journaling app utilizing a localized Retrieval-Augmented Generation (RAG) architecture to provide contextual, fully cited AI reflections grounded exclusively in the user\'s own writing.',
     year: 2023,
     company: 'Personal Project',
@@ -116,7 +117,7 @@ export const projects: Project[] = [
   {
     id: 'autods-m-ai',
     title: 'AutoDSM AI',
-    tagline: 'An AI-powered design system manager that keeps tokens, components, and documentation in sync.',
+    tagline: 'Build and publish your design system in isolation from the codebase.',
     description: 'Intelligent design system management platform for enterprise product teams.',
     year: 2023,
     company: 'Personal Project',
@@ -166,7 +167,7 @@ export const projects: Project[] = [
   {
     id: 'casey-ai',
     title: 'Casey AI',
-    tagline: "Chase's first customer-facing AI agent — voice, text, and the pattern the rest are built on.",
+    tagline: "Chase's first AI agent for voice and text customer help.",
     description:
       "Chase's first customer-facing AI agent, and the pattern the rest are built on.",
     year: 2025,
@@ -272,7 +273,7 @@ export const projects: Project[] = [
   {
     id: 'chase-myhome',
     title: 'Chase MyHome App',
-    tagline: 'A unified home ownership platform connecting mortgage, equity, and market insights.',
+    tagline: 'Mortgage, equity, and home value in one view.',
     description: 'End-to-end homeownership experience for JPMorgan Chase customers.',
     year: 2024,
     company: 'JPMorgan Chase',
@@ -335,7 +336,7 @@ export const projects: Project[] = [
   {
     id: 'agentic-home-lending',
     title: 'Agentic Home Lending',
-    tagline: 'AI-guided mortgage origination that turns a months-long process into days.',
+    tagline: 'AI that guides mortgage applications from start to finish.',
     description: 'Agentic AI flows for the JPMorgan Chase home lending origination experience.',
     year: 2024,
     company: 'JPMorgan Chase',
@@ -393,7 +394,7 @@ export const projects: Project[] = [
   {
     id: 'writer-ai',
     title: 'Writer AI',
-    tagline: 'Turn a highlight into the right rewrite.',
+    tagline: 'Highlight text and pick a rewrite mode that matches the job.',
     description:
       'Designed and shipped ReWrite for WRITER, on-demand AI rewriting with six intentional transform modes, delivered across the editor, desktop apps, browser extensions, and Figma.',
     year: 2021,
@@ -497,9 +498,118 @@ export const projects: Project[] = [
     },
   },
   {
+    id: 'chorus-ai',
+    title: 'Chorus AI Design System',
+    tagline: 'A design system rebuilt for Chorus AI conversation intelligence.',
+    description:
+      'End-to-end design system overhaul for Chorus.ai\'s conversation intelligence platform, rebuilt on Atomic Design principles ahead of the company\'s acquisition by ZoomInfo.',
+    year: 2021,
+    company: 'Chorus.ai',
+    role: 'Product Designer',
+    tags: ['Design Systems', 'B2B SaaS', 'Component Libraries'],
+    thumbnail: '/assets/chorus-ai-product.png',
+    preview: {
+      frame: 'browser',
+      video: ASSETS.video.chorusDemo,
+      url: 'chorus.ai',
+      screenAspectRatio: CHORUS_DEMO_SCREEN_AR,
+    },
+    slug: 'chorus-ai',
+    styles: { backgroundColor: '#f4f3f2' },
+    caseStudy: {
+      blocks: [
+        {
+          text: 'I joined Chorus.ai as a product designer specializing in design systems, tasked with rebuilding a component library that had fallen behind a fast-moving AI sales-intelligence product. The system I shipped standardized how Chorus built UI, and it was still holding up the week the company was acquired by ZoomInfo for $575M.',
+        },
+        {
+          text: 'Chorus\'s design system stopped at atoms and molecules: no templates, no cards, no complex components. The grid was used inconsistently across the product, and nothing was built with Auto Layout or Variants. That gap caused real UI and front-end miscommunication, constant back-and-forth over exact CSS values, and visible inconsistency across the product — and it made sprint planning across design and engineering a headache for PMs every cycle.',
+        },
+        {
+          text: 'I partnered with PMs to define what was must-have versus nice-to-have, then scoped four jobs: update every component to modern Figma standards (Auto Layout, Variants), separate large molecules into sections by product feature, build a real grid system and templates, and redesign the right sidebar — one of the product\'s most reused surfaces. I followed Atomic Design Methodology throughout, so every new component inherited the same token and grid foundation instead of drifting on its own.',
+        },
+        {
+          text: 'I rebuilt the library with variants, tokens, and responsive grids, then reorganized it by feature — Recordings, Inbox, Meetings, Deals, Coaching, Analytics, Playlists — so any designer or engineer could find exactly the component they needed. The system was standardizing feature delivery by the time ZoomInfo announced its acquisition of Chorus.ai on July 13, 2021, an all-cash deal valued at $575M for a company holding the largest patent portfolio in conversation intelligence.',
+        },
+      ],
+    },
+    scrollyConfig: {
+      slug: 'chorus-ai',
+      title: 'Chorus AI Design System',
+      trackHeightVh: 600,
+      stage: {
+        centerpiece: {
+          frame: 'browser',
+          width: 400,
+          video: ASSETS.video.chorusDemo,
+          url: 'chorus.ai',
+          screenAspectRatio: CHORUS_DEMO_SCREEN_AR,
+        },
+      },
+      beats: [
+        {
+          id: 'summary',
+          headline: 'A design system rebuilt fast enough to keep up with an acquisition.',
+          body: 'I joined Chorus.ai as a product designer specializing in design systems, tasked with rebuilding a component library that had fallen behind a fast-moving AI sales-intelligence product. The system I shipped standardized how Chorus built UI, and it was still holding up the week the company was acquired by ZoomInfo for $575M.',
+          range: [0, 0.15],
+        },
+        {
+          id: 'challenge',
+          label: 'Challenge',
+          headline: 'Atoms and molecules only. Nothing else was documented.',
+          body: 'Chorus\'s design system stopped at atoms and molecules: no templates, no cards, no complex components. The grid was used inconsistently across the product, and nothing was built with Auto Layout or Variants. That gap caused real UI and front-end miscommunication, constant back-and-forth over exact CSS values, and visible inconsistency across the product — and it made sprint planning across design and engineering a headache for PMs every cycle.',
+          range: [0.15, 0.32],
+        },
+        {
+          id: 'approach',
+          label: 'Approach',
+          headline: 'Four jobs to be done, scoped with PMs before touching Figma.',
+          body: 'I partnered with PMs to define what was must-have versus nice-to-have, then scoped four jobs: update every component to modern Figma standards (Auto Layout, Variants), separate large molecules into sections by product feature, build a real grid system and templates, and redesign the right sidebar — one of the product\'s most reused surfaces. I followed Atomic Design Methodology throughout, so every new component inherited the same token and grid foundation instead of drifting on its own.',
+          range: [0.32, 0.5],
+        },
+        {
+          id: 'solution',
+          label: 'Solution',
+          headline: 'One Figma page per feature. One sidebar used everywhere.',
+          body: 'I rebuilt the library with variants, tokens, and responsive grids, then reorganized it by feature — Recordings, Inbox, Meetings, Deals, Coaching, Analytics, Playlists — so any designer or engineer could find exactly the component they needed. The redesigned right sidebar was documented in context across Comments, Snippets, and Scorecards — surfaces reused on every call review in the product.',
+          range: [0.5, 0.68],
+        },
+        {
+          id: 'outcome',
+          label: 'Outcome',
+          headline: 'Shipped the week Chorus was acquired for $575M.',
+          body: 'ZoomInfo announced its acquisition of Chorus.ai on July 13, 2021 — an all-cash deal valued at $575M. Chorus held the largest patent portfolio in conversation intelligence; the rebuilt system became the foundation for merging Chorus and ZoomInfo\'s product surfaces across a combined org of 1,800+ employees.',
+          range: [0.68, 0.85],
+        },
+        {
+          id: 'tldr',
+          label: 'TLDR',
+          headline: 'The quick version.',
+          body: 'Chorus.ai\'s design system covered only atoms and molecules, causing dev/design miscommunication and inconsistency across a fast-evolving conversation intelligence product. I scoped four jobs with PMs — modern Auto Layout components, feature-organized documentation, a standardized grid and templates, and a redesigned sidebar — and rebuilt the library using Atomic Design Methodology with variants, tokens, and responsive grids. ZoomInfo acquired Chorus on July 13, 2021 for $575M; the system I shipped was standardizing feature delivery as the deal closed.',
+          range: [0.85, 1.0],
+        },
+      ],
+      cards: [
+        { id: 'c1', src: '/assets/chorus-ai-ds-audit.png', label: 'Atoms-only audit', seed: 21, enterAt: 0.14, clusterId: 'discovery', bgColor: '#1e1e2a' },
+        { id: 'c2', label: 'Grid inconsistencies', seed: 32, enterAt: 0.17, clusterId: 'discovery', bgColor: '#1a1a25' },
+        { id: 'c3', label: 'Jobs to be done', seed: 43, enterAt: 0.2, clusterId: 'research', bgColor: '#1e2a1e' },
+        { id: 'c4', label: 'Must-have vs. nice-to-have', seed: 54, enterAt: 0.23, clusterId: 'research', bgColor: '#1a2520' },
+        { id: 'c5', src: '/assets/chorus-ai-features.png', label: 'Feature-organized library', seed: 65, enterAt: 0.26, clusterId: 'shipped', bgColor: '#2a1e1e' },
+        { id: 'c6', label: 'Sidebar redesign', seed: 76, enterAt: 0.29, clusterId: 'shipped', bgColor: '#251a1a' },
+        { id: 'c7', label: '$575M acquisition', seed: 87, enterAt: 0.32, clusterId: 'impact', bgColor: '#1a1e2a' },
+        { id: 'c8', label: 'Atomic Design tokens', seed: 98, enterAt: 0.15, bgColor: '#222222' },
+      ],
+      clusters: [
+        { id: 'discovery', label: 'Discovery', anchor: { x: 18, y: 28 } },
+        { id: 'research', label: 'Approach', anchor: { x: 82, y: 28 } },
+        { id: 'shipped', label: 'Shipped', anchor: { x: 18, y: 72 } },
+        { id: 'impact', label: 'Impact', anchor: { x: 82, y: 72 } },
+      ],
+    },
+  },
+  {
     id: 'salesforce-help',
     title: 'Salesforce Help',
-    tagline: 'Stop making customers guess how to get help.',
+    tagline: 'Describe your issue and Einstein routes you to the best support channel.',
     description: 'Redesigned Contact Support experience for Salesforce. Einstein AI routes customers to the right channel instead of asking them to figure it out themselves.',
     year: 2021,
     company: 'Salesforce',
@@ -561,12 +671,13 @@ export const projects: Project[] = [
   },
 ];
 
-/** Featured card order: Memento first, then Casey, then Salesforce & Writer, then Chase projects. */
+/** Featured card order: Memento first, then Casey, Salesforce, Writer, Chorus, then Chase projects. */
 export const PROJECT_ORDER = [
   'memento-ai',
   'casey-ai',
   'salesforce-help',
   'writer-ai',
+  'chorus-ai',
   'chase-myhome',
   'agentic-home-lending',
   'autods-m-ai',

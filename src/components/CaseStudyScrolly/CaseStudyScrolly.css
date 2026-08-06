@@ -210,6 +210,11 @@
   max-width: 200px;
 }
 
+.cs-section__logo--chorus .cs-section__logo-img {
+  height: 36px;
+  max-width: 180px;
+}
+
 .cs-section--intro .cs-section__body {
   font-size: 20px;
   line-height: 1.6;

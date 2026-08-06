@@ -137,8 +137,8 @@ export function ProjectCard({ project, onNavigate }: ProjectCardProps) {
       </div>
       <div className="project-card__meta">
         <h2 className="project-card__title">{project.title}</h2>
-        {project.company && (
-          <p className="project-card__company">{project.company}</p>
+        {project.tagline && (
+          <p className="project-card__description">{project.tagline}</p>
         )}
       </div>
     </Link>

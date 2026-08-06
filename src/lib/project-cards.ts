@@ -5,7 +5,7 @@ export type ProjectCardSummary = {
   id: string;
   slug: string;
   title: string;
-  company?: string;
+  tagline?: string;
   preview?: ProjectPreview;
   styles?: ProjectStyles;
 };
@@ -15,7 +15,7 @@ export function toProjectCardSummary(project: Project): ProjectCardSummary {
     id: project.id,
     slug: project.slug,
     title: project.title,
-    company: project.company,
+    tagline: project.tagline,
     preview: project.preview,
     styles: project.styles,
   };

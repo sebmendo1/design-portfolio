@@ -126,5 +126,6 @@ export const SHIPPED_WORK: ShippedWorkEntry[] = [
     affiliation: 'Chorus AI',
     sortDate: '2020-09',
     dateLabel: 'September 2020',
+    projectSlug: 'chorus-ai',
   },
 ];
