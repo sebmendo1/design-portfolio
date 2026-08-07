@@ -2,14 +2,14 @@ import {
   AI_CORS_HEADERS,
   AI_ROUTE_HEADERS,
   buildPortfolioExport,
-  toContentJson,
+  toAgentGuideTxt,
 } from '@/lib/content-export';
 
 export async function GET() {
   const data = await buildPortfolioExport();
-  return new Response(toContentJson(data), {
+  return new Response(toAgentGuideTxt(data), {
     headers: {
-      'Content-Type': 'application/json; charset=utf-8',
+      'Content-Type': 'text/plain; charset=utf-8',
       ...AI_CORS_HEADERS,
       ...AI_ROUTE_HEADERS,
     },

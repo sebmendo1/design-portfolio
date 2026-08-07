@@ -16,6 +16,7 @@ const PUBLIC_PATHS = [
   '/llms.txt',
   '/llms-full.txt',
   '/content.json',
+  '/.well-known/ai.txt',
   '/sitemap.xml',
   '/robots.txt',
 ] as const;
@@ -27,6 +28,7 @@ function revalidatePublicContent(slug?: string) {
   }
   if (slug) {
     revalidatePath(`/work/${slug}`);
+    revalidatePath(`/work/${slug}/content.json`);
   }
 }
 

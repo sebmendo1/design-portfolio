@@ -57,11 +57,25 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
       changeFrequency: 'weekly',
       priority: 0.4,
     },
-    ...projects.map((project) => ({
-      url: `${base}/work/${project.slug}`,
+    {
+      url: `${base}/.well-known/ai.txt`,
       lastModified: profileUpdated,
-      changeFrequency: 'monthly' as const,
-      priority: 0.9,
-    })),
+      changeFrequency: 'weekly',
+      priority: 0.45,
+    },
+    ...projects.flatMap((project) => [
+      {
+        url: `${base}/work/${project.slug}`,
+        lastModified: profileUpdated,
+        changeFrequency: 'monthly' as const,
+        priority: 0.9,
+      },
+      {
+        url: `${base}/work/${project.slug}/content.json`,
+        lastModified: profileUpdated,
+        changeFrequency: 'monthly' as const,
+        priority: 0.35,
+      },
+    ]),
   ];
 }

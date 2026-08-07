@@ -26,7 +26,7 @@ export type AgentInstallManifest = {
   generatedFor: 'coding-agents';
   name: 'Seb Sans';
   slug: 'seb-sans';
-  version: '0.6.0';
+  version: '0.7.2';
   license: 'SIL Open Font License 1.1';
   homepage: string;
   repository: string;
@@ -122,7 +122,7 @@ export function getAgentInstallManifest(): AgentInstallManifest {
     generatedFor: 'coding-agents',
     name: 'Seb Sans',
     slug: 'seb-sans',
-    version: '0.6.0',
+    version: '0.7.2',
     license: 'SIL Open Font License 1.1',
     homepage: siteUrl,
     repository: GITHUB_REPO,

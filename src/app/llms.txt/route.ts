@@ -1,4 +1,5 @@
 import {
+  AI_CORS_HEADERS,
   AI_ROUTE_HEADERS,
   buildPortfolioExport,
   toLlmsTxt,
@@ -9,7 +10,15 @@ export async function GET() {
   return new Response(toLlmsTxt(data), {
     headers: {
       'Content-Type': 'text/plain; charset=utf-8',
+      ...AI_CORS_HEADERS,
       ...AI_ROUTE_HEADERS,
     },
+  });
+}
+
+export async function OPTIONS() {
+  return new Response(null, {
+    status: 204,
+    headers: AI_CORS_HEADERS,
   });
 }

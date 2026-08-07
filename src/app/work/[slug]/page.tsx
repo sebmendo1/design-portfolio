@@ -1,6 +1,7 @@
 import { notFound } from 'next/navigation';
 import type { Metadata } from 'next';
 import { CaseStudyPageContent } from '@/components/CaseStudyPageContent/CaseStudyPageContent';
+import { CaseStudySrArticle } from '@/components/CaseStudySrArticle/CaseStudySrArticle';
 import { StructuredData } from '@/components/StructuredData/StructuredData';
 import { PROFILE_LAST_UPDATED } from '@/data/profile';
 import { projects } from '@/data/projects';
@@ -8,7 +9,6 @@ import { getMergedProject } from '@/lib/cms-data';
 import { resolveCaseStudyConfig } from '@/lib/case-study-config';
 import { exportMergedProject } from '@/lib/content-export';
 import { buildCreativeWorkGraph } from '@/lib/json-ld';
-import { canonicalPath } from '@/lib/metadata';
 import { getSiteUrl } from '@/lib/site';
 import './case-study.css';
 
@@ -34,10 +34,20 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   return {
     title,
     description,
-    ...canonicalPath(`/work/${slug}`),
     authors: [{ name: 'Sebastian Mendo', url: siteUrl }],
     creator: 'Sebastian Mendo',
     keywords: project.tags,
+    alternates: {
+      canonical: `/work/${slug}`,
+      types: {
+        'application/json': [
+          {
+            url: `/work/${slug}/content.json`,
+            title: `${title} structured content`,
+          },
+        ],
+      },
+    },
     openGraph: {
       title: `${title} — Sebastian Mendo`,
       description,
@@ -69,6 +79,7 @@ export default async function CaseStudyPage({ params }: Props) {
   return (
     <>
       <StructuredData data={buildCreativeWorkGraph(exported)} />
+      <CaseStudySrArticle project={exported} />
       <CaseStudyPageContent project={project} config={caseStudyConfig} />
     </>
   );

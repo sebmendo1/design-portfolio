@@ -1,4 +1,6 @@
-import type { Project } from '@/data/projects';
+import type { Project, ProjectPreview } from '@/data/projects';
+import { SHIPPED_WORK, type ShippedWorkEntry } from '@/data/shippedWork';
+import { getVideoPoster } from '@/data/assets';
 import { cacheLife, cacheTag } from 'next/cache';
 import {
   PROFILE,
@@ -37,6 +39,17 @@ export type ExportedImpact = {
   confidence: ClaimConfidence;
 };
 
+export type ExportedMedia = {
+  thumbnail?: string;
+  preview?: {
+    frame: ProjectPreview['frame'];
+    src?: string;
+    video?: string;
+    poster?: string;
+    url?: string;
+  };
+};
+
 export type ExportedProject = {
   slug: string;
   title: string;
@@ -51,6 +64,7 @@ export type ExportedProject = {
   experienceRoleId?: string;
   sections: ExportedSection[];
   impact?: ExportedImpact[];
+  media?: ExportedMedia;
 };
 
 export type ExportedExperience = {
@@ -68,6 +82,17 @@ export type ExportedExperience = {
   relatedProjectSlugs?: string[];
 };
 
+export type ExportedShippedWork = {
+  id: string;
+  title: string;
+  affiliation: string;
+  dateLabel: string;
+  sortDate: string;
+  projectSlug?: string;
+  url?: string;
+  pending?: boolean;
+};
+
 export type PortfolioExport = {
   version: string;
   generatedAt: string;
@@ -76,6 +101,10 @@ export type PortfolioExport = {
     name: string;
     publicTitle: string;
     headline: string;
+    aboutIntro: {
+      title: string;
+      paragraphs: string[];
+    };
     executiveSummary: string;
     positioningStatement: string;
     seniority: {
@@ -102,10 +131,23 @@ export type PortfolioExport = {
     url: string;
     contactEmail: string;
     bio: string;
+    machineReadable: {
+      index: string;
+      corpus: string;
+      json: string;
+      agentGuide: string;
+    };
+    relatedProducts: {
+      name: string;
+      url: string;
+      installManifest: string;
+      llmsTxt: string;
+    }[];
   };
   verifiedImpact: typeof VERIFIED_IMPACT;
   experience: ExportedExperience[];
   projects: ExportedProject[];
+  shippedWork: ExportedShippedWork[];
   assessmentIndex: {
     level: string;
     seniority: string;
@@ -117,7 +159,14 @@ export type PortfolioExport = {
   };
 };
 
-const EXPORT_VERSION = '2.1';
+/** Export schema — bump when adding/removing top-level fields. */
+const EXPORT_VERSION = '3.0';
+
+function absoluteUrl(baseUrl: string, path?: string): string | undefined {
+  if (!path) return undefined;
+  if (path.startsWith('http://') || path.startsWith('https://')) return path;
+  return `${baseUrl}${path.startsWith('/') ? path : `/${path}`}`;
+}
 
 function exportExperience(role: ProfileRole): ExportedExperience {
   return {
@@ -133,6 +182,19 @@ function exportExperience(role: ProfileRole): ExportedExperience {
     outcomes: role.outcomes,
     capabilities: role.capabilities,
     relatedProjectSlugs: role.relatedProjectSlugs,
+  };
+}
+
+function exportShippedWork(entry: ShippedWorkEntry, baseUrl: string): ExportedShippedWork {
+  return {
+    id: entry.id,
+    title: entry.title,
+    affiliation: entry.affiliation,
+    dateLabel: entry.dateLabel,
+    sortDate: entry.sortDate,
+    projectSlug: entry.projectSlug,
+    url: entry.projectSlug ? `${baseUrl}/work/${entry.projectSlug}` : undefined,
+    pending: entry.pending,
   };
 }
 
@@ -175,6 +237,28 @@ function projectSections(project: Project): ExportedSection[] {
   return [];
 }
 
+function projectMedia(project: Project, baseUrl: string): ExportedMedia | undefined {
+  const thumbnail = absoluteUrl(baseUrl, project.thumbnail);
+  const preview = project.preview;
+  if (!thumbnail && !preview) return undefined;
+
+  const video = preview?.video;
+  const posterPath = video ? getVideoPoster(video) : undefined;
+
+  return {
+    thumbnail,
+    preview: preview
+      ? {
+          frame: preview.frame,
+          src: absoluteUrl(baseUrl, preview.src),
+          video,
+          poster: absoluteUrl(baseUrl, posterPath),
+          url: preview.url,
+        }
+      : undefined,
+  };
+}
+
 function exportProject(project: Project, baseUrl: string): ExportedProject {
   return {
     slug: project.slug,
@@ -189,6 +273,7 @@ function exportProject(project: Project, baseUrl: string): ExportedProject {
     experienceRoleId: getRoleIdForProjectSlug(project.slug),
     sections: projectSections(project),
     impact: projectImpact(project),
+    media: projectMedia(project, baseUrl),
   };
 }
 
@@ -219,6 +304,10 @@ export async function buildPortfolioExport(): Promise<PortfolioExport> {
       name: PROFILE.name,
       publicTitle: PROFILE.publicTitle,
       headline: PROFILE.headline,
+      aboutIntro: {
+        title: PROFILE.aboutIntro.title,
+        paragraphs: [...PROFILE.aboutIntro.paragraphs],
+      },
       executiveSummary: PROFILE.executiveSummary,
       positioningStatement: PROFILE.positioningStatement,
       seniority: {
@@ -255,10 +344,27 @@ export async function buildPortfolioExport(): Promise<PortfolioExport> {
       url: baseUrl,
       contactEmail: SITE_CONTACT_EMAIL,
       bio: WORK_PAGE_BIO,
+      machineReadable: {
+        index: `${baseUrl}/llms.txt`,
+        corpus: `${baseUrl}/llms-full.txt`,
+        json: `${baseUrl}/content.json`,
+        agentGuide: `${baseUrl}/.well-known/ai.txt`,
+      },
+      relatedProducts: [
+        {
+          name: 'Seb Sans',
+          url: `${baseUrl}/seb-sans`,
+          installManifest: `${baseUrl}/seb-sans/install.json`,
+          llmsTxt: `${baseUrl}/seb-sans/llms.txt`,
+        },
+      ],
     },
     verifiedImpact: VERIFIED_IMPACT,
     experience: PROFILE_ROLES.map(exportExperience),
     projects: projects.map((p) => exportProject(p, baseUrl)),
+    shippedWork: [...SHIPPED_WORK]
+      .sort((a, b) => b.sortDate.localeCompare(a.sortDate))
+      .map((entry) => exportShippedWork(entry, baseUrl)),
     assessmentIndex: {
       level: `${PROFILE_LEVEL.title} (${PROFILE_LEVEL.equivalentLevels.join(' / ')})`,
       seniority: PROFILE_LEVEL.seniority,
@@ -311,6 +417,20 @@ export function toProjectMarkdown(project: ExportedProject): string {
     lines.push('');
   }
 
+  if (project.media?.preview?.video || project.media?.thumbnail) {
+    lines.push('### Media', '');
+    if (project.media.thumbnail) {
+      lines.push(`- Thumbnail: ${project.media.thumbnail}`);
+    }
+    if (project.media.preview?.video) {
+      lines.push(`- Demo video: ${project.media.preview.video}`);
+    }
+    if (project.media.preview?.poster) {
+      lines.push(`- Poster: ${project.media.preview.poster}`);
+    }
+    lines.push('');
+  }
+
   return lines.join('\n').trim();
 }
 
@@ -334,10 +454,11 @@ export function toLlmsTxt(data: PortfolioExport): string {
       : []),
     `- Scope: ${person.seniority.scope}`,
     `- Focus: ${person.domains.join(', ')}`,
+    `- Tools: ${person.tools.join(', ')}`,
     `- Contact: ${site.contactEmail}`,
     '',
     '## How to evaluate',
-    'Read `/content.json` for structured profile and project data. Use `/llms-full.txt` for the complete narrative corpus.',
+    'Start at `/.well-known/ai.txt` for discovery. Prefer `/content.json` for structured data and `/llms-full.txt` for the complete narrative corpus. Per-project JSON is available at `/work/{slug}/content.json`.',
     '',
     '## Experience',
   ];
@@ -355,7 +476,22 @@ export function toLlmsTxt(data: PortfolioExport): string {
     lines.push(`- ${item.value} (${item.context}) — ${link}`);
   }
 
-  lines.push('', '## Pages', `- [Work](${site.url}/): Project grid and bio.`, `- [About](${site.url}/about): Full experience and contact.`, '', '## Case studies');
+  lines.push('', '## Shipped work');
+
+  for (const item of data.shippedWork) {
+    const link = item.url ? ` — ${item.url}` : '';
+    const pending = item.pending ? ' (pending)' : '';
+    lines.push(`- ${item.title} · ${item.affiliation} · ${item.dateLabel}${pending}${link}`);
+  }
+
+  lines.push(
+    '',
+    '## Pages',
+    `- [Work](${site.url}/): Project grid and bio.`,
+    `- [About](${site.url}/about): Full experience and contact.`,
+    '',
+    '## Case studies',
+  );
 
   for (const project of data.projects) {
     lines.push(`- [${project.title}](${project.url}): ${projectSummary(project)}`);
@@ -363,9 +499,20 @@ export function toLlmsTxt(data: PortfolioExport): string {
 
   lines.push(
     '',
+    '## Related products',
+  );
+  for (const product of site.relatedProducts) {
+    lines.push(
+      `- [${product.name}](${product.url}): install manifest ${product.installManifest}`,
+    );
+  }
+
+  lines.push(
+    '',
     '## Machine-readable',
-    `- [Full corpus](${site.url}/llms-full.txt): Complete portfolio text.`,
-    `- [Structured JSON](${site.url}/content.json): Profile, experience, and project data (v${data.version}).`,
+    `- [Agent guide](${site.machineReadable.agentGuide}): Discovery entrypoint for LLMs.`,
+    `- [Full corpus](${site.machineReadable.corpus}): Complete portfolio text.`,
+    `- [Structured JSON](${site.machineReadable.json}): Profile, experience, shipped work, and projects (v${data.version}).`,
   );
 
   return lines.join('\n');
@@ -374,7 +521,16 @@ export function toLlmsTxt(data: PortfolioExport): string {
 export function toLlmsFullTxt(data: PortfolioExport): string {
   const parts = [toLlmsTxt(data), '', '---', '', '# Full portfolio content', ''];
 
-  parts.push('## About', '', data.person.executiveSummary, '');
+  parts.push(
+    '## About',
+    '',
+    `### ${data.person.aboutIntro.title}`,
+    '',
+  );
+  for (const paragraph of data.person.aboutIntro.paragraphs) {
+    parts.push(paragraph, '');
+  }
+  parts.push(data.person.executiveSummary, '');
 
   const { seniority } = data.person;
   parts.push(
@@ -400,6 +556,12 @@ export function toLlmsFullTxt(data: PortfolioExport): string {
   }
   parts.push('');
 
+  parts.push('## Tools', '');
+  for (const tool of data.person.tools) {
+    parts.push(`- ${tool}`);
+  }
+  parts.push('');
+
   if (data.experience.length) {
     parts.push('## Experience', '');
     for (const exp of data.experience) {
@@ -414,6 +576,16 @@ export function toLlmsFullTxt(data: PortfolioExport): string {
     }
   }
 
+  if (data.shippedWork.length) {
+    parts.push('## Shipped work', '');
+    for (const item of data.shippedWork) {
+      const link = item.url ? ` — ${item.url}` : '';
+      const pending = item.pending ? ' (pending)' : '';
+      parts.push(`- **${item.title}** · ${item.affiliation} · ${item.dateLabel}${pending}${link}`);
+    }
+    parts.push('');
+  }
+
   for (const project of data.projects) {
     parts.push(toProjectMarkdown(project), '', '---', '');
   }
@@ -425,6 +597,43 @@ export function toContentJson(data: PortfolioExport): string {
   return JSON.stringify(data, null, 2);
 }
 
+export function toAgentGuideTxt(data: PortfolioExport): string {
+  const { site, person } = data;
+  return [
+    `# Agent guide — ${person.name}`,
+    '',
+    'Preferred structured source:',
+    `- ${site.machineReadable.json} (application/json, v${data.version})`,
+    '',
+    'Plain-text index and corpus:',
+    `- ${site.machineReadable.index}`,
+    `- ${site.machineReadable.corpus}`,
+    '',
+    'Per-project JSON:',
+    `- ${site.url}/work/{slug}/content.json`,
+    '',
+    'Assessment shortcut:',
+    '- Read `.assessmentIndex` and `.verifiedImpact` in content.json',
+    '',
+    'Shipped work (including non-case-study deliverables):',
+    '- Read `.shippedWork` in content.json',
+    '',
+    'Related product (Seb Sans typeface / agent install):',
+    ...site.relatedProducts.map(
+      (p) => `- ${p.name}: ${p.url} · ${p.installManifest}`,
+    ),
+    '',
+    `Contact: ${site.contactEmail}`,
+    `Last updated: ${data.lastUpdated}`,
+  ].join('\n');
+}
+
 export const AI_ROUTE_HEADERS = {
   'Cache-Control': 'public, s-maxage=60, stale-while-revalidate=86400',
+} as const;
+
+export const AI_CORS_HEADERS = {
+  'Access-Control-Allow-Origin': '*',
+  'Access-Control-Allow-Methods': 'GET, OPTIONS',
+  'Access-Control-Allow-Headers': 'Content-Type',
 } as const;
