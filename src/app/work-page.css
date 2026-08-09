@@ -113,6 +113,13 @@
   }
 }
 
+@media (min-width: 769px) and (max-width: 1100px) {
+  .work-page__grid {
+    gap: clamp(24px, 3vw, 32px);
+    padding-inline: clamp(16px, 2.5vw, 24px);
+  }
+}
+
 @media (max-width: 768px) {
   .work-page__bio {
     padding: 32px 16px 20px;
@@ -121,6 +128,12 @@
   .work-page__bio-text {
     font-size: 20px;
     line-height: calc(1em + 6px);
+  }
+
+  .work-page__card-reveal,
+  .work-page__card-reveal .project-card {
+    width: 100%;
+    height: auto;
   }
 
   .work-page__grid {

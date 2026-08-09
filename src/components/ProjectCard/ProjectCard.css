@@ -232,15 +232,17 @@
   .project-card {
     --card-inset: clamp(16px, 4vw, 24px);
     --card-aspect: 10 / 13;
-    --visual-width: 70vw;
-    --meta-visual-gap: 16px;
+    --visual-width: 70%;
+    --meta-padding-block: clamp(24px, 6vw, 32px);
+    --meta-visual-gap: clamp(12px, 3vw, 16px);
     display: grid;
     grid-template-rows: auto 1fr;
     gap: var(--meta-visual-gap);
+    width: 100%;
     height: auto;
     aspect-ratio: var(--card-aspect);
-    min-height: clamp(220px, 82vw, 320px);
-    border-radius: 32px;
+    min-height: 0;
+    border-radius: clamp(24px, 6vw, 32px);
   }
 
   .project-card__meta {
@@ -317,7 +319,7 @@
   }
 
   .project-card--browser {
-    --visual-width: 64vw;
+    --visual-width: 64%;
     grid-template-rows: auto auto;
     aspect-ratio: auto;
     min-height: 0;
@@ -440,6 +442,12 @@
 @media (max-width: 440px) {
   .project-card {
     --card-inset: clamp(12px, 4.5vw, 20px);
+    --meta-padding-block: clamp(20px, 5.5vw, 32px);
+    --visual-width: 72%;
+  }
+
+  .project-card--browser {
+    --visual-width: 66%;
   }
 
   .pc-browser__chrome {
@@ -465,6 +473,14 @@
 @media (max-width: 280px) {
   .project-card {
     --card-inset: 10px;
+    --meta-padding-block: 20px;
+    --meta-visual-gap: 12px;
+    --visual-width: 74%;
+    border-radius: 24px;
+  }
+
+  .project-card--browser {
+    --visual-width: 68%;
   }
 }
 
