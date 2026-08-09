@@ -1,4 +1,7 @@
+'use client';
+
 import Link from 'next/link';
+import { useMemo } from 'react';
 import type { CSSProperties } from 'react';
 import type { ProjectPreview } from '@/data/projects';
 import { getVideoPoster } from '@/data/assets';
@@ -6,12 +9,20 @@ import { DEFAULT_BROWSER_SCREEN_AR } from '@/components/BrowserStencil/browser-a
 import { OptimizedImage } from '@/components/OptimizedImage/OptimizedImage';
 import { LazyAutoplayVideo } from '@/components/LazyAutoplayVideo/LazyAutoplayVideo';
 import { PhoneStencil } from '@/components/PhoneStencil/PhoneStencil';
+import {
+  splitIntoUnits,
+  streamDurationMs,
+  StreamingText,
+} from '@/components/StreamingText/StreamingText';
+import '@/components/StreamingText/StreamingText.css';
 import type { ProjectCardSummary } from '@/lib/project-cards';
 import './ProjectCard.css';
 
 interface ProjectCardProps {
   project: ProjectCardSummary;
   onNavigate?: (href: string) => void;
+  streamMeta?: boolean;
+  metaReveal?: boolean;
 }
 
 function PreviewBrowser({
@@ -114,10 +125,19 @@ function CardVisual({ preview, title }: { preview?: ProjectPreview; title: strin
   return null;
 }
 
-export function ProjectCard({ project, onNavigate }: ProjectCardProps) {
+export function ProjectCard({
+  project,
+  onNavigate,
+  streamMeta = false,
+  metaReveal = true,
+}: ProjectCardProps) {
   const bg = project.styles?.backgroundColor ?? '#f4f3f2';
   const href = `/work/${project.slug}`;
   const frame = project.preview?.frame ?? 'phone';
+  const taglineDelayMs = useMemo(
+    () => streamDurationMs(splitIntoUnits(project.title).length),
+    [project.title],
+  );
 
   return (
     <Link
@@ -136,9 +156,32 @@ export function ProjectCard({ project, onNavigate }: ProjectCardProps) {
         </div>
       </div>
       <div className="project-card__meta">
-        <h2 className="project-card__title">{project.title}</h2>
-        {project.tagline && (
-          <p className="project-card__description">{project.tagline}</p>
+        {streamMeta ? (
+          <>
+            <StreamingText
+              as="h2"
+              className="project-card__title"
+              text={project.title}
+              reveal={metaReveal}
+              aria-label={project.title}
+            />
+            {project.tagline && (
+              <StreamingText
+                as="p"
+                className="project-card__description"
+                text={project.tagline}
+                reveal={metaReveal}
+                startDelayMs={taglineDelayMs}
+              />
+            )}
+          </>
+        ) : (
+          <>
+            <h2 className="project-card__title">{project.title}</h2>
+            {project.tagline && (
+              <p className="project-card__description">{project.tagline}</p>
+            )}
+          </>
         )}
       </div>
     </Link>

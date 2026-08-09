@@ -1,10 +1,10 @@
 'use client';
 
-import { useCallback, useEffect, useState } from 'react';
+import { useCallback, useState } from 'react';
 import { useReducedMotion } from 'framer-motion';
-import { AnimatedProjectCard } from '@/components/AnimatedProjectCard/AnimatedProjectCard';
+import { ProjectCard } from '@/components/ProjectCard/ProjectCard';
+import { ScrollReveal } from '@/components/ScrollReveal/ScrollReveal';
 import { WorkPageBio } from '@/components/WorkPageBio/WorkPageBio';
-import { WORD_INTERVAL_MS } from '@/components/StreamingText/StreamingText';
 import type { ProjectCardSummary } from '@/lib/project-cards';
 
 type WorkPageContentProps = {
@@ -13,62 +13,28 @@ type WorkPageContentProps = {
   onProjectNavigate?: (href: string) => void;
 };
 
-type ProjectRevealGridProps = {
-  projects: ProjectCardSummary[];
+type ScrollProjectCardProps = {
+  project: ProjectCardSummary;
   skipAnimation: boolean;
   onProjectNavigate?: (href: string) => void;
 };
 
-function ProjectRevealGrid({
-  projects,
+function ScrollProjectCard({
+  project,
   skipAnimation,
   onProjectNavigate,
-}: ProjectRevealGridProps) {
-  const [revealedCount, setRevealedCount] = useState(() =>
-    skipAnimation ? projects.length : 0,
-  );
-
-  useEffect(() => {
-    if (skipAnimation) return;
-
-    let count = 0;
-    let intervalId: ReturnType<typeof setInterval> | undefined;
-
-    const tick = () => {
-      count += 1;
-      setRevealedCount(count);
-      if (count >= projects.length && intervalId) {
-        clearInterval(intervalId);
-      }
-    };
-
-    const startTimeoutId = setTimeout(() => {
-      tick();
-      if (projects.length > 1) {
-        intervalId = setInterval(tick, WORD_INTERVAL_MS);
-      }
-    }, 0);
-
-    return () => {
-      clearTimeout(startTimeoutId);
-      if (intervalId) clearInterval(intervalId);
-    };
-  }, [skipAnimation, projects.length]);
-
-  const visibleCount = skipAnimation ? projects.length : revealedCount;
-
+}: ScrollProjectCardProps) {
   return (
-    <section className="work-page__grid" aria-label="Portfolio projects">
-      {projects.slice(0, visibleCount).map((project, index) => (
-        <AnimatedProjectCard
-          key={project.id}
+    <ScrollReveal className="work-page__card-reveal">
+      {(revealed) => (
+        <ProjectCard
           project={project}
-          index={index}
-          streamIn
+          streamMeta
+          metaReveal={skipAnimation || revealed}
           onNavigate={onProjectNavigate}
         />
-      ))}
-    </section>
+      )}
+    </ScrollReveal>
   );
 }
 
@@ -86,12 +52,16 @@ export function WorkPageContent({ bioText, projects, onProjectNavigate }: WorkPa
       <WorkPageBio text={bioText} onComplete={handleBioComplete} />
 
       {bioComplete ? (
-        <ProjectRevealGrid
-          key={String(skipAnimation)}
-          projects={projects}
-          skipAnimation={skipAnimation}
-          onProjectNavigate={onProjectNavigate}
-        />
+        <section className="work-page__grid" aria-label="Portfolio projects">
+          {projects.map((project) => (
+            <ScrollProjectCard
+              key={project.id}
+              project={project}
+              skipAnimation={skipAnimation}
+              onProjectNavigate={onProjectNavigate}
+            />
+          ))}
+        </section>
       ) : (
         <section className="work-page__grid" aria-label="Portfolio projects" />
       )}

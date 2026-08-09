@@ -69,6 +69,26 @@
   max-height: 100%;
 }
 
+@media (max-width: 768px) {
+  .phone-stencil--card {
+    width: 100%;
+    max-height: none;
+  }
+
+  .phone-stencil--card .phone-stencil__body {
+    width: 100%;
+    max-width: 100%;
+    max-height: none;
+    justify-content: flex-start;
+  }
+
+  .phone-stencil--card .phone-stencil__screen {
+    width: 100%;
+    max-width: 100%;
+    aspect-ratio: var(--content-ar, var(--phone-default-ar));
+  }
+}
+
 @media (max-width: 440px) {
   .phone-stencil--card {
     width: 100%;
@@ -79,10 +99,8 @@
   }
 
   .phone-stencil--card .phone-stencil__screen {
-    width: min(
-      calc(100cqw / var(--phone-body-scale)),
-      calc((100cqh / var(--phone-body-scale)) * var(--content-ar, var(--phone-default-ar)))
-    );
+    width: 100%;
+    max-width: 100%;
   }
 }
 
@@ -96,9 +114,14 @@
   display: flex;
   flex-direction: column;
   align-items: center;
-  justify-content: center;
-  max-height: 100%;
   min-height: 0;
+}
+
+@media (min-width: 769px) {
+  .phone-stencil--card .phone-stencil__body {
+    justify-content: center;
+    max-height: 100%;
+  }
 }
 
 /* Side buttons protrude outside the body and skew card centering — hide on grid cards */
