@@ -72,6 +72,9 @@
   --padding-nav-thing-y: 0.75rem;
   --padding-container: 2rem;
 
+  /* Shared horizontal inset for nav, page content, and card alignment */
+  --site-gutter: clamp(16px, 4vw, 24px);
+
   /* Border Radius */
   --border-radius-pill: 9999px;
   --border-radius-lg: 2rem;
@@ -99,6 +102,18 @@
 ::selection {
   background-color: var(--selection-bg);
   color: var(--color-text-primary);
+}
+
+@media (max-width: 440px) {
+  :root {
+    --site-gutter: clamp(12px, 4.5vw, 20px);
+  }
+}
+
+@media (max-width: 280px) {
+  :root {
+    --site-gutter: 10px;
+  }
 }
 
 ::-moz-selection {

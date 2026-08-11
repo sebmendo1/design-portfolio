@@ -1,6 +1,5 @@
 import type { Metadata } from 'next';
 import Link from 'next/link';
-import { AboutPageIntro } from '@/components/AboutPage/AboutPageIntro';
 import { AboutPageLayout } from '@/components/AboutPage/AboutPageLayout';
 import { StructuredData } from '@/components/StructuredData/StructuredData';
 import { WorkTimeline } from '@/components/WorkTimeline/WorkTimeline';
@@ -31,7 +30,12 @@ export default function AboutPage() {
       <StructuredData data={buildProfilePageGraphFromProfile()} />
       <AboutPageLayout>
         <div className="about-page__content">
-          <AboutPageIntro title={aboutIntro.title} paragraphs={aboutIntro.paragraphs} />
+          <h1 className="about-page__heading">{aboutIntro.title}</h1>
+          {aboutIntro.paragraphs.map((paragraph) => (
+            <p key={paragraph} className="about-page__bio">
+              {paragraph}
+            </p>
+          ))}
 
           <p className="about-page__linkedin">
             <Link href={SITE_LINKEDIN_URL} rel="me">

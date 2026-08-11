@@ -166,10 +166,11 @@ export const projects: Project[] = [
   },
   {
     id: 'casey-ai',
-    title: 'Casey AI',
-    tagline: "Chase's first AI agent for voice and text customer help.",
+    title: 'Chase Digital Assistant',
+    tagline:
+      "Casey is Chase's first ever AI agent for engaging with customers through voice and RCS.",
     description:
-      "Chase's first customer-facing AI agent, and the pattern the rest are built on.",
+      "Casey is Chase's first ever AI agent for engaging with customers through voice and RCS.",
     year: 2025,
     company: 'JPMorgan Chase',
     role: 'Senior Product Designer',
@@ -198,7 +199,7 @@ export const projects: Project[] = [
     },
     scrollyConfig: {
       slug: 'casey-ai',
-      title: 'Casey AI',
+      title: 'Chase Digital Assistant',
       trackHeightVh: 600,
       stage: {
         centerpiece: {
@@ -212,7 +213,7 @@ export const projects: Project[] = [
         {
           id: 'summary',
           headline:
-            "Chase's first customer-facing AI agent, and the pattern the rest are built on.",
+            "Casey is Chase's first ever AI agent for engaging with customers through voice and RCS.",
           body: 'Casey is a conversational agent that talks to Chase customers by voice and by text. Home lending was the first place it shipped, chosen deliberately because it is the hardest room in the bank.',
           range: [0, 0.15],
         },

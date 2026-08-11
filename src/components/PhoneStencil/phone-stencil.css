@@ -72,6 +72,7 @@
 @media (max-width: 768px) {
   .phone-stencil--card {
     width: 100%;
+    max-width: 100%;
     max-height: none;
   }
 
@@ -79,6 +80,7 @@
     width: 100%;
     max-width: 100%;
     max-height: none;
+    box-sizing: border-box;
     justify-content: flex-start;
   }
 
