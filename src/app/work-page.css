@@ -14,6 +14,8 @@
 
 .work-page main#main-content {
   width: 100%;
+  max-width: var(--site-max);
+  margin-inline: auto;
   min-width: 0;
   box-sizing: border-box;
   padding-inline: var(--site-gutter);

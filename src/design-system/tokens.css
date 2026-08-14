@@ -33,6 +33,13 @@
   --fluid-max: 90rem;
   --fluid-slope: calc((100vw - var(--fluid-min)) / (var(--fluid-max) - var(--fluid-min)));
 
+  /* Shared horizontal inset for nav, page content, and card alignment */
+  --site-gutter: clamp(16px, 4vw, 24px);
+
+  /* Work page + nav content width; case studies can run a bit wider */
+  --site-max: var(--fluid-max);
+  --case-study-max: 105rem;
+
   --font-size-nav: clamp(0.875rem, calc(0.875rem + (0.9375rem - 0.875rem) * var(--fluid-slope)), 0.9375rem);
   --font-size-display: clamp(2rem, calc(2rem + (4rem - 2rem) * var(--fluid-slope)), 4rem);
   --font-size-heading-xl: clamp(1.875rem, calc(1.875rem + (3.5rem - 1.875rem) * var(--fluid-slope)), 3.5rem);
@@ -71,9 +78,6 @@
   --padding-nav-thing-x: 1.5rem;
   --padding-nav-thing-y: 0.75rem;
   --padding-container: 2rem;
-
-  /* Shared horizontal inset for nav, page content, and card alignment */
-  --site-gutter: clamp(16px, 4vw, 24px);
 
   /* Border Radius */
   --border-radius-pill: 9999px;
