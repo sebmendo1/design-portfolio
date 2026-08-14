@@ -8,6 +8,9 @@
 .case-study__content > main {
   height: 100%;
   overflow: hidden;
+  width: 100%;
+  max-width: var(--site-max);
+  margin-inline: auto;
 }
 
 /* Header hidden — scrolly uses floating back inside the full-viewport stage */

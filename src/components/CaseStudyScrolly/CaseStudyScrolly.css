@@ -2,6 +2,8 @@
 .cs-article {
   height: 100%;
   min-height: 0;
+  max-width: var(--site-max);
+  margin-inline: auto;
   overflow: hidden;
 }
 
@@ -9,7 +11,7 @@
   position: relative;
   display: grid;
   grid-template-columns: repeat(2, minmax(0, 1fr));
-  gap: clamp(32px, 3.2vw, 64px);
+  gap: clamp(32px, 3.2%, 64px);
   width: 100%;
   max-width: var(--case-study-max);
   height: 100%;
@@ -267,6 +269,7 @@
   justify-content: center;
   flex: 1;
   width: 100%;
+  max-width: var(--site-max);
   min-width: 0;
   min-height: 0;
   box-sizing: border-box;
@@ -321,7 +324,7 @@
 .cs-device-fit {
   --content-ar: 1.5;
   width: 100%;
-  max-width: 100%;
+  max-width: min(100%, var(--site-max));
   max-height: 100%;
   min-width: 0;
   width: min(100cqw, calc(100cqh * var(--content-ar)));

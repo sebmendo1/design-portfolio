@@ -36,9 +36,9 @@
   /* Shared horizontal inset for nav, page content, and card alignment */
   --site-gutter: clamp(16px, 4vw, 24px);
 
-  /* Work page + nav content width; case studies can run a bit wider */
-  --site-max: var(--fluid-max);
-  --case-study-max: 105rem;
+  /* Hard cap for every page section, nav, and device frame */
+  --site-max: 1440px;
+  --case-study-max: var(--site-max);
 
   --font-size-nav: clamp(0.875rem, calc(0.875rem + (0.9375rem - 0.875rem) * var(--fluid-slope)), 0.9375rem);
   --font-size-display: clamp(2rem, calc(2rem + (4rem - 2rem) * var(--fluid-slope)), 4rem);

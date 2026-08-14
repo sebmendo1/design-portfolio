@@ -4,7 +4,7 @@
   --meta-padding-block: 32px;
   display: block;
   width: 100%;
-  max-width: 100%;
+  max-width: min(100%, var(--site-max));
   height: 564px;
   min-width: 0;
   background: #f4f3f2;
@@ -80,7 +80,7 @@
   --content-ar: 1.4;
   flex: 0 0 auto;
   width: 100%;
-  max-width: 100%;
+  max-width: min(100%, var(--site-max));
   max-height: 100%;
   width: min(100cqw, calc(100cqh * var(--content-ar)));
   display: flex;
