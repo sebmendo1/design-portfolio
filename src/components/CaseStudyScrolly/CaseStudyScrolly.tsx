@@ -1,6 +1,6 @@
 'use client';
 
-import { useEffect, useRef, type ReactNode } from 'react';
+import { useEffect, useRef, type CSSProperties, type ReactNode } from 'react';
 import Link from 'next/link';
 import Image from 'next/image';
 import Lenis from 'lenis';
@@ -114,6 +114,7 @@ function HomeLink({
 function DevicePreview({ config }: { config: CaseStudyConfig }) {
   const { frame, src, video, url, screenAspectRatio } = config.stage.centerpiece;
   const title = config.title;
+  const standaloneAr = screenAspectRatio ?? 1280 / 854;
 
   return (
     <div className="cs-device-card">
@@ -139,14 +140,19 @@ function DevicePreview({ config }: { config: CaseStudyConfig }) {
         />
       )}
       {frame === 'none' && src && (
-        <OptimizedImage
-          src={src}
-          alt={`${title} product screenshot`}
-          width={400}
-          height={400}
-          className="cs-device-standalone-img"
-          sizes="(max-width: 900px) 100vw, 50vw"
-        />
+        <div
+          className="cs-device-fit"
+          style={{ '--content-ar': standaloneAr } as CSSProperties}
+        >
+          <OptimizedImage
+            src={src}
+            alt={`${title} product screenshot`}
+            width={1280}
+            height={Math.round(1280 / standaloneAr)}
+            className="cs-device-standalone-img"
+            sizes="(max-width: 900px) 100vw, 50vw"
+          />
+        </div>
       )}
     </div>
   );

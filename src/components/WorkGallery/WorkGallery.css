@@ -115,3 +115,13 @@
   min-height: 0;
   box-sizing: border-box;
 }
+
+.work-gallery__panel-inset .project-card__visual-inner {
+  container-type: size;
+}
+
+.work-gallery__panel-inset .project-card__visual-inner > .browser-stencil,
+.work-gallery__panel-inset .project-card__image-wrap {
+  max-width: 100%;
+  max-height: 100%;
+}

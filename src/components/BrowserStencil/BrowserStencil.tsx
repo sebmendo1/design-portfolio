@@ -85,7 +85,7 @@ export function BrowserStencil({
               strokeLinecap="round"
             />
           </svg>
-          <span className="browser-stencil__url-text">{url ?? 'help.salesforce.com'}</span>
+          <span className="browser-stencil__url-text">{url ?? ''}</span>
         </div>
         <div className="browser-stencil__spacer" />
       </div>
@@ -104,7 +104,11 @@ export function BrowserStencil({
             width={1280}
             height={854}
             className="browser-stencil__media"
-            sizes="50vw"
+            sizes={
+              variant === 'card'
+                ? '(max-width: 768px) 100vw, 50vw'
+                : '(max-width: 900px) 100vw, 50vw'
+            }
             onLoadingComplete={(img) => onImageLoad(img.naturalWidth, img.naturalHeight)}
           />
         ) : null}

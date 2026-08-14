@@ -1,7 +1,10 @@
 .casey-actions {
   display: flex;
   align-items: center;
+  flex-wrap: wrap;
   gap: 16px;
+  max-width: 100%;
+  min-width: 0;
 }
 
 .casey-btn {
@@ -18,6 +21,7 @@
   border: none;
   transition: opacity 0.15s ease, background 0.15s ease;
   white-space: nowrap;
+  max-width: 100%;
 }
 
 .casey-btn__icon {
@@ -50,16 +54,25 @@
   background: #e8e7e6;
 }
 
-@media (max-width: 600px) {
+@media (max-width: 900px) and (orientation: portrait) {
+  .casey-actions {
+    justify-content: center;
+    align-items: center;
+    width: 100%;
+  }
+}
+
+@media (max-width: 440px) {
   .casey-actions {
     flex-direction: column;
-    align-items: flex-start;
-    gap: 16px;
+    align-items: center;
+    gap: 12px;
     width: 100%;
   }
 
   .casey-btn {
     width: 100%;
+    max-width: 280px;
     justify-content: center;
   }
 }

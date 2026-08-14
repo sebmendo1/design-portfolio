@@ -5,14 +5,18 @@
  */
 .browser-stencil {
   --browser-w: 480px;
-  --browser-chrome: clamp(32px, calc(var(--browser-w) * 0.0875), 42px);
+  --browser-chrome: clamp(28px, calc(var(--browser-w) * 0.0875), 42px);
   --content-ar: 1.499;
+  /* Fallback when the host is inline-size only (cqh is invalid). */
+  width: 100%;
+  max-width: 100%;
+  max-height: 100%;
+  min-width: 0;
+  /* Host-container fit when both axes are known. Ignored if cqh is unavailable. */
   width: min(
     100cqw,
     calc((100cqh - var(--browser-chrome)) * var(--content-ar))
   );
-  max-width: 100%;
-  max-height: 100%;
   margin-inline: auto;
   flex-shrink: 0;
   display: flex;
@@ -35,6 +39,7 @@
   gap: calc(var(--browser-w) * 0.017);
   border-bottom: 1px solid #d0d0d0;
   flex-shrink: 0;
+  min-width: 0;
 }
 
 .browser-stencil__dots {
@@ -48,8 +53,8 @@
   display: block;
   width: calc(var(--browser-w) * 0.025);
   height: calc(var(--browser-w) * 0.025);
-  min-width: 8px;
-  min-height: 8px;
+  min-width: 6px;
+  min-height: 6px;
   border-radius: 50%;
   flex-shrink: 0;
 }
@@ -113,8 +118,22 @@
 
 .browser-stencil__spacer {
   width: calc(var(--browser-w) * 0.125);
-  min-width: 36px;
-  flex-shrink: 0;
+  min-width: 0;
+  max-width: 36px;
+  flex-shrink: 1;
+}
+
+.browser-stencil--compact .browser-stencil__nav,
+.browser-stencil--compact .browser-stencil__spacer {
+  display: none;
+}
+
+.browser-stencil--compact .browser-stencil__url-bar {
+  margin-right: 0;
+}
+
+.browser-stencil--tiny .browser-stencil__url-bar {
+  display: none;
 }
 
 .browser-stencil__screen {
@@ -123,6 +142,7 @@
   width: 100%;
   flex: 0 1 auto;
   min-height: 0;
+  min-width: 0;
   background: #ffffff;
   overflow: hidden;
   display: flex;
@@ -139,16 +159,7 @@
   background: #ffffff;
 }
 
-.browser-stencil--case-study {
+.browser-stencil--case-study,
+.browser-stencil--card {
   align-self: center;
-}
-
-@media (max-width: 900px) and (orientation: portrait) {
-  .browser-stencil--case-study {
-    width: min(
-      100cqw,
-      calc((100cqh - var(--browser-chrome)) * var(--content-ar))
-    );
-    max-height: 100%;
-  }
 }

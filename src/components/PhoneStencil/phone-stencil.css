@@ -19,8 +19,8 @@
   --body-w: 200px;
   width: fit-content;
   max-width: 100%;
+  min-width: 0;
   margin-inline: auto;
-  flex-shrink: 0;
 }
 
 .phone-stencil__body {
@@ -164,11 +164,13 @@
 .phone-stencil__screen {
   position: relative;
   aspect-ratio: var(--content-ar, var(--phone-default-ar));
+  width: 100%;
   width: min(
     calc(100cqw / var(--phone-body-scale)),
     calc((100cqh / var(--phone-body-scale)) * var(--content-ar, var(--phone-default-ar)))
   );
   max-width: 100%;
+  min-width: 0;
   margin-inline: auto;
   overflow: hidden;
   border-radius: var(--phone-screen-radius-w) / var(--phone-screen-radius-h);
