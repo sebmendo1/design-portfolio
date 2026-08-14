@@ -18,11 +18,10 @@ export function ScrollReveal({
 }: ScrollRevealProps) {
   const ref = useRef<HTMLDivElement>(null);
   const shouldReduce = useReducedMotion();
-  const [revealed, setRevealed] = useState(false);
+  const [revealed, setRevealed] = useState(() => Boolean(shouldReduce));
 
   useEffect(() => {
     if (shouldReduce) {
-      setRevealed(true);
       return;
     }
 
