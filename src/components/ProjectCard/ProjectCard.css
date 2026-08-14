@@ -147,7 +147,7 @@
   align-self: center;
 }
 
-@media (max-width: 768px) {
+@media (max-width: 768px), (max-width: 900px) and (orientation: landscape) {
   .project-card {
     --card-inset-x: 0;
     --visual-width: 58%;
@@ -322,6 +322,24 @@
   }
 }
 
+/* Landscape phones/tablets: size frames from viewport height so cards stay usable. */
+@media (max-width: 900px) and (orientation: landscape) {
+  .project-card {
+    --meta-padding-block: clamp(12px, 4vh, 20px);
+    --meta-visual-gap: clamp(8px, 2vh, 12px);
+  }
+
+  .project-card--phone .project-card__visual {
+    width: min(var(--visual-width), 32dvh);
+  }
+
+  .project-card--browser .project-card__visual,
+  .project-card--image .project-card__visual,
+  .project-card--fill .project-card__visual {
+    width: min(var(--visual-width), calc(54dvh * 1.55));
+  }
+}
+
 @media (max-width: 440px) {
   .project-card {
     --meta-padding-block: clamp(20px, 5.5vw, 32px);
@@ -340,7 +358,7 @@
   }
 }
 
-@media (min-width: 769px) {
+@media (min-width: 769px) and (orientation: portrait), (min-width: 901px) {
   .project-card__visual-inner .phone-stencil {
     flex: 0 0 auto;
     width: auto;
