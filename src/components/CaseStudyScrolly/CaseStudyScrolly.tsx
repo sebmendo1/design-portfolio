@@ -117,7 +117,7 @@ function DevicePreview({ config }: { config: CaseStudyConfig }) {
   const standaloneAr = screenAspectRatio ?? 1280 / 854;
 
   return (
-    <div className="cs-device-card">
+    <div className={`cs-device-card cs-device-card--${frame}`}>
       {frame === 'browser' && (
         <BrowserStencil
           src={src}

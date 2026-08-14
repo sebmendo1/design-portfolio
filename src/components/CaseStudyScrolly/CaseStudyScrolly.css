@@ -276,6 +276,15 @@
   overflow: hidden;
 }
 
+/* Browser frames sit on the page — no gray mat that grows on wide screens. */
+.cs-device-card--browser,
+.cs-device-card--none {
+  background: transparent;
+  padding: 0;
+  border-radius: 0;
+  overflow: visible;
+}
+
 .cs-device-card > * {
   margin-inline: auto;
   max-width: 100%;
@@ -386,6 +395,14 @@
     min-height: 0;
     padding: var(--site-gutter);
     overflow: hidden;
+  }
+
+  .cs-device-card--browser,
+  .cs-device-card--none {
+    padding: 0;
+    border-radius: 0;
+    overflow: visible;
+    background: transparent;
   }
 
   /* Full-bleed text strip — flush to screen edges, no bottom gap */
@@ -524,6 +541,12 @@
     border-radius: 28px;
   }
 
+  .cs-device-card--browser,
+  .cs-device-card--none {
+    padding: 0;
+    border-radius: 0;
+  }
+
   .cs-section__headline {
     font-size: clamp(28px, 1.6vw, 34px);
   }
@@ -537,6 +560,11 @@
 
   .cs-device-card {
     padding: 16px var(--site-gutter);
+  }
+
+  .cs-device-card--browser,
+  .cs-device-card--none {
+    padding: 0;
   }
 }
 
@@ -555,6 +583,12 @@
   .cs-device-card {
     padding: 12px var(--site-gutter);
     border-radius: 16px;
+  }
+
+  .cs-device-card--browser,
+  .cs-device-card--none {
+    padding: 0;
+    border-radius: 0;
   }
 
   .cs-section {
