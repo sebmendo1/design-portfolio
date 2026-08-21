@@ -2,6 +2,8 @@ import { NextResponse } from 'next/server';
 import type { NextRequest } from 'next/server';
 import { ADMIN_SESSION_COOKIE, verifySessionToken } from '@/lib/admin-auth';
 import {
+  MARKDOWN_CONTENT_TYPE,
+  MARKDOWN_VARY,
   appendVaryAccept,
   isMarkdownNegotiablePath,
   isRscNavigationRequest,
@@ -53,7 +55,7 @@ function handleSiteAuth(request: NextRequest): NextResponse | null {
   return NextResponse.redirect(loginUrl);
 }
 
-export function proxy(request: NextRequest) {
+export async function proxy(request: NextRequest) {
   const { pathname } = request.nextUrl;
 
   if (isSiteProtectionEnabled(request.nextUrl.hostname)) {
@@ -68,8 +70,51 @@ export function proxy(request: NextRequest) {
   return negotiateMarkdown(request);
 }
 
-function negotiateMarkdown(request: NextRequest): NextResponse | Response {
+const INTERNAL_MARKDOWN_HEADER = 'x-markdown-internal';
+
+async function serveMarkdown(request: NextRequest, pathname: string): Promise<Response> {
+  const url = request.nextUrl.clone();
+  url.pathname = markdownRewritePath(pathname);
+
+  const incoming = new Headers(request.headers);
+  incoming.set(INTERNAL_MARKDOWN_HEADER, '1');
+  incoming.set('accept', 'text/markdown');
+
+  const origin = await fetch(url, {
+    headers: incoming,
+    redirect: 'manual',
+  });
+
+  const headers = new Headers();
+  headers.set('Content-Type', MARKDOWN_CONTENT_TYPE);
+  headers.set('Vary', MARKDOWN_VARY);
+
+  origin.headers.forEach((value, key) => {
+    const name = key.toLowerCase();
+    if (
+      name === 'content-type' ||
+      name === 'vary' ||
+      name === 'content-encoding' ||
+      name === 'content-length' ||
+      name === 'transfer-encoding'
+    ) {
+      return;
+    }
+    headers.set(key, value);
+  });
+
+  return new Response(origin.body, {
+    status: origin.status,
+    headers,
+  });
+}
+
+async function negotiateMarkdown(request: NextRequest): Promise<NextResponse | Response> {
   const { pathname } = request.nextUrl;
+
+  if (request.headers.get(INTERNAL_MARKDOWN_HEADER) === '1') {
+    return NextResponse.next();
+  }
 
   if (!isMarkdownNegotiablePath(pathname) || isRscNavigationRequest(request.headers)) {
     const passthrough = NextResponse.next();
@@ -78,22 +123,14 @@ function negotiateMarkdown(request: NextRequest): NextResponse | Response {
   }
 
   if (pathname.endsWith('.md')) {
-    const url = request.nextUrl.clone();
-    url.pathname = markdownRewritePath(pathname);
-    const rewritten = NextResponse.rewrite(url);
-    appendVaryAccept(rewritten.headers);
-    return rewritten;
+    return serveMarkdown(request, pathname);
   }
 
   const acceptHeader = request.headers.get('accept');
   const chosen = preferredType(acceptHeader);
 
   if (chosen === 'text/markdown') {
-    const url = request.nextUrl.clone();
-    url.pathname = markdownRewritePath(pathname);
-    const rewritten = NextResponse.rewrite(url);
-    appendVaryAccept(rewritten.headers);
-    return rewritten;
+    return serveMarkdown(request, pathname);
   }
 
   if (chosen === null && acceptHeader) {
@@ -101,7 +138,7 @@ function negotiateMarkdown(request: NextRequest): NextResponse | Response {
       status: 406,
       headers: {
         'Content-Type': 'text/plain; charset=utf-8',
-        Vary: 'Accept, Accept-Encoding',
+        Vary: MARKDOWN_VARY,
       },
     });
   }

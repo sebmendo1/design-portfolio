@@ -1,6 +1,7 @@
 import assert from 'node:assert/strict';
 import { test } from 'node:test';
 import {
+  MARKDOWN_VARY,
   appendVaryAccept,
   isMarkdownNegotiablePath,
   isRscNavigationRequest,
@@ -31,6 +32,10 @@ test('returns null when every produced type is rejected', () => {
 
 test('specific ranges beat wildcards even with a lower q', () => {
   assert.equal(preferredType('text/html;q=0, */*;q=1'), 'text/markdown');
+});
+
+test('markdown Vary lists Accept and Accept-Encoding', () => {
+  assert.equal(MARKDOWN_VARY, 'Accept, Accept-Encoding');
 });
 
 test('appendVaryAccept adds Accept and Accept-Encoding without duplicating', () => {

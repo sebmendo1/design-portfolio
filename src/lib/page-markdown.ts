@@ -68,7 +68,6 @@ export function buildHomeCorpus(data: PortfolioExport): HomeCorpus {
     title: `${person.name} | ${person.publicTitle}`,
     lede: person.executiveSummary,
     paragraphs: [
-      site.bio,
       person.positioningStatement,
       ...person.aboutIntro.paragraphs,
     ],
