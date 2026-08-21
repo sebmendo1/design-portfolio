@@ -46,6 +46,12 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
             title: `${title} structured content`,
           },
         ],
+        'text/markdown': [
+          {
+            url: `/work/${slug}`,
+            title: `${title} as Markdown`,
+          },
+        ],
       },
     },
     openGraph: {

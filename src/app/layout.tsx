@@ -17,6 +17,7 @@ export const metadata: Metadata = createMetadata({
         { url: '/llms-full.txt', title: 'LLM-readable full corpus' },
       ],
       'application/json': [{ url: '/content.json', title: 'Structured portfolio content' }],
+      'text/markdown': [{ url: '/', title: 'Homepage as Markdown' }],
     },
   },
   other: {
@@ -63,6 +64,12 @@ export default function RootLayout({
           type="text/plain"
           href="/.well-known/ai.txt"
           title="Agent guide"
+        />
+        <link
+          rel="alternate"
+          type="text/markdown"
+          href="/"
+          title="Homepage as Markdown"
         />
       </head>
       <body suppressHydrationWarning>

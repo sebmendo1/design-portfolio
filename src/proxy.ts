@@ -2,6 +2,14 @@ import { NextResponse } from 'next/server';
 import type { NextRequest } from 'next/server';
 import { ADMIN_SESSION_COOKIE, verifySessionToken } from '@/lib/admin-auth';
 import {
+  appendVaryAccept,
+  isMarkdownNegotiablePath,
+  isRscNavigationRequest,
+  markdownRewritePath,
+  NOT_ACCEPTABLE_BODY,
+  preferredType,
+} from '@/lib/accept-markdown';
+import {
   SITE_SESSION_COOKIE,
   isSiteProtectionEnabled,
   verifySiteSessionToken,
@@ -27,8 +35,12 @@ function handleAdminAuth(request: NextRequest): NextResponse {
 function handleSiteAuth(request: NextRequest): NextResponse | null {
   const { pathname, search } = request.nextUrl;
 
-  if (pathname.startsWith('/login') || pathname.startsWith('/seb-sans')) {
-    return NextResponse.next();
+  if (
+    pathname.startsWith('/login') ||
+    pathname.startsWith('/seb-sans') ||
+    pathname.startsWith('/api/markdown')
+  ) {
+    return null;
   }
 
   const session = request.cookies.get(SITE_SESSION_COOKIE);
@@ -53,7 +65,50 @@ export function proxy(request: NextRequest) {
     return handleAdminAuth(request);
   }
 
-  return NextResponse.next();
+  return negotiateMarkdown(request);
+}
+
+function negotiateMarkdown(request: NextRequest): NextResponse | Response {
+  const { pathname } = request.nextUrl;
+
+  if (!isMarkdownNegotiablePath(pathname) || isRscNavigationRequest(request.headers)) {
+    const passthrough = NextResponse.next();
+    appendVaryAccept(passthrough.headers);
+    return passthrough;
+  }
+
+  if (pathname.endsWith('.md')) {
+    const url = request.nextUrl.clone();
+    url.pathname = markdownRewritePath(pathname);
+    const rewritten = NextResponse.rewrite(url);
+    appendVaryAccept(rewritten.headers);
+    return rewritten;
+  }
+
+  const acceptHeader = request.headers.get('accept');
+  const chosen = preferredType(acceptHeader);
+
+  if (chosen === 'text/markdown') {
+    const url = request.nextUrl.clone();
+    url.pathname = markdownRewritePath(pathname);
+    const rewritten = NextResponse.rewrite(url);
+    appendVaryAccept(rewritten.headers);
+    return rewritten;
+  }
+
+  if (chosen === null && acceptHeader) {
+    return new Response(NOT_ACCEPTABLE_BODY, {
+      status: 406,
+      headers: {
+        'Content-Type': 'text/plain; charset=utf-8',
+        Vary: 'Accept, Accept-Encoding',
+      },
+    });
+  }
+
+  const res = NextResponse.next();
+  appendVaryAccept(res.headers);
+  return res;
 }
 
 export const config = {

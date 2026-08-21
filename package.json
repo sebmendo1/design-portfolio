@@ -11,6 +11,7 @@
     "start": "next start",
     "lint": "eslint .",
     "typecheck": "tsc --noEmit",
+    "test": "tsx --test src/lib/*.test.ts",
     "copy-fonts": "mkdir -p src/app/fonts public/fonts/seb-sans && cp node_modules/seb-sans-font/fonts/SebSansVar.woff2 src/app/fonts/ && cp node_modules/seb-sans-font/fonts/SebSansVar.woff2 public/fonts/seb-sans/",
     "postinstall": "npm run copy-fonts"
   },
