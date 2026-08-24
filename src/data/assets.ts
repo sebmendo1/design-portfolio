@@ -16,6 +16,11 @@ export const ASSETS = {
     writerRewrite: `${BLOB}/writer-rewrite.mp4`,
     chorusDemo: `${BLOB}/chorus-ai-demo.mp4`,
   },
+  /**
+   * Narrow encodes for large browser demos (Writer, Chorus).
+   * Populate after `npx tsx scripts/optimize-videos.ts --upload`.
+   */
+  videoMobile: {} as Partial<Record<'writerRewrite' | 'chorusDemo', string>>,
   posters: {
     caseyRcs: '/assets/posters/casey-rcs.jpg',
     mementoDemo: '/assets/posters/memento-demo.jpg',
@@ -28,12 +33,27 @@ export const ASSETS = {
 
 export const BLOB_HOST = 'cjeb7madwget0lzn.public.blob.vercel-storage.com';
 
-export function getVideoPoster(videoUrl: string): string | undefined {
-  const videoKeys = Object.keys(ASSETS.video) as Array<keyof typeof ASSETS.video>;
+type VideoKey = keyof typeof ASSETS.video;
+type MobileVideoKey = keyof typeof ASSETS.videoMobile;
+
+function findVideoKey(videoUrl: string): VideoKey | undefined {
+  const videoKeys = Object.keys(ASSETS.video) as VideoKey[];
   for (const key of videoKeys) {
-    if (ASSETS.video[key] === videoUrl) {
-      return ASSETS.posters[key];
+    if (ASSETS.video[key] === videoUrl) return key;
+    if (key in ASSETS.videoMobile && ASSETS.videoMobile[key as MobileVideoKey] === videoUrl) {
+      return key;
     }
   }
   return undefined;
+}
+
+export function getVideoPoster(videoUrl: string): string | undefined {
+  const key = findVideoKey(videoUrl);
+  return key ? ASSETS.posters[key] : undefined;
+}
+
+export function getVideoMobileSrc(videoUrl: string): string | undefined {
+  const key = findVideoKey(videoUrl);
+  if (!key || !(key in ASSETS.videoMobile)) return undefined;
+  return ASSETS.videoMobile[key as MobileVideoKey];
 }

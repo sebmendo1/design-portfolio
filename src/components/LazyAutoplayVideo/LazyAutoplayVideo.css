@@ -1,0 +1,41 @@
+.lazy-video {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  display: block;
+  overflow: hidden;
+}
+
+.lazy-video__el,
+.lazy-video__poster {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+}
+
+.lazy-video__el {
+  opacity: 0;
+  transition: opacity 250ms ease;
+}
+
+.lazy-video__poster {
+  z-index: 1;
+  pointer-events: none;
+  transition: opacity 250ms ease;
+}
+
+.lazy-video--ready .lazy-video__el {
+  opacity: 1;
+}
+
+.lazy-video--ready .lazy-video__poster {
+  opacity: 0;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .lazy-video__el,
+  .lazy-video__poster {
+    transition: none;
+  }
+}

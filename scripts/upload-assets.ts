@@ -16,6 +16,8 @@ const ASSETS = [
   { name: 'chase-myhome-demo.mp4', type: 'video/mp4' },
   { name: 'writer-rewrite.mp4', type: 'video/mp4' },
   { name: 'chorus-ai-demo.mp4', type: 'video/mp4' },
+  { name: 'writer-rewrite-720.mp4', type: 'video/mp4' },
+  { name: 'chorus-ai-demo-720.mp4', type: 'video/mp4' },
 ] as const;
 
 (async () => {
