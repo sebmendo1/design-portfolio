@@ -127,6 +127,7 @@ function DevicePreview({ config }: { config: CaseStudyConfig }) {
           title={title}
           screenAspectRatio={screenAspectRatio}
           variant="case-study"
+          priority
         />
       )}
       {frame === 'phone' && (
@@ -137,6 +138,7 @@ function DevicePreview({ config }: { config: CaseStudyConfig }) {
           alt={`${title} app screenshot`}
           screenAspectRatio={screenAspectRatio}
           variant="case-study"
+          priority
         />
       )}
       {frame === 'none' && src && (
