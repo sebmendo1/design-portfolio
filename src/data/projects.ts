@@ -3,6 +3,7 @@ import type { CaseStudyConfig } from '@/components/CaseStudyScrolly/types';
 import { ASSETS } from '@/data/assets';
 import { PHONE_SCREEN_AR } from '@/components/PhoneStencil/phone-aspect-ratios';
 import {
+  AUTODSM_SCREEN_AR,
   DEFAULT_BROWSER_SCREEN_AR,
   WRITER_REWRITE_SCREEN_AR,
   CHORUS_DEMO_SCREEN_AR,
@@ -123,7 +124,12 @@ export const projects: Project[] = [
     company: 'Personal Project',
     role: 'Designer & Developer',
     tags: ['AI', 'Design Systems', 'B2B'],
-    preview: { frame: 'image', src: '/assets/autods-m.webp' },
+    preview: {
+      frame: 'browser',
+      src: '/assets/autods-m.webp',
+      url: 'autodsm.ai',
+      screenAspectRatio: AUTODSM_SCREEN_AR,
+    },
     slug: 'autodsm-ai',
     styles: { backgroundColor: '#f4f3f2' },
     caseStudy: {
@@ -137,7 +143,15 @@ export const projects: Project[] = [
       slug: 'autodsm-ai',
       title: 'AutoDSM AI',
       trackHeightVh: 600,
-      stage: { centerpiece: { frame: 'none', width: 400, src: '/assets/autods-m.webp' } },
+      stage: {
+        centerpiece: {
+          frame: 'browser',
+          width: 400,
+          src: '/assets/autods-m.webp',
+          url: 'autodsm.ai',
+          screenAspectRatio: AUTODSM_SCREEN_AR,
+        },
+      },
       beats: [
         { id: 'summary',   headline: 'An AI-powered design system manager that keeps tokens, components, and documentation in sync.', body: 'AutoDSM AI detects when design and code drift apart by scanning Figma and GitHub simultaneously, then resolves conflicts and updates documentation automatically. It lives inside the tools designers and engineers already use: no new dashboards, no new workflows.', range: [0, 0.15] },
         { id: 'challenge', label: 'Challenge', headline: 'Design system drift is invisible until it\'s catastrophic.', body: 'AutoDSM AI is an intelligent design system manager that keeps tokens, components, and documentation in sync across design tools and codebases. It was born from a real frustration: design system drift is invisible until it becomes catastrophic.', range: [0.15, 0.32] },

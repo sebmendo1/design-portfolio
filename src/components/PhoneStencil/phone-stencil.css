@@ -18,9 +18,9 @@
 .phone-stencil {
   --body-w: 200px;
   width: fit-content;
-  max-width: 100%;
+  max-width: min(100%, var(--site-max));
+  min-width: 0;
   margin-inline: auto;
-  flex-shrink: 0;
 }
 
 .phone-stencil__body {
@@ -40,7 +40,7 @@
 
 .phone-stencil--case-study {
   width: auto;
-  max-width: 100%;
+  max-width: min(100%, var(--site-max));
   max-height: 100%;
 }
 
@@ -51,6 +51,16 @@
   justify-content: center;
   max-height: 100%;
   min-height: 0;
+}
+
+@media (min-width: 901px) {
+  .phone-stencil--case-study .phone-stencil__screen {
+    width: min(
+      25rem,
+      calc(100cqw / var(--phone-body-scale)),
+      calc((100cqh / var(--phone-body-scale)) * var(--content-ar, var(--phone-default-ar)))
+    );
+  }
 }
 
 @media (max-width: 900px) and (orientation: portrait) {
@@ -65,11 +75,11 @@
 
 .phone-stencil--card {
   width: auto;
-  max-width: 100%;
+  max-width: min(100%, var(--site-max));
   max-height: 100%;
 }
 
-@media (max-width: 768px) {
+@media (max-width: 768px), (max-width: 900px) and (orientation: landscape) {
   .phone-stencil--card {
     width: 100%;
     max-width: 100%;
@@ -119,7 +129,7 @@
   min-height: 0;
 }
 
-@media (min-width: 769px) {
+@media (min-width: 769px) and (orientation: portrait), (min-width: 901px) {
   .phone-stencil--card .phone-stencil__body {
     justify-content: center;
     max-height: 100%;
@@ -164,11 +174,13 @@
 .phone-stencil__screen {
   position: relative;
   aspect-ratio: var(--content-ar, var(--phone-default-ar));
+  width: 100%;
   width: min(
     calc(100cqw / var(--phone-body-scale)),
     calc((100cqh / var(--phone-body-scale)) * var(--content-ar, var(--phone-default-ar)))
   );
   max-width: 100%;
+  min-width: 0;
   margin-inline: auto;
   overflow: hidden;
   border-radius: var(--phone-screen-radius-w) / var(--phone-screen-radius-h);

@@ -4,7 +4,7 @@
   --meta-padding-block: 32px;
   display: block;
   width: 100%;
-  max-width: 100%;
+  max-width: min(100%, var(--site-max));
   height: 564px;
   min-width: 0;
   background: #f4f3f2;
@@ -77,18 +77,23 @@
 }
 
 .project-card__image-wrap {
+  --content-ar: 1.4;
   flex: 0 0 auto;
-  width: min(80cqw, 80%);
-  max-height: 100cqh;
+  width: 100%;
+  max-width: min(100%, var(--site-max));
+  max-height: 100%;
+  width: min(100cqw, calc(100cqh * var(--content-ar)));
   display: flex;
   align-items: center;
   justify-content: center;
+  min-width: 0;
 }
 
 .project-card__image {
   width: 100%;
   height: auto;
-  max-height: 100cqh;
+  max-height: 100%;
+  aspect-ratio: var(--content-ar);
   object-fit: contain;
   object-position: center;
   display: block;
@@ -136,102 +141,16 @@
   overflow-wrap: anywhere;
 }
 
-/* ─── Card-scale browser mockup ─────────────────────────────────────────── */
-.pc-browser {
+/* Card-scale browser mockup uses BrowserStencil — fit the host container. */
+.project-card__visual-inner > .browser-stencil {
   flex: 0 0 auto;
-  width: min(82cqw, calc((100cqh - 30px) * var(--content-ar, 1.499)));
-  max-width: 100%;
-  max-height: 100cqh;
-  display: flex;
-  flex-direction: column;
-  background: #ffffff;
-  border-radius: 8px;
-  overflow: hidden;
-  box-shadow:
-    0 0 0 1px rgba(0, 0, 0, 0.08),
-    0 12px 40px rgba(0, 0, 0, 0.14),
-    0 4px 12px rgba(0, 0, 0, 0.07);
+  align-self: center;
 }
 
-.pc-browser__chrome {
-  height: 30px;
-  min-height: 30px;
-  background: #e8e8e8;
-  display: flex;
-  align-items: center;
-  padding: 0 10px;
-  gap: 6px;
-  border-bottom: 1px solid #d0d0d0;
-  flex-shrink: 0;
-}
-
-.pc-browser__dots {
-  display: flex;
-  align-items: center;
-  gap: 5px;
-  flex-shrink: 0;
-}
-
-.pc-dot {
-  display: block;
-  width: 9px;
-  height: 9px;
-  border-radius: 50%;
-  flex-shrink: 0;
-}
-
-.pc-dot--red    { background: #ff5f57; box-shadow: inset 0 0 0 0.5px rgba(0,0,0,0.12); }
-.pc-dot--yellow { background: #febc2e; box-shadow: inset 0 0 0 0.5px rgba(0,0,0,0.12); }
-.pc-dot--green  { background: #28c840; box-shadow: inset 0 0 0 0.5px rgba(0,0,0,0.12); }
-
-.pc-browser__url-bar {
-  flex: 1;
-  max-width: 220px;
-  height: 18px;
-  background: #ffffff;
-  border-radius: 4px;
-  border: 1px solid rgba(0, 0, 0, 0.1);
-  display: flex;
-  align-items: center;
-  padding: 0 7px;
-  margin: 0 auto;
-}
-
-.pc-browser__url-text {
-  font-size: 9.5px;
-  color: #444444;
-  font-family: -apple-system, 'SF Pro Text', system-ui, sans-serif;
-  white-space: nowrap;
-  overflow: hidden;
-  text-overflow: ellipsis;
-}
-
-.pc-browser__spacer {
-  flex: 0 0 48px;
-}
-
-.pc-browser__screen {
-  width: 100%;
-  aspect-ratio: var(--content-ar, 1280 / 854);
-  flex: 0 0 auto;
-  overflow: hidden;
-  position: relative;
-  background: #ffffff;
-}
-
-.pc-browser__video {
-  width: 100%;
-  height: 100%;
-  object-fit: contain;
-  object-position: center;
-  display: block;
-  background: #ffffff;
-}
-
-@media (max-width: 768px) {
+@media (max-width: 768px), (max-width: 900px) and (orientation: landscape) {
   .project-card {
     --card-inset-x: 0;
-    --visual-width: 60%;
+    --visual-width: 58%;
     --meta-padding-block: clamp(24px, 6vw, 32px);
     --meta-visual-gap: clamp(12px, 3vw, 16px);
     display: grid;
@@ -243,6 +162,16 @@
     min-height: 0;
     padding-bottom: var(--meta-padding-block);
     border-radius: clamp(24px, 6vw, 32px);
+  }
+
+  .project-card--phone {
+    --visual-width: 58%;
+  }
+
+  .project-card--browser,
+  .project-card--image,
+  .project-card--fill {
+    --visual-width: calc(100% - 2 * var(--site-gutter));
   }
 
   .project-card__meta {
@@ -301,6 +230,10 @@
     overflow: visible;
   }
 
+  .project-card--phone .project-card__visual {
+    width: min(var(--visual-width), 280px);
+  }
+
   .project-card__visual-inner {
     width: 100%;
     height: fit-content;
@@ -339,16 +272,11 @@
     text-wrap: balance;
   }
 
-  .project-card--browser .project-card__visual-inner > .pc-browser {
+  .project-card--browser .project-card__visual-inner > .browser-stencil {
     width: 100%;
     max-width: 100%;
     max-height: none;
     height: auto;
-  }
-
-  .project-card--browser .pc-browser__video {
-    object-fit: contain;
-    object-position: center;
   }
 
   .project-card--image .project-card__image-wrap {
@@ -394,29 +322,27 @@
   }
 }
 
-/* 200px–440px — fluid inset and preview scaling */
+/* Landscape phones/tablets: size frames from viewport height so cards stay usable. */
+@media (max-width: 900px) and (orientation: landscape) {
+  .project-card {
+    --meta-padding-block: clamp(12px, 4vh, 20px);
+    --meta-visual-gap: clamp(8px, 2vh, 12px);
+  }
+
+  .project-card--phone .project-card__visual {
+    width: min(var(--visual-width), 32dvh);
+  }
+
+  .project-card--browser .project-card__visual,
+  .project-card--image .project-card__visual,
+  .project-card--fill .project-card__visual {
+    width: min(var(--visual-width), calc(54dvh * 1.55));
+  }
+}
+
 @media (max-width: 440px) {
   .project-card {
     --meta-padding-block: clamp(20px, 5.5vw, 32px);
-  }
-
-  .pc-browser__chrome {
-    height: clamp(24px, 7vw, 30px);
-    min-height: clamp(24px, 7vw, 30px);
-    padding: 0 clamp(6px, 2vw, 10px);
-  }
-
-  .pc-browser__url-bar {
-    max-width: min(220px, 55cqw);
-    height: clamp(14px, 4vw, 18px);
-  }
-
-  .pc-browser__url-text {
-    font-size: clamp(8px, 2.4vw, 9.5px);
-  }
-
-  .pc-browser__spacer {
-    flex: 0 0 clamp(28px, 12vw, 48px);
   }
 }
 
@@ -426,12 +352,23 @@
     --meta-visual-gap: 12px;
     border-radius: 24px;
   }
+
+  .project-card--phone .project-card__visual {
+    width: min(var(--visual-width), 220px);
+  }
 }
 
-@media (min-width: 769px) {
+@media (min-width: 769px) and (orientation: portrait), (min-width: 901px) {
   .project-card__visual-inner .phone-stencil {
     flex: 0 0 auto;
     width: auto;
+    max-width: 100%;
+    max-height: 100%;
+  }
+
+  .project-card__visual-inner .browser-stencil,
+  .project-card__visual-inner .project-card__image-wrap {
+    flex: 0 0 auto;
     max-width: 100%;
     max-height: 100%;
   }

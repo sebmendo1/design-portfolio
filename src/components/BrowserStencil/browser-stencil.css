@@ -1,24 +1,35 @@
 /*
- * macOS browser stencil — sizes from host container (device-card / card-visual).
- * --browser-w is set via ResizeObserver (see useBrowserFrameWidth.ts).
+ * macOS Safari-like browser stencil.
+ * Chrome controls scale from --browser-chrome (not uncapped frame width)
+ * so traffic lights never outgrow a clamped titlebar.
  * Do not add container-type on .browser-stencil — it would steal cqw/cqh from the host.
  */
 .browser-stencil {
   --browser-w: 480px;
-  --browser-chrome: clamp(32px, calc(var(--browser-w) * 0.0875), 42px);
+  --browser-chrome: clamp(30px, calc(var(--browser-w) * 0.07), 38px);
+  --chrome-dot: clamp(8px, calc(var(--browser-chrome) * 0.28), 12px);
+  --chrome-icon: clamp(10px, calc(var(--browser-chrome) * 0.38), 14px);
+  --chrome-lock: clamp(8px, calc(var(--browser-chrome) * 0.28), 11px);
+  --chrome-url: clamp(10px, calc(var(--browser-chrome) * 0.32), 12px);
+  --chrome-pad: clamp(8px, calc(var(--browser-chrome) * 0.32), 12px);
+  --chrome-gap: clamp(6px, calc(var(--browser-chrome) * 0.22), 10px);
   --content-ar: 1.499;
+  /* Fallback when the host is inline-size only (cqh is invalid). */
+  width: 100%;
+  max-width: min(100%, var(--site-max));
+  max-height: 100%;
+  min-width: 0;
+  /* Host-container fit when both axes are known. Ignored if cqh is unavailable. */
   width: min(
     100cqw,
     calc((100cqh - var(--browser-chrome)) * var(--content-ar))
   );
-  max-width: 100%;
-  max-height: 100%;
   margin-inline: auto;
   flex-shrink: 0;
   display: flex;
   flex-direction: column;
   background: #ffffff;
-  border-radius: clamp(8px, calc(var(--browser-w) * 0.025), 12px);
+  border-radius: clamp(8px, calc(var(--browser-w) * 0.022), 12px);
   overflow: hidden;
   box-shadow:
     0 0 0 1px rgba(0, 0, 0, 0.09),
@@ -26,30 +37,42 @@
 }
 
 .browser-stencil__chrome {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(0, 2.2fr) minmax(0, 1fr);
+  align-items: center;
   height: var(--browser-chrome);
   min-height: var(--browser-chrome);
+  padding: 0 var(--chrome-pad);
+  column-gap: var(--chrome-gap);
   background: #e8e8e8;
-  display: flex;
-  align-items: center;
-  padding: 0 calc(var(--browser-w) * 0.029);
-  gap: calc(var(--browser-w) * 0.017);
   border-bottom: 1px solid #d0d0d0;
   flex-shrink: 0;
+  min-width: 0;
+  box-sizing: border-box;
+}
+
+.browser-stencil__leading {
+  grid-column: 1;
+  grid-row: 1;
+  display: flex;
+  align-items: center;
+  gap: var(--chrome-gap);
+  justify-self: start;
+  min-width: 0;
+  z-index: 1;
 }
 
 .browser-stencil__dots {
   display: flex;
   align-items: center;
-  gap: calc(var(--browser-w) * 0.0125);
+  gap: calc(var(--chrome-dot) * 0.5);
   flex-shrink: 0;
 }
 
 .browser-stencil__dot {
   display: block;
-  width: calc(var(--browser-w) * 0.025);
-  height: calc(var(--browser-w) * 0.025);
-  min-width: 8px;
-  min-height: 8px;
+  width: var(--chrome-dot);
+  height: var(--chrome-dot);
   border-radius: 50%;
   flex-shrink: 0;
 }
@@ -69,52 +92,72 @@
 .browser-stencil__nav {
   display: flex;
   align-items: center;
-  gap: calc(var(--browser-w) * 0.008);
-  margin-left: calc(var(--browser-w) * 0.017);
+  gap: calc(var(--chrome-icon) * 0.2);
   flex-shrink: 0;
 }
 
 .browser-stencil__nav-icon {
-  width: calc(var(--browser-w) * 0.033);
-  height: calc(var(--browser-w) * 0.033);
-  min-width: 12px;
-  min-height: 12px;
+  width: var(--chrome-icon);
+  height: var(--chrome-icon);
   color: #888888;
 }
 
 .browser-stencil__url-bar {
-  flex: 1;
+  grid-column: 2;
+  grid-row: 1;
+  justify-self: stretch;
+  align-self: center;
+  height: calc(var(--browser-chrome) * 0.62);
+  min-width: 0;
   display: flex;
   align-items: center;
-  gap: calc(var(--browser-w) * 0.0125);
+  justify-content: center;
+  gap: calc(var(--chrome-lock) * 0.45);
   background: #ffffff;
-  border-radius: calc(var(--browser-w) * 0.0125);
-  padding: calc(var(--browser-w) * 0.01) calc(var(--browser-w) * 0.021);
-  margin: 0 calc(var(--browser-w) * 0.017);
-  min-width: 0;
+  border-radius: calc(var(--browser-chrome) * 0.18);
+  padding: 0 calc(var(--browser-chrome) * 0.28);
+  box-sizing: border-box;
 }
 
 .browser-stencil__lock {
-  width: calc(var(--browser-w) * 0.021);
-  height: calc(var(--browser-w) * 0.025);
-  min-width: 8px;
-  min-height: 10px;
+  width: var(--chrome-lock);
+  height: calc(var(--chrome-lock) * 1.16);
   color: #888888;
   flex-shrink: 0;
 }
 
 .browser-stencil__url-text {
-  font-size: clamp(10px, calc(var(--browser-w) * 0.025), 12px);
+  font-size: var(--chrome-url);
+  line-height: 1;
   color: #555555;
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
+  text-align: center;
+  min-width: 0;
 }
 
-.browser-stencil__spacer {
-  width: calc(var(--browser-w) * 0.125);
-  min-width: 36px;
+.browser-stencil__url-balance {
+  width: var(--chrome-lock);
+  height: 1px;
   flex-shrink: 0;
+  visibility: hidden;
+}
+
+.browser-stencil--compact .browser-stencil__chrome {
+  grid-template-columns: minmax(0, 0.7fr) minmax(0, 2.6fr) minmax(0, 0.7fr);
+}
+
+.browser-stencil--compact .browser-stencil__nav {
+  display: none;
+}
+
+.browser-stencil--tiny .browser-stencil__url-bar {
+  display: none;
+}
+
+.browser-stencil--tiny .browser-stencil__chrome {
+  grid-template-columns: 1fr;
 }
 
 .browser-stencil__screen {
@@ -123,6 +166,7 @@
   width: 100%;
   flex: 0 1 auto;
   min-height: 0;
+  min-width: 0;
   background: #ffffff;
   overflow: hidden;
   display: flex;
@@ -139,16 +183,7 @@
   background: #ffffff;
 }
 
-.browser-stencil--case-study {
+.browser-stencil--case-study,
+.browser-stencil--card {
   align-self: center;
-}
-
-@media (max-width: 900px) and (orientation: portrait) {
-  .browser-stencil--case-study {
-    width: min(
-      100cqw,
-      calc((100cqh - var(--browser-chrome)) * var(--content-ar))
-    );
-    max-height: 100%;
-  }
 }

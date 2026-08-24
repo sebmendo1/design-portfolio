@@ -3,6 +3,8 @@
   position: relative;
   min-height: 100dvh;
   width: 100%;
+  max-width: var(--site-max);
+  margin-inline: auto;
   outline: none;
 }
 
@@ -19,6 +21,7 @@
   grid-template-rows: auto 1fr;
   min-height: 0;
   width: 100%;
+  max-width: var(--site-max);
   overflow: hidden;
   padding: 0;
   box-sizing: border-box;
@@ -114,4 +117,14 @@
   aspect-ratio: unset;
   min-height: 0;
   box-sizing: border-box;
+}
+
+.work-gallery__panel-inset .project-card__visual-inner {
+  container-type: size;
+}
+
+.work-gallery__panel-inset .project-card__visual-inner > .browser-stencil,
+.work-gallery__panel-inset .project-card__image-wrap {
+  max-width: 100%;
+  max-height: 100%;
 }

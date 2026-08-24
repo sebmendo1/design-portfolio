@@ -3,6 +3,7 @@
 import { useRef, type CSSProperties } from 'react';
 import { OptimizedImage } from '@/components/OptimizedImage/OptimizedImage';
 import { LazyAutoplayVideo } from '@/components/LazyAutoplayVideo/LazyAutoplayVideo';
+import { getVideoMobileSrc } from '@/data/assets';
 import { useContentAspectRatio } from './useContentAspectRatio';
 import { usePhoneBodyWidth } from './usePhoneBodyWidth';
 import './phone-stencil.css';
@@ -15,6 +16,7 @@ type PhoneStencilProps = {
   screenAspectRatio?: number;
   variant?: 'case-study' | 'card';
   className?: string;
+  priority?: boolean;
 };
 
 export function PhoneStencil({
@@ -25,6 +27,7 @@ export function PhoneStencil({
   screenAspectRatio,
   variant = 'case-study',
   className,
+  priority = false,
 }: PhoneStencilProps) {
   const rootRef = useRef<HTMLDivElement>(null);
   const { aspectRatio, onVideoMetadata, onImageLoad } = useContentAspectRatio(screenAspectRatio);
@@ -55,7 +58,12 @@ export function PhoneStencil({
             <LazyAutoplayVideo
               className="phone-stencil__media"
               src={video}
+              srcMobile={getVideoMobileSrc(video)}
               poster={poster}
+              posterWidth={786}
+              posterHeight={1748}
+              posterSizes={variant === 'card' ? '(max-width: 768px) 50vw, 33vw' : '50vw'}
+              priority={priority}
               onLoadedMetadata={onVideoMetadata}
             />
           ) : src ? (

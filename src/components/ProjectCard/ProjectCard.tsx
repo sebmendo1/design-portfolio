@@ -6,8 +6,8 @@ import type { CSSProperties } from 'react';
 import type { ProjectPreview } from '@/data/projects';
 import { getVideoPoster } from '@/data/assets';
 import { DEFAULT_BROWSER_SCREEN_AR } from '@/components/BrowserStencil/browser-aspect-ratios';
+import { BrowserStencil } from '@/components/BrowserStencil/BrowserStencil';
 import { OptimizedImage } from '@/components/OptimizedImage/OptimizedImage';
-import { LazyAutoplayVideo } from '@/components/LazyAutoplayVideo/LazyAutoplayVideo';
 import { PhoneStencil } from '@/components/PhoneStencil/PhoneStencil';
 import {
   splitIntoUnits,
@@ -23,47 +23,6 @@ interface ProjectCardProps {
   onNavigate?: (href: string) => void;
   streamMeta?: boolean;
   metaReveal?: boolean;
-}
-
-function PreviewBrowser({
-  video,
-  url,
-  screenAspectRatio,
-}: {
-  video?: string;
-  url?: string;
-  screenAspectRatio?: number;
-}) {
-  const poster = video ? getVideoPoster(video) : undefined;
-  const contentAspectRatio = screenAspectRatio ?? DEFAULT_BROWSER_SCREEN_AR;
-
-  return (
-    <div
-      className="pc-browser"
-      style={{ '--content-ar': contentAspectRatio } as CSSProperties}
-    >
-      <div className="pc-browser__chrome">
-        <div className="pc-browser__dots">
-          <span className="pc-dot pc-dot--red" />
-          <span className="pc-dot pc-dot--yellow" />
-          <span className="pc-dot pc-dot--green" />
-        </div>
-        <div className="pc-browser__url-bar">
-          <span className="pc-browser__url-text">{url ?? ''}</span>
-        </div>
-        <div className="pc-browser__spacer" />
-      </div>
-      <div className="pc-browser__screen">
-        {video && (
-          <LazyAutoplayVideo
-            className="pc-browser__video"
-            src={video}
-            poster={poster}
-          />
-        )}
-      </div>
-    </div>
-  );
 }
 
 function CardVisual({ preview, title }: { preview?: ProjectPreview; title: string }) {
@@ -86,22 +45,31 @@ function CardVisual({ preview, title }: { preview?: ProjectPreview; title: strin
 
   if (preview.frame === 'browser') {
     return (
-      <PreviewBrowser
+      <BrowserStencil
+        src={preview.src}
         video={preview.video}
+        poster={preview.video ? getVideoPoster(preview.video) : undefined}
         url={preview.url}
+        title={title}
         screenAspectRatio={preview.screenAspectRatio}
+        variant="card"
       />
     );
   }
 
   if (preview.frame === 'image' && preview.src) {
+    const contentAspectRatio = preview.screenAspectRatio ?? DEFAULT_BROWSER_SCREEN_AR;
+
     return (
-      <div className="project-card__image-wrap">
+      <div
+        className="project-card__image-wrap"
+        style={{ '--content-ar': contentAspectRatio } as CSSProperties}
+      >
         <OptimizedImage
           src={preview.src}
           alt={title}
-          width={400}
-          height={300}
+          width={1280}
+          height={Math.round(1280 / contentAspectRatio)}
           className="project-card__image"
           sizes="(max-width: 768px) 100vw, 50vw"
         />
