@@ -21,6 +21,8 @@ export function ScrollReveal({
   const [revealed, setRevealed] = useState(() => Boolean(shouldReduce));
 
   useEffect(() => {
+    // Reduced-motion users get an immediate reveal via initial state / isRevealed —
+    // do not sync that into state here (triggers react-hooks/set-state-in-effect).
     if (shouldReduce) {
       return;
     }

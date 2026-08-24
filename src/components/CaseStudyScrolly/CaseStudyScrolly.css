@@ -55,6 +55,21 @@
   );
 }
 
+/* Touch devices (incl. iPad two-column layout): allow vertical panning.
+   data-touch-scroll is set from JS so maxTouchPoints devices that report a
+   fine pointer still get pan-y. Portrait phones also set this via media query. */
+.cs-layout[data-touch-scroll='true'],
+.cs-layout[data-touch-scroll='true'] .cs-text-col {
+  touch-action: pan-y;
+}
+
+@media (pointer: coarse) {
+  .cs-layout,
+  .cs-text-col {
+    touch-action: pan-y;
+  }
+}
+
 .cs-text-col__edge {
   position: absolute;
   left: 0;

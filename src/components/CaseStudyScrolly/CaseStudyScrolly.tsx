@@ -15,7 +15,11 @@ import {
   DISSOLVE_REVEAL_EASE,
   DISSOLVE_REVEAL_STAGGER,
 } from '@/components/DissolveIn/DissolveIn';
-import { CASE_STUDY_PORTRAIT_STACK_QUERY } from '@/lib/case-study-layout';
+import {
+  CASE_STUDY_PORTRAIT_STACK_QUERY,
+  CASE_STUDY_TOUCH_SCROLL_QUERY,
+  caseStudySupportsTouchScroll,
+} from '@/lib/case-study-layout';
 import './CaseStudyScrolly.css';
 
 const CHASE_HERO_SRC = '/assets/logos/chase-hero.png?v=11';
@@ -53,6 +57,7 @@ function heroLogoClassName(company?: string, companyLogo?: string): string {
 const EXTERNAL_SCROLL_BOOST = 1.4;
 
 const MOBILE_LAYOUT_QUERY = CASE_STUDY_PORTRAIT_STACK_QUERY;
+const TOUCH_SCROLL_QUERY = CASE_STUDY_TOUCH_SCROLL_QUERY;
 
 function normalizeWheelDelta(deltaY: number, deltaMode: number): number {
   if (deltaMode === 1) return deltaY * 40;
@@ -186,6 +191,7 @@ export function CaseStudyScrolly({
 
     const reducedQuery = window.matchMedia('(prefers-reduced-motion: reduce)');
     const mobileQuery = window.matchMedia(MOBILE_LAYOUT_QUERY);
+    const touchQuery = window.matchMedia(TOUCH_SCROLL_QUERY);
 
     let cleanupScroll: (() => void) | undefined;
 
@@ -196,10 +202,14 @@ export function CaseStudyScrolly({
 
       const prefersReduced = reducedQuery.matches;
       const isMobileLayout = mobileQuery.matches;
+      // iPad / tablets use the two-column layout but still need touch scroll.
+      // maxTouchPoints catches iPadOS even when it reports a fine pointer.
+      const enableTouchScroll = caseStudySupportsTouchScroll();
+      layout.dataset.touchScroll = enableTouchScroll ? 'true' : 'false';
 
       if (prefersReduced) {
         wrapper.style.overflowY = 'auto';
-        if (isMobileLayout) {
+        if (enableTouchScroll) {
           cleanupScroll = attachNativeTouchForwarding(layout, wrapper);
         }
         return;
@@ -210,11 +220,12 @@ export function CaseStudyScrolly({
       const lenis = new Lenis({
         wrapper,
         content,
-        // On mobile, listen on the full layout so swipes on the device preview
-        // drive the same smooth Lenis scroll as the text column (parity with desktop wheel).
-        eventsTarget: isMobileLayout ? layout : wrapper,
+        // On touch devices, listen on the full layout so swipes on the device
+        // preview drive the same smooth Lenis scroll as the text column
+        // (parity with desktop wheel). Portrait phones and iPads both need this.
+        eventsTarget: enableTouchScroll || isMobileLayout ? layout : wrapper,
         smoothWheel: true,
-        syncTouch: isMobileLayout,
+        syncTouch: enableTouchScroll,
         syncTouchLerp: 0.09,
         touchMultiplier: EXTERNAL_SCROLL_BOOST,
         lerp: 0.09,
@@ -229,7 +240,10 @@ export function CaseStudyScrolly({
       rafId = requestAnimationFrame(raf);
 
       const onLayoutWheel = (event: WheelEvent) => {
-        if (isMobileLayout || wrapper.contains(event.target as Node)) return;
+        // When Lenis already listens on the layout (touch devices), skip.
+        if (enableTouchScroll || isMobileLayout || wrapper.contains(event.target as Node)) {
+          return;
+        }
         const delta = normalizeWheelDelta(event.deltaY, event.deltaMode) * EXTERNAL_SCROLL_BOOST;
         lenis.scrollTo(lenis.scroll + delta);
         event.preventDefault();
@@ -248,11 +262,14 @@ export function CaseStudyScrolly({
     setupScroll();
     reducedQuery.addEventListener('change', setupScroll);
     mobileQuery.addEventListener('change', setupScroll);
+    touchQuery.addEventListener('change', setupScroll);
 
     return () => {
       reducedQuery.removeEventListener('change', setupScroll);
       mobileQuery.removeEventListener('change', setupScroll);
+      touchQuery.removeEventListener('change', setupScroll);
       cleanupScroll?.();
+      delete layout.dataset.touchScroll;
       wrapper.style.overflowY = '';
     };
   }, []);
@@ -270,7 +287,7 @@ export function CaseStudyScrolly({
   }, []);
 
   return (
-    <article className="cs-article" aria-label={config.title} data-lenis-prevent>
+    <article className="cs-article" aria-label={config.title}>
       <div ref={layoutRef} className="cs-layout">
         <HomeLink className="cs-floating-back" onHomeNavigate={onHomeNavigate}>
           ← Back
@@ -281,6 +298,11 @@ export function CaseStudyScrolly({
           duration={DISSOLVE_REVEAL_DURATION}
           ease={DISSOLVE_REVEAL_EASE}
         >
+          {/*
+            data-lenis-prevent stays on the nested scroller only so the root Lenis
+            ignores it. Do not put it on the article/layout — that blocks nested
+            Lenis when eventsTarget is the layout (iPad / touch preview swipes).
+          */}
           <div ref={scrollWrapperRef} className="cs-text-col" data-lenis-prevent>
             <div ref={scrollContentRef} className="cs-text-col__content">
             {config.beats.map((beat, i) => {
