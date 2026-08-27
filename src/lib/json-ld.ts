@@ -13,6 +13,7 @@ import {
 } from '@/data/profile';
 import {
   getSiteUrl,
+  SITE_ADDRESS,
   SITE_CONTACT_EMAIL,
   SITE_DESCRIPTION,
   SITE_NAME,
@@ -30,6 +31,45 @@ function personId(siteUrl: string): string {
 
 function websiteId(siteUrl: string): string {
   return `${siteUrl}/#website`;
+}
+
+function organizationId(siteUrl: string): string {
+  return `${siteUrl}/#organization`;
+}
+
+function postalAddress(): JsonLd {
+  return {
+    '@type': 'PostalAddress',
+    addressLocality: SITE_ADDRESS.addressLocality,
+    addressRegion: SITE_ADDRESS.addressRegion,
+    addressCountry: SITE_ADDRESS.addressCountry,
+  };
+}
+
+function contactPoint(): JsonLd {
+  return {
+    '@type': 'ContactPoint',
+    email: SITE_CONTACT_EMAIL,
+    contactType: 'professional',
+    availableLanguage: 'English',
+    url: `${getSiteUrl()}/contact`,
+  };
+}
+
+export function practiceOrganizationNode(siteUrl: string): JsonLd {
+  return {
+    '@type': 'Organization',
+    '@id': organizationId(siteUrl),
+    name: SITE_NAME,
+    legalName: SITE_NAME,
+    url: siteUrl,
+    email: SITE_CONTACT_EMAIL,
+    description: SITE_DESCRIPTION,
+    founder: { '@id': personId(siteUrl) },
+    contactPoint: contactPoint(),
+    address: postalAddress(),
+    sameAs: SITE_SOCIAL_LINKS,
+  };
 }
 
 function profilePageId(siteUrl: string): string {
@@ -128,6 +168,8 @@ function personNode(siteUrl: string, url: string): JsonLd {
     description: PROFILE.executiveSummary,
     url,
     email: SITE_CONTACT_EMAIL,
+    contactPoint: contactPoint(),
+    address: postalAddress(),
     knowsLanguage: LANGUAGE,
     knowsAbout: [...PROFILE.domains, ...PROFILE.tools],
     hasOccupation: [primaryOccupation(), ...employmentHistory()],
@@ -157,13 +199,13 @@ export function buildSiteGraph(): JsonLd {
     url: siteUrl,
     inLanguage: LANGUAGE,
     author: { '@id': personId(siteUrl) },
-    publisher: { '@id': personId(siteUrl) },
+    publisher: { '@id': organizationId(siteUrl) },
     about: { '@id': personId(siteUrl) },
   };
 
   return {
     '@context': 'https://schema.org',
-    '@graph': [personNode(siteUrl, siteUrl), website],
+    '@graph': [practiceOrganizationNode(siteUrl), personNode(siteUrl, siteUrl), website],
   };
 }
 

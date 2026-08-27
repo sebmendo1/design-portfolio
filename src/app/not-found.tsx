@@ -19,6 +19,8 @@ export default function NotFound() {
         <a href="/llms.txt">llms.txt</a>
         <a href="/content.json">content.json</a>
         <a href="/.well-known/ai.txt">Agent guide</a>
+        <a href="/contact">Contact</a>
+        <a href="/privacy">Privacy</a>
       </nav>
       <article className="sr-corpus case-study-sr-corpus" data-machine-readable="true">
         <pre>{markdown}</pre>

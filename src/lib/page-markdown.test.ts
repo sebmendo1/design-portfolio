@@ -183,6 +183,14 @@ test('resolvePageMarkdown serves known pages and 404s unknown ones', () => {
   assert.equal(about.status, 200);
   assert.match(about.body, /Hey, I'm Seb/);
 
+  const contact = resolvePageMarkdown('/contact', data);
+  assert.equal(contact.status, 200);
+  assert.match(contact.body, /contact@sebastianmendo\.design/);
+
+  const privacy = resolvePageMarkdown('/privacy.md', data);
+  assert.equal(privacy.status, 200);
+  assert.match(privacy.body, /Vercel/);
+
   const work = resolvePageMarkdown('/work/casey-ai', data);
   assert.equal(work.status, 200);
   assert.match(work.body, /Chase Digital Assistant/);

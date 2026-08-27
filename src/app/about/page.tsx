@@ -47,6 +47,10 @@ export default function AboutPage() {
             <Link href={SITE_LINKEDIN_URL} rel="me">
               LinkedIn
             </Link>
+            {' · '}
+            <Link href="/contact">Contact</Link>
+            {' · '}
+            <Link href="/privacy">Privacy</Link>
           </p>
         </div>
 

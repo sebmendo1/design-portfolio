@@ -1,4 +1,5 @@
 import { getLlmsTxt } from '@/lib/seb-sans/agent-manifest';
+import { CONTACT_PAGE, PRIVACY_PAGE, trustPageMarkdown } from '@/lib/trust-pages';
 import {
   getWhenToUseHowToCall,
   getWhenToUseJobs,
@@ -53,6 +54,8 @@ export function toNotFoundMarkdown(siteUrl: string, path = '/unknown'): string {
     `- [Agent guide](${base}/.well-known/ai.txt) — discovery entrypoint`,
     `- [Work](${base}/) — project grid`,
     `- [About](${base}/about) — experience and contact`,
+    `- [Contact](${base}/contact) — how to reach this practice`,
+    `- [Privacy](${base}/privacy) — what this site collects`,
     `- [Seb Sans](${base}/seb-sans/llms.txt) — typeface install for coding agents`,
     '',
     'Retry the same URL with `Accept: text/markdown` on a real page, or start at `llms.txt`.',
@@ -240,6 +243,8 @@ export function resolvePageMarkdown(
 
   if (path === '/') return { status: 200, body: toHomeMarkdown(data) };
   if (path === '/about') return { status: 200, body: toAboutMarkdown(data) };
+  if (path === '/contact') return { status: 200, body: trustPageMarkdown(CONTACT_PAGE) };
+  if (path === '/privacy') return { status: 200, body: trustPageMarkdown(PRIVACY_PAGE) };
   if (path === '/seb-sans') return { status: 200, body: getLlmsTxt() };
   if (path === '/llms.txt') return { status: 200, body: toLlmsTxt(data) };
   if (path === '/llms-full.txt') return { status: 200, body: toLlmsFullTxt(data) };

@@ -86,6 +86,8 @@ test('llms.txt includes a specific when-to-use section', () => {
   const text = toLlmsTxt(makeExport());
   assert.match(text, /## When to use this/);
   assert.match(text, /Hiring and leveling/);
+  assert.match(text, /\/contact/);
+  assert.match(text, /\/privacy/);
   assert.match(text, /Do not infer seniority from adjectives/);
   assert.match(text, /Accept: text\/markdown/);
   assert.match(text, /Seb Sans install/);

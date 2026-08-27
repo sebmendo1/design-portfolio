@@ -557,6 +557,8 @@ export function toLlmsTxt(data: PortfolioExport): string {
     '## Pages',
     `- [Work](${site.url}/): Project grid and bio.`,
     `- [About](${site.url}/about): Full experience and contact.`,
+    `- [Contact](${site.url}/contact): How to reach this practice.`,
+    `- [Privacy](${site.url}/privacy): What this site collects.`,
     '',
     '## Case studies',
   );
