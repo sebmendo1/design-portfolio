@@ -9,12 +9,12 @@
 }
 
 .portfolio-index__headline {
-  grid-column: 1;
+  grid-column: 1 / -1;
   grid-row: 1;
   display: flex;
   align-items: center;
   min-height: 84px;
-  padding: 20px 24px 8px;
+  padding: 0 var(--site-gutter);
   box-sizing: border-box;
 }
 
@@ -24,7 +24,7 @@
   display: flex;
   flex-direction: column;
   gap: 24px;
-  padding: 12px 24px 0;
+  padding: 8px 24px 0;
   box-sizing: border-box;
 }
 
@@ -148,14 +148,14 @@
 
 .portfolio-index__stage {
   grid-column: 2;
-  grid-row: 1 / span 3;
+  grid-row: 2 / span 2;
   min-width: 0;
   width: 100%;
-  padding: 24px;
+  padding: 8px 24px 24px;
   box-sizing: border-box;
   position: sticky;
-  top: 0;
-  height: 100dvh;
+  top: 84px;
+  height: calc(100dvh - 84px);
 }
 
 .portfolio-index__well {
@@ -276,7 +276,7 @@
     grid-column: 1;
     grid-row: 1;
     min-height: 68px;
-    padding: 16px var(--site-gutter) 0;
+    padding: 12px var(--site-gutter) 0;
   }
 
   .portfolio-index__intro {
@@ -289,6 +289,7 @@
     grid-column: 1;
     grid-row: 3;
     position: relative;
+    top: auto;
     height: min(72vw, 420px);
     padding: 20px var(--site-gutter) 8px;
   }
