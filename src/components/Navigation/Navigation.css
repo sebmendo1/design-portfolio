@@ -296,6 +296,7 @@
 }
 
 @media (max-width: 520px) {
+  .nav .page-headline__text,
   .nav__brand-text {
     display: none;
   }

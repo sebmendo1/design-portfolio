@@ -9,6 +9,7 @@ import {
   groupPortfolioIndex,
 } from '@/lib/portfolio-index';
 import type { ProjectCardSummary } from '@/lib/project-cards';
+import { PageHeadline } from '@/components/PageHeadline/PageHeadline';
 import { IndexPreview } from './IndexPreview';
 import './PortfolioIndex.css';
 
@@ -49,6 +50,10 @@ export function PortfolioIndex({ bio, projects, onNavigate }: PortfolioIndexProp
 
   return (
     <div className="portfolio-index">
+      <header className="portfolio-index__headline">
+        <PageHeadline />
+      </header>
+
       <div className="portfolio-index__intro">
         {bio}
 
