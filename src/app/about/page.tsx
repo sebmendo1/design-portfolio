@@ -16,6 +16,12 @@ export const metadata: Metadata = createMetadata({
   title: 'About',
   description: ABOUT_DESCRIPTION,
   ...canonicalPath('/about'),
+  alternates: {
+    canonical: '/about',
+    types: {
+      'text/markdown': [{ url: '/about', title: 'About as Markdown' }],
+    },
+  },
   openGraph: {
     title: 'About — Sebastian Mendo',
     description: ABOUT_DESCRIPTION,

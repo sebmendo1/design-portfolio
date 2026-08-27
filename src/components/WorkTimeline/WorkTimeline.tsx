@@ -1,36 +1,120 @@
+import { Fragment } from 'react';
 import Link from 'next/link';
-import { SHIPPED_WORK } from '@/data/shippedWork';
+import { SHIPPED_WORK, type ShippedWorkEntry } from '@/data/shippedWork';
 import './WorkTimeline.css';
 
+const MONTH_NAMES = [
+  'January',
+  'February',
+  'March',
+  'April',
+  'May',
+  'June',
+  'July',
+  'August',
+  'September',
+  'October',
+  'November',
+  'December',
+] as const;
+
+type TimelineRow = {
+  entry: ShippedWorkEntry;
+  year: string;
+  showYear: boolean;
+  monthLabel: string;
+};
+
+function getMonthLabel(entry: ShippedWorkEntry): string {
+  if (entry.pending) {
+    return 'Pending';
+  }
+
+  const monthIndex = Number(entry.sortDate.slice(5, 7)) - 1;
+  return MONTH_NAMES[monthIndex] ?? entry.dateLabel;
+}
+
+function getTimelineRows(entries: readonly ShippedWorkEntry[]): TimelineRow[] {
+  let lastYear = '';
+
+  return entries.map((entry) => {
+    const year = entry.sortDate.slice(0, 4);
+    const showYear = year !== lastYear;
+    lastYear = year;
+
+    return {
+      entry,
+      year,
+      showYear,
+      monthLabel: getMonthLabel(entry),
+    };
+  });
+}
+
 export function WorkTimeline() {
+  const rows = getTimelineRows(SHIPPED_WORK);
+
   return (
     <section className="work-timeline" aria-labelledby="work-timeline-heading">
       <h2 id="work-timeline-heading" className="work-timeline__heading">
-        work
+        Timeline of work
       </h2>
-      <ol className="work-timeline__list">
-        {SHIPPED_WORK.map((entry) => (
-          <li key={entry.id} className="work-timeline__row">
-            <span className="work-timeline__title">
-              {entry.projectSlug ? (
-                <Link href={`/work/${entry.projectSlug}`}>{entry.title}</Link>
-              ) : (
-                entry.title
-              )}
-            </span>
-            <span className="sr-only"> </span>
-            <span className="work-timeline__affiliation">{entry.affiliation}</span>
-            <span className="sr-only"> </span>
-            {entry.pending ? (
-              <span className="work-timeline__date work-timeline__date--pending">Pending</span>
-            ) : (
-              <time className="work-timeline__date" dateTime={entry.sortDate}>
-                {entry.dateLabel}
-              </time>
-            )}
-          </li>
-        ))}
-      </ol>
+      <div className="work-timeline__frame">
+        <table className="work-timeline__table">
+          <thead>
+            <tr className="work-timeline__head">
+              <th scope="col">Year</th>
+              <th scope="col">Project</th>
+              <th scope="col">Company</th>
+              <th scope="col">Date</th>
+            </tr>
+          </thead>
+          <tbody>
+            {rows.map(({ entry, year, showYear, monthLabel }) => (
+              <Fragment key={entry.id}>
+                {showYear ? (
+                  <tr className="work-timeline__year-row">
+                    <th scope="colgroup" colSpan={4}>
+                      {year}
+                    </th>
+                  </tr>
+                ) : null}
+                <tr
+                  className={
+                    showYear
+                      ? 'work-timeline__row work-timeline__row--year-start'
+                      : 'work-timeline__row'
+                  }
+                >
+                  <td className="work-timeline__year">{year}</td>
+                  <th scope="row" className="work-timeline__title">
+                    {entry.projectSlug ? (
+                      <Link href={`/work/${entry.projectSlug}`}>{entry.title}</Link>
+                    ) : (
+                      entry.title
+                    )}
+                  </th>
+                  <td className="work-timeline__affiliation">{entry.affiliation}</td>
+                  <td className="work-timeline__date">
+                    {entry.pending ? (
+                      <span className="work-timeline__date-value work-timeline__date-value--pending">
+                        {monthLabel}
+                      </span>
+                    ) : (
+                      <time
+                        className="work-timeline__date-value"
+                        dateTime={entry.sortDate}
+                      >
+                        {monthLabel}
+                      </time>
+                    )}
+                  </td>
+                </tr>
+              </Fragment>
+            ))}
+          </tbody>
+        </table>
+      </div>
     </section>
   );
 }

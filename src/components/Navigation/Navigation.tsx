@@ -1,23 +1,67 @@
+'use client';
+
 import Link from 'next/link';
+import Image from 'next/image';
+import { motion, useReducedMotion } from 'framer-motion';
+import { DISSOLVE_DURATION, DISSOLVE_EASE } from '@/components/DissolveIn/DissolveIn';
 import { SITE_CONTACT_EMAIL } from '@/lib/site';
 import './Navigation.css';
 
 export function Navigation() {
+  const shouldReduce = useReducedMotion();
+
   return (
-    <header className="nav-shell">
+    <div className="nav-shell">
+      <div className="nav-shell__progressive-blur" aria-hidden="true">
+        <span className="nav-shell__blur-layer nav-shell__blur-layer--1" />
+        <span className="nav-shell__blur-layer nav-shell__blur-layer--2" />
+        <span className="nav-shell__blur-layer nav-shell__blur-layer--3" />
+        <span className="nav-shell__blur-layer nav-shell__blur-layer--4" />
+      </div>
       <nav className="nav" aria-label="Primary">
-        <Link href="/" className="nav__brand">
-          Sebastian Mendo
-        </Link>
-        <div className="nav__links">
-          <Link href="/about" className="nav__text-link">
-            about
+        <motion.div
+          className="nav__brand-wrap"
+          initial={shouldReduce ? false : { opacity: 0, y: -10 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={
+            shouldReduce
+              ? { duration: 0 }
+              : { duration: DISSOLVE_DURATION, delay: 0.08, ease: DISSOLVE_EASE }
+          }
+        >
+          <Link href="/" className="nav__brand" aria-label="SebMendoDesign home">
+            <span className="nav__brand-avatar">
+              <Image
+                src="/assets/nav-avatar.png"
+                alt=""
+                width={36}
+                height={36}
+                className="nav__brand-avatar-img"
+                priority
+              />
+            </span>
+            <span className="nav__brand-text">SebMendoDesign</span>
           </Link>
-          <a href={`mailto:${SITE_CONTACT_EMAIL}`} className="nav__text-link">
-            contact
+        </motion.div>
+
+        <motion.div
+          className="nav__links-wrap"
+          initial={shouldReduce ? false : { opacity: 0, y: -10 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={
+            shouldReduce
+              ? { duration: 0 }
+              : { duration: DISSOLVE_DURATION, delay: 0.12, ease: DISSOLVE_EASE }
+          }
+        >
+          <Link href="/about" className="nav__about">
+            About
+          </Link>
+          <a href={`mailto:${SITE_CONTACT_EMAIL}`} className="nav__contact">
+            Contact me
           </a>
-        </div>
+        </motion.div>
       </nav>
-    </header>
+    </div>
   );
 }
