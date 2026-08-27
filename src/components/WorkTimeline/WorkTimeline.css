@@ -175,7 +175,6 @@
   }
 
   .work-timeline__table,
-  .work-timeline__table thead,
   .work-timeline__table tbody,
   .work-timeline__table tr,
   .work-timeline__table th,
@@ -184,15 +183,16 @@
     width: 100%;
   }
 
+  .work-timeline__table thead,
+  .work-timeline__head {
+    display: none;
+  }
+
   .work-timeline__col--year,
   .work-timeline__col--project,
   .work-timeline__col--company,
   .work-timeline__col--date {
     width: auto;
-  }
-
-  .work-timeline__head {
-    display: none;
   }
 
   .work-timeline__row {
@@ -234,9 +234,10 @@
   .work-timeline__year {
     grid-area: year;
     font-size: 12px;
-    letter-spacing: 0.04em;
+    letter-spacing: 0.06em;
     text-transform: uppercase;
-    margin-bottom: 6px;
+    color: #888888;
+    margin-bottom: 8px;
   }
 
   .work-timeline__row:not(.work-timeline__row--year-start) .work-timeline__year {

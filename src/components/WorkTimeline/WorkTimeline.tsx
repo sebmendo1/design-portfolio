@@ -84,9 +84,7 @@ export function WorkTimeline() {
                     : 'work-timeline__row'
                 }
               >
-                <td className="work-timeline__year">
-                  {showYear ? year : <span className="sr-only">{year}</span>}
-                </td>
+                <td className="work-timeline__year">{year}</td>
                 <th scope="row" className="work-timeline__title">
                   {entry.projectSlug ? (
                     <Link href={`/work/${entry.projectSlug}`}>{entry.title}</Link>
