@@ -21,15 +21,6 @@ export type CmsProjectData = {
 
 type CmsData = Record<string, CmsProjectData>;
 
-/** Legacy slug keys that may still exist in CMS blob data. */
-const CMS_SLUG_ALIASES: Record<string, string> = {
-  'autods-m-ai': 'autodsm-ai',
-};
-
-function resolveCmsEntry(data: CmsData, slug: string): CmsProjectData | undefined {
-  return data[slug] ?? data[CMS_SLUG_ALIASES[slug] ?? ''];
-}
-
 const BLOB_PATH = 'cms/projects.json';
 const BLOB_TIMEOUT_MS = 5_000;
 export const CMS_PROJECTS_TAG = 'cms-projects';
@@ -124,7 +115,7 @@ function mergeProject(base: Project, cms: CmsProjectData | undefined): Project {
 
 async function buildMergedProjects(data: CmsData): Promise<Project[]> {
   return sortProjectsByFeaturedOrder(
-    projects.map((p) => mergeProject(p, resolveCmsEntry(data, p.slug))),
+    projects.map((p) => mergeProject(p, data[p.slug])),
   );
 }
 
@@ -140,8 +131,7 @@ export async function getMergedProjects(): Promise<Project[]> {
 
 export const getMergedProject = cache(async (slug: string): Promise<Project | undefined> => {
   const merged = await getCachedMergedProjects();
-  const normalizedSlug = CMS_SLUG_ALIASES[slug] ?? slug;
-  return merged.find((p) => p.slug === normalizedSlug);
+  return merged.find((p) => p.slug === slug);
 });
 
 export async function updateProjectBeats(slug: string, beats: CmsBeat[]): Promise<void> {
