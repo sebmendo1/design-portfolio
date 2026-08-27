@@ -1,8 +1,6 @@
 .work-timeline {
-  --timeline-year-col: 3.5rem;
-  --timeline-company-col: 7.75rem;
-  --timeline-date-col: 7rem;
-  --timeline-gutter: 16px;
+  --timeline-columns: 3.75rem minmax(0, 1fr) 7.75rem 6.75rem;
+  --timeline-gap: 16px;
   width: 100%;
   max-width: 752px;
   margin: 48px auto 0;
@@ -25,34 +23,32 @@
 }
 
 .work-timeline__table {
+  display: grid;
+  grid-template-columns: var(--timeline-columns);
+  column-gap: var(--timeline-gap);
   width: 100%;
   border-collapse: collapse;
-  table-layout: fixed;
 }
 
-.work-timeline__col--year {
-  width: var(--timeline-year-col);
+.work-timeline__table colgroup,
+.work-timeline__table col {
+  display: none;
 }
 
-.work-timeline__col--company {
-  width: var(--timeline-company-col);
-}
-
-.work-timeline__col--date {
-  width: var(--timeline-date-col);
+.work-timeline__table thead,
+.work-timeline__table tbody,
+.work-timeline__table tr {
+  display: contents;
 }
 
 .work-timeline__head th,
 .work-timeline__row th,
 .work-timeline__row td {
-  padding: 14px var(--timeline-gutter) 14px 0;
+  margin: 0;
+  padding: 14px 0;
   text-align: left;
   vertical-align: baseline;
-}
-
-.work-timeline__head th:last-child,
-.work-timeline__row td:last-child {
-  padding-right: 0;
+  list-style: none;
 }
 
 .work-timeline__head th {
@@ -67,7 +63,8 @@
   line-height: 1.3;
 }
 
-.work-timeline__head th:last-child {
+.work-timeline__head th:last-child,
+.work-timeline__row td:last-child {
   text-align: right;
 }
 
@@ -135,8 +132,7 @@
 }
 
 .work-timeline__date-value {
-  display: inline-block;
-  min-width: 5.75rem;
+  display: block;
   font-variant-numeric: tabular-nums;
   text-align: right;
   white-space: nowrap;
@@ -150,9 +146,8 @@
   .work-timeline {
     padding: 32px 24px;
     border-radius: 24px;
-    --timeline-gutter: 12px;
-    --timeline-company-col: 7.25rem;
-    --timeline-date-col: 6.5rem;
+    --timeline-gap: 12px;
+    --timeline-columns: 3.5rem minmax(0, 1fr) 7.25rem 6.25rem;
   }
 }
 
@@ -160,48 +155,33 @@
   .work-timeline {
     margin-left: 0;
     margin-right: 0;
-    --timeline-year-col: 3.25rem;
-    --timeline-company-col: 6.75rem;
-    --timeline-date-col: 6.25rem;
+    --timeline-columns: 3.25rem minmax(0, 1fr) 6.75rem 5.75rem;
   }
 }
 
 @media (max-width: 560px) {
   .work-timeline {
-    --timeline-year-col: 0;
-    --timeline-company-col: 0;
-    --timeline-date-col: 6.25rem;
-    --timeline-gutter: 12px;
-  }
-
-  .work-timeline__table,
-  .work-timeline__table tbody,
-  .work-timeline__table tr,
-  .work-timeline__table th,
-  .work-timeline__table td {
-    display: block;
-    width: 100%;
+    --timeline-columns: minmax(0, 1fr) auto;
+    --timeline-gap: 12px;
   }
 
   .work-timeline__table thead,
-  .work-timeline__head {
+  .work-timeline__head,
+  .work-timeline__head th {
     display: none;
   }
 
-  .work-timeline__col--year,
-  .work-timeline__col--project,
-  .work-timeline__col--company,
-  .work-timeline__col--date {
-    width: auto;
+  .work-timeline__table tbody {
+    display: block;
   }
 
-  .work-timeline__row {
+  .work-timeline__table tr {
     display: grid;
-    grid-template-columns: minmax(0, 1fr) auto;
+    grid-template-columns: var(--timeline-columns);
     grid-template-areas:
       'title date'
       'company date';
-    column-gap: 16px;
+    column-gap: var(--timeline-gap);
     row-gap: 2px;
     padding: 16px 0;
     border-bottom: 1px solid #ececec;
@@ -236,7 +216,6 @@
     font-size: 12px;
     letter-spacing: 0.06em;
     text-transform: uppercase;
-    color: #888888;
     margin-bottom: 8px;
   }
 
@@ -256,10 +235,6 @@
   .work-timeline__date {
     grid-area: date;
     align-self: start;
-  }
-
-  .work-timeline__date-value {
-    min-width: 0;
   }
 }
 

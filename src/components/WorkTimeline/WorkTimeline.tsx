@@ -60,12 +60,6 @@ export function WorkTimeline() {
       </h2>
       <div className="work-timeline__frame">
         <table className="work-timeline__table">
-          <colgroup>
-            <col className="work-timeline__col work-timeline__col--year" />
-            <col className="work-timeline__col work-timeline__col--project" />
-            <col className="work-timeline__col work-timeline__col--company" />
-            <col className="work-timeline__col work-timeline__col--date" />
-          </colgroup>
           <thead>
             <tr className="work-timeline__head">
               <th scope="col">Year</th>
