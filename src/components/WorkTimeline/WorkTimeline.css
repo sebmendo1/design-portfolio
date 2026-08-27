@@ -187,10 +187,7 @@
 
   .work-timeline__table tr {
     display: grid;
-    grid-template-columns: var(--timeline-columns);
-    grid-template-areas:
-      'title date'
-      'company date';
+    grid-template-columns: minmax(0, 1fr) auto;
     column-gap: var(--timeline-gap);
     row-gap: 2px;
     padding: 16px 0;
@@ -198,10 +195,6 @@
   }
 
   .work-timeline__table tr.work-timeline__row--year-start {
-    grid-template-areas:
-      'year year'
-      'title date'
-      'company date';
     padding-top: 24px;
   }
 
@@ -222,29 +215,46 @@
   }
 
   .work-timeline__year {
-    grid-area: year;
+    display: none;
+  }
+
+  .work-timeline__table tr.work-timeline__row--year-start .work-timeline__year {
+    display: block;
+    grid-column: 1 / -1;
+    grid-row: 1;
     font-size: 12px;
     letter-spacing: 0.06em;
     text-transform: uppercase;
     margin-bottom: 8px;
   }
 
-  .work-timeline__row:not(.work-timeline__row--year-start) .work-timeline__year {
-    display: none;
+  .work-timeline__title {
+    grid-column: 1;
+    grid-row: 1;
   }
 
-  .work-timeline__title {
-    grid-area: title;
+  .work-timeline__table tr.work-timeline__row--year-start .work-timeline__title {
+    grid-row: 2;
   }
 
   .work-timeline__affiliation {
-    grid-area: company;
+    grid-column: 1;
+    grid-row: 2;
     white-space: normal;
   }
 
+  .work-timeline__table tr.work-timeline__row--year-start .work-timeline__affiliation {
+    grid-row: 3;
+  }
+
   .work-timeline__date {
-    grid-area: date;
+    grid-column: 2;
+    grid-row: 1;
     align-self: start;
+  }
+
+  .work-timeline__table tr.work-timeline__row--year-start .work-timeline__date {
+    grid-row: 2;
   }
 }
 
