@@ -1,3 +1,4 @@
+import { Fragment } from 'react';
 import Link from 'next/link';
 import { SHIPPED_WORK, type ShippedWorkEntry } from '@/data/shippedWork';
 import './WorkTimeline.css';
@@ -70,38 +71,46 @@ export function WorkTimeline() {
           </thead>
           <tbody>
             {rows.map(({ entry, year, showYear, monthLabel }) => (
-              <tr
-                key={entry.id}
-                className={
-                  showYear
-                    ? 'work-timeline__row work-timeline__row--year-start'
-                    : 'work-timeline__row'
-                }
-              >
-                <td className="work-timeline__year">{year}</td>
-                <th scope="row" className="work-timeline__title">
-                  {entry.projectSlug ? (
-                    <Link href={`/work/${entry.projectSlug}`}>{entry.title}</Link>
-                  ) : (
-                    entry.title
-                  )}
-                </th>
-                <td className="work-timeline__affiliation">{entry.affiliation}</td>
-                <td className="work-timeline__date">
-                  {entry.pending ? (
-                    <span className="work-timeline__date-value work-timeline__date-value--pending">
-                      {monthLabel}
-                    </span>
-                  ) : (
-                    <time
-                      className="work-timeline__date-value"
-                      dateTime={entry.sortDate}
-                    >
-                      {monthLabel}
-                    </time>
-                  )}
-                </td>
-              </tr>
+              <Fragment key={entry.id}>
+                {showYear ? (
+                  <tr className="work-timeline__year-row">
+                    <th scope="colgroup" colSpan={4}>
+                      {year}
+                    </th>
+                  </tr>
+                ) : null}
+                <tr
+                  className={
+                    showYear
+                      ? 'work-timeline__row work-timeline__row--year-start'
+                      : 'work-timeline__row'
+                  }
+                >
+                  <td className="work-timeline__year">{year}</td>
+                  <th scope="row" className="work-timeline__title">
+                    {entry.projectSlug ? (
+                      <Link href={`/work/${entry.projectSlug}`}>{entry.title}</Link>
+                    ) : (
+                      entry.title
+                    )}
+                  </th>
+                  <td className="work-timeline__affiliation">{entry.affiliation}</td>
+                  <td className="work-timeline__date">
+                    {entry.pending ? (
+                      <span className="work-timeline__date-value work-timeline__date-value--pending">
+                        {monthLabel}
+                      </span>
+                    ) : (
+                      <time
+                        className="work-timeline__date-value"
+                        dateTime={entry.sortDate}
+                      >
+                        {monthLabel}
+                      </time>
+                    )}
+                  </td>
+                </tr>
+              </Fragment>
             ))}
           </tbody>
         </table>

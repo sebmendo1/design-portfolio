@@ -88,13 +88,18 @@
   padding-bottom: 0;
 }
 
+.work-timeline__year-row,
+.work-timeline__year-row th {
+  display: none;
+}
+
 .work-timeline__row--year-start th,
 .work-timeline__row--year-start td {
   padding-top: 28px;
 }
 
-.work-timeline__row:first-child th,
-.work-timeline__row:first-child td {
+.work-timeline__year-row:first-child + .work-timeline__row th,
+.work-timeline__year-row:first-child + .work-timeline__row td {
   padding-top: 14px;
 }
 
@@ -185,7 +190,28 @@
     display: block;
   }
 
-  .work-timeline__table tr {
+  .work-timeline__year-row {
+    display: block;
+    padding: 20px 0 8px;
+  }
+
+  .work-timeline__year-row:first-child {
+    padding-top: 0;
+  }
+
+  .work-timeline__year-row th {
+    display: block;
+    padding: 0;
+    border: 0;
+    font-size: 12px;
+    font-weight: 500;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    color: #888888;
+    text-align: left;
+  }
+
+  .work-timeline__table tr.work-timeline__row {
     display: grid;
     grid-template-columns: minmax(0, 1fr) auto;
     column-gap: var(--timeline-gap);
@@ -194,17 +220,14 @@
     border-bottom: 1px solid #ececec;
   }
 
-  .work-timeline__table tr.work-timeline__row--year-start {
-    padding-top: 24px;
+  .work-timeline__row--year-start th,
+  .work-timeline__row--year-start td {
+    padding-top: 0;
   }
 
   .work-timeline__row:last-child {
     border-bottom: none;
     padding-bottom: 0;
-  }
-
-  .work-timeline__row:first-child {
-    padding-top: 0;
   }
 
   .work-timeline__row th,
@@ -218,23 +241,9 @@
     display: none;
   }
 
-  .work-timeline__table tr.work-timeline__row--year-start .work-timeline__year {
-    display: block;
-    grid-column: 1 / -1;
-    grid-row: 1;
-    font-size: 12px;
-    letter-spacing: 0.06em;
-    text-transform: uppercase;
-    margin-bottom: 8px;
-  }
-
   .work-timeline__title {
     grid-column: 1;
     grid-row: 1;
-  }
-
-  .work-timeline__table tr.work-timeline__row--year-start .work-timeline__title {
-    grid-row: 2;
   }
 
   .work-timeline__affiliation {
@@ -243,18 +252,10 @@
     white-space: normal;
   }
 
-  .work-timeline__table tr.work-timeline__row--year-start .work-timeline__affiliation {
-    grid-row: 3;
-  }
-
   .work-timeline__date {
     grid-column: 2;
     grid-row: 1;
     align-self: start;
-  }
-
-  .work-timeline__table tr.work-timeline__row--year-start .work-timeline__date {
-    grid-row: 2;
   }
 }
 
