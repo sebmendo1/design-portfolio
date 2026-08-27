@@ -1,7 +1,7 @@
 /* Design Tokens — ultra minimalist: white, black, gray only */
 :root {
   /* Colors */
-  --color-background-page: #ffffff;
+  --color-background-page: #f8f8f8;
   --color-background-nav-active: #000000;
   --color-primary: #000000;
   --color-primary-hover: #333333;

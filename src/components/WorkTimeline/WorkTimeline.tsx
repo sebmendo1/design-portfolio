@@ -6,7 +6,7 @@ export function WorkTimeline() {
   return (
     <section className="work-timeline" aria-labelledby="work-timeline-heading">
       <h2 id="work-timeline-heading" className="work-timeline__heading">
-        Timeline of work
+        work
       </h2>
       <ol className="work-timeline__list">
         {SHIPPED_WORK.map((entry) => (

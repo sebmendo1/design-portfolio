@@ -24,8 +24,8 @@ body {
   font-size: var(--font-size-body);
   font-variation-settings: var(--font-var-body);
   line-height: var(--line-height-body);
-  background-color: #ffffff;
-  color: #000000;
+  background-color: var(--color-background-page);
+  color: var(--color-text-primary);
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
   min-width: 320px;
@@ -35,7 +35,7 @@ body {
 .page-loading,
 .case-loading {
   min-height: 100dvh;
-  background: #ffffff;
+  background: var(--color-background-page);
 }
 
 .case-study__header-reveal,

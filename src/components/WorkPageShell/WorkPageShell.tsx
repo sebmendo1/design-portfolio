@@ -1,7 +1,6 @@
 'use client';
 
 import { motion } from 'framer-motion';
-import { Navigation } from '@/components/Navigation/Navigation';
 import { WorkPageContent } from '@/components/WorkPageContent/WorkPageContent';
 import { useDissolveNavigate } from '@/hooks/useDissolveNavigate';
 import type { ProjectCardSummary } from '@/lib/project-cards';
@@ -17,7 +16,6 @@ export function WorkPageShell({ bioText, projects }: WorkPageShellProps) {
   return (
     <div className="work-page">
       <motion.div className="work-page__content" {...motionProps}>
-        <Navigation />
         <main id="main-content">
           <WorkPageContent
             bioText={bioText}
