@@ -80,7 +80,7 @@ export const SHIPPED_WORK: ShippedWorkEntry[] = [
     title: 'Manhattan Design System Components',
     affiliation: 'Chase',
     sortDate: '2024-01',
-    dateLabel: '2024',
+    dateLabel: 'January 2024',
   },
   {
     id: 'chase-mortgage-flows',
