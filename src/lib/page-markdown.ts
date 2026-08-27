@@ -1,9 +1,12 @@
 import { getLlmsTxt } from '@/lib/seb-sans/agent-manifest';
+import { CONTACT_PAGE, PRIVACY_PAGE, trustPageMarkdown } from '@/lib/trust-pages';
 import {
+  formatImpactCitation,
   getWhenToUseHowToCall,
   getWhenToUseJobs,
   projectSummary,
   toAgentGuideTxt,
+  toImpactMarkdown,
   toLlmsFullTxt,
   toLlmsTxt,
   toProjectMarkdown,
@@ -53,6 +56,9 @@ export function toNotFoundMarkdown(siteUrl: string, path = '/unknown'): string {
     `- [Agent guide](${base}/.well-known/ai.txt) — discovery entrypoint`,
     `- [Work](${base}/) — project grid`,
     `- [About](${base}/about) — experience and contact`,
+    `- [Contact](${base}/contact) — how to reach this practice`,
+    `- [Privacy](${base}/privacy) — what this site collects`,
+    `- [Verified impact](${base}/impact.json) — citeable metrics`,
     `- [Seb Sans](${base}/seb-sans/llms.txt) — typeface install for coding agents`,
     '',
     'Retry the same URL with `Accept: text/markdown` on a real page, or start at `llms.txt`.',
@@ -106,18 +112,16 @@ export function buildHomeCorpus(data: PortfolioExport): HomeCorpus {
       {
         id: 'impact',
         heading: 'Verified impact',
-        items: data.verifiedImpact.map((item) => {
-          const link = item.projectSlug
-            ? `${site.url}/work/${item.projectSlug}`
-            : `${site.url}/about`;
-          return `${item.metric}: ${item.value} (${item.context}) — ${link}`;
-        }),
+        items: data.verifiedImpact.map((item) => formatImpactCitation(item)),
       },
       {
         id: 'work',
         heading: 'Case studies',
         items: data.projects.map((project) => {
-          return `${project.title} — ${projectSummary(project)} ${project.url}`;
+          const impact = project.impactIds?.length
+            ? `Impact IDs: ${project.impactIds.join(', ')}.`
+            : 'Impact IDs: none.';
+          return `[${project.slug}] ${project.title} — ${projectSummary(project)} ${project.url} ${impact}`;
         }),
       },
       {
@@ -137,6 +141,7 @@ export function buildHomeCorpus(data: PortfolioExport): HomeCorpus {
           `LLM index: ${site.machineReadable.index}`,
           `Full corpus: ${site.machineReadable.corpus}`,
           `Structured JSON: ${site.machineReadable.json}`,
+          `Verified impact: ${site.machineReadable.impact}`,
         ],
       },
     ],
@@ -207,6 +212,9 @@ export function toAboutMarkdown(data: PortfolioExport): string {
     `- Email: ${site.contactEmail}`,
     `- Work: ${site.url}/`,
     `- Structured JSON: ${site.machineReadable.json}`,
+    `- Verified impact: ${site.machineReadable.impact}`,
+    `- Contact: ${site.url}/contact`,
+    `- Privacy: ${site.url}/privacy`,
     '',
     toWhenToUseMarkdown(data),
     '',
@@ -240,6 +248,11 @@ export function resolvePageMarkdown(
 
   if (path === '/') return { status: 200, body: toHomeMarkdown(data) };
   if (path === '/about') return { status: 200, body: toAboutMarkdown(data) };
+  if (path === '/contact') return { status: 200, body: trustPageMarkdown(CONTACT_PAGE) };
+  if (path === '/privacy') return { status: 200, body: trustPageMarkdown(PRIVACY_PAGE) };
+  if (path === '/impact' || path === '/impact.json') {
+    return { status: 200, body: toImpactMarkdown(data) };
+  }
   if (path === '/seb-sans') return { status: 200, body: getLlmsTxt() };
   if (path === '/llms.txt') return { status: 200, body: toLlmsTxt(data) };
   if (path === '/llms-full.txt') return { status: 200, body: toLlmsFullTxt(data) };

@@ -16,13 +16,16 @@ export const metadata: Metadata = createMetadata({
         { url: '/llms.txt', title: 'LLM-readable index' },
         { url: '/llms-full.txt', title: 'LLM-readable full corpus' },
       ],
-      'application/json': [{ url: '/content.json', title: 'Structured portfolio content' }],
+      'application/json': [
+        { url: '/content.json', title: 'Structured portfolio content' },
+        { url: '/impact.json', title: 'Verified impact metrics' },
+      ],
       'text/markdown': [{ url: '/', title: 'Homepage as Markdown' }],
     },
   },
   other: {
     'portfolio-machine-readable':
-      '/content.json | /llms.txt | /llms-full.txt | /.well-known/ai.txt',
+      '/content.json | /impact.json | /llms.txt | /llms-full.txt | /.well-known/ai.txt',
   },
 });
 
@@ -46,6 +49,12 @@ export default function RootLayout({
           type="application/json"
           href="/content.json"
           title="Portfolio JSON"
+        />
+        <link
+          rel="alternate"
+          type="application/json"
+          href="/impact.json"
+          title="Verified impact"
         />
         <link
           rel="alternate"
@@ -74,7 +83,7 @@ export default function RootLayout({
       </head>
       <body suppressHydrationWarning>
         <StructuredData data={buildSiteGraph()} />
-        {/* PORTFOLIO-MACHINE-READABLE: /content.json | /llms.txt | /llms-full.txt | /.well-known/ai.txt */}
+        {/* PORTFOLIO-MACHINE-READABLE: /content.json | /impact.json | /llms.txt | /llms-full.txt | /.well-known/ai.txt */}
         <a href="#main-content" className="skip-link">
           Skip to content
         </a>
