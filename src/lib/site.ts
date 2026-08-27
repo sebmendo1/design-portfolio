@@ -19,6 +19,13 @@ export const SITE_DESCRIPTION =
 
 export const SITE_CONTACT_EMAIL = 'contact@sebastianmendo.design';
 
+/** Published work location — no street number is claimed. */
+export const SITE_ADDRESS = {
+  addressLocality: 'Plano',
+  addressRegion: 'TX',
+  addressCountry: 'US',
+} as const;
+
 /** Profile URLs for JSON-LD sameAs and external identity links. */
 export const SITE_LINKEDIN_URL = 'https://www.linkedin.com/in/sebastianmendo/';
 

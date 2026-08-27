@@ -18,6 +18,7 @@ export function CaseStudySrArticle({ project }: CaseStudySrArticleProps) {
       itemScope
       itemType="https://schema.org/CreativeWork"
       data-machine-readable="true"
+      data-project-slug={project.slug}
     >
       <h1 itemProp="name">{project.title}</h1>
       {lead && <p itemProp="abstract">{lead}</p>}
@@ -33,8 +34,17 @@ export function CaseStudySrArticle({ project }: CaseStudySrArticleProps) {
           <h2>Impact</h2>
           <ul>
             {project.impact.map((item) => (
-              <li key={`${item.metric}-${item.value}`}>
-                <strong>{item.metric}</strong>: {item.value} ({item.context})
+              <li
+                key={item.id ?? `${item.metric}-${item.value}`}
+                data-impact-id={item.id}
+                itemScope
+                itemType="https://schema.org/PropertyValue"
+                itemProp="additionalProperty"
+              >
+                {item.id ? <meta itemProp="identifier" content={item.id} /> : null}
+                <strong itemProp="name">{item.metric}</strong>:{' '}
+                <span itemProp="value">{item.value}</span> ({item.context}
+                {item.confidence ? `; confidence: ${item.confidence}` : ''})
               </li>
             ))}
           </ul>

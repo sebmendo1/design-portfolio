@@ -22,6 +22,24 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
       priority: 0.8,
     },
     {
+      url: `${base}/contact`,
+      lastModified: profileUpdated,
+      changeFrequency: 'monthly',
+      priority: 0.7,
+    },
+    {
+      url: `${base}/privacy`,
+      lastModified: profileUpdated,
+      changeFrequency: 'monthly',
+      priority: 0.3,
+    },
+    {
+      url: `${base}/impact.json`,
+      lastModified: profileUpdated,
+      changeFrequency: 'weekly',
+      priority: 0.4,
+    },
+    {
       url: `${base}/seb-sans`,
       lastModified: profileUpdated,
       changeFrequency: 'monthly',

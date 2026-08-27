@@ -39,12 +39,20 @@ export async function GET(_request: Request, { params }: Params) {
     relatedExperience: relatedExperience ?? null,
     verifiedImpact,
     shippedWork,
+    citationRule: data.relations.citationRule,
+    join: {
+      projectSlug: exported.slug,
+      impactIds: exported.impactIds,
+      experienceRoleId: exported.experienceRoleId ?? null,
+      shippedWorkIds: exported.shippedWorkIds,
+    },
     machineReadable: {
       siteJson: data.site.machineReadable.json,
+      impact: data.site.machineReadable.impact,
       index: data.site.machineReadable.index,
       corpus: data.site.machineReadable.corpus,
       agentGuide: data.site.machineReadable.agentGuide,
-      thisUrl: `${data.site.url}/work/${slug}/content.json`,
+      thisUrl: exported.jsonUrl,
     },
   };
 
