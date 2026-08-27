@@ -12,6 +12,7 @@ import type { ProjectCardSummary } from '@/lib/project-cards';
 type IndexPreviewProps = {
   entry: PortfolioIndexEntry;
   project?: ProjectCardSummary;
+  onNavigate?: (href: string) => void;
 };
 
 function TypeSpecimen({ label }: { label: string }) {
@@ -96,14 +97,41 @@ function DevicePreview({ project }: { project: ProjectCardSummary }) {
   return null;
 }
 
-export function IndexPreview({ entry, project }: IndexPreviewProps) {
+function OpenProjectIcon() {
   return (
-    <div
-      className="portfolio-index__well"
-      style={{ backgroundColor: entry.tint }}
-      aria-hidden="true"
-    >
-      <div className="portfolio-index__well-inner">
+    <svg viewBox="0 0 16 16" width="16" height="16" aria-hidden="true">
+      <path
+        d="M12 12 4 4M4 4h7M4 4v7"
+        fill="none"
+        stroke="currentColor"
+        strokeWidth="1.5"
+        strokeLinecap="round"
+        strokeLinejoin="round"
+      />
+    </svg>
+  );
+}
+
+export function IndexPreview({ entry, project, onNavigate }: IndexPreviewProps) {
+  const href = entry.href;
+
+  return (
+    <div className="portfolio-index__well" style={{ backgroundColor: entry.tint }}>
+      {href ? (
+        <a
+          href={href}
+          className="portfolio-index__open"
+          aria-label={`Open ${entry.label}`}
+          onClick={(event) => {
+            if (!onNavigate) return;
+            event.preventDefault();
+            onNavigate(href);
+          }}
+        >
+          <OpenProjectIcon />
+        </a>
+      ) : null}
+      <div className="portfolio-index__well-inner" aria-hidden="true">
         {entry.kind === 'typeface' ? (
           <TypeSpecimen label={entry.label} />
         ) : project ? (

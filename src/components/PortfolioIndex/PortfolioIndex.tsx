@@ -21,45 +21,18 @@ type PortfolioIndexProps = {
 function IndexItem({
   id,
   label,
-  href,
   selected,
   onActivate,
-  onNavigate,
 }: {
   id: string;
   label: string;
-  href?: string;
   selected: boolean;
   onActivate: (id: string) => void;
-  onNavigate?: (href: string) => void;
 }) {
-  const className = `portfolio-index__item${selected ? ' is-active' : ''}`;
-
-  if (href) {
-    return (
-      <Link
-        href={href}
-        className={className}
-        onMouseEnter={() => onActivate(id)}
-        onFocus={() => onActivate(id)}
-        onClick={(event) => {
-          if (!onNavigate) return;
-          event.preventDefault();
-          onNavigate(href);
-        }}
-        aria-current={selected ? 'true' : undefined}
-      >
-        {label}
-      </Link>
-    );
-  }
-
   return (
     <button
       type="button"
-      className={className}
-      onMouseEnter={() => onActivate(id)}
-      onFocus={() => onActivate(id)}
+      className={`portfolio-index__item${selected ? ' is-active' : ''}`}
       onClick={() => onActivate(id)}
       aria-pressed={selected}
     >
@@ -90,7 +63,12 @@ export function PortfolioIndex({ bio, projects, onNavigate }: PortfolioIndexProp
       </div>
 
       <div className="portfolio-index__stage">
-        <IndexPreview key={active.id} entry={active} project={previewProject} />
+        <IndexPreview
+          key={active.id}
+          entry={active}
+          project={previewProject}
+          onNavigate={onNavigate}
+        />
       </div>
 
       <div className="portfolio-index__rail">
@@ -112,10 +90,8 @@ export function PortfolioIndex({ bio, projects, onNavigate }: PortfolioIndexProp
                       key={item.id}
                       id={item.id}
                       label={item.label}
-                      href={item.href}
                       selected={item.id === active.id}
                       onActivate={setActiveId}
-                      onNavigate={onNavigate}
                     />
                   ))}
                 </div>
