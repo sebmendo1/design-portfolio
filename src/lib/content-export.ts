@@ -842,9 +842,8 @@ export function toLlmsTxt(data: PortfolioExport): string {
     const impact =
       project.impactIds?.length ? ` Impact IDs: ${project.impactIds.join(', ')}.` : ' Impact IDs: none.';
     const json = project.jsonUrl ? ` JSON: ${project.jsonUrl}.` : '';
-    lines.push(
-      `- [\`${project.slug}\`] [${project.title}](${project.url}): ${projectSummary(project)}.${json}${impact}`,
-    );
+    const summary = projectSummary(project).replace(/\.$/, '');
+    lines.push(`- [\`${project.slug}\`] [${project.title}](${project.url}): ${summary}.${json}${impact}`);
   }
 
   lines.push(
