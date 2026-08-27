@@ -1,4 +1,5 @@
 /* Crawlable corpus: present in the DOM for HTML fetchers, not visually shown. */
+.sr-corpus,
 .case-study-sr-corpus {
   position: absolute;
   width: 1px;

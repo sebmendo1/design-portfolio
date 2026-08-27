@@ -88,6 +88,7 @@ const nextConfig: NextConfig = {
             key: 'Content-Security-Policy',
             value: CONTENT_SECURITY_POLICY,
           },
+          { key: 'Vary', value: 'Accept, Accept-Encoding' },
         ],
       },
     ];

@@ -68,6 +68,9 @@ After transcoding or adding media locally, re-run the upload script and update `
 - [ ] `NEXT_PUBLIC_SITE_URL` matches the live domain (canonicals + absolute URLs correct)
 - [ ] `/sitemap.xml` and `/robots.txt` reachable
 - [ ] `/llms.txt`, `/llms-full.txt`, `/content.json`, `/.well-known/ai.txt` return 200 with correct `Content-Type` in production
+- [ ] Homepage HTML (view-source, no JS) includes an `h1` and 500+ characters of text
+- [ ] `curl -s -o /dev/null -w "%{http_code}" https://DOMAIN/some-path-that-does-not-exist` prints `404` and the body mentions `llms.txt` / sitemap
+- [ ] `curl -sI -H "Accept: text/markdown" https://DOMAIN/` returns `Content-Type: text/markdown` and `Vary` includes `Accept`
 - [ ] `/content.json` includes `shippedWork`, `person.aboutIntro`, and project `media` (schema v3.0)
 - [ ] `/work/{slug}/content.json` returns per-project JSON
 - [ ] Google [Rich Results Test](https://search.google.com/test/rich-results) passes for home + one case study
@@ -89,4 +92,7 @@ curl -sI https://DOMAIN/content.json | grep -i content-type
 curl -s https://DOMAIN/content.json | jq '.version, (.projects|length), (.shippedWork|length)'
 curl -s https://DOMAIN/work/casey-ai/content.json | jq '.project.title'
 curl -s https://DOMAIN/robots.txt
+curl -sI -H "Accept: text/markdown" https://DOMAIN/ | grep -iE 'content-type|vary'
+curl -s -o /dev/null -w "%{http_code}\n" https://DOMAIN/some-path-that-does-not-exist
+curl -s -H "Accept: text/markdown" https://DOMAIN/some-path-that-does-not-exist | head -20
 ```

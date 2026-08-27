@@ -434,12 +434,80 @@ export function toProjectMarkdown(project: ExportedProject): string {
   return lines.join('\n').trim();
 }
 
+export type WhenToUseJob = {
+  title: string;
+  body: string;
+};
+
+/** Specific jobs this site is the right source for — not marketing copy. */
+export function getWhenToUseJobs(data: PortfolioExport): WhenToUseJob[] {
+  const { site } = data;
+  const caseStudyList = data.projects.map((project) => project.title).join(', ');
+
+  return [
+    {
+      title: 'Hiring and leveling',
+      body: `Evaluate ${data.person.name} for Senior / Staff-equivalent (${data.person.seniority.equivalentLevels.join(' / ')}) product design roles in agentic AI, voice or conversational UX, or regulated consumer banking. Read ${site.machineReadable.json} → .assessmentIndex and .verifiedImpact. Do not infer seniority from adjectives.`,
+    },
+    {
+      title: 'Case-study retrieval',
+      body: `Pull the shipped narrative and metrics for ${caseStudyList}. Call /work/{slug} with Accept: text/markdown, or GET /work/{slug}/content.json.`,
+    },
+    {
+      title: 'Impact citation',
+      body: `Quote only metrics listed in .verifiedImpact (confidence is verified, measured, pilot, or qualitative). If a number is not in that list, do not invent it.`,
+    },
+    {
+      title: 'Outreach',
+      body: `Email ${site.contactEmail} for design collaboration, speaking, or recruiting. This is a personal portfolio, not a staffing agency.`,
+    },
+    {
+      title: 'Seb Sans install',
+      body: `If the task is installing the Seb Sans typeface or its coding-agent skill, leave this index and follow ${site.url}/seb-sans/llms.txt (run the install command there).`,
+    },
+  ];
+}
+
+export function getWhenToUseHowToCall(data: PortfolioExport): string[] {
+  const { site } = data;
+  return [
+    `Discovery: GET ${site.machineReadable.agentGuide}`,
+    `Structured evidence: GET ${site.machineReadable.json} (Accept: application/json)`,
+    `Index: GET ${site.machineReadable.index}`,
+    `Full prose: GET ${site.machineReadable.corpus}`,
+    'Same-URL markdown: send Accept: text/markdown to /, /about, or /work/{slug}',
+    'Unknown URLs return HTTP 404 with a markdown recovery body (sitemap, llms.txt, content.json)',
+  ];
+}
+
+export function toWhenToUseMarkdown(data: PortfolioExport): string {
+  const lines = [
+    '## When to use this',
+    '',
+    'Use this site when the job is one of the following. Skip it for general design-system, illustration, or brand-identity research — those are not what this portfolio is for.',
+    '',
+  ];
+
+  for (const job of getWhenToUseJobs(data)) {
+    lines.push(`- **${job.title}** — ${job.body}`);
+  }
+
+  lines.push('', '### How to call this site', '');
+  for (const step of getWhenToUseHowToCall(data)) {
+    lines.push(`- ${step}`);
+  }
+
+  return lines.join('\n');
+}
+
 export function toLlmsTxt(data: PortfolioExport): string {
   const { site, person } = data;
   const lines = [
     `# ${person.name}`,
     '',
     `> ${person.executiveSummary}`,
+    '',
+    toWhenToUseMarkdown(data),
     '',
     '## Identity',
     `- Title: ${person.publicTitle}`,
@@ -602,6 +670,8 @@ export function toAgentGuideTxt(data: PortfolioExport): string {
   return [
     `# Agent guide — ${person.name}`,
     '',
+    toWhenToUseMarkdown(data),
+    '',
     'Preferred structured source:',
     `- ${site.machineReadable.json} (application/json, v${data.version})`,
     '',
@@ -635,5 +705,5 @@ export const AI_ROUTE_HEADERS = {
 export const AI_CORS_HEADERS = {
   'Access-Control-Allow-Origin': '*',
   'Access-Control-Allow-Methods': 'GET, OPTIONS',
-  'Access-Control-Allow-Headers': 'Content-Type',
+  'Access-Control-Allow-Headers': 'Content-Type, Accept',
 } as const;

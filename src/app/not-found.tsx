@@ -1,6 +1,12 @@
 import Link from 'next/link';
+import { toNotFoundMarkdown } from '@/lib/page-markdown';
+import { getSiteUrl } from '@/lib/site';
+import '@/components/CaseStudySrArticle/CaseStudySrArticle.css';
 
 export default function NotFound() {
+  const siteUrl = getSiteUrl();
+  const markdown = toNotFoundMarkdown(siteUrl);
+
   return (
     <div className="not-found">
       <h1 className="not-found__title">Page not found</h1>
@@ -8,6 +14,15 @@ export default function NotFound() {
       <Link href="/" className="not-found__link">
         Back to work
       </Link>
+      <nav className="not-found__recovery" aria-label="Where to look next">
+        <a href="/sitemap.xml">Sitemap</a>
+        <a href="/llms.txt">llms.txt</a>
+        <a href="/content.json">content.json</a>
+        <a href="/.well-known/ai.txt">Agent guide</a>
+      </nav>
+      <article className="sr-corpus case-study-sr-corpus" data-machine-readable="true">
+        <pre>{markdown}</pre>
+      </article>
       <style>{`
         .not-found {
           min-height: 100dvh;
@@ -35,6 +50,17 @@ export default function NotFound() {
           border-radius: 999px;
           text-decoration: none;
           font-weight: 500;
+        }
+        .not-found__recovery {
+          display: flex;
+          flex-wrap: wrap;
+          justify-content: center;
+          gap: 12px 16px;
+          max-width: 420px;
+          font-size: 14px;
+        }
+        .not-found__recovery a {
+          color: #666;
         }
       `}</style>
     </div>

@@ -2,6 +2,16 @@ import { NextResponse } from 'next/server';
 import type { NextRequest } from 'next/server';
 import { ADMIN_SESSION_COOKIE, verifySessionToken } from '@/lib/admin-auth';
 import {
+  MARKDOWN_CONTENT_TYPE,
+  MARKDOWN_VARY,
+  appendVaryAccept,
+  isMarkdownNegotiablePath,
+  isRscNavigationRequest,
+  markdownRewritePath,
+  NOT_ACCEPTABLE_BODY,
+  preferredType,
+} from '@/lib/accept-markdown';
+import {
   SITE_SESSION_COOKIE,
   isSiteProtectionEnabled,
   verifySiteSessionToken,
@@ -27,8 +37,12 @@ function handleAdminAuth(request: NextRequest): NextResponse {
 function handleSiteAuth(request: NextRequest): NextResponse | null {
   const { pathname, search } = request.nextUrl;
 
-  if (pathname.startsWith('/login') || pathname.startsWith('/seb-sans')) {
-    return NextResponse.next();
+  if (
+    pathname.startsWith('/login') ||
+    pathname.startsWith('/seb-sans') ||
+    pathname.startsWith('/api/markdown')
+  ) {
+    return null;
   }
 
   const session = request.cookies.get(SITE_SESSION_COOKIE);
@@ -41,7 +55,7 @@ function handleSiteAuth(request: NextRequest): NextResponse | null {
   return NextResponse.redirect(loginUrl);
 }
 
-export function proxy(request: NextRequest) {
+export async function proxy(request: NextRequest) {
   const { pathname } = request.nextUrl;
 
   if (isSiteProtectionEnabled(request.nextUrl.hostname)) {
@@ -53,7 +67,85 @@ export function proxy(request: NextRequest) {
     return handleAdminAuth(request);
   }
 
-  return NextResponse.next();
+  return negotiateMarkdown(request);
+}
+
+const INTERNAL_MARKDOWN_HEADER = 'x-markdown-internal';
+
+async function serveMarkdown(request: NextRequest, pathname: string): Promise<Response> {
+  const url = request.nextUrl.clone();
+  url.pathname = markdownRewritePath(pathname);
+
+  const incoming = new Headers(request.headers);
+  incoming.set(INTERNAL_MARKDOWN_HEADER, '1');
+  incoming.set('accept', 'text/markdown');
+
+  const origin = await fetch(url, {
+    headers: incoming,
+    redirect: 'manual',
+  });
+
+  const headers = new Headers();
+  headers.set('Content-Type', MARKDOWN_CONTENT_TYPE);
+  headers.set('Vary', MARKDOWN_VARY);
+
+  origin.headers.forEach((value, key) => {
+    const name = key.toLowerCase();
+    if (
+      name === 'content-type' ||
+      name === 'vary' ||
+      name === 'content-encoding' ||
+      name === 'content-length' ||
+      name === 'transfer-encoding'
+    ) {
+      return;
+    }
+    headers.set(key, value);
+  });
+
+  return new Response(origin.body, {
+    status: origin.status,
+    headers,
+  });
+}
+
+async function negotiateMarkdown(request: NextRequest): Promise<NextResponse | Response> {
+  const { pathname } = request.nextUrl;
+
+  if (request.headers.get(INTERNAL_MARKDOWN_HEADER) === '1') {
+    return NextResponse.next();
+  }
+
+  if (!isMarkdownNegotiablePath(pathname) || isRscNavigationRequest(request.headers)) {
+    const passthrough = NextResponse.next();
+    appendVaryAccept(passthrough.headers);
+    return passthrough;
+  }
+
+  if (pathname.endsWith('.md')) {
+    return serveMarkdown(request, pathname);
+  }
+
+  const acceptHeader = request.headers.get('accept');
+  const chosen = preferredType(acceptHeader);
+
+  if (chosen === 'text/markdown') {
+    return serveMarkdown(request, pathname);
+  }
+
+  if (chosen === null && acceptHeader) {
+    return new Response(NOT_ACCEPTABLE_BODY, {
+      status: 406,
+      headers: {
+        'Content-Type': 'text/plain; charset=utf-8',
+        Vary: MARKDOWN_VARY,
+      },
+    });
+  }
+
+  const res = NextResponse.next();
+  appendVaryAccept(res.headers);
+  return res;
 }
 
 export const config = {
