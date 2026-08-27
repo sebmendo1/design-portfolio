@@ -3,7 +3,6 @@ import type { CaseStudyConfig } from '@/components/CaseStudyScrolly/types';
 import { ASSETS } from '@/data/assets';
 import { PHONE_SCREEN_AR } from '@/components/PhoneStencil/phone-aspect-ratios';
 import {
-  AUTODSM_SCREEN_AR,
   DEFAULT_BROWSER_SCREEN_AR,
   WRITER_REWRITE_SCREEN_AR,
   CHORUS_DEMO_SCREEN_AR,
@@ -106,69 +105,6 @@ export const projects: Project[] = [
         { id: 'c6', label: 'Final design', seed: 66, enterAt: 0.29, clusterId: 'shipped', bgColor: '#251a1a' },
         { id: 'c7', label: '−80% input time', seed: 77, enterAt: 0.32, clusterId: 'impact', bgColor: '#1a1e2a' },
         { id: 'c8', label: 'Prototype v3', seed: 88, enterAt: 0.16, bgColor: '#222222' },
-      ],
-      clusters: [
-        { id: 'discovery', label: 'Discovery',   anchor: { x: 18, y: 28 } },
-        { id: 'research',  label: 'Research',    anchor: { x: 82, y: 28 } },
-        { id: 'shipped',   label: 'Shipped',     anchor: { x: 18, y: 72 } },
-        { id: 'impact',    label: 'Impact',      anchor: { x: 82, y: 72 } },
-      ],
-    },
-  },
-  {
-    id: 'autodsm-ai',
-    title: 'AutoDSM AI',
-    tagline: 'Build and publish your design system in isolation from the codebase.',
-    description: 'Intelligent design system management platform for enterprise product teams.',
-    year: 2023,
-    company: 'Personal Project',
-    role: 'Designer & Developer',
-    tags: ['AI', 'Design Systems', 'B2B'],
-    preview: {
-      frame: 'browser',
-      src: '/assets/autods-m.webp',
-      url: 'autodsm.ai',
-      screenAspectRatio: AUTODSM_SCREEN_AR,
-    },
-    slug: 'autodsm-ai',
-    styles: { backgroundColor: '#f4f3f2' },
-    caseStudy: {
-      blocks: [
-        { text: 'AutoDSM AI is an intelligent design system manager that keeps tokens, components, and documentation in sync across design tools and codebases. Design system drift is invisible until it becomes catastrophic.' },
-        { text: 'The product scans Figma files and GitHub repos simultaneously, detecting divergence between the two. AutoDSM surfaces conflicts and proposes resolutions automatically.' },
-        { text: 'Designing for power users who resist new tools was the central challenge. The solution was zero-friction integration: works inside Figma, inside VS Code, inside their existing PR workflow.' },
-      ],
-    },
-    scrollyConfig: {
-      slug: 'autodsm-ai',
-      title: 'AutoDSM AI',
-      trackHeightVh: 600,
-      stage: {
-        centerpiece: {
-          frame: 'browser',
-          width: 400,
-          src: '/assets/autods-m.webp',
-          url: 'autodsm.ai',
-          screenAspectRatio: AUTODSM_SCREEN_AR,
-        },
-      },
-      beats: [
-        { id: 'summary',   headline: 'An AI-powered design system manager that keeps tokens, components, and documentation in sync.', body: 'AutoDSM AI detects when design and code drift apart by scanning Figma and GitHub simultaneously, then resolves conflicts and updates documentation automatically. It lives inside the tools designers and engineers already use: no new dashboards, no new workflows.', range: [0, 0.15] },
-        { id: 'challenge', label: 'Challenge', headline: 'Design system drift is invisible until it\'s catastrophic.', body: 'AutoDSM AI is an intelligent design system manager that keeps tokens, components, and documentation in sync across design tools and codebases. It was born from a real frustration: design system drift is invisible until it becomes catastrophic.', range: [0.15, 0.32] },
-        { id: 'approach',  label: 'Approach',  headline: 'Two tools, one source of truth, constantly out of sync.', body: 'The product scans Figma files and GitHub repos simultaneously, detecting divergence between the two. When a token changes in code but not in Figma, or vice versa, AutoDSM surfaces the conflict and proposes a resolution. The AI drafts changelog entries, migration guides, and updated documentation automatically.', range: [0.32, 0.50] },
-        { id: 'solution',  label: 'Solution',  headline: 'AutoDSM watches both sides and resolves the conflict.', body: 'Designing for power users who resist new tools was the central challenge. The solution was zero-friction integration: AutoDSM works inside Figma, inside VS Code, and inside existing PR workflows. No new dashboard to learn.', range: [0.50, 0.68] },
-        { id: 'results',   label: 'Results',   headline: 'Zero new dashboard. Lives where you already work.', range: [0.68, 0.85] },
-        { id: 'tldr',      label: 'TLDR',      headline: 'The quick version.', body: 'Design system drift is invisible until it causes real damage. AutoDSM was built to catch it the moment it happens. The product scans Figma files and GitHub repos simultaneously, detecting divergence and proposing resolutions automatically. The critical design constraint was zero-friction adoption: it had to work inside Figma, VS Code, and existing PR workflows without asking power users to change anything. The result is consistent design systems at scale, with no new dashboard and no new processes.', range: [0.85, 1.0] },
-      ],
-      cards: [
-        { id: 'c1', label: 'Figma audit', seed: 12, enterAt: 0.14, clusterId: 'discovery', bgColor: '#1e1e2a' },
-        { id: 'c2', label: 'Drift examples', seed: 23, enterAt: 0.17, clusterId: 'discovery', bgColor: '#1a1a25' },
-        { id: 'c3', label: 'Token conflicts', seed: 34, enterAt: 0.20, clusterId: 'research', bgColor: '#1e2a1e' },
-        { id: 'c4', label: 'PR workflow', seed: 45, enterAt: 0.23, clusterId: 'research', bgColor: '#1a2520' },
-        { id: 'c5', label: 'Diff view', seed: 56, enterAt: 0.26, clusterId: 'shipped', bgColor: '#2a1e1e' },
-        { id: 'c6', label: 'Resolve UI', seed: 67, enterAt: 0.29, clusterId: 'shipped', bgColor: '#251a1a' },
-        { id: 'c7', label: '0 new tabs', seed: 78, enterAt: 0.32, clusterId: 'impact', bgColor: '#1a1e2a' },
-        { id: 'c8', label: 'User interview', seed: 89, enterAt: 0.15, bgColor: '#222222' },
       ],
       clusters: [
         { id: 'discovery', label: 'Discovery',   anchor: { x: 18, y: 28 } },
@@ -695,7 +631,6 @@ export const PROJECT_ORDER = [
   'chorus-ai',
   'chase-myhome',
   'agentic-home-lending',
-  'autodsm-ai',
 ] as const;
 
 export function sortProjectsByFeaturedOrder(items: Project[]): Project[] {
