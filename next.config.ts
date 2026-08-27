@@ -23,7 +23,12 @@ const nextConfig: NextConfig = {
     return [
       {
         source: '/work/autods-m-ai',
-        destination: '/work/autodsm-ai',
+        destination: '/',
+        permanent: true,
+      },
+      {
+        source: '/work/autodsm-ai',
+        destination: '/',
         permanent: true,
       },
     ];
