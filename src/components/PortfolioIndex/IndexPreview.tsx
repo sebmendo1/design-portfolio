@@ -220,7 +220,7 @@ export function IndexPreview({ entry, project, onNavigate }: IndexPreviewProps) 
           initial={
             shouldReduce
               ? { opacity: 1, filter: 'blur(0px)', scale: 1 }
-              : { opacity: 0, filter: 'blur(12px)', scale: 0.975 }
+              : { opacity: 0, filter: 'blur(16px)', scale: 0.97 }
           }
           animate={{ opacity: 1, filter: 'blur(0px)', scale: 1 }}
           exit={
