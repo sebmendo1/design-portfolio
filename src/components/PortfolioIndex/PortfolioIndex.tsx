@@ -110,7 +110,6 @@ export function PortfolioIndex({ bio, projects, onNavigate }: PortfolioIndexProp
         data-lenis-prevent-touch
       >
         <IndexPreview
-          key={active.id}
           entry={active}
           project={previewProject}
           onNavigate={onNavigate}
