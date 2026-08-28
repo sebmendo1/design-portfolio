@@ -51,3 +51,9 @@ export function findPortfolioIndexEntry(
 ): PortfolioIndexEntry {
   return entries.find((entry) => entry.id === id) ?? getDefaultPortfolioIndexEntry();
 }
+
+export function getPortfolioIndexHref(entry: PortfolioIndexEntry): string | undefined {
+  if (entry.href) return entry.href;
+  if (entry.previewSlug) return `/work/${entry.previewSlug}`;
+  return undefined;
+}

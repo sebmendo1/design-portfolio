@@ -1,12 +1,13 @@
 'use client';
 
-import type { CSSProperties } from 'react';
+import type { CSSProperties, MouseEvent } from 'react';
 import { BrowserStencil } from '@/components/BrowserStencil/BrowserStencil';
 import { DEFAULT_BROWSER_SCREEN_AR } from '@/components/BrowserStencil/browser-aspect-ratios';
 import { OptimizedImage } from '@/components/OptimizedImage/OptimizedImage';
 import { PhoneStencil } from '@/components/PhoneStencil/PhoneStencil';
 import { getVideoPoster } from '@/data/assets';
 import type { PortfolioIndexEntry } from '@/data/portfolioIndex';
+import { getPortfolioIndexHref } from '@/lib/portfolio-index';
 import type { ProjectCardSummary } from '@/lib/project-cards';
 
 type IndexPreviewProps = {
@@ -75,7 +76,7 @@ function DevicePreview({ project }: { project: ProjectCardSummary }) {
           width={1280}
           height={Math.round(1280 / contentAspectRatio)}
           className="portfolio-index__image"
-          sizes="(max-width: 900px) 100vw, 55vw"
+          sizes="(max-width: 900px) 100vw, min(55vw, 800px)"
         />
       </div>
     );
@@ -89,7 +90,7 @@ function DevicePreview({ project }: { project: ProjectCardSummary }) {
         width={1200}
         height={800}
         className="portfolio-index__image--fill"
-        sizes="(max-width: 900px) 100vw, 55vw"
+        sizes="(max-width: 900px) 100vw, min(55vw, 800px)"
       />
     );
   }
@@ -101,7 +102,7 @@ function OpenProjectIcon() {
   return (
     <svg viewBox="0 0 16 16" width="16" height="16" aria-hidden="true">
       <path
-        d="M12 12 4 4M4 4h7M4 4v7"
+        d="M4 12 12 4M12 4H5M12 4v7"
         fill="none"
         stroke="currentColor"
         strokeWidth="1.5"
@@ -113,31 +114,48 @@ function OpenProjectIcon() {
 }
 
 export function IndexPreview({ entry, project, onNavigate }: IndexPreviewProps) {
-  const href = entry.href;
+  const href = getPortfolioIndexHref(entry);
 
-  return (
-    <div className="portfolio-index__well" style={{ backgroundColor: entry.tint }}>
+  const inner = (
+    <>
       {href ? (
-        <a
-          href={href}
-          className="portfolio-index__open"
-          aria-label={`Open ${entry.label}`}
-          onClick={(event) => {
-            if (!onNavigate) return;
-            event.preventDefault();
-            onNavigate(href);
-          }}
-        >
+        <span className="portfolio-index__open" aria-hidden="true">
           <OpenProjectIcon />
-        </a>
+        </span>
       ) : null}
-      <div className="portfolio-index__well-inner" aria-hidden="true">
+      <div className="portfolio-index__well-inner">
         {entry.kind === 'typeface' ? (
           <TypeSpecimen label={entry.label} />
         ) : project ? (
           <DevicePreview project={project} />
         ) : null}
       </div>
+    </>
+  );
+
+  function handleOpen(event: MouseEvent<HTMLAnchorElement>) {
+    if (!href || !onNavigate) return;
+    event.preventDefault();
+    onNavigate(href);
+  }
+
+  if (href) {
+    return (
+      <a
+        href={href}
+        className="portfolio-index__well portfolio-index__well--link"
+        style={{ backgroundColor: entry.tint }}
+        aria-label={`Open ${entry.label}`}
+        onClick={handleOpen}
+      >
+        {inner}
+      </a>
+    );
+  }
+
+  return (
+    <div className="portfolio-index__well" style={{ backgroundColor: entry.tint }}>
+      {inner}
     </div>
   );
 }
