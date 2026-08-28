@@ -219,7 +219,7 @@ export function IndexPreview({ entry, project, onNavigate }: IndexPreviewProps) 
           className="portfolio-index__dissolve"
           initial={
             shouldReduce
-              ? false
+              ? { opacity: 1, filter: 'blur(0px)', scale: 1 }
               : { opacity: 0, filter: 'blur(12px)', scale: 0.975 }
           }
           animate={{ opacity: 1, filter: 'blur(0px)', scale: 1 }}
