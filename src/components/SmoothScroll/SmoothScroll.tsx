@@ -1,6 +1,7 @@
 'use client';
 
 import { useEffect, useState, type ReactNode } from 'react';
+import { usePathname } from 'next/navigation';
 import { ReactLenis } from 'lenis/react';
 
 type SmoothScrollProps = {
@@ -8,7 +9,9 @@ type SmoothScrollProps = {
 };
 
 export function SmoothScroll({ children }: SmoothScrollProps) {
+  const pathname = usePathname();
   const [reduceMotion, setReduceMotion] = useState(false);
+  const useNativeScroll = pathname === '/';
 
   useEffect(() => {
     const media = window.matchMedia('(prefers-reduced-motion: reduce)');
@@ -18,7 +21,7 @@ export function SmoothScroll({ children }: SmoothScrollProps) {
     return () => media.removeEventListener('change', sync);
   }, []);
 
-  if (reduceMotion) {
+  if (reduceMotion || useNativeScroll) {
     return children;
   }
 

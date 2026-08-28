@@ -48,55 +48,67 @@ export function PortfolioIndex({ bio, projects, onNavigate }: PortfolioIndexProp
   return (
     <div className="portfolio-index">
       <div className="portfolio-index__pane portfolio-index__pane--rail">
-        <header className="portfolio-index__headline">
-          <PageHeadline />
-        </header>
+        <div
+          className="portfolio-index__pane-scroll"
+          data-lenis-prevent
+          data-lenis-prevent-wheel
+          data-lenis-prevent-touch
+        >
+          <header className="portfolio-index__headline">
+            <PageHeadline />
+          </header>
 
-        <div className="portfolio-index__intro">
-          {bio}
+          <div className="portfolio-index__intro">
+            {bio}
 
-          <nav className="portfolio-index__links" aria-label="Page">
-            <Link href="/about" className="portfolio-index__link">
-              about
-            </Link>
-            <a href={`mailto:${SITE_CONTACT_EMAIL}`} className="portfolio-index__link">
-              contact
-            </a>
-          </nav>
-        </div>
+            <nav className="portfolio-index__links" aria-label="Page">
+              <Link href="/about" className="portfolio-index__link">
+                about
+              </Link>
+              <a href={`mailto:${SITE_CONTACT_EMAIL}`} className="portfolio-index__link">
+                contact
+              </a>
+            </nav>
+          </div>
 
-        <div className="portfolio-index__rail">
-          {sections.map((section) => (
-            <section
-              key={section.id}
-              className="portfolio-index__section"
-              aria-labelledby={`index-${section.id}`}
-            >
-              <h2 id={`index-${section.id}`} className="portfolio-index__heading">
-                {section.id}
-              </h2>
-              {section.years.map((group) => (
-                <div key={`${section.id}-${group.year}`} className="portfolio-index__year-row">
-                  <p className="portfolio-index__year">{group.year}</p>
-                  <div className="portfolio-index__items">
-                    {group.items.map((item) => (
-                      <IndexItem
-                        key={item.id}
-                        id={item.id}
-                        label={item.label}
-                        selected={item.id === active.id}
-                        onActivate={setActiveId}
-                      />
-                    ))}
+          <div className="portfolio-index__rail">
+            {sections.map((section) => (
+              <section
+                key={section.id}
+                className="portfolio-index__section"
+                aria-labelledby={`index-${section.id}`}
+              >
+                <h2 id={`index-${section.id}`} className="portfolio-index__heading">
+                  {section.id}
+                </h2>
+                {section.years.map((group) => (
+                  <div key={`${section.id}-${group.year}`} className="portfolio-index__year-row">
+                    <p className="portfolio-index__year">{group.year}</p>
+                    <div className="portfolio-index__items">
+                      {group.items.map((item) => (
+                        <IndexItem
+                          key={item.id}
+                          id={item.id}
+                          label={item.label}
+                          selected={item.id === active.id}
+                          onActivate={setActiveId}
+                        />
+                      ))}
+                    </div>
                   </div>
-                </div>
-              ))}
-            </section>
-          ))}
+                ))}
+              </section>
+            ))}
+          </div>
         </div>
       </div>
 
-      <div className="portfolio-index__pane portfolio-index__pane--stage">
+      <div
+        className="portfolio-index__pane portfolio-index__pane--stage"
+        data-lenis-prevent
+        data-lenis-prevent-wheel
+        data-lenis-prevent-touch
+      >
         <IndexPreview
           key={active.id}
           entry={active}
