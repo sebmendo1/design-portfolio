@@ -32,18 +32,6 @@ body {
   min-height: 100dvh;
 }
 
-/*
-  Home index: the document is the scroller so iPad trackpad, mouse, and
-  touch all drive the work list. Nested overflow panes ignore wheel on iPadOS.
-*/
-html.home-native-scroll,
-html.home-native-scroll body {
-  height: auto;
-  overflow-x: clip;
-  overflow-y: auto;
-  overscroll-behavior-y: auto;
-}
-
 .page-loading,
 .case-loading {
   min-height: 100dvh;

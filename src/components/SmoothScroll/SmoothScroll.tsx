@@ -21,14 +21,6 @@ export function SmoothScroll({ children }: SmoothScrollProps) {
     return () => media.removeEventListener('change', sync);
   }, []);
 
-  useEffect(() => {
-    if (!useNativeScroll) return;
-
-    const root = document.documentElement;
-    root.classList.add('home-native-scroll');
-    return () => root.classList.remove('home-native-scroll');
-  }, [useNativeScroll]);
-
   if (reduceMotion || useNativeScroll) {
     return children;
   }
