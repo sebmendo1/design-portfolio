@@ -1,7 +1,6 @@
 'use client';
 
-import { useEffect, type RefObject } from 'react';
-import { caseStudySupportsTouchScroll } from '@/lib/case-study-layout';
+import { useEffect } from 'react';
 
 function normalizeWheelDelta(deltaY: number, deltaMode: number): number {
   if (deltaMode === 1) return deltaY * 16;
@@ -11,25 +10,22 @@ function normalizeWheelDelta(deltaY: number, deltaMode: number): number {
   return deltaY;
 }
 
+function getScrollingElement(): Element | null {
+  return document.scrollingElement ?? document.documentElement;
+}
+
 /**
- * iPadOS Safari sends Magic Keyboard / trackpad wheel to `window`, not the
- * nested overflow pane. Capture those events and move the work list so
- * mouse, trackpad, and touch all scroll it.
+ * Home index uses the document as the scroller so iPadOS trackpads work.
+ * Wheel over overflow-hidden preview chrome is still forwarded to the page
+ * when the event is cancelable (desktop / some iPad builds).
  */
-export function useIndexScroll(
-  layoutRef: RefObject<HTMLElement | null>,
-  scrollerRef: RefObject<HTMLElement | null>,
-) {
+export function useIndexScroll() {
   useEffect(() => {
-    const layout = layoutRef.current;
-    const scroller = scrollerRef.current;
-    if (!layout || !scroller) return;
-
-    const enableTouchScroll = caseStudySupportsTouchScroll();
-    layout.dataset.touchScroll = enableTouchScroll ? 'true' : 'false';
-
     const onWheel = (event: WheelEvent) => {
-      if (event.ctrlKey || event.defaultPrevented) return;
+      if (event.ctrlKey || event.defaultPrevented || !event.cancelable) return;
+
+      const scroller = getScrollingElement();
+      if (!scroller) return;
 
       const delta = normalizeWheelDelta(event.deltaY, event.deltaMode);
       if (delta === 0) return;
@@ -41,34 +37,7 @@ export function useIndexScroll(
       event.preventDefault();
     };
 
-    let touchStartY = 0;
-    let scrollStartTop = 0;
-
-    const onTouchStart = (event: TouchEvent) => {
-      if (scroller.contains(event.target as Node)) return;
-      touchStartY = event.touches[0]?.clientY ?? 0;
-      scrollStartTop = scroller.scrollTop;
-    };
-
-    const onTouchMove = (event: TouchEvent) => {
-      if (scroller.contains(event.target as Node)) return;
-      const currentY = event.touches[0]?.clientY ?? touchStartY;
-      scroller.scrollTop = scrollStartTop + (touchStartY - currentY);
-      event.preventDefault();
-    };
-
     window.addEventListener('wheel', onWheel, { passive: false, capture: true });
-
-    if (enableTouchScroll) {
-      layout.addEventListener('touchstart', onTouchStart, { passive: true });
-      layout.addEventListener('touchmove', onTouchMove, { passive: false });
-    }
-
-    return () => {
-      window.removeEventListener('wheel', onWheel, true);
-      layout.removeEventListener('touchstart', onTouchStart);
-      layout.removeEventListener('touchmove', onTouchMove);
-      delete layout.dataset.touchScroll;
-    };
-  }, [layoutRef, scrollerRef]);
+    return () => window.removeEventListener('wheel', onWheel, true);
+  }, []);
 }
