@@ -1,13 +1,15 @@
 'use client';
 
-import type { CSSProperties, MouseEvent, ReactNode } from 'react';
-import { AnimatePresence, motion, useReducedMotion } from 'framer-motion';
+import {
+  useEffect,
+  useRef,
+  useState,
+  type CSSProperties,
+  type MouseEvent,
+  type ReactNode,
+} from 'react';
 import { BrowserStencil } from '@/components/BrowserStencil/BrowserStencil';
 import { DEFAULT_BROWSER_SCREEN_AR } from '@/components/BrowserStencil/browser-aspect-ratios';
-import {
-  DISSOLVE_EASE,
-  DISSOLVE_REVEAL_EASE,
-} from '@/components/DissolveIn/DissolveIn';
 import { OptimizedImage } from '@/components/OptimizedImage/OptimizedImage';
 import { PhoneStencil } from '@/components/PhoneStencil/PhoneStencil';
 import { getVideoPoster } from '@/data/assets';
@@ -21,15 +23,12 @@ type IndexPreviewProps = {
   onNavigate?: (href: string) => void;
 };
 
-const DISSOLVE_IN = {
-  duration: 0.58,
-  ease: DISSOLVE_REVEAL_EASE,
-} as const;
+type PreviewFrame = {
+  entry: PortfolioIndexEntry;
+  project?: ProjectCardSummary;
+};
 
-const DISSOLVE_OUT = {
-  duration: 0.36,
-  ease: DISSOLVE_EASE,
-} as const;
+const DISSOLVE_MS = 580;
 
 function TypeSpecimen({ label }: { label: string }) {
   return (
@@ -128,19 +127,13 @@ function OpenProjectIcon() {
   );
 }
 
-function PreviewLayer({
-  entry,
-  project,
-}: {
-  entry: PortfolioIndexEntry;
-  project?: ProjectCardSummary;
-}) {
+function PreviewLayer({ frame }: { frame: PreviewFrame }) {
   return (
     <div className="portfolio-index__well-inner">
-      {entry.kind === 'typeface' ? (
-        <TypeSpecimen label={entry.label} />
-      ) : project ? (
-        <DevicePreview project={project} />
+      {frame.entry.kind === 'typeface' ? (
+        <TypeSpecimen label={frame.entry.label} />
+      ) : frame.project ? (
+        <DevicePreview project={frame.project} />
       ) : null}
     </div>
   );
@@ -159,7 +152,6 @@ function PreviewWell({
   onNavigate?: (href: string) => void;
   children: ReactNode;
 }) {
-  const shouldReduce = useReducedMotion();
   const className = href
     ? 'portfolio-index__well portfolio-index__well--link'
     : 'portfolio-index__well';
@@ -169,16 +161,6 @@ function PreviewWell({
     event.preventDefault();
     onNavigate(href);
   }
-
-  const motionProps = {
-    className,
-    initial: false,
-    animate: { backgroundColor: tint },
-    transition: {
-      duration: shouldReduce ? 0 : 0.55,
-      ease: DISSOLVE_EASE,
-    },
-  };
 
   const body = (
     <>
@@ -193,59 +175,69 @@ function PreviewWell({
 
   if (href) {
     return (
-      <motion.a
+      <a
         href={href}
+        className={className}
+        style={{ backgroundColor: tint }}
         aria-label={`Open ${label}`}
         onClick={handleOpen}
-        {...motionProps}
       >
         {body}
-      </motion.a>
+      </a>
     );
   }
 
-  return <motion.div {...motionProps}>{body}</motion.div>;
+  return (
+    <div className={className} style={{ backgroundColor: tint }}>
+      {body}
+    </div>
+  );
 }
 
 export function IndexPreview({ entry, project, onNavigate }: IndexPreviewProps) {
-  const shouldReduce = useReducedMotion();
   const href = getPortfolioIndexHref(entry);
+  const [outgoing, setOutgoing] = useState<PreviewFrame | null>(null);
+  const [current, setCurrent] = useState<PreviewFrame>({ entry, project });
+  const currentRef = useRef(current);
+  currentRef.current = current;
+
+  useEffect(() => {
+    const next = { entry, project };
+    if (entry.id === currentRef.current.entry.id) {
+      setCurrent(next);
+      return;
+    }
+
+    const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    if (reduceMotion) {
+      setOutgoing(null);
+      setCurrent(next);
+      return;
+    }
+
+    setOutgoing(currentRef.current);
+    setCurrent(next);
+    const timeoutId = window.setTimeout(() => setOutgoing(null), DISSOLVE_MS);
+    return () => window.clearTimeout(timeoutId);
+  }, [entry, project]);
 
   return (
     <PreviewWell href={href} tint={entry.tint} label={entry.label} onNavigate={onNavigate}>
-      <AnimatePresence initial={false} mode="sync">
-        <motion.div
-          key={entry.id}
-          className="portfolio-index__dissolve"
-          initial={
-            shouldReduce
-              ? { opacity: 1, filter: 'blur(0px)', scale: 1 }
-              : { opacity: 0, filter: 'blur(16px)', scale: 0.97 }
-          }
-          animate={{ opacity: 1, filter: 'blur(0px)', scale: 1 }}
-          exit={
-            shouldReduce
-              ? undefined
-              : {
-                  opacity: 0,
-                  filter: 'blur(10px)',
-                  scale: 1.02,
-                  transition: DISSOLVE_OUT,
-                }
-          }
-          transition={
-            shouldReduce
-              ? { duration: 0 }
-              : {
-                  opacity: { ...DISSOLVE_IN, duration: 0.46 },
-                  filter: DISSOLVE_IN,
-                  scale: { ...DISSOLVE_IN, duration: 0.62 },
-                }
-          }
-        >
-          <PreviewLayer entry={entry} project={project} />
-        </motion.div>
-      </AnimatePresence>
+      {outgoing ? (
+        <div className="portfolio-index__dissolve portfolio-index__dissolve--out" key={outgoing.entry.id}>
+          <PreviewLayer frame={outgoing} />
+        </div>
+      ) : null}
+      <div
+        className={
+          outgoing
+            ? 'portfolio-index__dissolve portfolio-index__dissolve--in'
+            : 'portfolio-index__dissolve'
+        }
+        key={current.entry.id}
+      >
+        <PreviewLayer frame={current} />
+      </div>
     </PreviewWell>
   );
 }

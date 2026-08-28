@@ -194,6 +194,7 @@
   border-radius: clamp(16px, 2vw, 24px);
   box-sizing: border-box;
   overflow: hidden;
+  transition: background-color 560ms cubic-bezier(0.22, 1, 0.36, 1);
 }
 
 .portfolio-index__well-stage {
@@ -211,7 +212,53 @@
   align-items: center;
   justify-content: center;
   pointer-events: none;
-  will-change: opacity, transform, filter;
+}
+
+.portfolio-index__dissolve--in {
+  animation: index-preview-in 0.58s cubic-bezier(0.22, 1, 0.36, 1) both;
+}
+
+.portfolio-index__dissolve--out {
+  animation: index-preview-out 0.38s cubic-bezier(0.25, 0.1, 0.25, 1) both;
+}
+
+@keyframes index-preview-in {
+  from {
+    opacity: 0;
+    filter: blur(18px);
+    transform: scale(0.96);
+  }
+
+  to {
+    opacity: 1;
+    filter: blur(0);
+    transform: scale(1);
+  }
+}
+
+@keyframes index-preview-out {
+  from {
+    opacity: 1;
+    filter: blur(0);
+    transform: scale(1);
+  }
+
+  to {
+    opacity: 0;
+    filter: blur(14px);
+    transform: scale(1.03);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .portfolio-index__well {
+    transition: none;
+  }
+
+  .portfolio-index__dissolve--in,
+  .portfolio-index__dissolve--out {
+    animation: none;
+  }
 }
 
 .portfolio-index__well--link {
