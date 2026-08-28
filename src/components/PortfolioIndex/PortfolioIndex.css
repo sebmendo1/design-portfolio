@@ -48,6 +48,15 @@
   box-sizing: border-box;
   background: var(--color-background-page);
   overflow: hidden;
+  touch-action: none;
+}
+
+.portfolio-index__well-inner,
+.portfolio-index__device,
+.portfolio-index__well-inner video,
+.portfolio-index__well-inner iframe,
+.portfolio-index__well-inner img {
+  pointer-events: none;
 }
 
 .portfolio-index__headline {

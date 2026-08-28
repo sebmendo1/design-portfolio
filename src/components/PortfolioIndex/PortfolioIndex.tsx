@@ -44,11 +44,10 @@ export function PortfolioIndex({ bio, projects, onNavigate }: PortfolioIndexProp
   const [activeId, setActiveId] = useState(PORTFOLIO_INDEX_DEFAULT_ID);
   const layoutRef = useRef<HTMLDivElement>(null);
   const railRef = useRef<HTMLDivElement>(null);
-  const railContentRef = useRef<HTMLDivElement>(null);
   const sections = useMemo(() => groupPortfolioIndex(PORTFOLIO_INDEX), []);
   const active = findPortfolioIndexEntry(activeId);
   const previewProject = projects.find((project) => project.slug === active.previewSlug);
-  useIndexScroll(layoutRef, railRef, railContentRef);
+  useIndexScroll(layoutRef, railRef);
 
   return (
     <div ref={layoutRef} className="portfolio-index">
@@ -56,7 +55,7 @@ export function PortfolioIndex({ bio, projects, onNavigate }: PortfolioIndexProp
         ref={railRef}
         className="portfolio-index__pane portfolio-index__pane--rail"
       >
-        <div ref={railContentRef} className="portfolio-index__pane-content">
+        <div className="portfolio-index__pane-content">
           <header className="portfolio-index__headline">
             <PageHeadline />
           </header>

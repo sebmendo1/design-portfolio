@@ -1,7 +1,6 @@
 'use client';
 
 import { useEffect, type RefObject } from 'react';
-import Lenis from 'lenis';
 import { caseStudySupportsTouchScroll } from '@/lib/case-study-layout';
 
 function normalizeWheelDelta(deltaY: number, deltaMode: number): number {
@@ -21,83 +20,59 @@ function scrollPaneBy(scroller: HTMLElement, delta: number): boolean {
 }
 
 /**
- * Scroll `.portfolio-index__pane--rail` on computer and tablet.
- * Native overflow covers touch and in-pane wheel. Window-level Lenis
- * (same pattern as case studies) covers trackpads that deliver wheel
- * to the window instead of the nested pane.
+ * Complete scrolling for `.portfolio-index__pane--rail` on tablet and computer:
+ * native overflow for touch on the pane, window-captured wheel/trackpad so
+ * iPadOS and hover-over-preview still move this column.
  */
 export function useIndexScroll(
   layoutRef: RefObject<HTMLElement | null>,
   scrollerRef: RefObject<HTMLElement | null>,
-  contentRef: RefObject<HTMLElement | null>,
 ) {
   useEffect(() => {
     const layout = layoutRef.current;
     const scroller = scrollerRef.current;
-    const content = contentRef.current;
-    if (!layout || !scroller || !content) return;
+    if (!layout || !scroller) return;
 
-    const reducedQuery = window.matchMedia('(prefers-reduced-motion: reduce)');
-    let cleanup: (() => void) | undefined;
+    const enableTouchScroll = caseStudySupportsTouchScroll();
+    layout.dataset.touchScroll = enableTouchScroll ? 'true' : 'false';
 
-    const setup = () => {
-      cleanup?.();
+    const onWheel = (event: WheelEvent) => {
+      if (event.ctrlKey) return;
 
-      const prefersReduced = reducedQuery.matches;
-      const enableTouchScroll = caseStudySupportsTouchScroll();
-      layout.dataset.touchScroll = enableTouchScroll ? 'true' : 'false';
-      scroller.style.overflowY = 'scroll';
-
-      const onWheel = (event: WheelEvent) => {
-        if (event.ctrlKey) return;
-
-        const delta = normalizeWheelDelta(event.deltaY, event.deltaMode);
-        if (delta === 0) return;
-        if (!scrollPaneBy(scroller, delta)) return;
-        if (event.cancelable) event.preventDefault();
-      };
-
-      if (prefersReduced) {
-        window.addEventListener('wheel', onWheel, { passive: false, capture: true });
-        cleanup = () => {
-          window.removeEventListener('wheel', onWheel, true);
-          scroller.style.overflowY = '';
-        };
-        return;
-      }
-
-      const lenis = new Lenis({
-        wrapper: scroller,
-        content,
-        eventsTarget: window,
-        smoothWheel: true,
-        syncTouch: enableTouchScroll,
-        syncTouchLerp: 0.09,
-        touchMultiplier: 1.4,
-        lerp: 0.09,
-      });
-
-      let rafId = 0;
-      const raf = (time: number) => {
-        lenis.raf(time);
-        rafId = requestAnimationFrame(raf);
-      };
-      rafId = requestAnimationFrame(raf);
-
-      cleanup = () => {
-        cancelAnimationFrame(rafId);
-        lenis.destroy();
-        scroller.style.overflowY = '';
-      };
+      const delta = normalizeWheelDelta(event.deltaY, event.deltaMode);
+      if (delta === 0) return;
+      if (!scrollPaneBy(scroller, delta)) return;
+      if (event.cancelable) event.preventDefault();
     };
 
-    setup();
-    reducedQuery.addEventListener('change', setup);
+    let touchStartY = 0;
+    let scrollStartTop = 0;
+
+    const onTouchStart = (event: TouchEvent) => {
+      if (scroller.contains(event.target as Node)) return;
+      touchStartY = event.touches[0]?.clientY ?? 0;
+      scrollStartTop = scroller.scrollTop;
+    };
+
+    const onTouchMove = (event: TouchEvent) => {
+      if (scroller.contains(event.target as Node)) return;
+      const currentY = event.touches[0]?.clientY ?? touchStartY;
+      scroller.scrollTop = scrollStartTop + (touchStartY - currentY);
+      if (event.cancelable) event.preventDefault();
+    };
+
+    window.addEventListener('wheel', onWheel, { passive: false, capture: true });
+
+    if (enableTouchScroll) {
+      layout.addEventListener('touchstart', onTouchStart, { passive: true });
+      layout.addEventListener('touchmove', onTouchMove, { passive: false });
+    }
 
     return () => {
-      reducedQuery.removeEventListener('change', setup);
-      cleanup?.();
+      window.removeEventListener('wheel', onWheel, true);
+      layout.removeEventListener('touchstart', onTouchStart);
+      layout.removeEventListener('touchmove', onTouchMove);
       delete layout.dataset.touchScroll;
     };
-  }, [contentRef, layoutRef, scrollerRef]);
+  }, [layoutRef, scrollerRef]);
 }
