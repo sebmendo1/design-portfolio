@@ -16,18 +16,20 @@
 }
 
 .portfolio-index__pane--rail {
+  position: relative;
+  z-index: 1;
   flex: 0 0 min(454px, 42%);
-  display: flex;
-  flex-direction: column;
+  height: 100%;
+  min-height: 0;
   overflow: hidden;
+  touch-action: pan-y;
 }
 
 .portfolio-index__pane-scroll {
-  flex: 1 1 auto;
-  min-height: 0;
-  height: 100%;
+  position: absolute;
+  inset: 0;
   overflow-x: hidden;
-  overflow-y: auto;
+  overflow-y: scroll;
   overscroll-behavior: contain;
   touch-action: pan-y;
   -webkit-overflow-scrolling: touch;
@@ -377,8 +379,10 @@
   }
 
   .portfolio-index__pane--rail {
-    flex: 1 1 auto;
+    flex: 1 1 0;
     width: 100%;
+    height: auto;
+    min-height: 180px;
     order: 2;
   }
 
@@ -428,6 +432,8 @@
 
   .portfolio-index__pane--rail {
     flex: 0 0 min(42vw, 380px);
+    height: 100%;
+    min-height: 0;
     order: 0;
   }
 

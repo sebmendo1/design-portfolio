@@ -1,8 +1,9 @@
 'use client';
 
-import { useMemo, useState, type ReactNode } from 'react';
+import { useMemo, useRef, useState, type ReactNode } from 'react';
 import Link from 'next/link';
 import { PORTFOLIO_INDEX, PORTFOLIO_INDEX_DEFAULT_ID } from '@/data/portfolioIndex';
+import { useNativePaneScroll } from '@/hooks/useNativePaneScroll';
 import { SITE_CONTACT_EMAIL } from '@/lib/site';
 import { findPortfolioIndexEntry, groupPortfolioIndex } from '@/lib/portfolio-index';
 import type { ProjectCardSummary } from '@/lib/project-cards';
@@ -41,14 +42,21 @@ function IndexItem({
 
 export function PortfolioIndex({ bio, projects, onNavigate }: PortfolioIndexProps) {
   const [activeId, setActiveId] = useState(PORTFOLIO_INDEX_DEFAULT_ID);
+  const railPaneRef = useRef<HTMLDivElement>(null);
+  const railScrollRef = useRef<HTMLDivElement>(null);
   const sections = useMemo(() => groupPortfolioIndex(PORTFOLIO_INDEX), []);
   const active = findPortfolioIndexEntry(activeId);
   const previewProject = projects.find((project) => project.slug === active.previewSlug);
+  useNativePaneScroll(railPaneRef, railScrollRef);
 
   return (
     <div className="portfolio-index">
-      <div className="portfolio-index__pane portfolio-index__pane--rail">
+      <div
+        ref={railPaneRef}
+        className="portfolio-index__pane portfolio-index__pane--rail"
+      >
         <div
+          ref={railScrollRef}
           className="portfolio-index__pane-scroll"
           data-lenis-prevent
           data-lenis-prevent-wheel
