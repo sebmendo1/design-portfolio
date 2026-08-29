@@ -321,28 +321,41 @@
 .portfolio-index__device,
 .portfolio-index__well-inner .phone-stencil,
 .portfolio-index__well-inner .browser-stencil {
-  width: auto;
   max-width: 100%;
   max-height: 100%;
 }
 
+.portfolio-index__well-inner .phone-stencil,
 .portfolio-index__well-inner .phone-stencil--card,
 .portfolio-index__well-inner .phone-stencil--card .phone-stencil__body {
+  --content-ar: var(--phone-default-ar);
   width: auto;
-  max-width: 100%;
+  height: 100%;
   max-height: 100%;
 }
 
 .portfolio-index__well-inner .phone-stencil--card .phone-stencil__screen {
   width: min(
     calc(100cqw / var(--phone-body-scale)),
-    calc((100cqh / var(--phone-body-scale)) * var(--content-ar, var(--phone-default-ar)))
+    calc((100cqh / var(--phone-body-scale)) * var(--phone-default-ar))
   );
+  aspect-ratio: var(--phone-default-ar);
   max-width: 100%;
 }
 
+.portfolio-index__well-inner .browser-stencil {
+  --content-ar: 1.499;
+  width: min(100cqw, calc((100cqh - var(--browser-chrome)) * 1.499));
+  max-height: 100%;
+}
+
+.portfolio-index__well-inner .phone-stencil__media,
+.portfolio-index__well-inner .browser-stencil__media {
+  object-fit: cover;
+}
+
 .portfolio-index__image-wrap {
-  width: min(100%, calc(100cqh * var(--content-ar, 1.4)));
+  width: min(100cqw, calc(100cqh * 1.499));
   max-height: 100%;
 }
 
@@ -351,7 +364,7 @@
   width: 100%;
   height: auto;
   max-height: 100%;
-  object-fit: contain;
+  object-fit: cover;
   border-radius: 12px;
 }
 
@@ -362,9 +375,10 @@
   justify-content: center;
   gap: clamp(8px, 2cqh, 16px);
   text-align: center;
+  width: min(100cqw, calc(100cqh * 1.499));
+  height: min(100cqh, calc(100cqw / 1.499));
   padding: clamp(16px, 4cqmin, 32px);
-  max-width: 100%;
-  max-height: 100%;
+  box-sizing: border-box;
 }
 
 .portfolio-index__specimen-word {

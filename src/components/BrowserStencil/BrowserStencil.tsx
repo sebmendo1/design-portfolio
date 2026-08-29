@@ -19,6 +19,7 @@ type BrowserStencilProps = {
   variant?: 'case-study' | 'card';
   className?: string;
   priority?: boolean;
+  lockAspectRatio?: boolean;
 };
 
 /** Host only — stencil chrome should read like a browser, not a full href. */
@@ -40,10 +41,12 @@ export function BrowserStencil({
   variant = 'case-study',
   className,
   priority = false,
+  lockAspectRatio = false,
 }: BrowserStencilProps) {
   const rootRef = useRef<HTMLDivElement>(null);
   const { aspectRatio, onVideoMetadata, onImageLoad } = useContentAspectRatio(
     screenAspectRatio ?? DEFAULT_BROWSER_SCREEN_AR,
+    lockAspectRatio,
   );
   useBrowserFrameWidth(rootRef);
 

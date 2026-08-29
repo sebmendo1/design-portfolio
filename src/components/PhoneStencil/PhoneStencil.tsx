@@ -17,6 +17,7 @@ type PhoneStencilProps = {
   variant?: 'case-study' | 'card';
   className?: string;
   priority?: boolean;
+  lockAspectRatio?: boolean;
 };
 
 export function PhoneStencil({
@@ -28,9 +29,13 @@ export function PhoneStencil({
   variant = 'case-study',
   className,
   priority = false,
+  lockAspectRatio = false,
 }: PhoneStencilProps) {
   const rootRef = useRef<HTMLDivElement>(null);
-  const { aspectRatio, onVideoMetadata, onImageLoad } = useContentAspectRatio(screenAspectRatio);
+  const { aspectRatio, onVideoMetadata, onImageLoad } = useContentAspectRatio(
+    screenAspectRatio,
+    lockAspectRatio,
+  );
   usePhoneBodyWidth(rootRef);
 
   const rootClass = [
