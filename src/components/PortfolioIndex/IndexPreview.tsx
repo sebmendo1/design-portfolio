@@ -133,11 +133,13 @@ function OpenProjectIcon() {
 function PreviewLayer({ frame }: { frame: PreviewFrame }) {
   return (
     <div className="portfolio-index__well-inner">
-      {frame.entry.kind === 'typeface' ? (
-        <TypeSpecimen label={frame.entry.label} />
-      ) : frame.project ? (
-        <DevicePreview project={frame.project} />
-      ) : null}
+      <div className="portfolio-index__preview-slot">
+        {frame.entry.kind === 'typeface' ? (
+          <TypeSpecimen label={frame.entry.label} />
+        ) : frame.project ? (
+          <DevicePreview project={frame.project} />
+        ) : null}
+      </div>
     </div>
   );
 }
