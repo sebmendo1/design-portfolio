@@ -1,22 +1,22 @@
 /*
- * iPhone 15 Pro stencil — reference spec (393pt logical width)
- * Bezel: 9pt = 2.29% body | Buttons: 3pt = 0.764% body
- * Body outer ≈ screen × BODY_PADDING_SCALE (1.0458)
- * --body-w is set via ResizeObserver (see usePhoneBodyWidth.ts).
- * See phone-aspect-ratios.ts for exported ratio constants.
+ * iPhone 15 Pro stencil — logical chrome (pt)
+ * Display 393×852 | radius 55 | island 125×36 @ 11.5 from top
+ * Home indicator 134×5 @ 8 from bottom | titanium lip 9.5
+ * --body-w is the laid-out body width (see usePhoneBodyWidth.ts).
  */
 :root {
-  --phone-body: #1a1a1c;
-  --phone-radius-w: 11.7%;
-  --phone-radius-h: 5.27%;
-  --phone-screen-radius-w: 9.87%;
-  --phone-screen-radius-h: 4.32%;
-  --phone-default-ar: 0.461826; /* 375/812 */
-  --phone-body-scale: 1.0458; /* 1 + 2×0.0229 */
+  --phone-body: #1c1c1e;
+  --phone-default-ar: 0.461268; /* 393/852 */
+  --phone-bezel-ratio: 0.024173; /* 9.5/393 */
+  --phone-body-scale: 1.048346; /* 1 + 2× bezel */
 }
 
 .phone-stencil {
   --body-w: 200px;
+  --phone-bezel: calc(var(--body-w) * 0.02306); /* 9.5/412 */
+  --phone-radius: calc(var(--body-w) * 0.1566); /* 64.5/412 */
+  --phone-screen-radius: calc(var(--body-w) * 0.1335); /* 55/412 */
+  --phone-btn-w: max(calc(var(--body-w) * 0.00728), 1.5px); /* 3/412 */
   width: fit-content;
   max-width: min(100%, var(--site-max));
   min-width: 0;
@@ -24,18 +24,34 @@
 }
 
 .phone-stencil__body {
-  --phone-bezel: calc(var(--body-w) * 0.0229);
-  --phone-btn-w: max(calc(var(--body-w) * 0.00764), 1.5px);
   position: relative;
+  width: fit-content;
+  height: fit-content;
   padding: var(--phone-bezel);
-  border-radius: var(--phone-radius-w) / var(--phone-radius-h);
-  background: var(--phone-body);
+  border-radius: var(--phone-radius);
+  background:
+    linear-gradient(
+      165deg,
+      #3a3a3e 0%,
+      #242426 14%,
+      #1c1c1e 42%,
+      #141416 72%,
+      #2c2c30 100%
+    );
   box-shadow:
-    inset 0 0 0 calc(var(--body-w) * 0.0025) rgba(255, 255, 255, 0.1),
-    0 0 0 calc(var(--body-w) * 0.0013) rgba(255, 255, 255, 0.1),
-    0 0 0 calc(var(--body-w) * 0.0025) rgba(0, 0, 0, 0.55),
+    inset 0 0 0 calc(var(--body-w) * 0.0034) rgba(255, 255, 255, 0.14),
+    inset 0 0 0 calc(var(--body-w) * 0.007) rgba(0, 0, 0, 0.45),
+    0 0 0 calc(var(--body-w) * 0.0016) rgba(255, 255, 255, 0.08),
+    0 0 0 calc(var(--body-w) * 0.0028) rgba(0, 0, 0, 0.55),
     0 calc(var(--body-w) * 0.102) calc(var(--body-w) * 0.254) rgba(0, 0, 0, 0.36),
     0 calc(var(--body-w) * 0.025) calc(var(--body-w) * 0.076) rgba(0, 0, 0, 0.18);
+}
+
+@supports (corner-shape: superellipse(1.6)) {
+  .phone-stencil__body,
+  .phone-stencil__screen {
+    corner-shape: superellipse(1.6);
+  }
 }
 
 .phone-stencil--case-study {
@@ -58,7 +74,10 @@
     width: min(
       25rem,
       calc(100cqw / var(--phone-body-scale)),
-      calc((100cqh / var(--phone-body-scale)) * var(--content-ar, var(--phone-default-ar)))
+      calc(
+        (100cqh * var(--content-ar, var(--phone-default-ar))) /
+          (1 + 2 * var(--phone-bezel-ratio) * var(--content-ar, var(--phone-default-ar)))
+      )
     );
   }
 }
@@ -68,7 +87,10 @@
     width: min(
       240px,
       calc(100cqw / var(--phone-body-scale)),
-      calc((100cqh / var(--phone-body-scale)) * var(--content-ar, var(--phone-default-ar)))
+      calc(
+        (100cqh * var(--content-ar, var(--phone-default-ar))) /
+          (1 + 2 * var(--phone-bezel-ratio) * var(--content-ar, var(--phone-default-ar)))
+      )
     );
   }
 }
@@ -118,9 +140,10 @@
 
 .phone-stencil--card .phone-stencil__body {
   box-shadow:
-    inset 0 0 0 calc(var(--body-w) * 0.0025) rgba(255, 255, 255, 0.1),
-    0 0 0 calc(var(--body-w) * 0.0013) rgba(255, 255, 255, 0.1),
-    0 0 0 calc(var(--body-w) * 0.0025) rgba(0, 0, 0, 0.55),
+    inset 0 0 0 calc(var(--body-w) * 0.0034) rgba(255, 255, 255, 0.14),
+    inset 0 0 0 calc(var(--body-w) * 0.007) rgba(0, 0, 0, 0.45),
+    0 0 0 calc(var(--body-w) * 0.0016) rgba(255, 255, 255, 0.08),
+    0 0 0 calc(var(--body-w) * 0.0028) rgba(0, 0, 0, 0.55),
     0 calc(var(--body-w) * 0.061) calc(var(--body-w) * 0.153) rgba(0, 0, 0, 0.3),
     0 calc(var(--body-w) * 0.015) calc(var(--body-w) * 0.046) rgba(0, 0, 0, 0.16);
   display: flex;
@@ -129,28 +152,35 @@
   min-height: 0;
 }
 
+/* Side buttons stay hidden on compact cards so they do not skew the grid. */
+.phone-stencil--card .phone-stencil__btn {
+  display: none;
+}
+
 @media (min-width: 769px) and (orientation: portrait), (min-width: 901px) {
   .phone-stencil--card .phone-stencil__body {
     justify-content: center;
+    width: fit-content;
+    height: fit-content;
     max-height: 100%;
   }
-}
 
-/* Side buttons protrude outside the body and skew card centering — hide on grid cards */
-.phone-stencil--card .phone-stencil__btn {
-  display: none;
+  .phone-stencil--card .phone-stencil__btn {
+    display: block;
+  }
 }
 
 .phone-stencil__body::before {
   content: '';
   position: absolute;
   inset: 0;
-  border-radius: var(--phone-radius-w) / var(--phone-radius-h);
+  border-radius: inherit;
   background: linear-gradient(
     148deg,
-    rgba(255, 255, 255, 0.05) 0%,
-    rgba(255, 255, 255, 0.015) 28%,
-    transparent 55%
+    rgba(255, 255, 255, 0.16) 0%,
+    rgba(255, 255, 255, 0.04) 22%,
+    transparent 48%,
+    rgba(255, 255, 255, 0.03) 100%
   );
   pointer-events: none;
   z-index: 6;
@@ -160,15 +190,18 @@
   content: '';
   position: absolute;
   inset: var(--phone-bezel);
-  border-radius: var(--phone-screen-radius-w) / var(--phone-screen-radius-h);
-  box-shadow: inset 0 0 0 calc(var(--body-w) * 0.0013) rgba(255, 255, 255, 0.06);
+  border-radius: var(--phone-screen-radius);
+  box-shadow:
+    inset 0 0 0 calc(var(--body-w) * 0.0016) rgba(255, 255, 255, 0.08),
+    0 0 0 calc(var(--body-w) * 0.0012) rgba(0, 0, 0, 0.55);
   pointer-events: none;
   z-index: 4;
 }
 
 /*
-  Screen sized from host container (device-card or card-visual).
-  --phone-body-scale converts outer-body budget back to screen width.
+  Screen sized from the host container (index well or case-study card).
+  --phone-body-scale converts the outer-body budget back to display width.
+  Height fit accounts for equal bezels on a tall 393/852 display.
   Do not add container-type on .phone-stencil — it would steal cqw/cqh from the host.
 */
 .phone-stencil__screen {
@@ -177,13 +210,17 @@
   width: 100%;
   width: min(
     calc(100cqw / var(--phone-body-scale)),
-    calc((100cqh / var(--phone-body-scale)) * var(--content-ar, var(--phone-default-ar)))
+    calc(
+      (100cqh * var(--content-ar, var(--phone-default-ar))) /
+        (1 + 2 * var(--phone-bezel-ratio) * var(--content-ar, var(--phone-default-ar)))
+    )
   );
+  height: auto;
   max-width: 100%;
   min-width: 0;
   margin-inline: auto;
   overflow: hidden;
-  border-radius: var(--phone-screen-radius-w) / var(--phone-screen-radius-h);
+  border-radius: var(--phone-screen-radius);
   background: #000000;
   display: flex;
   align-items: center;
@@ -198,14 +235,63 @@
 
 .phone-stencil__island {
   position: absolute;
-  top: 1.4%;
+  top: 1.35%;
   left: 50%;
   transform: translateX(-50%);
-  width: 32%;
-  height: 4.3%;
+  width: 31.81%;
+  height: 4.225%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 11%;
+  box-sizing: border-box;
+  padding: 0 7%;
   background: #000000;
   border-radius: 999px;
-  box-shadow: inset 0 calc(var(--body-w) * 0.0025) calc(var(--body-w) * 0.005) rgba(255, 255, 255, 0.08);
+  box-shadow:
+    inset 0 calc(var(--body-w) * 0.002) calc(var(--body-w) * 0.004) rgba(255, 255, 255, 0.1),
+    inset 0 calc(var(--body-w) * -0.0015) calc(var(--body-w) * 0.003) rgba(0, 0, 0, 0.55),
+    0 0 0 calc(var(--body-w) * 0.0012) rgba(0, 0, 0, 0.45);
+  z-index: 5;
+  pointer-events: none;
+}
+
+.phone-stencil__island-sensor {
+  display: block;
+  flex-shrink: 0;
+  border-radius: 50%;
+  aspect-ratio: 1;
+}
+
+.phone-stencil__island-sensor--ir {
+  width: 22%;
+  background:
+    radial-gradient(circle at 35% 30%, rgba(80, 88, 96, 0.55), transparent 46%),
+    radial-gradient(circle at 50% 50%, #1a1c20 0%, #050506 70%);
+  box-shadow: inset 0 0 0 0.5px rgba(255, 255, 255, 0.08);
+}
+
+.phone-stencil__island-sensor--camera {
+  width: 28%;
+  background:
+    radial-gradient(circle at 38% 32%, rgba(90, 120, 150, 0.35), transparent 42%),
+    radial-gradient(circle at 50% 50%, #14161a 0 38%, #07080a 72%, #000 100%);
+  box-shadow:
+    inset 0 0 0 0.6px rgba(255, 255, 255, 0.16),
+    0 0 0 0.5px rgba(0, 0, 0, 0.6);
+}
+
+.phone-stencil__home-indicator {
+  position: absolute;
+  bottom: 0.94%;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 34.1%;
+  height: 0.587%;
+  min-height: 3px;
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.42);
+  box-shadow: 0 0 0 0.5px rgba(0, 0, 0, 0.28);
   z-index: 5;
   pointer-events: none;
 }
@@ -218,45 +304,45 @@
 
 .phone-stencil__btn--action {
   left: calc(-1 * var(--phone-btn-w));
-  top: 11%;
+  top: 14.4%;
   width: var(--phone-btn-w);
-  height: 5%;
-  background: linear-gradient(to right, #2a2a2c, #1e1e20, #2a2a2c);
+  height: 3.9%;
+  background: linear-gradient(to right, #3a3a3e, #1e1e20, #2a2a2c);
   box-shadow: calc(var(--body-w) * -0.0025) 0 calc(var(--body-w) * 0.005) rgba(0, 0, 0, 0.6);
 }
 
 .phone-stencil__btn--vol-up {
   left: calc(-1 * var(--phone-btn-w));
-  top: 21%;
+  top: 21.6%;
   width: var(--phone-btn-w);
-  height: 8%;
-  background: linear-gradient(to right, #2a2a2c, #1e1e20, #2a2a2c);
+  height: 6.3%;
+  background: linear-gradient(to right, #3a3a3e, #1e1e20, #2a2a2c);
   box-shadow: calc(var(--body-w) * -0.0025) 0 calc(var(--body-w) * 0.005) rgba(0, 0, 0, 0.6);
 }
 
 .phone-stencil__btn--vol-down {
   left: calc(-1 * var(--phone-btn-w));
-  top: 32%;
+  top: 29.2%;
   width: var(--phone-btn-w);
-  height: 8%;
-  background: linear-gradient(to right, #2a2a2c, #1e1e20, #2a2a2c);
+  height: 6.3%;
+  background: linear-gradient(to right, #3a3a3e, #1e1e20, #2a2a2c);
   box-shadow: calc(var(--body-w) * -0.0025) 0 calc(var(--body-w) * 0.005) rgba(0, 0, 0, 0.6);
 }
 
 .phone-stencil__btn--power {
   right: calc(-1 * var(--phone-btn-w));
-  top: 25%;
+  top: 23.8%;
   width: var(--phone-btn-w);
-  height: 13%;
-  background: linear-gradient(to left, #2a2a2c, #1e1e20, #2a2a2c);
+  height: 11.2%;
+  background: linear-gradient(to left, #3a3a3e, #1e1e20, #2a2a2c);
   box-shadow: calc(var(--body-w) * 0.0025) 0 calc(var(--body-w) * 0.005) rgba(0, 0, 0, 0.6);
 }
 
 .phone-stencil__media {
   width: 100%;
   height: 100%;
-  object-fit: contain;
-  object-position: center;
+  object-fit: cover;
+  object-position: top center;
   display: block;
   background: #000000;
 }
