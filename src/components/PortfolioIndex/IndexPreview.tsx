@@ -73,7 +73,7 @@ function DevicePreview({ project }: { project: ProjectCardSummary }) {
         screenAspectRatio={DEFAULT_BROWSER_SCREEN_AR}
         lockAspectRatio
         variant="card"
-        className="portfolio-index__device"
+        className="portfolio-index__device portfolio-index__device--desktop"
         priority
       />
     );
