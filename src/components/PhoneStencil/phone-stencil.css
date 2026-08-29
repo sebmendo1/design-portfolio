@@ -243,15 +243,15 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  gap: 11%;
+  gap: 12%;
   box-sizing: border-box;
-  padding: 0 7%;
-  background: #000000;
+  padding: 0 8%;
+  background: #050505;
   border-radius: 999px;
   box-shadow:
-    inset 0 calc(var(--body-w) * 0.002) calc(var(--body-w) * 0.004) rgba(255, 255, 255, 0.1),
-    inset 0 calc(var(--body-w) * -0.0015) calc(var(--body-w) * 0.003) rgba(0, 0, 0, 0.55),
-    0 0 0 calc(var(--body-w) * 0.0012) rgba(0, 0, 0, 0.45);
+    inset 0 calc(var(--body-w) * 0.0024) calc(var(--body-w) * 0.004) rgba(255, 255, 255, 0.14),
+    inset 0 calc(var(--body-w) * -0.0018) calc(var(--body-w) * 0.003) rgba(0, 0, 0, 0.7),
+    0 0 0 1px rgba(0, 0, 0, 0.55);
   z-index: 5;
   pointer-events: none;
 }
@@ -264,21 +264,22 @@
 }
 
 .phone-stencil__island-sensor--ir {
-  width: 22%;
+  width: 24%;
   background:
-    radial-gradient(circle at 35% 30%, rgba(80, 88, 96, 0.55), transparent 46%),
-    radial-gradient(circle at 50% 50%, #1a1c20 0%, #050506 70%);
-  box-shadow: inset 0 0 0 0.5px rgba(255, 255, 255, 0.08);
+    radial-gradient(circle at 34% 30%, rgba(110, 118, 128, 0.7), transparent 48%),
+    radial-gradient(circle at 50% 50%, #2a2d32 0%, #0a0b0d 68%);
+  box-shadow: inset 0 0 0 0.6px rgba(255, 255, 255, 0.16);
 }
 
 .phone-stencil__island-sensor--camera {
-  width: 28%;
+  width: 30%;
   background:
-    radial-gradient(circle at 38% 32%, rgba(90, 120, 150, 0.35), transparent 42%),
-    radial-gradient(circle at 50% 50%, #14161a 0 38%, #07080a 72%, #000 100%);
+    radial-gradient(circle at 36% 30%, rgba(120, 160, 200, 0.5), transparent 40%),
+    radial-gradient(circle at 58% 62%, rgba(20, 40, 70, 0.55), transparent 46%),
+    radial-gradient(circle at 50% 50%, #1c2228 0 36%, #0a0c10 70%, #000 100%);
   box-shadow:
-    inset 0 0 0 0.6px rgba(255, 255, 255, 0.16),
-    0 0 0 0.5px rgba(0, 0, 0, 0.6);
+    inset 0 0 0 0.7px rgba(180, 210, 230, 0.28),
+    0 0 0 0.6px rgba(0, 0, 0, 0.7);
 }
 
 .phone-stencil__home-indicator {
@@ -287,11 +288,12 @@
   left: 50%;
   transform: translateX(-50%);
   width: 34.1%;
-  height: 0.587%;
-  min-height: 3px;
+  height: max(0.587%, 4px);
   border-radius: 999px;
-  background: rgba(255, 255, 255, 0.42);
-  box-shadow: 0 0 0 0.5px rgba(0, 0, 0, 0.28);
+  background: rgba(255, 255, 255, 0.72);
+  box-shadow:
+    0 0 0 1px rgba(0, 0, 0, 0.38),
+    inset 0 0.5px 0 rgba(255, 255, 255, 0.35);
   z-index: 5;
   pointer-events: none;
 }
