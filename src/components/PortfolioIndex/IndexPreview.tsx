@@ -12,6 +12,7 @@ import { BrowserStencil } from '@/components/BrowserStencil/BrowserStencil';
 import { DEFAULT_BROWSER_SCREEN_AR } from '@/components/BrowserStencil/browser-aspect-ratios';
 import { OptimizedImage } from '@/components/OptimizedImage/OptimizedImage';
 import { PhoneStencil } from '@/components/PhoneStencil/PhoneStencil';
+import { DEFAULT_PHONE_SCREEN_AR } from '@/components/PhoneStencil/phone-aspect-ratios';
 import { getVideoPoster } from '@/data/assets';
 import type { PortfolioIndexEntry } from '@/data/portfolioIndex';
 import { getPortfolioIndexHref } from '@/lib/portfolio-index';
@@ -52,7 +53,8 @@ function DevicePreview({ project }: { project: ProjectCardSummary }) {
         video={preview.video}
         poster={poster}
         alt={`${project.title} preview`}
-        screenAspectRatio={preview.screenAspectRatio}
+        screenAspectRatio={DEFAULT_PHONE_SCREEN_AR}
+        lockAspectRatio
         variant="card"
         className="portfolio-index__device"
         priority
