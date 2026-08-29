@@ -315,6 +315,30 @@
     height: 100%;
     max-height: min(100%, 54rem);
   }
+
+  .cs-device-card--browser .browser-stencil {
+    width: min(
+      100cqw,
+      calc((100cqh - var(--browser-chrome)) * var(--content-ar, 1.499))
+    );
+    max-width: 100%;
+    height: auto;
+    max-height: 100%;
+  }
+
+  .cs-device-card--browser .browser-stencil__screen {
+    flex: 0 0 auto;
+    width: 100%;
+    height: auto;
+    aspect-ratio: var(--content-ar, 1.499);
+  }
+
+  .cs-device-card--browser .browser-stencil__media,
+  .cs-device-card--browser .lazy-video__el,
+  .cs-device-card--browser .lazy-video__poster {
+    object-fit: contain;
+    object-position: center;
+  }
 }
 
 /* ─── Floating back button ────────────────────────────────────────────────── */

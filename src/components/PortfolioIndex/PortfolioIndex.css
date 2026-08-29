@@ -350,9 +350,15 @@
   max-width: 100%;
 }
 
-.portfolio-index__well-inner .phone-stencil__media,
-.portfolio-index__well-inner .browser-stencil__media {
+.portfolio-index__well-inner .phone-stencil__media {
   object-fit: cover;
+}
+
+.portfolio-index__well-inner .browser-stencil__media,
+.portfolio-index__well-inner .browser-stencil__screen .lazy-video__el,
+.portfolio-index__well-inner .browser-stencil__screen .lazy-video__poster {
+  object-fit: contain;
+  object-position: center;
 }
 
 .portfolio-index__image-wrap {
@@ -384,8 +390,10 @@
   .portfolio-index__preview-slot > .browser-stencil,
   .portfolio-index__preview-slot .browser-stencil,
   .portfolio-index__preview-slot .portfolio-index__device--desktop {
-    --content-ar: 1.499;
-    width: 80%;
+    width: min(
+      80%,
+      calc((100cqh - var(--browser-chrome)) * var(--content-ar, 1.499))
+    );
     max-width: 80%;
     height: auto;
     max-height: 100%;
@@ -396,7 +404,7 @@
     flex: 0 0 auto;
     width: 100%;
     height: auto;
-    aspect-ratio: 1.499;
+    aspect-ratio: var(--content-ar, 1.499);
   }
 }
 

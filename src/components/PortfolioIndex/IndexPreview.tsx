@@ -70,8 +70,7 @@ function DevicePreview({ project }: { project: ProjectCardSummary }) {
         poster={preview.video ? getVideoPoster(preview.video) : undefined}
         url={preview.url}
         title={project.title}
-        screenAspectRatio={DEFAULT_BROWSER_SCREEN_AR}
-        lockAspectRatio
+        screenAspectRatio={preview.screenAspectRatio ?? DEFAULT_BROWSER_SCREEN_AR}
         variant="card"
         className="portfolio-index__device portfolio-index__device--desktop"
         priority

@@ -44,8 +44,9 @@ export function BrowserStencil({
   lockAspectRatio = false,
 }: BrowserStencilProps) {
   const rootRef = useRef<HTMLDivElement>(null);
+  const contentAspectRatio = screenAspectRatio ?? DEFAULT_BROWSER_SCREEN_AR;
   const { aspectRatio, onVideoMetadata, onImageLoad } = useContentAspectRatio(
-    screenAspectRatio ?? DEFAULT_BROWSER_SCREEN_AR,
+    contentAspectRatio,
     lockAspectRatio,
   );
   useBrowserFrameWidth(rootRef);
@@ -116,7 +117,7 @@ export function BrowserStencil({
             srcMobile={getVideoMobileSrc(video)}
             poster={poster}
             posterWidth={1280}
-            posterHeight={Math.round(1280 / (screenAspectRatio ?? DEFAULT_BROWSER_SCREEN_AR))}
+            posterHeight={Math.round(1280 / contentAspectRatio)}
             posterSizes={
               variant === 'card'
                 ? '(max-width: 768px) 100vw, 50vw'
@@ -130,7 +131,7 @@ export function BrowserStencil({
             src={src}
             alt={`${title} interface screenshot`}
             width={1280}
-            height={854}
+            height={Math.round(1280 / contentAspectRatio)}
             className="browser-stencil__media"
             sizes={
               variant === 'card'
