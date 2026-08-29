@@ -345,7 +345,9 @@
 
 .portfolio-index__well-inner .browser-stencil {
   --content-ar: 1.499;
-  width: min(100cqw, calc((100cqh - var(--browser-chrome)) * 1.499));
+  align-self: center;
+  width: 100%;
+  max-width: 100%;
   max-height: 100%;
 }
 
