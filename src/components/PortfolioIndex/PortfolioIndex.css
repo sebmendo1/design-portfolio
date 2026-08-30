@@ -359,10 +359,30 @@
 }
 
 .portfolio-index__well-inner .browser-stencil__media,
-.portfolio-index__well-inner .browser-stencil__screen .lazy-video__el,
-.portfolio-index__well-inner .browser-stencil__screen .lazy-video__poster {
+.portfolio-index__well-inner .browser-stencil__screen .lazy-video--intrinsic .lazy-video__el,
+.portfolio-index__well-inner .browser-stencil__screen .lazy-video--intrinsic .lazy-video__poster {
   object-fit: contain;
   object-position: center;
+}
+
+/* Desktop product frames wrap the recording at every well size. Phones stay untouched. */
+.portfolio-index__preview-slot .portfolio-index__device--desktop.browser-stencil,
+.portfolio-index__preview-slot .browser-stencil.portfolio-index__device--desktop {
+  width: min(
+    100%,
+    calc((100cqh - var(--browser-chrome)) * var(--content-ar))
+  );
+  max-width: 100%;
+  height: auto;
+  max-height: 100%;
+  box-sizing: border-box;
+}
+
+.portfolio-index__preview-slot .portfolio-index__device--desktop .browser-stencil__screen {
+  flex: 0 0 auto;
+  width: 100%;
+  height: auto;
+  aspect-ratio: auto;
 }
 
 .portfolio-index__image-wrap {
@@ -398,16 +418,6 @@
       calc((100cqh - var(--browser-chrome)) * var(--content-ar))
     );
     max-width: 80%;
-    height: auto;
-    max-height: 100%;
-    box-sizing: border-box;
-  }
-
-  .portfolio-index__preview-slot .portfolio-index__device--desktop .browser-stencil__screen {
-    flex: 0 0 auto;
-    width: 100%;
-    height: auto;
-    aspect-ratio: var(--content-ar);
   }
 }
 

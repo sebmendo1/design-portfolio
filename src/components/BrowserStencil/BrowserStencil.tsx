@@ -112,7 +112,6 @@ export function BrowserStencil({
       <div className="browser-stencil__screen">
         {video ? (
           <LazyAutoplayVideo
-            className="browser-stencil__media"
             src={video}
             srcMobile={getVideoMobileSrc(video)}
             poster={poster}
@@ -124,7 +123,9 @@ export function BrowserStencil({
                 : '(max-width: 900px) 100vw, 50vw'
             }
             priority={priority}
+            layout="intrinsic"
             onLoadedMetadata={onVideoMetadata}
+            onPosterLoad={onImageLoad}
           />
         ) : src ? (
           <OptimizedImage

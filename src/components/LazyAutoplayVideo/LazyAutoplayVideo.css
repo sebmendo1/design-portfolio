@@ -6,6 +6,11 @@
   overflow: hidden;
 }
 
+/* Browser frames: poster is in-flow so the stencil hugs the recording. */
+.lazy-video--intrinsic {
+  height: auto;
+}
+
 .lazy-video__el,
 .lazy-video__poster {
   position: absolute;
@@ -31,6 +36,22 @@
 
 .lazy-video--ready .lazy-video__poster {
   opacity: 0;
+}
+
+.lazy-video--intrinsic .lazy-video__poster {
+  position: relative;
+  inset: auto;
+  width: 100%;
+  height: auto;
+  display: block;
+}
+
+.lazy-video--intrinsic .lazy-video__el {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
 }
 
 @media (prefers-reduced-motion: reduce) {
