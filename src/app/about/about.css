@@ -21,7 +21,10 @@
   position: sticky;
   top: 0;
   z-index: 1;
+  display: flex;
+  flex-direction: column;
   flex: 0 0 min(454px, 42%);
+  min-height: 100dvh;
   max-height: 100dvh;
   overflow-x: hidden;
   overflow-y: auto;
@@ -51,7 +54,7 @@
   display: flex;
   flex-direction: column;
   gap: 16px;
-  padding: 8px clamp(16px, 3vw, 24px) 48px;
+  padding: 8px clamp(16px, 3vw, 24px) 32px;
   box-sizing: border-box;
 }
 
@@ -78,7 +81,9 @@
   display: flex;
   flex-wrap: wrap;
   gap: 16px;
-  padding-top: 8px;
+  margin-top: auto;
+  padding: 8px clamp(16px, 3vw, 24px) 32px;
+  box-sizing: border-box;
 }
 
 .about-index__link {
@@ -124,6 +129,10 @@
 
   .about-index__intro {
     padding: 16px var(--site-gutter) 32px;
+  }
+
+  .about-index__links {
+    padding: 8px var(--site-gutter) 32px;
   }
 }
 

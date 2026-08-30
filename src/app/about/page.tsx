@@ -49,20 +49,20 @@ export default function AboutPage() {
                   {paragraph}
                 </p>
               ))}
-
-              <nav className="about-index__links" aria-label="Page">
-                <Link href="/" className="about-index__link">
-                  work
-                </Link>
-                <Link href={SITE_LINKEDIN_URL} className="about-index__link" rel="me">
-                  linkedin
-                </Link>
-                <a href={`mailto:${SITE_CONTACT_EMAIL}`} className="about-index__link">
-                  contact
-                </a>
-                <ThemeToggle />
-              </nav>
             </div>
+
+            <nav className="about-index__links" aria-label="Page">
+              <Link href="/" className="about-index__link">
+                work
+              </Link>
+              <Link href={SITE_LINKEDIN_URL} className="about-index__link" rel="me">
+                linkedin
+              </Link>
+              <a href={`mailto:${SITE_CONTACT_EMAIL}`} className="about-index__link">
+                contact
+              </a>
+              <ThemeToggle />
+            </nav>
           </div>
 
           <div className="about-index__pane about-index__pane--timeline">

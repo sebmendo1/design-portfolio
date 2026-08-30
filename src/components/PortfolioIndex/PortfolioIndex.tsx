@@ -73,16 +73,6 @@ export function PortfolioIndex({
 
           <div className="portfolio-index__intro">
             {bio}
-
-            <nav className="portfolio-index__links" aria-label="Page">
-              <Link href="/about" className="portfolio-index__link">
-                about
-              </Link>
-              <a href={`mailto:${SITE_CONTACT_EMAIL}`} className="portfolio-index__link">
-                contact
-              </a>
-              <ThemeToggle />
-            </nav>
           </div>
 
           <div className="portfolio-index__rail">
@@ -114,6 +104,16 @@ export function PortfolioIndex({
               </section>
             ))}
           </div>
+
+          <nav className="portfolio-index__links" aria-label="Page">
+            <Link href="/about" className="portfolio-index__link">
+              about
+            </Link>
+            <a href={`mailto:${SITE_CONTACT_EMAIL}`} className="portfolio-index__link">
+              contact
+            </a>
+            <ThemeToggle />
+          </nav>
         </div>
       </div>
 

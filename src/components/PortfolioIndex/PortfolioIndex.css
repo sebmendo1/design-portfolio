@@ -37,7 +37,9 @@
 }
 
 .portfolio-index__pane-content {
-  min-height: min-content;
+  min-height: 100%;
+  display: flex;
+  flex-direction: column;
 }
 
 .portfolio-index__pane--stage {
@@ -80,7 +82,7 @@
   display: flex;
   flex-direction: column;
   gap: 24px;
-  padding: 24px clamp(16px, 3vw, 24px) 48px;
+  padding: 24px clamp(16px, 3vw, 24px) 32px;
   box-sizing: border-box;
 }
 
@@ -116,7 +118,11 @@
 
 .portfolio-index__links {
   display: flex;
+  flex-wrap: wrap;
   gap: 16px;
+  margin-top: auto;
+  padding: 8px clamp(16px, 3vw, 24px) 32px;
+  box-sizing: border-box;
 }
 
 .portfolio-index__link {
@@ -470,7 +476,11 @@
   }
 
   .portfolio-index__rail {
-    padding: 24px var(--site-gutter) 40px;
+    padding: 24px var(--site-gutter) 16px;
+  }
+
+  .portfolio-index__links {
+    padding: 8px var(--site-gutter) 32px;
   }
 
   .portfolio-index__well {
