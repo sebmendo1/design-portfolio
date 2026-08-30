@@ -67,7 +67,7 @@ a.work-timeline__title:hover {
 }
 
 a.work-timeline__title:focus-visible {
-  outline: 2px solid #000000;
+  outline: 2px solid var(--color-focus-ring);
   outline-offset: 2px;
   border-radius: 2px;
 }

@@ -42,7 +42,7 @@ export default function Error({
           font-weight: 500;
         }
         .app-error__body {
-          color: #666;
+          color: var(--color-text-secondary);
         }
         .app-error__actions {
           display: flex;
@@ -58,14 +58,14 @@ export default function Error({
           text-decoration: none;
         }
         .app-error__btn {
-          background: #000;
-          color: #fff;
+          background: var(--color-surface-inverse);
+          color: var(--color-text-inverse);
           border: none;
           cursor: pointer;
         }
         .app-error__link {
-          background: #f4f3f2;
-          color: #000;
+          background: var(--color-background-project-highlight);
+          color: var(--color-text-primary);
         }
       `}</style>
     </div>

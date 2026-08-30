@@ -24,20 +24,20 @@
   gap: 6px;
   font-size: 14px;
   font-weight: 500;
-  color: #000000;
+  color: var(--color-text-primary);
   text-decoration: none;
-  background: #f4f3f2;
+  background: var(--color-background-project-highlight);
   border-radius: 100px;
   padding: 8px 16px;
   transition: background var(--transition-fast);
 }
 
 .case-study__back:hover {
-  background: #e8e7e6;
+  background: var(--color-background-icon-container);
 }
 
 .case-study__back:focus-visible {
-  outline: 2px solid #000000;
+  outline: 2px solid var(--color-focus-ring);
   outline-offset: 2px;
 }
 
@@ -51,7 +51,7 @@
 .case-study__year,
 .case-study__role {
   font-size: 13px;
-  color: #666666;
+  color: var(--color-text-secondary);
 }
 
 .case-study__company::after,
@@ -66,7 +66,7 @@
   font-size: clamp(32px, 5vw, 56px);
   font-variation-settings: var(--font-var-display);
   font-weight: normal;
-  color: #000000;
+  color: var(--color-text-primary);
   line-height: 1.1;
   letter-spacing: -0.02em;
   padding: 48px 32px 16px;
@@ -75,7 +75,7 @@
 
 .case-study__tagline {
   font-size: 18px;
-  color: #666666;
+  color: var(--color-text-secondary);
   padding: 0 32px 24px;
   max-width: 680px;
   line-height: 1.6;
@@ -92,8 +92,8 @@
 .case-study__tag {
   font-size: 13px;
   font-weight: 500;
-  color: #000000;
-  background: #f4f3f2;
+  color: var(--color-text-primary);
+  background: var(--color-background-project-highlight);
   border-radius: 100px;
   padding: 4px 12px;
 }

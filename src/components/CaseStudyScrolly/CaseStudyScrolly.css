@@ -136,7 +136,7 @@
   font-size: 28px;
   font-variation-settings: var(--font-var-headline);
   font-weight: normal;
-  color: #000000;
+  color: var(--color-text-primary);
   line-height: normal;
   margin: 0 0 24px;
   max-width: 904px;
@@ -146,7 +146,7 @@
   font-size: 18px;
   font-variation-settings: var(--font-var-body);
   font-weight: normal;
-  color: #555555;
+  color: var(--color-text-tertiary);
   line-height: 1.65;
   max-width: 520px;
   margin: 0;
@@ -243,7 +243,7 @@
 .cs-section--intro .cs-section__body {
   font-size: 20px;
   line-height: 1.6;
-  color: #666666;
+  color: var(--color-text-secondary);
   max-width: 560px;
 }
 
@@ -276,7 +276,7 @@
 .cs-device-card {
   container-type: size;
   container-name: device-card;
-  background: #f4f3f2;
+  background: var(--color-background-project-highlight);
   border-radius: 24px;
   padding: 32px var(--site-gutter);
   display: flex;
@@ -353,17 +353,24 @@
 }
 
 /* ─── Floating back button ────────────────────────────────────────────────── */
-.cs-floating-back {
-  display: inline-flex;
-  align-items: center;
-  gap: 5px;
+.cs-floating-chrome {
   position: absolute;
   top: max(24px, env(safe-area-inset-top));
   left: var(--site-gutter);
   z-index: 10;
+  display: flex;
+  align-items: center;
+  gap: 16px;
+}
+
+.cs-floating-back,
+.cs-floating-theme {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
   font-size: 14px;
   font-weight: normal;
-  color: #000000;
+  color: var(--color-text-primary);
   text-decoration: none;
   background: transparent;
   border-radius: 0;
@@ -371,12 +378,14 @@
   transition: opacity 0.15s ease;
 }
 
-.cs-floating-back:hover {
+.cs-floating-back:hover,
+.cs-floating-theme:hover {
   opacity: 0.5;
 }
 
-.cs-floating-back:focus-visible {
-  outline: 2px solid #000000;
+.cs-floating-back:focus-visible,
+.cs-floating-theme:focus-visible {
+  outline: 2px solid var(--color-focus-ring);
   outline-offset: 2px;
 }
 
@@ -417,20 +426,27 @@
     touch-action: pan-y;
   }
 
-  .cs-floating-back {
+  .cs-floating-chrome {
     top: calc(var(--cs-mobile-gutter) + env(safe-area-inset-top, 0px));
     left: var(--cs-mobile-gutter);
-    font-size: 13px;
-    padding: 7px 14px;
-    background: rgba(255, 255, 255, 0.88);
-    backdrop-filter: blur(8px);
-    -webkit-backdrop-filter: blur(8px);
-    border: 1px solid rgba(0, 0, 0, 0.08);
-    box-shadow: 0 1px 4px rgba(0, 0, 0, 0.1);
   }
 
-  .cs-floating-back:hover {
-    background: rgba(255, 255, 255, 0.96);
+  .cs-floating-back,
+  .cs-floating-theme {
+    font-size: 13px;
+    padding: 7px 14px;
+    background: var(--color-overlay);
+    backdrop-filter: blur(8px);
+    -webkit-backdrop-filter: blur(8px);
+    border: 1px solid var(--color-border);
+    box-shadow: var(--shadow-sm);
+    border-radius: 100px;
+  }
+
+  .cs-floating-back:hover,
+  .cs-floating-theme:hover {
+    opacity: 1;
+    background: var(--color-surface-elevated);
   }
 
   .cs-visual-col {
@@ -553,7 +569,7 @@
 
   .cs-section--intro .cs-section__body {
     font-size: 15px;
-    color: #555555;
+    color: var(--color-text-tertiary);
   }
 
   .cs-section__logo {
@@ -625,7 +641,7 @@
     padding: 12px var(--site-gutter);
   }
 
-  .cs-floating-back {
+  .cs-floating-chrome {
     top: max(12px, env(safe-area-inset-top));
     left: var(--site-gutter);
   }

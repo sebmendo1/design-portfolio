@@ -1,5 +1,7 @@
 /* Design Tokens — ultra minimalist: white, black, gray only */
 :root {
+  color-scheme: light;
+
   /* Colors */
   --color-background-page: #f8f8f8;
   --color-background-nav-active: #000000;
@@ -12,9 +14,17 @@
   --color-background-section: #f9f9f9;
   --color-background-project-highlight: #f4f3f2;
   --color-background-icon-container: #e8e8e8;
+  --color-surface-elevated: #ffffff;
+  --color-surface-inverse: #111111;
+  --color-border: rgba(0, 0, 0, 0.08);
+  --color-border-strong: rgba(0, 0, 0, 0.14);
+  --color-focus-ring: #000000;
+  --color-overlay: rgba(255, 255, 255, 0.82);
 
   --color-text-primary: #000000;
   --color-text-secondary: #666666;
+  --color-text-tertiary: #555555;
+  --color-text-inverse: #ffffff;
   --color-text-nav-active: #ffffff;
   --color-text-nav-inactive: #000000;
   --color-icon: #999999;
@@ -22,7 +32,7 @@
   --color-pagination-inactive: #cccccc;
 
   --color-error: #b42318;
-  --color-error-muted: color-mix(in srgb, var(--color-error) 18%, white);
+  --color-error-muted: color-mix(in srgb, var(--color-error) 18%, var(--color-background-page));
 
   /* Typography — Seb Sans Var (fluid scale ~320px–1440px) */
   --font-family-fallback: -apple-system, BlinkMacSystemFont, system-ui, "Segoe UI", Roboto,
@@ -85,10 +95,12 @@
   --border-radius-md: 1rem;
   --border-radius-sm: 0.5rem;
 
-  /* Shadows — neutral only */
-  --shadow-sm: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
-  --shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.08);
-  --shadow-nav-tab: 0px 8px 16px 0px rgba(51, 51, 51, 0.06);
+  /* Shadows — theme-aware ink */
+  --shadow-ink: 0, 0, 0;
+  --shadow-sm: 0 1px 2px 0 rgba(var(--shadow-ink), 0.05);
+  --shadow-md: 0 4px 6px -1px rgba(var(--shadow-ink), 0.08);
+  --shadow-nav-tab: 0px 8px 16px 0px rgba(var(--shadow-ink), 0.06);
+  --shadow-pill: 0 1px 3px rgba(var(--shadow-ink), 0.06);
 
   /* Transitions */
   --transition-fast: 150ms cubic-bezier(0.4, 0, 0.2, 1);
@@ -101,6 +113,57 @@
   --animation-duration-slow: 350ms;
 
   --selection-bg: rgba(0, 0, 0, 0.08);
+}
+
+html[data-theme='dark'] {
+  color-scheme: dark;
+
+  --color-background-page: #111111;
+  --color-background-nav-active: #f2f2f2;
+  --color-primary: #f2f2f2;
+  --color-primary-hover: #d8d8d8;
+  --color-background-content-light: #1a1a1a;
+  --color-background-content: #1a1a1a;
+  --background-primary: #1a1a1a;
+  --color-background-placeholder: #3a3a3a;
+  --color-background-section: #171717;
+  --color-background-project-highlight: #1c1c1c;
+  --color-background-icon-container: #2a2a2a;
+  --color-surface-elevated: #1c1c1c;
+  --color-surface-inverse: #f2f2f2;
+  --color-border: rgba(255, 255, 255, 0.1);
+  --color-border-strong: rgba(255, 255, 255, 0.18);
+  --color-focus-ring: #f2f2f2;
+  --color-overlay: rgba(17, 17, 17, 0.78);
+
+  --color-text-primary: #f2f2f2;
+  --color-text-secondary: #a3a3a3;
+  --color-text-tertiary: #8a8a8a;
+  --color-text-inverse: #111111;
+  --color-text-nav-active: #111111;
+  --color-text-nav-inactive: #f2f2f2;
+  --color-icon: #8a8a8a;
+  --color-pagination-active: #f2f2f2;
+  --color-pagination-inactive: #4a4a4a;
+
+  --color-error: #f97066;
+  --color-error-muted: color-mix(in srgb, var(--color-error) 18%, var(--color-background-page));
+
+  --shadow-ink: 0, 0, 0;
+  --shadow-sm: 0 1px 2px 0 rgba(var(--shadow-ink), 0.35);
+  --shadow-md: 0 4px 6px -1px rgba(var(--shadow-ink), 0.4);
+  --shadow-nav-tab: 0px 8px 16px 0px rgba(var(--shadow-ink), 0.28);
+  --shadow-pill: 0 1px 3px rgba(var(--shadow-ink), 0.35);
+
+  --selection-bg: rgba(255, 255, 255, 0.12);
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  html {
+    transition:
+      background-color var(--transition-base),
+      color var(--transition-base);
+  }
 }
 
 ::selection {

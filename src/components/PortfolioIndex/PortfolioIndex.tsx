@@ -12,6 +12,7 @@ import {
 } from '@/lib/portfolio-index';
 import type { ProjectCardSummary } from '@/lib/project-cards';
 import { PageHeadline } from '@/components/PageHeadline/PageHeadline';
+import { ThemeToggle } from '@/components/ThemeToggle/ThemeToggle';
 import { IndexPreview } from './IndexPreview';
 import './PortfolioIndex.css';
 
@@ -80,6 +81,7 @@ export function PortfolioIndex({
               <a href={`mailto:${SITE_CONTACT_EMAIL}`} className="portfolio-index__link">
                 contact
               </a>
+              <ThemeToggle />
             </nav>
           </div>
 

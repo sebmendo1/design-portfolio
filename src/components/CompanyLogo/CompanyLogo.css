@@ -1,7 +1,7 @@
 .company-logo {
   flex-shrink: 0;
   border-radius: 8px;
-  background: #ffffff;
+  background: var(--color-surface-elevated);
   overflow: hidden;
   display: flex;
   align-items: center;

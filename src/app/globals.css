@@ -53,8 +53,8 @@ body {
   left: 16px;
   z-index: 1000;
   padding: 10px 16px;
-  background: #000;
-  color: #fff;
+  background: var(--color-surface-inverse);
+  color: var(--color-text-inverse);
   border-radius: 8px;
   text-decoration: none;
   font-weight: 500;

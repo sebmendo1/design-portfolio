@@ -3,6 +3,7 @@ import Link from 'next/link';
 import { AboutPageLayout } from '@/components/AboutPage/AboutPageLayout';
 import { PageHeadline } from '@/components/PageHeadline/PageHeadline';
 import { StructuredData } from '@/components/StructuredData/StructuredData';
+import { ThemeToggle } from '@/components/ThemeToggle/ThemeToggle';
 import { WorkTimeline } from '@/components/WorkTimeline/WorkTimeline';
 import { PROFILE } from '@/data/profile';
 import { buildProfilePageGraphFromProfile } from '@/lib/json-ld';
@@ -59,6 +60,7 @@ export default function AboutPage() {
                 <a href={`mailto:${SITE_CONTACT_EMAIL}`} className="about-index__link">
                   contact
                 </a>
+                <ThemeToggle />
               </nav>
             </div>
           </div>
