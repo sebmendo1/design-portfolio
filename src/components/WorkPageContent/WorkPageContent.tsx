@@ -8,14 +8,20 @@ type WorkPageContentProps = {
   bioText: string;
   projects: ProjectCardSummary[];
   onProjectNavigate?: (href: string) => void;
+  initialPreviewId?: string;
 };
 
-export function WorkPageContent({ projects, onProjectNavigate }: WorkPageContentProps) {
+export function WorkPageContent({
+  projects,
+  onProjectNavigate,
+  initialPreviewId,
+}: WorkPageContentProps) {
   return (
     <PortfolioIndex
       bio={<IndexBio />}
       projects={projects}
       onNavigate={onProjectNavigate}
+      initialPreviewId={initialPreviewId}
     />
   );
 }

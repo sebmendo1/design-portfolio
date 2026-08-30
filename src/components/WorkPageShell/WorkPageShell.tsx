@@ -9,9 +9,10 @@ import type { ProjectCardSummary } from '@/lib/project-cards';
 type WorkPageShellProps = {
   bioText: string;
   projects: ProjectCardSummary[];
+  initialPreviewId?: string;
 };
 
-export function WorkPageShell({ bioText, projects }: WorkPageShellProps) {
+export function WorkPageShell({ bioText, projects, initialPreviewId }: WorkPageShellProps) {
   const { navigate, isExiting } = useDissolveNavigate();
 
   return (
@@ -31,6 +32,7 @@ export function WorkPageShell({ bioText, projects }: WorkPageShellProps) {
             bioText={bioText}
             projects={projects}
             onProjectNavigate={navigate}
+            initialPreviewId={initialPreviewId}
           />
         </main>
       </motion.div>

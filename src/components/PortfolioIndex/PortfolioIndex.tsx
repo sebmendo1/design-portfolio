@@ -2,10 +2,14 @@
 
 import { useMemo, useRef, useState, type ReactNode } from 'react';
 import Link from 'next/link';
-import { PORTFOLIO_INDEX, PORTFOLIO_INDEX_DEFAULT_ID } from '@/data/portfolioIndex';
+import { PORTFOLIO_INDEX } from '@/data/portfolioIndex';
 import { useIndexScroll } from '@/hooks/useIndexScroll';
 import { SITE_CONTACT_EMAIL } from '@/lib/site';
-import { findPortfolioIndexEntry, groupPortfolioIndex } from '@/lib/portfolio-index';
+import {
+  findPortfolioIndexEntry,
+  groupPortfolioIndex,
+  resolvePortfolioIndexId,
+} from '@/lib/portfolio-index';
 import type { ProjectCardSummary } from '@/lib/project-cards';
 import { PageHeadline } from '@/components/PageHeadline/PageHeadline';
 import { IndexPreview } from './IndexPreview';
@@ -15,6 +19,7 @@ type PortfolioIndexProps = {
   bio: ReactNode;
   projects: ProjectCardSummary[];
   onNavigate?: (href: string) => void;
+  initialPreviewId?: string;
 };
 
 function IndexItem({
@@ -40,8 +45,13 @@ function IndexItem({
   );
 }
 
-export function PortfolioIndex({ bio, projects, onNavigate }: PortfolioIndexProps) {
-  const [activeId, setActiveId] = useState(PORTFOLIO_INDEX_DEFAULT_ID);
+export function PortfolioIndex({
+  bio,
+  projects,
+  onNavigate,
+  initialPreviewId,
+}: PortfolioIndexProps) {
+  const [activeId, setActiveId] = useState(() => resolvePortfolioIndexId(initialPreviewId));
   const layoutRef = useRef<HTMLDivElement>(null);
   const railRef = useRef<HTMLDivElement>(null);
   const sections = useMemo(() => groupPortfolioIndex(PORTFOLIO_INDEX), []);

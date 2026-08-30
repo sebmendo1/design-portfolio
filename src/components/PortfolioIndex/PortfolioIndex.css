@@ -327,6 +327,10 @@
   max-height: 100%;
 }
 
+.portfolio-index__preview-slot > .portfolio-index__device--desktop {
+  max-height: none;
+}
+
 .portfolio-index__well-inner .phone-stencil,
 .portfolio-index__well-inner .phone-stencil--card,
 .portfolio-index__well-inner .phone-stencil--card .phone-stencil__body {
@@ -387,12 +391,11 @@
 }
 
 @media (min-width: 901px) {
-  .portfolio-index__preview-slot > .browser-stencil,
-  .portfolio-index__preview-slot .browser-stencil,
-  .portfolio-index__preview-slot .portfolio-index__device--desktop {
+  .portfolio-index__preview-slot .portfolio-index__device--desktop.browser-stencil,
+  .portfolio-index__preview-slot .browser-stencil.portfolio-index__device--desktop {
     width: min(
       80%,
-      calc((100cqh - var(--browser-chrome)) * var(--content-ar, 1.499))
+      calc((100cqh - var(--browser-chrome)) * var(--content-ar))
     );
     max-width: 80%;
     height: auto;
@@ -400,11 +403,11 @@
     box-sizing: border-box;
   }
 
-  .portfolio-index__preview-slot .browser-stencil__screen {
+  .portfolio-index__preview-slot .portfolio-index__device--desktop .browser-stencil__screen {
     flex: 0 0 auto;
     width: 100%;
     height: auto;
-    aspect-ratio: var(--content-ar, 1.499);
+    aspect-ratio: var(--content-ar);
   }
 }
 

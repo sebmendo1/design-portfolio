@@ -49,7 +49,18 @@ export function findPortfolioIndexEntry(
   id: string,
   entries: PortfolioIndexEntry[] = PORTFOLIO_INDEX,
 ): PortfolioIndexEntry {
-  return entries.find((entry) => entry.id === id) ?? getDefaultPortfolioIndexEntry();
+  return (
+    entries.find((entry) => entry.id === id || entry.previewSlug === id) ??
+    getDefaultPortfolioIndexEntry()
+  );
+}
+
+export function resolvePortfolioIndexId(
+  value?: string,
+  entries: PortfolioIndexEntry[] = PORTFOLIO_INDEX,
+): string {
+  if (!value) return getDefaultPortfolioIndexEntry().id;
+  return findPortfolioIndexEntry(value, entries).id;
 }
 
 export function getPortfolioIndexHref(entry: PortfolioIndexEntry): string | undefined {

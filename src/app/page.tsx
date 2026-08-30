@@ -19,8 +19,15 @@ export const metadata: Metadata = createMetadata({
   },
 });
 
-export default async function WorkPage() {
+export default async function WorkPage({
+  searchParams,
+}: {
+  searchParams: Promise<{ [key: string]: string | string[] | undefined }>;
+}) {
   const projects = await getCachedMergedProjects();
+  const params = await searchParams;
+  const previewParam = params.preview;
+  const initialPreviewId = typeof previewParam === 'string' ? previewParam : undefined;
 
   return (
     <>
@@ -28,6 +35,7 @@ export default async function WorkPage() {
       <WorkPageShell
         bioText={WORK_PAGE_BIO}
         projects={toProjectCardSummaries(projects)}
+        initialPreviewId={initialPreviewId}
       />
     </>
   );
