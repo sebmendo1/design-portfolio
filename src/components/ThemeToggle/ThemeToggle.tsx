@@ -21,7 +21,8 @@ export function ThemeToggle({ className }: ThemeToggleProps) {
       aria-pressed={theme === 'dark'}
       suppressHydrationWarning
     >
-      {next}
+      <span className="theme-toggle__to-dark">dark</span>
+      <span className="theme-toggle__to-light">light</span>
     </button>
   );
 }

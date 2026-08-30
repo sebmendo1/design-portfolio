@@ -12,6 +12,18 @@
   cursor: pointer;
 }
 
+.theme-toggle__to-light {
+  display: none;
+}
+
+html[data-theme='dark'] .theme-toggle__to-dark {
+  display: none;
+}
+
+html[data-theme='dark'] .theme-toggle__to-light {
+  display: inline;
+}
+
 .theme-toggle:hover {
   text-decoration: underline;
   text-underline-offset: 0.14em;
