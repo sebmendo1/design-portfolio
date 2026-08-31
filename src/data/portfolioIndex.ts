@@ -20,7 +20,6 @@ const TINT = {
   salesforce: 'rgba(0, 112, 210, 0.08)',
   writer: 'rgba(90, 70, 50, 0.06)',
   chorus: 'rgba(80, 70, 120, 0.08)',
-  autodsm: 'rgba(20, 24, 32, 0.05)',
 } as const;
 
 export const PORTFOLIO_INDEX_DEFAULT_ID = 'chase-ai-rcs';
@@ -54,15 +53,6 @@ export const PORTFOLIO_INDEX: PortfolioIndexEntry[] = [
     href: '/seb-sans',
     kind: 'typeface',
     tint: TINT.type,
-  },
-  {
-    id: 'autodsm-ai',
-    year: 2026,
-    label: 'AutoDSM AI - Design System Manager',
-    section: 'projects',
-    href: '/work/autodsm-ai',
-    previewSlug: 'autodsm-ai',
-    tint: TINT.autodsm,
   },
   {
     id: 'chase-ai-servicing',
@@ -106,6 +96,15 @@ export const PORTFOLIO_INDEX: PortfolioIndexEntry[] = [
     section: 'work',
     href: '/work/casey-ai',
     previewSlug: 'casey-ai',
+    tint: TINT.chase,
+  },
+  {
+    id: 'cmh-landing',
+    year: 2025,
+    label: 'Chase MyHome - Landing Page',
+    section: 'work',
+    href: '/work/chase-myhome',
+    previewSlug: 'chase-myhome',
     tint: TINT.chase,
   },
   {

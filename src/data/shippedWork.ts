@@ -20,14 +20,6 @@ export const SHIPPED_WORK: ShippedWorkEntry[] = [
     projectSlug: 'memento-ai',
   },
   {
-    id: 'autodsm-ai',
-    title: 'AutoDSM AI',
-    affiliation: 'Side project',
-    sortDate: '2026-06',
-    dateLabel: 'June 2026',
-    projectSlug: 'autodsm-ai',
-  },
-  {
     id: 'agentic-home-lending',
     title: 'Agentic Home Lending',
     affiliation: 'Chase',
@@ -50,6 +42,14 @@ export const SHIPPED_WORK: ShippedWorkEntry[] = [
     affiliation: 'Chase',
     sortDate: '2025-10',
     dateLabel: 'October 2025',
+  },
+  {
+    id: 'cmh-landing',
+    title: 'Chase MyHome Landing Page',
+    affiliation: 'Chase',
+    sortDate: '2025-09',
+    dateLabel: '2025',
+    projectSlug: 'chase-myhome',
   },
   {
     id: 'conversational-voice',
