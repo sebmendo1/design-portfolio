@@ -30,7 +30,7 @@ export function PhoneStencil({
   priority = false,
 }: PhoneStencilProps) {
   const rootRef = useRef<HTMLDivElement>(null);
-  usePhoneBodyWidth(rootRef);
+  const screenW = usePhoneBodyWidth(rootRef);
 
   const rootClass = [
     'phone-stencil',
@@ -44,7 +44,12 @@ export function PhoneStencil({
     <div
       ref={rootRef}
       className={rootClass}
-      style={{ '--content-ar': DEFAULT_PHONE_SCREEN_AR } as CSSProperties}
+      style={
+        {
+          '--content-ar': DEFAULT_PHONE_SCREEN_AR,
+          ...(screenW ? { '--screen-w': `${screenW}px` } : {}),
+        } as CSSProperties
+      }
     >
       <div className="phone-stencil__body">
         <div className="phone-stencil__btn phone-stencil__btn--action" />
