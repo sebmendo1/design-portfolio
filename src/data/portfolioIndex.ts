@@ -99,15 +99,6 @@ export const PORTFOLIO_INDEX: PortfolioIndexEntry[] = [
     tint: TINT.chase,
   },
   {
-    id: 'cmh-landing',
-    year: 2025,
-    label: 'Chase MyHome - Landing Page',
-    section: 'work',
-    href: '/work/chase-myhome',
-    previewSlug: 'chase-myhome',
-    tint: TINT.chase,
-  },
-  {
     id: 'cmh-calculators',
     year: 2025,
     label: 'ChaseMyHome - Mortgage Calculators',
@@ -116,9 +107,9 @@ export const PORTFOLIO_INDEX: PortfolioIndexEntry[] = [
     tint: TINT.chase,
   },
   {
-    id: 'cmh-onboarding',
+    id: 'cmh-landing',
     year: 2024,
-    label: 'ChaseMyHome - Onboarding',
+    label: 'Chase MyHome - Landing Page',
     section: 'work',
     href: '/work/chase-myhome',
     previewSlug: 'chase-myhome',
@@ -132,15 +123,6 @@ export const PORTFOLIO_INDEX: PortfolioIndexEntry[] = [
     href: '/work/chase-myhome',
     previewSlug: 'chase-myhome',
     tint: TINT.chase,
-  },
-  {
-    id: 'sf-docs',
-    year: 2023,
-    label: 'Salesforce Help - Documentation',
-    section: 'work',
-    href: '/work/salesforce-help',
-    previewSlug: 'salesforce-help',
-    tint: TINT.salesforce,
   },
   {
     id: 'sf-contact',

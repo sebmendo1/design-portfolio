@@ -44,14 +44,6 @@ export const SHIPPED_WORK: ShippedWorkEntry[] = [
     dateLabel: 'October 2025',
   },
   {
-    id: 'cmh-landing',
-    title: 'Chase MyHome Landing Page',
-    affiliation: 'Chase',
-    sortDate: '2025-09',
-    dateLabel: '2025',
-    projectSlug: 'chase-myhome',
-  },
-  {
     id: 'conversational-voice',
     title: 'Conversational AI (Voice)',
     affiliation: 'Chase',
@@ -60,11 +52,11 @@ export const SHIPPED_WORK: ShippedWorkEntry[] = [
     projectSlug: 'casey-ai',
   },
   {
-    id: 'chase-onboarding',
-    title: 'Chase MyHome Onboarding',
+    id: 'cmh-landing',
+    title: 'Chase MyHome Landing Page',
     affiliation: 'Chase',
-    sortDate: '2024-06',
-    dateLabel: 'June 2024',
+    sortDate: '2024-08',
+    dateLabel: '2024',
     projectSlug: 'chase-myhome',
   },
   {
