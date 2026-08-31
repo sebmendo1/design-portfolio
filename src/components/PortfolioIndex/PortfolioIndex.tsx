@@ -4,7 +4,7 @@ import { useMemo, useRef, useState, type ReactNode } from 'react';
 import Link from 'next/link';
 import { PORTFOLIO_INDEX } from '@/data/portfolioIndex';
 import { useIndexScroll } from '@/hooks/useIndexScroll';
-import { SITE_CONTACT_EMAIL } from '@/lib/site';
+import { SITE_SOCIAL_NAV } from '@/lib/site';
 import {
   findPortfolioIndexEntry,
   groupPortfolioIndex,
@@ -109,9 +109,11 @@ export function PortfolioIndex({
             <Link href="/about" className="portfolio-index__link">
               about
             </Link>
-            <a href={`mailto:${SITE_CONTACT_EMAIL}`} className="portfolio-index__link">
-              contact
-            </a>
+            {SITE_SOCIAL_NAV.map((link) => (
+              <a key={link.href} href={link.href} className="portfolio-index__link" rel="me">
+                {link.label}
+              </a>
+            ))}
             <ThemeToggle />
           </nav>
         </div>

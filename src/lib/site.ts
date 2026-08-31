@@ -21,8 +21,16 @@ export const SITE_CONTACT_EMAIL = 'contact@sebastianmendo.design';
 
 /** Profile URLs for JSON-LD sameAs and external identity links. */
 export const SITE_LINKEDIN_URL = 'https://www.linkedin.com/in/sebastianmendo/';
+export const SITE_GITHUB_URL = 'https://github.com/sebmendo1';
+export const SITE_X_URL = 'https://x.com/Seb_Mendo_1';
 
-export const SITE_SOCIAL_LINKS: string[] = [SITE_LINKEDIN_URL];
+export const SITE_SOCIAL_NAV = [
+  { label: 'linkedin', href: SITE_LINKEDIN_URL },
+  { label: 'github', href: SITE_GITHUB_URL },
+  { label: 'x', href: SITE_X_URL },
+] as const;
+
+export const SITE_SOCIAL_LINKS: string[] = SITE_SOCIAL_NAV.map((link) => link.href);
 
 export const WORK_PAGE_BIO_LEAD_PREFIX =
   'Sebastian is a Senior Product Designer building agentic banking experiences at ';

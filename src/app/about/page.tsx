@@ -8,7 +8,7 @@ import { WorkTimeline } from '@/components/WorkTimeline/WorkTimeline';
 import { PROFILE } from '@/data/profile';
 import { buildProfilePageGraphFromProfile } from '@/lib/json-ld';
 import { canonicalPath, createMetadata } from '@/lib/metadata';
-import { SITE_CONTACT_EMAIL, SITE_LINKEDIN_URL } from '@/lib/site';
+import { SITE_SOCIAL_NAV } from '@/lib/site';
 import './about.css';
 
 const ABOUT_DESCRIPTION = PROFILE.aboutIntro.paragraphs[0];
@@ -55,12 +55,11 @@ export default function AboutPage() {
               <Link href="/" className="about-index__link">
                 work
               </Link>
-              <Link href={SITE_LINKEDIN_URL} className="about-index__link" rel="me">
-                linkedin
-              </Link>
-              <a href={`mailto:${SITE_CONTACT_EMAIL}`} className="about-index__link">
-                contact
-              </a>
+              {SITE_SOCIAL_NAV.map((link) => (
+                <a key={link.href} href={link.href} className="about-index__link" rel="me">
+                  {link.label}
+                </a>
+              ))}
               <ThemeToggle />
             </nav>
           </div>
