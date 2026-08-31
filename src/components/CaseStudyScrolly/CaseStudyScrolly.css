@@ -469,6 +469,12 @@ html[data-theme='dark'] .cs-text-col__edge--bottom {
     border-radius: 100px;
   }
 
+  .cs-floating-theme {
+    width: 32px;
+    height: 32px;
+    padding: 0;
+  }
+
   .cs-floating-back:hover,
   .cs-floating-theme:hover {
     opacity: 1;

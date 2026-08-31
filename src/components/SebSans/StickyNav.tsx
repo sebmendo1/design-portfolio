@@ -35,7 +35,7 @@ export function StickyNav() {
           <Link className="brand-mark" href={SEB_SANS_BASE_PATH} aria-label="Seb Sans home">
             <span className="brand-dot" aria-hidden="true" />
           </Link>
-          <ThemeToggle className="theme-toggle--seb-sans" />
+          <ThemeToggle />
         </div>
 
         <InstallMethodSwitch className="nav-segmented" />

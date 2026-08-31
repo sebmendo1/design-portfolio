@@ -119,6 +119,7 @@
 .portfolio-index__links {
   display: flex;
   flex-wrap: wrap;
+  align-items: center;
   gap: 16px;
   margin-top: auto;
   padding: 8px clamp(16px, 3vw, 24px) 32px;
