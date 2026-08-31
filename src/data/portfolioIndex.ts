@@ -154,7 +154,7 @@ export const PORTFOLIO_INDEX: PortfolioIndexEntry[] = [
   {
     id: 'sf-pages',
     year: 2022,
-    label: 'Salesforce - Customer Support Pages',
+    label: 'Salesforce Help - Home',
     section: 'work',
     href: '/work/salesforce-help',
     previewSlug: 'salesforce-help',
