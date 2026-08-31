@@ -349,13 +349,7 @@
 }
 
 .portfolio-index__well-inner .phone-stencil--card .phone-stencil__screen {
-  width: min(
-    calc(100cqw / var(--phone-body-scale)),
-    calc(
-      (100cqh * var(--phone-default-ar)) /
-        (1 + 2 * var(--phone-bezel-ratio) * var(--phone-default-ar))
-    )
-  );
+  width: var(--screen-w);
   height: auto;
   aspect-ratio: var(--phone-default-ar);
   max-width: 100%;

@@ -15,7 +15,14 @@
 }
 
 .phone-stencil {
-  --screen-w: 200px;
+  --phone-screen-fit: min(
+    calc(100cqw / var(--phone-body-scale)),
+    calc(
+      (100cqh * var(--content-ar, var(--phone-default-ar))) /
+        (1 + 2 * var(--phone-bezel-ratio) * var(--content-ar, var(--phone-default-ar)))
+    )
+  );
+  --screen-w: var(--phone-screen-fit);
   --phone-bezel: calc(var(--screen-w) * var(--phone-bezel-ratio));
   --phone-screen-radius: calc(var(--screen-w) * var(--phone-screen-radius-ratio));
   --phone-radius: calc(var(--phone-screen-radius) + var(--phone-bezel));
@@ -74,28 +81,14 @@
 }
 
 @media (min-width: 901px) {
-  .phone-stencil--case-study .phone-stencil__screen {
-    width: min(
-      25rem,
-      calc(100cqw / var(--phone-body-scale)),
-      calc(
-        (100cqh * var(--content-ar, var(--phone-default-ar))) /
-          (1 + 2 * var(--phone-bezel-ratio) * var(--content-ar, var(--phone-default-ar)))
-      )
-    );
+  .phone-stencil--case-study {
+    --screen-w: min(25rem, var(--phone-screen-fit));
   }
 }
 
 @media (max-width: 900px) and (orientation: portrait) {
-  .phone-stencil--case-study .phone-stencil__screen {
-    width: min(
-      240px,
-      calc(100cqw / var(--phone-body-scale)),
-      calc(
-        (100cqh * var(--content-ar, var(--phone-default-ar))) /
-          (1 + 2 * var(--phone-bezel-ratio) * var(--content-ar, var(--phone-default-ar)))
-      )
-    );
+  .phone-stencil--case-study {
+    --screen-w: min(240px, var(--phone-screen-fit));
   }
 }
 
@@ -216,14 +209,7 @@
 .phone-stencil__screen {
   position: relative;
   aspect-ratio: var(--content-ar, var(--phone-default-ar));
-  width: 100%;
-  width: min(
-    calc(100cqw / var(--phone-body-scale)),
-    calc(
-      (100cqh * var(--content-ar, var(--phone-default-ar))) /
-        (1 + 2 * var(--phone-bezel-ratio) * var(--content-ar, var(--phone-default-ar)))
-    )
-  );
+  width: var(--screen-w);
   height: auto;
   max-width: 100%;
   min-width: 0;
