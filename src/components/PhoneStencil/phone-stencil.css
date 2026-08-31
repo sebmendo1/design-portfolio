@@ -1,22 +1,26 @@
 /*
  * iPhone 15 Pro stencil — logical chrome (pt)
- * Display 393×852 | radius 55 | island 125×36 @ 11.5 from top
+ * Display 393×852 | screen radius 55 | island 125×36 @ 11.5 from top
  * Home indicator 134×5 @ 8 from bottom | titanium lip 9.5
- * --body-w is the laid-out body width (see usePhoneBodyWidth.ts).
+ * Chassis radius is always screen radius + lip so corners stay concentric.
+ * --screen-w is the laid-out display width (see usePhoneBodyWidth.ts).
  */
 :root {
   --phone-body: #1c1c1e;
   --phone-default-ar: 0.461268; /* 393/852 */
   --phone-bezel-ratio: 0.024173; /* 9.5/393 */
+  --phone-screen-radius-ratio: 0.139949; /* 55/393 */
+  --phone-body-radius-ratio: 0.164122; /* 64.5/393 */
   --phone-body-scale: 1.048346; /* 1 + 2× bezel */
 }
 
 .phone-stencil {
-  --body-w: 200px;
-  --phone-bezel: calc(var(--body-w) * 0.02306); /* 9.5/412 */
-  --phone-radius: calc(var(--body-w) * 0.1566); /* 64.5/412 */
-  --phone-screen-radius: calc(var(--body-w) * 0.1335); /* 55/412 */
-  --phone-btn-w: max(calc(var(--body-w) * 0.00728), 1.5px); /* 3/412 */
+  --screen-w: 200px;
+  --phone-bezel: calc(var(--screen-w) * var(--phone-bezel-ratio));
+  --phone-screen-radius: calc(var(--screen-w) * var(--phone-screen-radius-ratio));
+  --phone-radius: calc(var(--phone-screen-radius) + var(--phone-bezel));
+  --body-w: calc(var(--screen-w) + 2 * var(--phone-bezel));
+  --phone-btn-w: max(calc(var(--screen-w) * 3 / 393), 1.5px);
   width: fit-content;
   max-width: min(100%, var(--site-max));
   min-width: 0;
@@ -204,6 +208,11 @@
   Height fit accounts for equal bezels on a tall 393/852 display.
   Do not add container-type on .phone-stencil — it would steal cqw/cqh from the host.
 */
+.phone-stencil__screen,
+.phone-stencil__screen .lazy-video {
+  border-radius: var(--phone-screen-radius);
+}
+
 .phone-stencil__screen {
   position: relative;
   aspect-ratio: var(--content-ar, var(--phone-default-ar));
@@ -347,4 +356,5 @@
   object-position: top center;
   display: block;
   background: #000000;
+  border-radius: inherit;
 }

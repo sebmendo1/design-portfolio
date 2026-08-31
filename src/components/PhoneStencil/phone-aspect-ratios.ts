@@ -15,6 +15,12 @@ export const PHONE_BODY_WIDTH = 393;
 /** Bezel inset per side at reference size (pt) */
 export const PHONE_BEZEL_PT = 9.5;
 
+/** Display corner radius at reference size (pt) */
+export const PHONE_SCREEN_RADIUS_PT = 55;
+
+/** Outer chassis radius = display radius + lip */
+export const PHONE_BODY_RADIUS_PT = PHONE_SCREEN_RADIUS_PT + PHONE_BEZEL_PT;
+
 /** Side button width at reference size (pt) */
 export const PHONE_BUTTON_WIDTH_PT = 3;
 
