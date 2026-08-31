@@ -19,10 +19,20 @@ export function usePhoneBodyWidth(rootRef: RefObject<HTMLDivElement | null>) {
     if (!screen && !body) return;
 
     const update = () => {
-      const measured = screen?.getBoundingClientRect().width ?? 0;
-      const width = measured > 0 ? measured : (body?.getBoundingClientRect().width ?? 0);
-      if (width <= 0) return;
-      const next = Math.round(width * 100) / 100;
+      const screenWidth = screen?.getBoundingClientRect().width ?? 0;
+      if (screenWidth > 0) {
+        const next = Math.round(screenWidth * 100) / 100;
+        setScreenW((prev) => (prev !== null && Math.abs(prev - next) < 0.5 ? prev : next));
+        return;
+      }
+
+      if (!body) return;
+      const style = getComputedStyle(body);
+      const pad =
+        (parseFloat(style.paddingLeft) || 0) + (parseFloat(style.paddingRight) || 0);
+      const inner = body.clientWidth - pad;
+      if (inner <= 0) return;
+      const next = Math.round(inner * 100) / 100;
       setScreenW((prev) => (prev !== null && Math.abs(prev - next) < 0.5 ? prev : next));
     };
 

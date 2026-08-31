@@ -339,17 +339,24 @@
 }
 
 .portfolio-index__well-inner .phone-stencil,
-.portfolio-index__well-inner .phone-stencil--card,
+.portfolio-index__well-inner .phone-stencil--card {
+  --content-ar: var(--phone-default-ar);
+  width: min(var(--body-w), 100%);
+  height: auto;
+  max-width: 100%;
+  max-height: 100%;
+}
+
 .portfolio-index__well-inner .phone-stencil--card .phone-stencil__body {
   --content-ar: var(--phone-default-ar);
-  width: auto;
+  width: 100%;
   height: auto;
   max-width: 100%;
   max-height: 100%;
 }
 
 .portfolio-index__well-inner .phone-stencil--card .phone-stencil__screen {
-  width: var(--screen-w);
+  width: 100%;
   height: auto;
   aspect-ratio: var(--phone-default-ar);
   max-width: 100%;

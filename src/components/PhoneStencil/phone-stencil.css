@@ -3,7 +3,8 @@
  * Display 393×852 | screen radius 55 | island 125×36 @ 11.5 from top
  * Home indicator 134×5 @ 8 from bottom | titanium lip 9.5
  * Chassis radius is always screen radius + lip so corners stay concentric.
- * --screen-w is the laid-out display width (see usePhoneBodyWidth.ts).
+ * The chassis width is --body-w; the screen is 100% of the padded box so
+ * recordings cannot widen the display past the radius basis.
  */
 :root {
   --phone-body: #1c1c1e;
@@ -28,7 +29,7 @@
   --phone-radius: calc(var(--phone-screen-radius) + var(--phone-bezel));
   --body-w: calc(var(--screen-w) + 2 * var(--phone-bezel));
   --phone-btn-w: max(calc(var(--screen-w) * 3 / 393), 1.5px);
-  width: fit-content;
+  width: min(var(--body-w), 100%);
   max-width: min(100%, var(--site-max));
   min-width: 0;
   margin-inline: auto;
@@ -36,7 +37,8 @@
 
 .phone-stencil__body {
   position: relative;
-  width: fit-content;
+  box-sizing: border-box;
+  width: 100%;
   height: fit-content;
   padding: var(--phone-bezel);
   border-radius: var(--phone-radius);
@@ -62,7 +64,7 @@
    concentric with the display clip or with baked-in recording corners. */
 
 .phone-stencil--case-study {
-  width: auto;
+  width: min(var(--body-w), 100%);
   max-width: min(100%, var(--site-max));
   max-height: 100%;
 }
@@ -89,7 +91,7 @@
 }
 
 .phone-stencil--card {
-  width: auto;
+  width: min(var(--body-w), 100%);
   max-width: min(100%, var(--site-max));
   max-height: 100%;
 }
@@ -153,7 +155,7 @@
 @media (min-width: 769px) and (orientation: portrait), (min-width: 901px) {
   .phone-stencil--card .phone-stencil__body {
     justify-content: center;
-    width: fit-content;
+    width: 100%;
     height: fit-content;
     max-height: 100%;
   }
@@ -183,7 +185,7 @@
   content: '';
   position: absolute;
   inset: var(--phone-bezel);
-  border-radius: var(--phone-screen-radius);
+  border-radius: calc(var(--phone-radius) - var(--phone-bezel));
   box-shadow: inset 0 0 0 calc(var(--body-w) * 0.0012) rgba(255, 255, 255, 0.06);
   pointer-events: none;
   z-index: 4;
@@ -198,23 +200,20 @@
 .phone-stencil__screen {
   position: relative;
   aspect-ratio: var(--content-ar, var(--phone-default-ar));
-  width: var(--screen-w);
+  width: 100%;
   height: auto;
   max-width: 100%;
   min-width: 0;
-  margin-inline: auto;
   overflow: hidden;
-  border-radius: var(--phone-screen-radius);
-  background: #000000;
-  display: flex;
-  align-items: center;
-  justify-content: center;
+  /* Inner radius = outer radius − lip, so the clip sits on the padded edge. */
+  border-radius: calc(var(--phone-radius) - var(--phone-bezel));
+  background: var(--phone-body);
 }
 
 .phone-stencil__screen-fill {
-  width: 100%;
-  height: 100%;
-  background: #0a0a0a;
+  position: absolute;
+  inset: 0;
+  background: var(--phone-body);
 }
 
 .phone-stencil__island {
@@ -324,34 +323,28 @@
   box-shadow: calc(var(--body-w) * 0.0025) 0 calc(var(--body-w) * 0.005) rgba(0, 0, 0, 0.6);
 }
 
+/*
+  Media is out of flow so the 786px intrinsic recording cannot widen the
+  screen past the chassis. max-width:none beats the global img cap.
+*/
 .phone-stencil__media,
-.phone-stencil__screen .lazy-video {
+.phone-stencil__screen .lazy-video,
+.phone-stencil__screen .lazy-video .lazy-video__el,
+.phone-stencil__screen .lazy-video .lazy-video__poster {
+  position: absolute;
+  inset: 0;
   width: 100%;
   height: 100%;
+  max-width: none;
+  max-height: none;
   display: block;
   border-radius: 0;
-}
-
-/*
-  Recordings already include the iPhone display curve. Scale them just
-  enough that those baked-in corners sit under the stencil clip instead
-  of leaving a black wedge between the UI and the titanium lip.
-*/
-.phone-stencil__media {
   object-fit: cover;
   object-position: center;
-  transform: scale(1.06);
-  transform-origin: center;
+  transform: none;
   background: transparent;
 }
 
 .phone-stencil__screen .lazy-video {
   overflow: hidden;
-  transform: scale(1.06);
-  transform-origin: center;
-}
-
-.phone-stencil__screen .lazy-video .lazy-video__el,
-.phone-stencil__screen .lazy-video .lazy-video__poster {
-  transform: none;
 }

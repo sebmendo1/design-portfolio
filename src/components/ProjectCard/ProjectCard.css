@@ -361,7 +361,7 @@
 @media (min-width: 769px) and (orientation: portrait), (min-width: 901px) {
   .project-card__visual-inner .phone-stencil {
     flex: 0 0 auto;
-    width: auto;
+    width: min(var(--body-w), 100%);
     max-width: 100%;
     max-height: 100%;
   }
