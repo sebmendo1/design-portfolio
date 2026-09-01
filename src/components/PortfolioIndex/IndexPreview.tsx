@@ -132,7 +132,7 @@ function DevicePreview({
 
 function OpenProjectIcon() {
   return (
-    <svg viewBox="0 0 16 16" width="16" height="16" aria-hidden="true">
+    <svg viewBox="0 0 16 16" width="20" height="20" aria-hidden="true">
       <path
         d="M4 12 12 4M12 4H5M12 4v7"
         fill="none"
@@ -163,6 +163,7 @@ function PreviewWell({
   href,
   tint,
   label,
+  summary,
   phone,
   onNavigate,
   children,
@@ -170,13 +171,13 @@ function PreviewWell({
   href?: string;
   tint: string;
   label: string;
+  summary: string;
   phone?: boolean;
   onNavigate?: (href: string) => void;
   children: ReactNode;
 }) {
   const className = [
     'portfolio-index__well',
-    href ? 'portfolio-index__well--link' : '',
     phone ? 'portfolio-index__well--phone' : '',
   ]
     .filter(Boolean)
@@ -188,34 +189,35 @@ function PreviewWell({
     onNavigate(href);
   }
 
-  const body = (
-    <>
-      {href ? (
-        <span className="portfolio-index__open" aria-hidden="true">
-          <OpenProjectIcon />
-        </span>
-      ) : null}
-      <div className="portfolio-index__well-stage">{children}</div>
-    </>
+  const stage = href ? (
+    <a
+      href={href}
+      className="portfolio-index__well-device"
+      aria-label={`Open ${label}`}
+      onClick={handleOpen}
+    >
+      {children}
+    </a>
+  ) : (
+    children
   );
-
-  if (href) {
-    return (
-      <a
-        href={href}
-        className={className}
-        style={{ backgroundColor: tint }}
-        aria-label={`Open ${label}`}
-        onClick={handleOpen}
-      >
-        {body}
-      </a>
-    );
-  }
 
   return (
     <div className={className} style={{ backgroundColor: tint }}>
-      {body}
+      <div className="portfolio-index__well-bar">
+        <p className="portfolio-index__well-summary">{summary}</p>
+        {href ? (
+          <a
+            href={href}
+            className="portfolio-index__well-cta"
+            onClick={handleOpen}
+          >
+            Case study
+            <OpenProjectIcon />
+          </a>
+        ) : null}
+      </div>
+      <div className="portfolio-index__well-stage">{stage}</div>
     </div>
   );
 }
@@ -252,6 +254,7 @@ export function IndexPreview({ entry, project, onNavigate }: IndexPreviewProps) 
       href={href}
       tint={entry.tint}
       label={entry.label}
+      summary={entry.summary}
       phone={previewFrame(entry, project) === 'phone'}
       onNavigate={onNavigate}
     >

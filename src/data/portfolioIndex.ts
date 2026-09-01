@@ -46,6 +46,8 @@ export type PortfolioIndexEntry = {
   /** Overrides the case-study preview for this index row. */
   preview?: ProjectPreview;
   kind?: PortfolioIndexKind;
+  /** One sentence for the index well. No dashes. */
+  summary: string;
   tint: string;
 };
 
@@ -79,6 +81,8 @@ export const PORTFOLIO_INDEX: PortfolioIndexEntry[] = [
     section: 'projects',
     href: '/work/memento-ai',
     previewSlug: 'memento-ai',
+    summary:
+      'Memento is a fully local AI journal that allows you to write and reflect in complete privacy.',
     tint: TINT.memento,
   },
   {
@@ -88,6 +92,8 @@ export const PORTFOLIO_INDEX: PortfolioIndexEntry[] = [
     section: 'projects',
     href: '/seb-sans',
     kind: 'typeface',
+    summary:
+      'Seb Sans is a variable typeface tuned so AI generated answers, drafts, and streamed UI copy stay easy to read.',
     tint: TINT.type,
   },
   {
@@ -97,6 +103,8 @@ export const PORTFOLIO_INDEX: PortfolioIndexEntry[] = [
     section: 'work',
     href: '/work/agentic-home-lending',
     previewSlug: 'agentic-home-lending',
+    summary:
+      'An agent that works a home lending case on the customer’s behalf instead of leaving them in a long document loop.',
     tint: TINT.chase,
   },
   {
@@ -107,6 +115,8 @@ export const PORTFOLIO_INDEX: PortfolioIndexEntry[] = [
     href: '/work/casey-ai',
     previewSlug: 'casey-ai',
     preview: CHASE_AI_INTERNAL_CHATBOT_PREVIEW,
+    summary:
+      'A desktop agent employees use to run Chase work from one conversational workspace.',
     tint: TINT.chase,
   },
   {
@@ -116,6 +126,8 @@ export const PORTFOLIO_INDEX: PortfolioIndexEntry[] = [
     section: 'work',
     href: '/work/agentic-home-lending',
     previewSlug: 'agentic-home-lending',
+    summary:
+      'Guided origination where the system requests documents, flags underwriting issues, and surfaces alternatives as the applicant moves.',
     tint: TINT.chase,
   },
   {
@@ -125,6 +137,8 @@ export const PORTFOLIO_INDEX: PortfolioIndexEntry[] = [
     section: 'work',
     href: '/work/casey-ai',
     previewSlug: 'casey-ai',
+    summary:
+      'Casey is Chase’s first customer facing AI agent, talking with people by voice and text in home lending.',
     tint: TINT.chase,
   },
   {
@@ -140,6 +154,7 @@ export const PORTFOLIO_INDEX: PortfolioIndexEntry[] = [
       url: 'chase.com',
       screenAspectRatio: CHASE_MYHOME_CALCULATORS_SCREEN_AR,
     },
+    summary: 'Public tools that let people run the mortgage math before they apply.',
     tint: TINT.chase,
   },
   {
@@ -150,6 +165,8 @@ export const PORTFOLIO_INDEX: PortfolioIndexEntry[] = [
     href: '/work/chase-myhome',
     previewSlug: 'chase-myhome',
     preview: CHASE_MYHOME_LANDING_PREVIEW,
+    summary:
+      'The Chase.com entry that introduces MyHome and routes people into rates, tools, and apply.',
     tint: TINT.chase,
   },
   {
@@ -159,6 +176,7 @@ export const PORTFOLIO_INDEX: PortfolioIndexEntry[] = [
     section: 'work',
     href: '/work/chase-myhome',
     previewSlug: 'chase-myhome',
+    summary: 'The in-app path for starting and completing a Chase mortgage application.',
     tint: TINT.chase,
   },
   {
@@ -168,6 +186,8 @@ export const PORTFOLIO_INDEX: PortfolioIndexEntry[] = [
     section: 'work',
     href: '/work/salesforce-help',
     previewSlug: 'salesforce-help',
+    summary:
+      'Customers describe the issue in their own words and Einstein routes them to the best channel.',
     tint: TINT.salesforce,
   },
   {
@@ -183,6 +203,8 @@ export const PORTFOLIO_INDEX: PortfolioIndexEntry[] = [
       url: 'help.salesforce.com',
       screenAspectRatio: SALESFORCE_HELP_HOME_SCREEN_AR,
     },
+    summary:
+      'The Salesforce Help homepage that orients people before they pick a support path.',
     tint: TINT.salesforce,
   },
   {
@@ -198,6 +220,8 @@ export const PORTFOLIO_INDEX: PortfolioIndexEntry[] = [
       url: 'help.salesforce.com',
       screenAspectRatio: SALESFORCE_HELP_CASES_SCREEN_AR,
     },
+    summary:
+      'The Salesforce Help case surface where submitted issues are tracked after routing.',
     tint: TINT.salesforce,
   },
   {
@@ -207,6 +231,8 @@ export const PORTFOLIO_INDEX: PortfolioIndexEntry[] = [
     section: 'work',
     href: '/work/writer-ai',
     previewSlug: 'writer-ai',
+    summary:
+      'Highlight text, pick a rewrite mode, and insert the result across the editor, apps, extensions, and Figma.',
     tint: TINT.writer,
   },
   {
@@ -217,6 +243,7 @@ export const PORTFOLIO_INDEX: PortfolioIndexEntry[] = [
     href: '/work/writer-ai',
     previewSlug: 'writer-ai',
     preview: WRITER_PAGE_EDITOR_PREVIEW,
+    summary: 'The WRITER page editor where teams draft and govern enterprise content.',
     tint: TINT.writer,
   },
   {
@@ -226,6 +253,8 @@ export const PORTFOLIO_INDEX: PortfolioIndexEntry[] = [
     section: 'work',
     href: '/work/chorus-ai',
     previewSlug: 'chorus-ai',
+    summary:
+      'A rebuilt design system that standardized Chorus UI ahead of the ZoomInfo acquisition.',
     tint: TINT.chorus,
   },
 ];
