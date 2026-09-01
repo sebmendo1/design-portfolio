@@ -166,7 +166,7 @@ export const PORTFOLIO_INDEX: PortfolioIndexEntry[] = [
     previewSlug: 'chase-myhome',
     preview: CHASE_MYHOME_LANDING_PREVIEW,
     summary:
-      'The Chase.com entry that introduces MyHome and routes people into rates, tools, and apply.',
+      'Designing and strategizing landing pages for Chase MyHome entry points that routes people into rates, tools, and apply.',
     tint: TINT.chase,
   },
   {
