@@ -116,7 +116,7 @@ export const PORTFOLIO_INDEX: PortfolioIndexEntry[] = [
     previewSlug: 'casey-ai',
     preview: CHASE_AI_INTERNAL_CHATBOT_PREVIEW,
     summary:
-      'A desktop agent employees use to run Chase work from one conversational workspace.',
+      'Built, shipped, and maintaining 20+ AI chat components for internal dashboard use cases.',
     tint: TINT.chase,
   },
   {
