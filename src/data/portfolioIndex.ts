@@ -12,7 +12,7 @@ import {
 export const CHASE_MYHOME_LANDING_PREVIEW: ProjectPreview = {
   frame: 'browser',
   src: '/assets/chase-myhome-landing.png',
-  url: 'chase.com',
+  url: 'chase.com/personal/mortgage',
   screenAspectRatio: CHASE_MYHOME_LANDING_SCREEN_AR,
 };
 
@@ -28,7 +28,7 @@ export const CHASE_AI_INTERNAL_CHATBOT_PREVIEW: ProjectPreview = {
 export const WRITER_PAGE_EDITOR_PREVIEW: ProjectPreview = {
   frame: 'browser',
   src: '/assets/writer-page-editor.png',
-  url: 'writer.com',
+  url: 'app.writer.com',
   screenAspectRatio: WRITER_PAGE_EDITOR_SCREEN_AR,
 };
 
@@ -71,7 +71,8 @@ export function getDefaultPortfolioIndexEntry(): PortfolioIndexEntry {
 
 /**
  * Home index — labels and year grouping follow the 2026 Figma portfolio.
- * href/previewSlug map onto existing case studies and the Seb Sans page.
+ * href is the well CTA: a case study, a live product page, or omitted when
+ * nothing public exists. previewSlug only drives the well preview.
  */
 export const PORTFOLIO_INDEX: PortfolioIndexEntry[] = [
   {
@@ -101,8 +102,8 @@ export const PORTFOLIO_INDEX: PortfolioIndexEntry[] = [
     year: 2026,
     label: 'Chase AI - Agentic Loan Servicing',
     section: 'work',
-    href: '/work/agentic-home-lending',
-    previewSlug: 'agentic-home-lending',
+    href: '/work/chase-ai-servicing',
+    previewSlug: 'chase-ai-servicing',
     summary:
       'Building an evaluations platform for measuring performance of Chase AI agents.',
     tint: TINT.chase,
@@ -112,8 +113,8 @@ export const PORTFOLIO_INDEX: PortfolioIndexEntry[] = [
     year: 2026,
     label: 'Chase AI - Internal Agentic Chatbot',
     section: 'work',
-    href: '/work/casey-ai',
-    previewSlug: 'casey-ai',
+    href: '/work/chase-ai-internal',
+    previewSlug: 'chase-ai-internal',
     preview: CHASE_AI_INTERNAL_CHATBOT_PREVIEW,
     summary:
       'Built, shipped, and maintaining 20+ AI chat components for internal dashboard use cases.',
@@ -146,12 +147,12 @@ export const PORTFOLIO_INDEX: PortfolioIndexEntry[] = [
     year: 2025,
     label: 'Chase MyHome - Mortgage Calculators',
     section: 'work',
-    href: '/work/chase-myhome',
+    href: 'https://www.chase.com/personal/mortgage/calculators-resources/mortgage-calculator',
     previewSlug: 'chase-myhome',
     preview: {
       frame: 'browser',
       src: '/assets/chase-myhome-calculators.png',
-      url: 'chase.com',
+      url: 'chase.com/personal/mortgage/calculators-resources/mortgage-calculator',
       screenAspectRatio: CHASE_MYHOME_CALCULATORS_SCREEN_AR,
     },
     summary: 'Public tools that let people run the mortgage math before they apply.',
@@ -162,7 +163,7 @@ export const PORTFOLIO_INDEX: PortfolioIndexEntry[] = [
     year: 2024,
     label: 'Chase MyHome - Landing Page',
     section: 'work',
-    href: '/work/chase-myhome',
+    href: 'https://www.chase.com/personal/mortgage',
     previewSlug: 'chase-myhome',
     preview: CHASE_MYHOME_LANDING_PREVIEW,
     summary:
@@ -195,7 +196,7 @@ export const PORTFOLIO_INDEX: PortfolioIndexEntry[] = [
     year: 2022,
     label: 'Salesforce Help - Home',
     section: 'work',
-    href: '/work/salesforce-help',
+    href: 'https://help.salesforce.com',
     previewSlug: 'salesforce-help',
     preview: {
       frame: 'browser',
@@ -212,7 +213,7 @@ export const PORTFOLIO_INDEX: PortfolioIndexEntry[] = [
     year: 2022,
     label: 'Salesforce Help - Cases',
     section: 'work',
-    href: '/work/salesforce-help',
+    href: 'https://help.salesforce.com',
     previewSlug: 'salesforce-help',
     preview: {
       frame: 'browser',
@@ -240,7 +241,7 @@ export const PORTFOLIO_INDEX: PortfolioIndexEntry[] = [
     year: 2021,
     label: 'WRITER AI - Page Editor',
     section: 'work',
-    href: '/work/writer-ai',
+    href: 'https://app.writer.com',
     previewSlug: 'writer-ai',
     preview: WRITER_PAGE_EDITOR_PREVIEW,
     summary: 'The WRITER page editor where teams draft and govern enterprise content.',

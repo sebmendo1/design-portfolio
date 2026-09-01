@@ -20,6 +20,23 @@ export const SHIPPED_WORK: ShippedWorkEntry[] = [
     projectSlug: 'memento-ai',
   },
   {
+    id: 'chase-ai-internal',
+    title: 'Internal Agentic Chatbot',
+    affiliation: 'Chase',
+    sortDate: '2026-08',
+    dateLabel: '2026',
+    projectSlug: 'chase-ai-internal',
+  },
+  {
+    id: 'chase-ai-servicing',
+    title: 'Agentic Loan Servicing',
+    affiliation: 'Chase',
+    sortDate: '2026-07',
+    dateLabel: 'Pending',
+    projectSlug: 'chase-ai-servicing',
+    pending: true,
+  },
+  {
     id: 'agentic-home-lending',
     title: 'Agentic Home Lending',
     affiliation: 'Chase',

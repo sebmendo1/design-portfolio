@@ -16,7 +16,11 @@ import { DEFAULT_PHONE_SCREEN_AR } from '@/components/PhoneStencil/phone-aspect-
 import { getVideoPoster } from '@/data/assets';
 import type { PortfolioIndexEntry } from '@/data/portfolioIndex';
 import type { ProjectPreview } from '@/data/projects';
-import { getPortfolioIndexHref } from '@/lib/portfolio-index';
+import {
+  getPortfolioIndexCta,
+  getPortfolioIndexHref,
+  isExternalPortfolioHref,
+} from '@/lib/portfolio-index';
 import type { ProjectCardSummary } from '@/lib/project-cards';
 
 type IndexPreviewProps = {
@@ -161,6 +165,7 @@ function PreviewLayer({ frame }: { frame: PreviewFrame }) {
 
 function PreviewWell({
   href,
+  cta,
   tint,
   label,
   summary,
@@ -169,6 +174,7 @@ function PreviewWell({
   children,
 }: {
   href?: string;
+  cta?: string;
   tint: string;
   label: string;
   summary: string;
@@ -182,19 +188,25 @@ function PreviewWell({
   ]
     .filter(Boolean)
     .join(' ');
+  const external = isExternalPortfolioHref(href);
 
   function handleOpen(event: MouseEvent<HTMLAnchorElement>) {
-    if (!href || !onNavigate) return;
+    if (!href || external || !onNavigate) return;
     event.preventDefault();
     onNavigate(href);
   }
+
+  const linkProps = external
+    ? { target: '_blank' as const, rel: 'noopener noreferrer' }
+    : undefined;
 
   const stage = href ? (
     <a
       href={href}
       className="portfolio-index__well-device"
-      aria-label={`Open ${label}`}
+      aria-label={`${cta ?? 'Open'} ${label}`}
       onClick={handleOpen}
+      {...linkProps}
     >
       {children}
     </a>
@@ -206,13 +218,14 @@ function PreviewWell({
     <div className={className} style={{ backgroundColor: tint }}>
       <div className="portfolio-index__well-bar">
         <p className="portfolio-index__well-summary">{summary}</p>
-        {href ? (
+        {href && cta ? (
           <a
             href={href}
             className="portfolio-index__well-cta"
             onClick={handleOpen}
+            {...linkProps}
           >
-            Case study
+            {cta}
             <OpenProjectIcon />
           </a>
         ) : null}
@@ -252,6 +265,7 @@ export function IndexPreview({ entry, project, onNavigate }: IndexPreviewProps) 
   return (
     <PreviewWell
       href={href}
+      cta={getPortfolioIndexCta(entry)}
       tint={entry.tint}
       label={entry.label}
       summary={entry.summary}

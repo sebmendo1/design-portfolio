@@ -199,7 +199,7 @@ export const PROFILE_ROLES: ProfileRole[] = [
       '3,000+ calls initiated at ~12% lead conversion in production',
     ],
     capabilities: ['Agentic AI', 'Voice UX', 'RCS', 'Regulated design', 'Design leadership'],
-    relatedProjectSlugs: ['casey-ai'],
+    relatedProjectSlugs: ['casey-ai', 'chase-ai-internal', 'chase-ai-servicing'],
   },
   {
     id: 'jpmc-cmh',

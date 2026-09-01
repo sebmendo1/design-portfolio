@@ -4,6 +4,7 @@ import { ASSETS } from '@/data/assets';
 import { PHONE_SCREEN_AR } from '@/components/PhoneStencil/phone-aspect-ratios';
 import {
   AUTODSM_SCREEN_AR,
+  CHASE_AI_INTERNAL_CHATBOT_SCREEN_AR,
   DEFAULT_BROWSER_SCREEN_AR,
   WRITER_REWRITE_SCREEN_AR,
   CHORUS_DEMO_SCREEN_AR,
@@ -282,6 +283,216 @@ export const projects: Project[] = [
         { id: 'research',  label: 'Research',    anchor: { x: 82, y: 28 } },
         { id: 'shipped',   label: 'Shipped',     anchor: { x: 18, y: 72 } },
         { id: 'impact',    label: 'Impact',      anchor: { x: 82, y: 72 } },
+      ],
+    },
+  },
+  {
+    id: 'chase-ai-internal',
+    title: 'Chase AI — Internal Agentic Chatbot',
+    tagline: 'A shared chat system for internal Chase dashboard agents.',
+    description:
+      'I designed and shipped a library of more than twenty AI chat components so internal Chase teams can put agentic assistants into dashboards without inventing a new conversation UI each time.',
+    year: 2026,
+    company: 'JPMorgan Chase',
+    role: 'Senior Product Designer',
+    tags: ['Agentic AI', 'Internal tools', 'Design systems'],
+    thumbnail: '/assets/chase-ai-internal-chatbot.png',
+    preview: {
+      frame: 'browser',
+      src: '/assets/chase-ai-internal-chatbot.png',
+      url: 'chase.com',
+      screenAspectRatio: CHASE_AI_INTERNAL_CHATBOT_SCREEN_AR,
+    },
+    slug: 'chase-ai-internal',
+    styles: { backgroundColor: '#f4f3f2' },
+    caseStudy: {
+      blocks: [
+        {
+          text: 'Casey taught Chase how a customer-facing agent should talk. Internal tools had a different problem: every dashboard team was about to build its own chat. I designed a shared component library so agentic assistants inside Chase could reuse one conversation system instead of forking a new one for each use case.',
+        },
+        {
+          text: 'The constraint was reuse under regulation. An internal agent still cannot invent policy, hide its sources, or skip a handoff when a person is required. The library had to make those behaviors default, not optional, while staying flexible enough for collections, servicing, and ops dashboards that do not share a layout.',
+        },
+        {
+          text: 'I shipped and still maintain more than twenty chat components for those internal dashboard cases. Teams compose the same composer, transcript, citation, and handoff pieces instead of restyling a one-off bot. The work sits alongside Casey as the internal half of Chase AI: same agentic standards, a different audience.',
+        },
+      ],
+    },
+    scrollyConfig: {
+      slug: 'chase-ai-internal',
+      title: 'Chase AI — Internal Agentic Chatbot',
+      trackHeightVh: 600,
+      stage: {
+        centerpiece: {
+          frame: 'browser',
+          width: 400,
+          src: '/assets/chase-ai-internal-chatbot.png',
+          url: 'chase.com',
+          screenAspectRatio: CHASE_AI_INTERNAL_CHATBOT_SCREEN_AR,
+        },
+      },
+      beats: [
+        {
+          id: 'summary',
+          headline: 'A shared chat system so internal Chase agents do not invent a new UI each time.',
+          body: 'I designed and shipped a library of more than twenty AI chat components so internal Chase teams can put agentic assistants into dashboards without starting from a blank transcript.',
+          range: [0, 0.15],
+        },
+        {
+          id: 'challenge',
+          label: 'Challenge',
+          headline: 'Casey solved the customer conversation. Dashboards were about to fork it.',
+          body: 'Every internal team that wanted an agent was about to draw its own composer, citations, and handoff. That would have produced twenty slightly different chats, and twenty slightly different ways to get a regulated answer wrong.',
+          range: [0.15, 0.32],
+        },
+        {
+          id: 'approach',
+          label: 'Approach',
+          headline: 'Make the safe behaviors the default components.',
+          body: 'I treated chat as a system, not a screen. The library had to carry source citations, refusal, and human handoff as shared pieces, then stay flexible enough for collections, servicing, and ops dashboards that do not share a layout.',
+          range: [0.32, 0.5],
+        },
+        {
+          id: 'solution',
+          label: 'Solution',
+          headline: 'Twenty-plus components, one conversation model.',
+          body: 'Teams compose the same transcript, composer, citation, and handoff pieces instead of restyling a one-off bot. The desktop surface is a dashboard chat, not a consumer thread, so density and review tools stay in the frame.',
+          range: [0.5, 0.68],
+        },
+        {
+          id: 'outcome',
+          label: 'Outcome',
+          headline: 'Shipped, and still the internal chat system of record.',
+          body: 'I still maintain the library as new dashboard use cases come online. The work sits alongside Casey as the internal half of Chase AI: same agentic standards, a different audience.',
+          range: [0.68, 0.85],
+        },
+        {
+          id: 'tldr',
+          label: 'TLDR',
+          headline: 'The quick version.',
+          body: 'Internal Chase teams needed agentic chat in dashboards without each group inventing a conversation UI. I designed a shared library of more than twenty components so citations, refusals, and handoffs are defaults. The system is shipped and still maintained as new internal use cases appear.',
+          range: [0.85, 1.0],
+        },
+      ],
+      cards: [
+        { id: 'c1', label: 'Dashboard audit', seed: 14, enterAt: 0.14, clusterId: 'discovery', bgColor: '#1e1e2a' },
+        { id: 'c2', label: 'Forked chats', seed: 25, enterAt: 0.17, clusterId: 'discovery', bgColor: '#1a1a25' },
+        { id: 'c3', label: 'Component map', seed: 36, enterAt: 0.20, clusterId: 'research', bgColor: '#1e2a1e' },
+        { id: 'c4', label: 'Handoff rules', seed: 47, enterAt: 0.23, clusterId: 'research', bgColor: '#1a2520' },
+        { id: 'c5', label: 'Composer', seed: 58, enterAt: 0.26, clusterId: 'shipped', bgColor: '#2a1e1e' },
+        { id: 'c6', label: 'Citations', seed: 69, enterAt: 0.29, clusterId: 'shipped', bgColor: '#251a1a' },
+        { id: 'c7', label: '20+ components', seed: 80, enterAt: 0.32, clusterId: 'impact', bgColor: '#1a1e2a' },
+        { id: 'c8', label: 'Ops review', seed: 91, enterAt: 0.15, bgColor: '#222222' },
+      ],
+      clusters: [
+        { id: 'discovery', label: 'Discovery', anchor: { x: 18, y: 28 } },
+        { id: 'research', label: 'Research', anchor: { x: 82, y: 28 } },
+        { id: 'shipped', label: 'Shipped', anchor: { x: 18, y: 72 } },
+        { id: 'impact', label: 'Impact', anchor: { x: 82, y: 72 } },
+      ],
+    },
+  },
+  {
+    id: 'chase-ai-servicing',
+    title: 'Chase AI — Agentic Loan Servicing',
+    tagline: 'An evaluations platform for measuring Chase AI agents.',
+    description:
+      'I am designing an evaluations platform so Chase can measure how its AI agents perform after they ship, instead of judging them only by whether a demo looked fluent.',
+    year: 2026,
+    company: 'JPMorgan Chase',
+    role: 'Senior Product Designer',
+    tags: ['Agentic AI', 'Evaluations', 'Home Lending'],
+    thumbnail: '/assets/agentic-home-lending.png',
+    preview: {
+      frame: 'phone',
+      src: '/assets/agentic-home-lending.png',
+      screenAspectRatio: PHONE_SCREEN_AR.agenticPreview,
+    },
+    slug: 'chase-ai-servicing',
+    styles: { backgroundColor: '#f4f3f2' },
+    caseStudy: {
+      blocks: [
+        {
+          text: 'Shipping Casey and the internal chat library created a second problem: nobody had a shared way to see whether those agents were actually good. I am designing an evaluations platform that measures Chase AI agents on the work they do, not on how polished a single transcript looks.',
+        },
+        {
+          text: 'Servicing is the right first room. After origination, the bank has to keep loans current, explain fees, and catch failure without creating new legal exposure. An agent that sounds helpful while missing a hardship signal is a worse outcome than a slow human. Evaluation had to score that, not fluency.',
+        },
+        {
+          text: 'The platform is in progress. Reviewers will inspect conversations, score outcomes against the same guardrails the agents run in production, and compare versions before a change goes wider. It is how Chase will know the next agent is ready, not just launched.',
+        },
+      ],
+    },
+    scrollyConfig: {
+      slug: 'chase-ai-servicing',
+      title: 'Chase AI — Agentic Loan Servicing',
+      trackHeightVh: 600,
+      stage: {
+        centerpiece: {
+          frame: 'phone',
+          width: 260,
+          src: '/assets/agentic-home-lending.png',
+          screenAspectRatio: PHONE_SCREEN_AR.agenticPreview,
+        },
+      },
+      beats: [
+        {
+          id: 'summary',
+          headline: 'An evaluations platform for measuring how Chase AI agents perform.',
+          body: 'I am designing a shared way to score Chase AI agents after they ship, so quality is measured on real servicing work instead of a polished demo transcript.',
+          range: [0, 0.15],
+        },
+        {
+          id: 'challenge',
+          label: 'Challenge',
+          headline: 'An agent can sound fluent and still fail the loan.',
+          body: 'Casey and the internal chat system shipped without a common yardstick. Teams could watch a conversation and still disagree about whether the agent was safe, complete, or ready to go wider.',
+          range: [0.15, 0.32],
+        },
+        {
+          id: 'approach',
+          label: 'Approach',
+          headline: 'Score the work, not the wording.',
+          body: 'Servicing is the first room because the cost of a miss is high: missed hardship, a wrong fee explanation, a skipped handoff. Evaluation has to judge those outcomes against the same guardrails the agents run in production.',
+          range: [0.32, 0.5],
+        },
+        {
+          id: 'solution',
+          label: 'Solution',
+          headline: 'Inspect, score, and compare before a change goes wider.',
+          body: 'The platform lets reviewers open real conversations, mark outcomes, and compare versions. It is built for the people who already own agent quality, not as a separate research toy.',
+          range: [0.5, 0.68],
+        },
+        {
+          id: 'outcome',
+          label: 'Outcome',
+          headline: 'In progress, and already the measurement layer for Chase AI.',
+          body: 'The evaluations platform is still being built. It is how Chase will decide the next agent is ready, not just launched.',
+          range: [0.68, 0.85],
+        },
+        {
+          id: 'tldr',
+          label: 'TLDR',
+          headline: 'The quick version.',
+          body: 'Chase needed a way to measure AI agents after they ship. I am designing an evaluations platform, starting in loan servicing, so reviewers can inspect conversations, score outcomes against production guardrails, and compare versions before a change goes wider.',
+          range: [0.85, 1.0],
+        },
+      ],
+      cards: [
+        { id: 'c1', label: 'Failure cases', seed: 16, enterAt: 0.14, clusterId: 'discovery', bgColor: '#1e1e2a' },
+        { id: 'c2', label: 'Servicing risks', seed: 27, enterAt: 0.17, clusterId: 'discovery', bgColor: '#1a1a25' },
+        { id: 'c3', label: 'Score rubric', seed: 38, enterAt: 0.20, clusterId: 'research', bgColor: '#1e2a1e' },
+        { id: 'c4', label: 'Guardrail map', seed: 49, enterAt: 0.23, clusterId: 'research', bgColor: '#1a2520' },
+        { id: 'c5', label: 'Review queue', seed: 60, enterAt: 0.26, clusterId: 'shipped', bgColor: '#2a1e1e' },
+        { id: 'c6', label: 'Version compare', seed: 71, enterAt: 0.29, clusterId: 'shipped', bgColor: '#251a1a' },
+        { id: 'c7', label: 'Shared yardstick', seed: 82, enterAt: 0.32, clusterId: 'impact', bgColor: '#1a1e2a' },
+        { id: 'c8', label: 'Pilot plan', seed: 93, enterAt: 0.15, bgColor: '#222222' },
+      ],
+      clusters: [
+        { id: 'discovery', label: 'Discovery', anchor: { x: 18, y: 28 } },
+        { id: 'research', label: 'Research', anchor: { x: 82, y: 28 } },
+        { id: 'shipped', label: 'Shipped', anchor: { x: 18, y: 72 } },
+        { id: 'impact', label: 'Impact', anchor: { x: 82, y: 72 } },
       ],
     },
   },
@@ -690,6 +901,8 @@ export const projects: Project[] = [
 export const PROJECT_ORDER = [
   'memento-ai',
   'casey-ai',
+  'chase-ai-internal',
+  'chase-ai-servicing',
   'salesforce-help',
   'writer-ai',
   'chorus-ai',
