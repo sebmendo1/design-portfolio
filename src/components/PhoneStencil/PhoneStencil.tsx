@@ -18,6 +18,7 @@ type PhoneStencilProps = {
   className?: string;
   priority?: boolean;
   lockAspectRatio?: boolean;
+  sizes?: string;
 };
 
 export function PhoneStencil({
@@ -28,7 +29,10 @@ export function PhoneStencil({
   variant = 'case-study',
   className,
   priority = false,
+  sizes,
 }: PhoneStencilProps) {
+  const mediaSizes =
+    sizes ?? (variant === 'card' ? '(max-width: 768px) 50vw, 33vw' : '50vw');
   const rootRef = useRef<HTMLDivElement>(null);
   const screenW = usePhoneBodyWidth(rootRef);
 
@@ -65,7 +69,7 @@ export function PhoneStencil({
               poster={poster}
               posterWidth={786}
               posterHeight={1748}
-              posterSizes={variant === 'card' ? '(max-width: 768px) 50vw, 33vw' : '50vw'}
+              posterSizes={mediaSizes}
               priority={priority}
             />
           ) : src ? (
@@ -75,7 +79,7 @@ export function PhoneStencil({
               width={786}
               height={1748}
               className="phone-stencil__media"
-              sizes={variant === 'card' ? '(max-width: 768px) 50vw, 33vw' : '50vw'}
+              sizes={mediaSizes}
             />
           ) : (
             <div className="phone-stencil__screen-fill" />

@@ -118,12 +118,22 @@ function HomeLink({
 }
 
 function DevicePreview({ config }: { config: CaseStudyConfig }) {
-  const { frame, src, video, url, screenAspectRatio } = config.stage.centerpiece;
+  const { frame, src, video, url, screenAspectRatio, screens } = config.stage.centerpiece;
   const title = config.title;
   const standaloneAr = screenAspectRatio ?? 1280 / 854;
+  const phoneScreens =
+    screens && screens.length > 0
+      ? screens
+      : src || video
+        ? [{ src, video, alt: `${title} app screenshot` }]
+        : [];
+  const isPhonePair = frame === 'phone' && phoneScreens.length > 1;
+  const pairSizes = '(max-width: 900px) 42vw, 22vw';
 
   return (
-    <div className={`cs-device-card cs-device-card--${frame}`}>
+    <div
+      className={`cs-device-card cs-device-card--${frame}${isPhonePair ? ' cs-device-card--phone-pair' : ''}`}
+    >
       {frame === 'browser' && (
         <BrowserStencil
           src={src}
@@ -136,17 +146,38 @@ function DevicePreview({ config }: { config: CaseStudyConfig }) {
           priority
         />
       )}
-      {frame === 'phone' && (
-        <PhoneStencil
-          src={src}
-          video={video}
-          poster={video ? getVideoPoster(video) : undefined}
-          alt={`${title} app screenshot`}
-          screenAspectRatio={screenAspectRatio}
-          variant="case-study"
-          priority
-        />
-      )}
+      {frame === 'phone' &&
+        (isPhonePair ? (
+          <div className="cs-device-pair">
+            {phoneScreens.map((screen, index) => (
+              <PhoneStencil
+                key={screen.src ?? screen.video ?? index}
+                src={screen.src}
+                video={screen.video}
+                poster={screen.video ? getVideoPoster(screen.video) : undefined}
+                alt={screen.alt ?? `${title} app screenshot`}
+                screenAspectRatio={screen.screenAspectRatio ?? screenAspectRatio}
+                variant="case-study"
+                priority={index === 0}
+                sizes={pairSizes}
+              />
+            ))}
+          </div>
+        ) : (
+          <PhoneStencil
+            src={phoneScreens[0]?.src ?? src}
+            video={phoneScreens[0]?.video ?? video}
+            poster={
+              (phoneScreens[0]?.video ?? video)
+                ? getVideoPoster(phoneScreens[0]?.video ?? video ?? '')
+                : undefined
+            }
+            alt={phoneScreens[0]?.alt ?? `${title} app screenshot`}
+            screenAspectRatio={phoneScreens[0]?.screenAspectRatio ?? screenAspectRatio}
+            variant="case-study"
+            priority
+          />
+        ))}
       {frame === 'none' && src && (
         <div
           className="cs-device-fit"

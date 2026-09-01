@@ -333,6 +333,49 @@ html[data-theme='dark'] .cs-text-col__edge--bottom {
   min-width: 0;
 }
 
+/* Two phones sit as a close pair at ~3/4 the single-frame scale. */
+.cs-device-card--phone-pair {
+  --phone-size-scale: 0.6;
+  --phone-pair-gap: 0.75rem;
+}
+
+.cs-device-pair {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: center;
+  gap: var(--phone-pair-gap);
+  width: fit-content;
+  max-width: 100%;
+  height: auto;
+  max-height: 100%;
+  min-width: 0;
+  min-height: 0;
+}
+
+.cs-device-pair .phone-stencil {
+  margin-inline: 0;
+  flex: 0 1 auto;
+}
+
+.cs-device-card--phone-pair .phone-stencil--case-study {
+  --screen-w: min(
+    calc(25rem * var(--phone-size-scale)),
+    calc((100cqw - var(--phone-pair-gap)) / 2 / var(--phone-body-scale)),
+    var(--phone-screen-fit)
+  );
+}
+
+@media (max-width: 900px) and (orientation: portrait) {
+  .cs-device-card--phone-pair .phone-stencil--case-study {
+    --screen-w: min(
+      calc(240px * var(--phone-size-scale)),
+      calc((100cqw - var(--phone-pair-gap)) / 2 / var(--phone-body-scale)),
+      var(--phone-screen-fit)
+    );
+  }
+}
+
 /* Desktop product frames wrap each recording at every case-study size. */
 .cs-device-card--browser .browser-stencil {
   width: min(

@@ -84,9 +84,17 @@ export const projects: Project[] = [
       stage: {
         centerpiece: {
           frame: 'phone',
-          width: 260,
-          video: ASSETS.video.mementoDemo,
-          screenAspectRatio: PHONE_SCREEN_AR.mementoDemo,
+          width: 195,
+          screens: [
+            {
+              src: '/assets/memento-journal-feed.png',
+              alt: 'Memento journal feed for January 2026',
+            },
+            {
+              src: '/assets/memento-dive-deeper.png',
+              alt: 'Memento dive deeper chat with reflection prompts',
+            },
+          ],
         },
       },
       beats: [
