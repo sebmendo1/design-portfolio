@@ -33,7 +33,7 @@ export const SITE_SOCIAL_NAV = [
 export const SITE_SOCIAL_LINKS: string[] = SITE_SOCIAL_NAV.map((link) => link.href);
 
 export const WORK_PAGE_BIO_LEAD_PREFIX =
-  'Sebastian is a Senior Product Designer building agentic banking experiences at ';
+  'Sebastian is a Senior Product Designer building agentic financial experiences at ';
 
 export const WORK_PAGE_BIO_CURRENT = {
   label: 'Chase',

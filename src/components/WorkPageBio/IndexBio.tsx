@@ -7,7 +7,7 @@ import {
 export function IndexBio() {
   return (
     <h1 className="portfolio-index__bio" aria-label={WORK_PAGE_BIO}>
-      Sebastian is a Senior Product Designer building agentic banking experiences at{' '}
+      Sebastian is a Senior Product Designer building agentic financial experiences at{' '}
       <a
         href={WORK_PAGE_BIO_CURRENT.href}
         className="portfolio-index__bio-link"
