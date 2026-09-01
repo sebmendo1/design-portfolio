@@ -127,7 +127,7 @@ export const PORTFOLIO_INDEX: PortfolioIndexEntry[] = [
     href: '/work/agentic-home-lending',
     previewSlug: 'agentic-home-lending',
     summary:
-      'Guided origination where the system requests documents, flags underwriting issues, and surfaces alternatives as the applicant moves.',
+      'Designing a conversational AI experience for discovering your best home loan.',
     tint: TINT.chase,
   },
   {
