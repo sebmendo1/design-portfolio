@@ -4,6 +4,7 @@ import {
   type PortfolioIndexEntry,
   type PortfolioIndexSection,
 } from '@/data/portfolioIndex';
+import type { ProjectCardSummary } from '@/lib/project-cards';
 
 export type PortfolioIndexYearGroup = {
   year: number;
@@ -67,4 +68,20 @@ export function getPortfolioIndexHref(entry: PortfolioIndexEntry): string | unde
   if (entry.href) return entry.href;
   if (entry.previewSlug) return `/work/${entry.previewSlug}`;
   return undefined;
+}
+
+/** Case-study preview, or a row-specific override such as Salesforce Help Home. */
+export function resolveIndexPreviewProject(
+  entry: PortfolioIndexEntry,
+  projects: ProjectCardSummary[],
+): ProjectCardSummary | undefined {
+  const project = projects.find((item) => item.slug === entry.previewSlug);
+  if (!entry.preview) return project;
+  return {
+    id: entry.id,
+    slug: entry.previewSlug ?? project?.slug ?? entry.id,
+    title: entry.label,
+    preview: entry.preview,
+    styles: project?.styles,
+  };
 }

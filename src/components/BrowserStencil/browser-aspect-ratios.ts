@@ -10,6 +10,9 @@ export const CHORUS_DEMO_SCREEN_AR = 1920 / 1080;
 /** AutoDSM product screenshot (1024×730 webp). */
 export const AUTODSM_SCREEN_AR = 1024 / 730;
 
+/** Salesforce Help Home screenshot (1024×711). */
+export const SALESFORCE_HELP_HOME_SCREEN_AR = 1024 / 711;
+
 /** Reference frame width for proportional chrome scaling. */
 export const BROWSER_REFERENCE_WIDTH = 480;
 

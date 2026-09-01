@@ -1,3 +1,6 @@
+import type { ProjectPreview } from '@/data/projects';
+import { SALESFORCE_HELP_HOME_SCREEN_AR } from '@/components/BrowserStencil/browser-aspect-ratios';
+
 export type PortfolioIndexSection = 'projects' | 'work';
 
 export type PortfolioIndexKind = 'device' | 'typeface';
@@ -9,6 +12,8 @@ export type PortfolioIndexEntry = {
   section: PortfolioIndexSection;
   href?: string;
   previewSlug?: string;
+  /** Overrides the case-study preview for this index row. */
+  preview?: ProjectPreview;
   kind?: PortfolioIndexKind;
   tint: string;
 };
@@ -140,6 +145,12 @@ export const PORTFOLIO_INDEX: PortfolioIndexEntry[] = [
     section: 'work',
     href: '/work/salesforce-help',
     previewSlug: 'salesforce-help',
+    preview: {
+      frame: 'browser',
+      src: '/assets/salesforce-help-home.png',
+      url: 'help.salesforce.com',
+      screenAspectRatio: SALESFORCE_HELP_HOME_SCREEN_AR,
+    },
     tint: TINT.salesforce,
   },
   {

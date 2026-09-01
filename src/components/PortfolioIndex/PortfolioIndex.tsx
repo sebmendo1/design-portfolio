@@ -8,6 +8,7 @@ import { SITE_SOCIAL_NAV } from '@/lib/site';
 import {
   findPortfolioIndexEntry,
   groupPortfolioIndex,
+  resolveIndexPreviewProject,
   resolvePortfolioIndexId,
 } from '@/lib/portfolio-index';
 import type { ProjectCardSummary } from '@/lib/project-cards';
@@ -57,7 +58,7 @@ export function PortfolioIndex({
   const railRef = useRef<HTMLDivElement>(null);
   const sections = useMemo(() => groupPortfolioIndex(PORTFOLIO_INDEX), []);
   const active = findPortfolioIndexEntry(activeId);
-  const previewProject = projects.find((project) => project.slug === active.previewSlug);
+  const previewProject = resolveIndexPreviewProject(active, projects);
   useIndexScroll(layoutRef, railRef);
 
   return (
