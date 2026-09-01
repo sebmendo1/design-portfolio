@@ -603,8 +603,74 @@
   box-sizing: border-box;
 }
 
-.portfolio-index__modal::backdrop {
+.portfolio-index__modal[open] {
+  animation: index-modal-in 0.42s cubic-bezier(0.22, 1, 0.36, 1) both;
+}
+
+.portfolio-index__modal[open]::backdrop {
   background: var(--color-overlay);
+  animation: index-modal-backdrop-in 0.42s cubic-bezier(0.22, 1, 0.36, 1) both;
+}
+
+.portfolio-index__modal.is-leaving {
+  animation: index-modal-out 0.28s cubic-bezier(0.25, 0.1, 0.25, 1) both;
+}
+
+.portfolio-index__modal.is-leaving::backdrop {
+  animation: index-modal-backdrop-out 0.28s cubic-bezier(0.25, 0.1, 0.25, 1) both;
+}
+
+@keyframes index-modal-in {
+  from {
+    opacity: 0;
+    transform: translateY(18px);
+  }
+
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+
+@keyframes index-modal-out {
+  from {
+    opacity: 1;
+    transform: none;
+  }
+
+  to {
+    opacity: 0;
+    transform: translateY(12px);
+  }
+}
+
+@keyframes index-modal-backdrop-in {
+  from {
+    opacity: 0;
+  }
+
+  to {
+    opacity: 1;
+  }
+}
+
+@keyframes index-modal-backdrop-out {
+  from {
+    opacity: 1;
+  }
+
+  to {
+    opacity: 0;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .portfolio-index__modal[open],
+  .portfolio-index__modal[open]::backdrop,
+  .portfolio-index__modal.is-leaving,
+  .portfolio-index__modal.is-leaving::backdrop {
+    animation: none;
+  }
 }
 
 .portfolio-index__modal-frame {

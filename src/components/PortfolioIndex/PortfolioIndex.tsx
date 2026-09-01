@@ -7,8 +7,10 @@ import {
   useRef,
   useState,
   useSyncExternalStore,
+  type AnimationEvent,
   type MouseEvent,
   type ReactNode,
+  type SyntheticEvent,
 } from 'react';
 import Link from 'next/link';
 import { PORTFOLIO_INDEX } from '@/data/portfolioIndex';
@@ -76,6 +78,7 @@ export function PortfolioIndex({
 }: PortfolioIndexProps) {
   const [activeId, setActiveId] = useState(() => resolvePortfolioIndexId(initialPreviewId));
   const [modalOpen, setModalOpen] = useState(false);
+  const [modalMounted, setModalMounted] = useState(false);
   const isNarrow = useSyncExternalStore(
     subscribeNarrowViewport,
     getNarrowViewportSnapshot,
@@ -90,22 +93,38 @@ export function PortfolioIndex({
   useIndexScroll(layoutRef, railRef);
 
   useEffect(() => {
-    if (!isNarrow) setModalOpen(false);
+    if (!isNarrow) {
+      setModalOpen(false);
+      setModalMounted(false);
+      dialogRef.current?.close();
+    }
   }, [isNarrow]);
 
   useLayoutEffect(() => {
     const dialog = dialogRef.current;
-    if (!dialog) return;
-    if (modalOpen && !dialog.open) dialog.showModal();
-    if (!modalOpen && dialog.open) dialog.close();
-  }, [modalOpen, isNarrow]);
+    if (!dialog || !modalMounted) return;
+    if (!dialog.open) dialog.showModal();
+  }, [modalMounted]);
+
+  function prefersReducedMotion() {
+    return window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  }
 
   function handleActivate(id: string) {
     setActiveId(id);
-    if (isNarrow) setModalOpen(true);
+    if (!isNarrow) return;
+    setModalMounted(true);
+    setModalOpen(true);
   }
 
   function closeModal() {
+    if (!modalOpen) return;
+    if (prefersReducedMotion()) {
+      setModalOpen(false);
+      setModalMounted(false);
+      dialogRef.current?.close();
+      return;
+    }
     setModalOpen(false);
   }
 
@@ -113,7 +132,18 @@ export function PortfolioIndex({
     if (event.target === event.currentTarget) closeModal();
   }
 
-  const selectedId = !isNarrow || modalOpen ? active.id : null;
+  function handleDialogCancel(event: SyntheticEvent<HTMLDialogElement>) {
+    event.preventDefault();
+    closeModal();
+  }
+
+  function handleDialogAnimationEnd(event: AnimationEvent<HTMLDialogElement>) {
+    if (event.target !== event.currentTarget || modalOpen) return;
+    dialogRef.current?.close();
+    setModalMounted(false);
+  }
+
+  const selectedId = !isNarrow || modalMounted ? active.id : null;
   const preview = (
     <IndexPreview
       entry={active}
@@ -187,13 +217,14 @@ export function PortfolioIndex({
         </div>
       ) : null}
 
-      {isNarrow && modalOpen ? (
+      {isNarrow && modalMounted ? (
         <dialog
           ref={dialogRef}
-          className="portfolio-index__modal"
+          className={`portfolio-index__modal${modalOpen ? '' : ' is-leaving'}`}
           aria-label={active.label}
-          onClose={closeModal}
+          onCancel={handleDialogCancel}
           onClick={handleDialogClick}
+          onAnimationEnd={handleDialogAnimationEnd}
         >
           <div className="portfolio-index__modal-frame">
             <button
