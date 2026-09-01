@@ -16,8 +16,8 @@ export const SALESFORCE_HELP_HOME_SCREEN_AR = 1024 / 711;
 /** Salesforce Help Cases screenshot (1024×706). */
 export const SALESFORCE_HELP_CASES_SCREEN_AR = 1024 / 706;
 
-/** Chase MyHome calculators screenshot (1024×758). */
-export const CHASE_MYHOME_CALCULATORS_SCREEN_AR = 1024 / 758;
+/** Chase MyHome calculators screenshot (1796×1500). */
+export const CHASE_MYHOME_CALCULATORS_SCREEN_AR = 1796 / 1500;
 
 /** Reference frame width for proportional chrome scaling. */
 export const BROWSER_REFERENCE_WIDTH = 480;
