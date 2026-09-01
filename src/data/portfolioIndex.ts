@@ -111,17 +111,8 @@ export const PORTFOLIO_INDEX: PortfolioIndexEntry[] = [
   },
   {
     id: 'chase-ai-rcs',
-    year: 2026,
-    label: 'Chase AI - Conversational RCS Agent',
-    section: 'work',
-    href: '/work/casey-ai',
-    previewSlug: 'casey-ai',
-    tint: TINT.chase,
-  },
-  {
-    id: 'chase-ai-voice',
     year: 2025,
-    label: 'Chase AI - Conversational Voice AI',
+    label: 'Chase AI - Conversational Agent, Voice & RCS',
     section: 'work',
     href: '/work/casey-ai',
     previewSlug: 'casey-ai',
