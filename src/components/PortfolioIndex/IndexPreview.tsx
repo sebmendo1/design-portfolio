@@ -41,6 +41,14 @@ function TypeSpecimen({ label }: { label: string }) {
   );
 }
 
+function previewFrame(
+  entry: PortfolioIndexEntry,
+  project?: ProjectCardSummary,
+): ProjectPreview['frame'] | undefined {
+  if (entry.kind === 'typeface') return undefined;
+  return entry.preview?.frame ?? project?.preview?.frame;
+}
+
 function DevicePreview({
   project,
   preview,
@@ -63,7 +71,7 @@ function DevicePreview({
         screenAspectRatio={DEFAULT_PHONE_SCREEN_AR}
         lockAspectRatio
         variant="card"
-        className="portfolio-index__device"
+        className="portfolio-index__device portfolio-index__device--phone"
         priority
       />
     );
@@ -155,18 +163,24 @@ function PreviewWell({
   href,
   tint,
   label,
+  phone,
   onNavigate,
   children,
 }: {
   href?: string;
   tint: string;
   label: string;
+  phone?: boolean;
   onNavigate?: (href: string) => void;
   children: ReactNode;
 }) {
-  const className = href
-    ? 'portfolio-index__well portfolio-index__well--link'
-    : 'portfolio-index__well';
+  const className = [
+    'portfolio-index__well',
+    href ? 'portfolio-index__well--link' : '',
+    phone ? 'portfolio-index__well--phone' : '',
+  ]
+    .filter(Boolean)
+    .join(' ');
 
   function handleOpen(event: MouseEvent<HTMLAnchorElement>) {
     if (!href || !onNavigate) return;
@@ -234,7 +248,13 @@ export function IndexPreview({ entry, project, onNavigate }: IndexPreviewProps) 
   }, [entry, project]);
 
   return (
-    <PreviewWell href={href} tint={entry.tint} label={entry.label} onNavigate={onNavigate}>
+    <PreviewWell
+      href={href}
+      tint={entry.tint}
+      label={entry.label}
+      phone={previewFrame(entry, project) === 'phone'}
+      onNavigate={onNavigate}
+    >
       {outgoing ? (
         <div className="portfolio-index__dissolve portfolio-index__dissolve--out" key={outgoing.entry.id}>
           <PreviewLayer frame={outgoing} />
