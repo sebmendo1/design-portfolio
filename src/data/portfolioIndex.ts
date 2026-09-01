@@ -5,6 +5,7 @@ import {
   CHASE_MYHOME_LANDING_SCREEN_AR,
   SALESFORCE_HELP_CASES_SCREEN_AR,
   SALESFORCE_HELP_HOME_SCREEN_AR,
+  WRITER_PAGE_EDITOR_SCREEN_AR,
 } from '@/components/BrowserStencil/browser-aspect-ratios';
 
 /** Desktop landing-page screenshot for the Chase MyHome — Landing Page index row. */
@@ -21,6 +22,14 @@ export const CHASE_AI_INTERNAL_CHATBOT_PREVIEW: ProjectPreview = {
   src: '/assets/chase-ai-internal-chatbot.png',
   url: 'chase.com',
   screenAspectRatio: CHASE_AI_INTERNAL_CHATBOT_SCREEN_AR,
+};
+
+/** Desktop screenshot for the WRITER AI — Page Editor index row. */
+export const WRITER_PAGE_EDITOR_PREVIEW: ProjectPreview = {
+  frame: 'browser',
+  src: '/assets/writer-page-editor.png',
+  url: 'writer.com',
+  screenAspectRatio: WRITER_PAGE_EDITOR_SCREEN_AR,
 };
 
 export type PortfolioIndexSection = 'projects' | 'work';
@@ -203,10 +212,11 @@ export const PORTFOLIO_INDEX: PortfolioIndexEntry[] = [
   {
     id: 'writer-ds',
     year: 2021,
-    label: 'WRITER AI - Design Systems',
+    label: 'WRITER AI - Page Editor',
     section: 'work',
     href: '/work/writer-ai',
     previewSlug: 'writer-ai',
+    preview: WRITER_PAGE_EDITOR_PREVIEW,
     tint: TINT.writer,
   },
   {
