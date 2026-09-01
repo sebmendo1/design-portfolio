@@ -25,6 +25,9 @@ export const CHASE_MYHOME_LANDING_SCREEN_AR = 1024 / 768;
 /** Chase AI internal agentic chatbot screenshot (1800×1350). */
 export const CHASE_AI_INTERNAL_CHATBOT_SCREEN_AR = 1800 / 1350;
 
+/** WRITER AI Page Editor screenshot (1024×691). */
+export const WRITER_PAGE_EDITOR_SCREEN_AR = 1024 / 691;
+
 /** Reference frame width for proportional chrome scaling. */
 export const BROWSER_REFERENCE_WIDTH = 480;
 
