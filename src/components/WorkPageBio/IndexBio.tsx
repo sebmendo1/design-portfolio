@@ -19,6 +19,10 @@ export function IndexBio({ startDelayMs }: IndexBioProps) {
   return (
     <h1 className="portfolio-index__bio" aria-label={WORK_PAGE_BIO}>
       {INDEX_BIO_PARTS.map((part, index) => {
+        if (part.type === 'gap') {
+          return <span key={`gap-${index}`}> </span>;
+        }
+
         const delay = partDelays[index] ?? delays.bio;
         const text = (
           <StreamingText text={part.text} as="span" startDelayMs={delay} />

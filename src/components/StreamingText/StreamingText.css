@@ -29,6 +29,11 @@
 }
 
 @media (prefers-reduced-motion: reduce) {
+  .streaming-text__unit--pending {
+    opacity: 1;
+    pointer-events: auto;
+  }
+
   .streaming-text__unit--pending .streaming-text__word {
     opacity: 1;
     filter: none;

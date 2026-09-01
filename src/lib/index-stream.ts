@@ -14,7 +14,8 @@ export const INDEX_HEADLINE_TEXT = 'SebMendoDesign';
 
 export type IndexBioPart =
   | { type: 'text'; text: string }
-  | { type: 'link'; text: string; href: string };
+  | { type: 'link'; text: string; href: string }
+  | { type: 'gap' };
 
 export const INDEX_BIO_PARTS: IndexBioPart[] = [
   { type: 'text', text: WORK_PAGE_BIO_LEAD_PREFIX },
@@ -35,7 +36,8 @@ export const INDEX_BIO_PARTS: IndexBioPart[] = [
     text: WORK_PAGE_BIO_LINKS[1].label,
     href: WORK_PAGE_BIO_LINKS[1].href,
   },
-  { type: 'text', text: ' and ' },
+  { type: 'gap' },
+  { type: 'text', text: 'and ' },
   {
     type: 'link',
     text: WORK_PAGE_BIO_LINKS[2].label,
@@ -74,7 +76,9 @@ export function buildIndexStreamDelays(): IndexStreamDelays {
   const bio = cursor;
   const bioParts = INDEX_BIO_PARTS.map((part) => {
     const start = cursor;
-    cursor += wordCount(part.text) * WORD_INTERVAL_MS;
+    if (part.type !== 'gap') {
+      cursor += wordCount(part.text) * WORD_INTERVAL_MS;
+    }
     return start;
   });
   cursor += SECTION_GAP_MS;
