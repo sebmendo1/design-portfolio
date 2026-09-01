@@ -104,7 +104,7 @@ export const PORTFOLIO_INDEX: PortfolioIndexEntry[] = [
     href: '/work/agentic-home-lending',
     previewSlug: 'agentic-home-lending',
     summary:
-      'An agent that works a home lending case on the customer’s behalf instead of leaving them in a long document loop.',
+      'Building an evaluations platform for measuring performance of Chase AI agents.',
     tint: TINT.chase,
   },
   {
