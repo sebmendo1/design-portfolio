@@ -164,6 +164,7 @@ function PreviewWell({
   tint,
   label,
   summary,
+  cta,
   phone,
   onNavigate,
   children,
@@ -172,6 +173,7 @@ function PreviewWell({
   tint: string;
   label: string;
   summary: string;
+  cta: string;
   phone?: boolean;
   onNavigate?: (href: string) => void;
   children: ReactNode;
@@ -212,7 +214,7 @@ function PreviewWell({
             className="portfolio-index__well-cta"
             onClick={handleOpen}
           >
-            Case study
+            {cta}
             <OpenProjectIcon />
           </a>
         ) : null}
@@ -255,6 +257,7 @@ export function IndexPreview({ entry, project, onNavigate }: IndexPreviewProps) 
       tint={entry.tint}
       label={entry.label}
       summary={entry.summary}
+      cta={entry.kind === 'typeface' ? 'Get started' : 'Case study'}
       phone={previewFrame(entry, project) === 'phone'}
       onNavigate={onNavigate}
     >
