@@ -13,6 +13,9 @@ export const AUTODSM_SCREEN_AR = 1024 / 730;
 /** Salesforce Help Home screenshot (1024×711). */
 export const SALESFORCE_HELP_HOME_SCREEN_AR = 1024 / 711;
 
+/** Chase MyHome landing-page screenshot (1024×768). */
+export const CHASE_MYHOME_LANDING_SCREEN_AR = 1024 / 768;
+
 /** Reference frame width for proportional chrome scaling. */
 export const BROWSER_REFERENCE_WIDTH = 480;
 

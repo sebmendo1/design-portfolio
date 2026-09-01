@@ -1,5 +1,8 @@
 import type { ProjectPreview } from '@/data/projects';
-import { SALESFORCE_HELP_HOME_SCREEN_AR } from '@/components/BrowserStencil/browser-aspect-ratios';
+import {
+  CHASE_MYHOME_LANDING_SCREEN_AR,
+  SALESFORCE_HELP_HOME_SCREEN_AR,
+} from '@/components/BrowserStencil/browser-aspect-ratios';
 
 export type PortfolioIndexSection = 'projects' | 'work';
 
@@ -118,6 +121,12 @@ export const PORTFOLIO_INDEX: PortfolioIndexEntry[] = [
     section: 'work',
     href: '/work/chase-myhome',
     previewSlug: 'chase-myhome',
+    preview: {
+      frame: 'browser',
+      src: '/assets/chase-myhome-landing.png',
+      url: 'chase.com',
+      screenAspectRatio: CHASE_MYHOME_LANDING_SCREEN_AR,
+    },
     tint: TINT.chase,
   },
   {
