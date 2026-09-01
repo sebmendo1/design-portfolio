@@ -15,6 +15,7 @@ import { PhoneStencil } from '@/components/PhoneStencil/PhoneStencil';
 import { DEFAULT_PHONE_SCREEN_AR } from '@/components/PhoneStencil/phone-aspect-ratios';
 import { getVideoPoster } from '@/data/assets';
 import type { PortfolioIndexEntry } from '@/data/portfolioIndex';
+import type { ProjectPreview } from '@/data/projects';
 import { getPortfolioIndexHref } from '@/lib/portfolio-index';
 import type { ProjectCardSummary } from '@/lib/project-cards';
 
@@ -40,19 +41,25 @@ function TypeSpecimen({ label }: { label: string }) {
   );
 }
 
-function DevicePreview({ project }: { project: ProjectCardSummary }) {
-  const preview = project.preview;
-  if (!preview) return null;
+function DevicePreview({
+  project,
+  preview,
+}: {
+  project?: ProjectCardSummary;
+  preview?: ProjectPreview;
+}) {
+  const resolved = preview ?? project?.preview;
+  if (!resolved) return null;
 
-  if (preview.frame === 'phone') {
-    const poster = preview.video ? getVideoPoster(preview.video) : undefined;
+  if (resolved.frame === 'phone') {
+    const poster = resolved.video ? getVideoPoster(resolved.video) : undefined;
 
     return (
       <PhoneStencil
-        src={preview.src}
-        video={preview.video}
+        src={resolved.src}
+        video={resolved.video}
         poster={poster}
-        alt={`${project.title} preview`}
+        alt={`${project?.title ?? 'Project'} preview`}
         screenAspectRatio={DEFAULT_PHONE_SCREEN_AR}
         lockAspectRatio
         variant="card"
@@ -62,15 +69,16 @@ function DevicePreview({ project }: { project: ProjectCardSummary }) {
     );
   }
 
-  if (preview.frame === 'browser') {
+  if (resolved.frame === 'browser') {
     return (
       <BrowserStencil
-        src={preview.src}
-        video={preview.video}
-        poster={preview.video ? getVideoPoster(preview.video) : undefined}
-        url={preview.url}
-        title={project.title}
-        screenAspectRatio={preview.screenAspectRatio ?? DEFAULT_BROWSER_SCREEN_AR}
+        src={resolved.src}
+        video={resolved.video}
+        poster={resolved.video ? getVideoPoster(resolved.video) : undefined}
+        url={resolved.url}
+        title={project?.title ?? resolved.url ?? 'Preview'}
+        screenAspectRatio={resolved.screenAspectRatio ?? DEFAULT_BROWSER_SCREEN_AR}
+        lockAspectRatio={!resolved.video}
         variant="card"
         className="portfolio-index__device portfolio-index__device--desktop"
         priority
@@ -78,7 +86,7 @@ function DevicePreview({ project }: { project: ProjectCardSummary }) {
     );
   }
 
-  if (preview.frame === 'image' && preview.src) {
+  if (resolved.frame === 'image' && resolved.src) {
     const contentAspectRatio = DEFAULT_BROWSER_SCREEN_AR;
 
     return (
@@ -87,8 +95,8 @@ function DevicePreview({ project }: { project: ProjectCardSummary }) {
         style={{ '--content-ar': contentAspectRatio } as CSSProperties}
       >
         <OptimizedImage
-          src={preview.src}
-          alt={project.title}
+          src={resolved.src}
+          alt={project?.title ?? 'Preview'}
           width={1280}
           height={Math.round(1280 / contentAspectRatio)}
           className="portfolio-index__image"
@@ -98,11 +106,11 @@ function DevicePreview({ project }: { project: ProjectCardSummary }) {
     );
   }
 
-  if (preview.frame === 'fill' && preview.src) {
+  if (resolved.frame === 'fill' && resolved.src) {
     return (
       <OptimizedImage
-        src={preview.src}
-        alt={project.title}
+        src={resolved.src}
+        alt={project?.title ?? 'Preview'}
         width={1200}
         height={800}
         className="portfolio-index__image--fill"
@@ -135,9 +143,9 @@ function PreviewLayer({ frame }: { frame: PreviewFrame }) {
       <div className="portfolio-index__preview-slot">
         {frame.entry.kind === 'typeface' ? (
           <TypeSpecimen label={frame.entry.label} />
-        ) : frame.project ? (
-          <DevicePreview project={frame.project} />
-        ) : null}
+        ) : (
+          <DevicePreview project={frame.project} preview={frame.entry.preview} />
+        )}
       </div>
     </div>
   );
