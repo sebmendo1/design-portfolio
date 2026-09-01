@@ -1,5 +1,6 @@
 import type { ProjectPreview } from '@/data/projects';
 import {
+  CHASE_MYHOME_CALCULATORS_SCREEN_AR,
   SALESFORCE_HELP_CASES_SCREEN_AR,
   SALESFORCE_HELP_HOME_SCREEN_AR,
 } from '@/components/BrowserStencil/browser-aspect-ratios';
@@ -109,9 +110,16 @@ export const PORTFOLIO_INDEX: PortfolioIndexEntry[] = [
   {
     id: 'cmh-calculators',
     year: 2025,
-    label: 'ChaseMyHome - Mortgage Calculators',
+    label: 'Chase MyHome - Mortgage Calculators',
     section: 'work',
+    href: '/work/chase-myhome',
     previewSlug: 'chase-myhome',
+    preview: {
+      frame: 'browser',
+      src: '/assets/chase-myhome-calculators.png',
+      url: 'chase.com',
+      screenAspectRatio: CHASE_MYHOME_CALCULATORS_SCREEN_AR,
+    },
     tint: TINT.chase,
   },
   {
@@ -126,7 +134,7 @@ export const PORTFOLIO_INDEX: PortfolioIndexEntry[] = [
   {
     id: 'cmh-applications',
     year: 2024,
-    label: 'ChaseMyHome - Mortgage Applications',
+    label: 'Chase MyHome - Mortgage Applications',
     section: 'work',
     href: '/work/chase-myhome',
     previewSlug: 'chase-myhome',
