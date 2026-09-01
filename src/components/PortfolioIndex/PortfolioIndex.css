@@ -245,13 +245,11 @@
   from {
     opacity: 0;
     filter: blur(18px);
-    transform: scale(0.96);
   }
 
   to {
     opacity: 1;
     filter: blur(0);
-    transform: scale(1);
   }
 }
 
@@ -259,13 +257,11 @@
   from {
     opacity: 1;
     filter: blur(0);
-    transform: scale(1);
   }
 
   to {
     opacity: 0;
     filter: blur(14px);
-    transform: scale(1.03);
   }
 }
 
@@ -338,11 +334,21 @@
   max-height: none;
 }
 
+.portfolio-index__well--phone {
+  padding: clamp(4px, 1vmin, 10px);
+}
+
 .portfolio-index__well-inner .phone-stencil,
-.portfolio-index__well-inner .phone-stencil--card {
+.portfolio-index__well-inner .phone-stencil--card,
+.portfolio-index__preview-slot > .portfolio-index__device--phone {
   --content-ar: var(--phone-default-ar);
-  width: min(var(--body-w), 100%);
+  --index-phone-ar: calc(
+    var(--phone-body-scale) /
+      (1 / var(--phone-default-ar) + 2 * var(--phone-bezel-ratio))
+  );
+  width: min(100cqw, calc(100cqh * var(--index-phone-ar)));
   height: auto;
+  aspect-ratio: var(--index-phone-ar);
   max-width: 100%;
   max-height: 100%;
 }
