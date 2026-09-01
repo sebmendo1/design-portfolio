@@ -51,7 +51,8 @@ export function findPortfolioIndexEntry(
   entries: PortfolioIndexEntry[] = PORTFOLIO_INDEX,
 ): PortfolioIndexEntry {
   return (
-    entries.find((entry) => entry.id === id || entry.previewSlug === id) ??
+    entries.find((entry) => entry.id === id) ??
+    entries.find((entry) => entry.previewSlug === id) ??
     getDefaultPortfolioIndexEntry()
   );
 }
@@ -76,12 +77,13 @@ export function resolveIndexPreviewProject(
   projects: ProjectCardSummary[],
 ): ProjectCardSummary | undefined {
   const project = projects.find((item) => item.slug === entry.previewSlug);
-  if (!entry.preview) return project;
+  const preview = entry.preview ?? project?.preview;
+  if (!preview) return project;
   return {
     id: entry.id,
     slug: entry.previewSlug ?? project?.slug ?? entry.id,
-    title: entry.label,
-    preview: entry.preview,
+    title: entry.preview ? entry.label : (project?.title ?? entry.label),
+    preview,
     styles: project?.styles,
   };
 }

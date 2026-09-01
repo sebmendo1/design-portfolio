@@ -4,6 +4,14 @@ import {
   SALESFORCE_HELP_HOME_SCREEN_AR,
 } from '@/components/BrowserStencil/browser-aspect-ratios';
 
+/** Desktop landing-page screenshot for the Chase MyHome — Landing Page index row. */
+export const CHASE_MYHOME_LANDING_PREVIEW: ProjectPreview = {
+  frame: 'browser',
+  src: '/assets/chase-myhome-landing.png',
+  url: 'chase.com',
+  screenAspectRatio: CHASE_MYHOME_LANDING_SCREEN_AR,
+};
+
 export type PortfolioIndexSection = 'projects' | 'work';
 
 export type PortfolioIndexKind = 'device' | 'typeface';
@@ -121,12 +129,7 @@ export const PORTFOLIO_INDEX: PortfolioIndexEntry[] = [
     section: 'work',
     href: '/work/chase-myhome',
     previewSlug: 'chase-myhome',
-    preview: {
-      frame: 'browser',
-      src: '/assets/chase-myhome-landing.png',
-      url: 'chase.com',
-      screenAspectRatio: CHASE_MYHOME_LANDING_SCREEN_AR,
-    },
+    preview: CHASE_MYHOME_LANDING_PREVIEW,
     tint: TINT.chase,
   },
   {
