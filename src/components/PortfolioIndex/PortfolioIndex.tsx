@@ -199,9 +199,18 @@ export function PortfolioIndex({
             <button
               type="button"
               className="portfolio-index__modal-close"
+              aria-label="Close"
               onClick={closeModal}
             >
-              Close
+              <svg viewBox="0 0 16 16" width="20" height="20" aria-hidden="true">
+                <path
+                  d="M3.5 3.5 12.5 12.5M12.5 3.5 3.5 12.5"
+                  fill="none"
+                  stroke="currentColor"
+                  strokeWidth="1.5"
+                  strokeLinecap="round"
+                />
+              </svg>
             </button>
             <div className="portfolio-index__modal-well">{preview}</div>
           </div>
