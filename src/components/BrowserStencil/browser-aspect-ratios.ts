@@ -19,6 +19,9 @@ export const SALESFORCE_HELP_CASES_SCREEN_AR = 1024 / 706;
 /** Chase MyHome calculators screenshot (1796×1500). */
 export const CHASE_MYHOME_CALCULATORS_SCREEN_AR = 1796 / 1500;
 
+/** Chase MyHome landing-page screenshot (1024×768). */
+export const CHASE_MYHOME_LANDING_SCREEN_AR = 1024 / 768;
+
 /** Reference frame width for proportional chrome scaling. */
 export const BROWSER_REFERENCE_WIDTH = 480;
 
