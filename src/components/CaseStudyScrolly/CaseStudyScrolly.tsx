@@ -158,7 +158,7 @@ function DevicePreview({ config }: { config: CaseStudyConfig }) {
                 alt={screen.alt ?? `${title} app screenshot`}
                 screenAspectRatio={screen.screenAspectRatio ?? screenAspectRatio}
                 variant="case-study"
-                priority={index === 0}
+                priority
                 sizes={pairSizes}
               />
             ))}
