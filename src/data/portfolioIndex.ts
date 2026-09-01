@@ -1,5 +1,8 @@
 import type { ProjectPreview } from '@/data/projects';
-import { SALESFORCE_HELP_HOME_SCREEN_AR } from '@/components/BrowserStencil/browser-aspect-ratios';
+import {
+  SALESFORCE_HELP_CASES_SCREEN_AR,
+  SALESFORCE_HELP_HOME_SCREEN_AR,
+} from '@/components/BrowserStencil/browser-aspect-ratios';
 
 export type PortfolioIndexSection = 'projects' | 'work';
 
@@ -154,11 +157,18 @@ export const PORTFOLIO_INDEX: PortfolioIndexEntry[] = [
     tint: TINT.salesforce,
   },
   {
-    id: 'sf-emails',
+    id: 'sf-cases',
     year: 2022,
-    label: 'Salesforce - Support emails',
+    label: 'Salesforce Help - Cases',
     section: 'work',
+    href: '/work/salesforce-help',
     previewSlug: 'salesforce-help',
+    preview: {
+      frame: 'browser',
+      src: '/assets/salesforce-help-cases.png',
+      url: 'help.salesforce.com',
+      screenAspectRatio: SALESFORCE_HELP_CASES_SCREEN_AR,
+    },
     tint: TINT.salesforce,
   },
   {
