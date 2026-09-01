@@ -51,6 +51,12 @@
   background: var(--color-background-page);
   overflow: hidden;
   touch-action: none;
+  opacity: 0;
+  transition: opacity 0.56s cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+.portfolio-index__pane--stage.is-visible {
+  opacity: 1;
 }
 
 .portfolio-index__well-inner,
@@ -201,6 +207,16 @@
 .portfolio-index__item.is-active,
 .portfolio-index__item:hover {
   opacity: 1;
+}
+
+.portfolio-index__item.is-pending {
+  pointer-events: none;
+}
+
+.portfolio-index__theme-stream {
+  display: inline-flex;
+  opacity: 0;
+  animation: streaming-text-word-in 0.28s ease-out both;
 }
 
 .portfolio-index__well {
@@ -361,6 +377,16 @@
 
   .portfolio-index__dissolve--in,
   .portfolio-index__dissolve--out {
+    animation: none;
+  }
+
+  .portfolio-index__pane--stage {
+    opacity: 1;
+    transition: none;
+  }
+
+  .portfolio-index__theme-stream {
+    opacity: 1;
     animation: none;
   }
 }
