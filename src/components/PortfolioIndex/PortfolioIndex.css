@@ -281,9 +281,24 @@
   box-sizing: border-box;
 }
 
+.portfolio-index__well--phone {
+  container-type: size;
+  container-name: index-phone-well;
+}
+
+.portfolio-index__well--phone .portfolio-index__well-inner {
+  /* Size phones against the well, not the leftover stage. */
+  container-type: normal;
+  align-items: flex-start;
+}
+
 .portfolio-index__well--phone .portfolio-index__well-stage {
-  padding: clamp(4px, 1vmin, 10px);
-  padding-top: 0;
+  padding: 0;
+  overflow: hidden;
+}
+
+.portfolio-index__well--phone .portfolio-index__dissolve {
+  align-items: flex-start;
 }
 
 .portfolio-index__well-device {
@@ -371,31 +386,40 @@
   min-height: 0;
 }
 
+.portfolio-index__well--phone .portfolio-index__preview-slot {
+  align-items: flex-start;
+}
+
 .portfolio-index__preview-slot > * {
   max-width: 100%;
   max-height: 100%;
 }
 
-.portfolio-index__preview-slot > .portfolio-index__device--desktop {
+.portfolio-index__preview-slot > .portfolio-index__device--desktop,
+.portfolio-index__preview-slot > .portfolio-index__device--phone {
   max-height: none;
 }
 
 .portfolio-index__well-inner .phone-stencil,
 .portfolio-index__well-inner .phone-stencil--card,
 .portfolio-index__preview-slot > .portfolio-index__device--phone {
+  --phone-size-scale: 1;
   --content-ar: var(--phone-default-ar);
+  /* Chassis AR for the shared iPhone 15 Pro frame. */
   --index-phone-ar: calc(
     var(--phone-body-scale) /
       (1 / var(--phone-default-ar) + 2 * var(--phone-bezel-ratio))
   );
+  /* Figma device is 886 tall in a 905 well — nearly full well height,
+     top-aligned under the header, with a slight bottom crop. */
+  --index-phone-well-height: calc(886 / 905);
   width: min(
-    calc(100cqw * var(--phone-size-scale)),
-    calc(100cqh * var(--phone-size-scale) * var(--index-phone-ar))
+    100cqw,
+    calc(100cqh * var(--index-phone-well-height) * var(--index-phone-ar))
   );
   height: auto;
   aspect-ratio: var(--index-phone-ar);
   max-width: 100%;
-  max-height: 100%;
 }
 
 .portfolio-index__well-inner .phone-stencil--card .phone-stencil__body {
