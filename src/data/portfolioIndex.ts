@@ -1,5 +1,6 @@
 import type { ProjectPreview } from '@/data/projects';
 import {
+  CHASE_AI_INTERNAL_CHATBOT_SCREEN_AR,
   CHASE_MYHOME_CALCULATORS_SCREEN_AR,
   CHASE_MYHOME_LANDING_SCREEN_AR,
   SALESFORCE_HELP_CASES_SCREEN_AR,
@@ -12,6 +13,14 @@ export const CHASE_MYHOME_LANDING_PREVIEW: ProjectPreview = {
   src: '/assets/chase-myhome-landing.png',
   url: 'chase.com',
   screenAspectRatio: CHASE_MYHOME_LANDING_SCREEN_AR,
+};
+
+/** Desktop screenshot for the Chase AI — Internal Agentic Chatbot index row. */
+export const CHASE_AI_INTERNAL_CHATBOT_PREVIEW: ProjectPreview = {
+  frame: 'browser',
+  src: '/assets/chase-ai-internal-chatbot.png',
+  url: 'chase.com',
+  screenAspectRatio: CHASE_AI_INTERNAL_CHATBOT_SCREEN_AR,
 };
 
 export type PortfolioIndexSection = 'projects' | 'work';
@@ -86,7 +95,9 @@ export const PORTFOLIO_INDEX: PortfolioIndexEntry[] = [
     year: 2026,
     label: 'Chase AI - Internal Agentic Chatbot',
     section: 'work',
+    href: '/work/casey-ai',
     previewSlug: 'casey-ai',
+    preview: CHASE_AI_INTERNAL_CHATBOT_PREVIEW,
     tint: TINT.chase,
   },
   {
