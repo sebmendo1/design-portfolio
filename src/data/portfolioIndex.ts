@@ -60,7 +60,7 @@ const TINT = {
   chorus: 'rgba(80, 70, 120, 0.08)',
 } as const;
 
-export const PORTFOLIO_INDEX_DEFAULT_ID = 'chase-ai-rcs';
+export const PORTFOLIO_INDEX_DEFAULT_ID = 'memento-ai';
 
 export function getDefaultPortfolioIndexEntry(): PortfolioIndexEntry {
   return (
