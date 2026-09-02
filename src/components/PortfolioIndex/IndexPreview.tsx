@@ -2,12 +2,12 @@
 
 import {
   useEffect,
-  useRef,
   useState,
   type CSSProperties,
   type MouseEvent,
   type ReactNode,
 } from 'react';
+import { useReducedMotion } from 'framer-motion';
 import { BrowserStencil } from '@/components/BrowserStencil/BrowserStencil';
 import { DEFAULT_BROWSER_SCREEN_AR } from '@/components/BrowserStencil/browser-aspect-ratios';
 import { OptimizedImage } from '@/components/OptimizedImage/OptimizedImage';
@@ -257,30 +257,23 @@ export function IndexPreview({
   const cta = getPortfolioIndexCta(entry);
   const href = cta?.href;
   const ctaLabel = cta?.label;
+  const shouldReduce = useReducedMotion();
+  const next = { entry, project };
   const [outgoing, setOutgoing] = useState<PreviewFrame | null>(null);
-  const [current, setCurrent] = useState<PreviewFrame>({ entry, project });
-  const currentRef = useRef(current);
-  currentRef.current = current;
+  const [current, setCurrent] = useState<PreviewFrame>(next);
+
+  if (entry.id !== current.entry.id) {
+    setOutgoing(shouldReduce === true ? null : current);
+    setCurrent(next);
+  } else if (current.entry !== entry || current.project !== project) {
+    setCurrent(next);
+  }
 
   useEffect(() => {
-    const next = { entry, project };
-    if (entry.id === currentRef.current.entry.id) {
-      setCurrent(next);
-      return;
-    }
-
-    const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
-    if (reduceMotion) {
-      setOutgoing(null);
-      setCurrent(next);
-      return;
-    }
-
-    setOutgoing(currentRef.current);
-    setCurrent(next);
+    if (!outgoing) return;
     const timeoutId = window.setTimeout(() => setOutgoing(null), DISSOLVE_MS);
     return () => window.clearTimeout(timeoutId);
-  }, [entry, project]);
+  }, [outgoing]);
 
   return (
     <PreviewWell

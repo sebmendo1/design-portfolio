@@ -54,20 +54,16 @@ type PortfolioIndexProps = {
 
 function useAfterDelay(startDelayMs: number) {
   const shouldReduce = useReducedMotion();
-  const [ready, setReady] = useState(shouldReduce === true || startDelayMs <= 0);
+  const immediate = shouldReduce === true || startDelayMs <= 0;
+  const [timedReady, setTimedReady] = useState(false);
 
   useEffect(() => {
-    if (shouldReduce || startDelayMs <= 0) {
-      setReady(true);
-      return;
-    }
-
-    setReady(false);
-    const timeoutId = window.setTimeout(() => setReady(true), startDelayMs);
+    if (immediate) return;
+    const timeoutId = window.setTimeout(() => setTimedReady(true), startDelayMs);
     return () => window.clearTimeout(timeoutId);
-  }, [shouldReduce, startDelayMs]);
+  }, [immediate, startDelayMs]);
 
-  return shouldReduce === true || ready;
+  return immediate || timedReady;
 }
 
 function IndexItem({
@@ -125,27 +121,25 @@ export function PortfolioIndex({
   const sections = useMemo(() => groupPortfolioIndex(PORTFOLIO_INDEX), []);
   const delays = useMemo(() => buildIndexStreamDelays(), []);
   const shouldReduce = useReducedMotion();
-  const [wellVisible, setWellVisible] = useState(false);
+  const [wellRevealed, setWellRevealed] = useState(false);
+  const wellVisible = shouldReduce === true || wellRevealed;
   const active = findPortfolioIndexEntry(activeId);
   const previewProject = resolveIndexPreviewProject(active, projects);
   useIndexScroll(layoutRef, railRef);
 
   useEffect(() => {
-    if (shouldReduce) {
-      setWellVisible(true);
-      return;
-    }
-
-    const timeoutId = window.setTimeout(() => setWellVisible(true), delays.wellFade);
+    if (shouldReduce === true) return;
+    const timeoutId = window.setTimeout(() => setWellRevealed(true), delays.wellFade);
     return () => window.clearTimeout(timeoutId);
   }, [delays.wellFade, shouldReduce]);
 
+  if (!isNarrow && (modalOpen || modalMounted)) {
+    setModalOpen(false);
+    setModalMounted(false);
+  }
+
   useEffect(() => {
-    if (!isNarrow) {
-      setModalOpen(false);
-      setModalMounted(false);
-      dialogRef.current?.close();
-    }
+    if (!isNarrow) dialogRef.current?.close();
   }, [isNarrow]);
 
   useLayoutEffect(() => {

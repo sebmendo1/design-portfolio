@@ -25,9 +25,7 @@ export function ThemeProvider({ children }: { children: React.ReactNode }) {
   });
 
   useEffect(() => {
-    const next = getPreferredTheme();
-    setThemeState(next);
-    applyTheme(next);
+    applyTheme(getPreferredTheme());
 
     const onStorage = (event: StorageEvent) => {
       if (event.key !== THEME_STORAGE_KEY) return;
