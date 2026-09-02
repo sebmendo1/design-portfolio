@@ -16,7 +16,11 @@ import {
 } from '@/lib/site';
 import './about.css';
 
-const ABOUT_COMPANY_LINKS = [WORK_PAGE_BIO_CURRENT, ...WORK_PAGE_BIO_LINKS];
+const ABOUT_COMPANY_LINKS = [
+  WORK_PAGE_BIO_CURRENT,
+  ...WORK_PAGE_BIO_LINKS,
+  { label: 'Cursor', href: 'https://cursor.com' },
+];
 const ABOUT_COMPANY_PATTERN = new RegExp(
   `(${ABOUT_COMPANY_LINKS.map((company) =>
     company.label.replace(/[.*+?^${}()|[\]\\]/g, '\\$&'),
