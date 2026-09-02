@@ -81,15 +81,25 @@ async function saveProjectsData(data: CmsData): Promise<void> {
   });
 }
 
-function mergeProject(base: Project, cms: CmsProjectData | undefined): Project {
+function mergePreview(
+  base: Project['preview'],
+  cms: CmsProjectData['preview'],
+): Project['preview'] {
+  if (!base) return base;
   if (!cms) return base;
   return {
     ...base,
-    thumbnail: cms.thumbnail ?? base.thumbnail,
-    preview:
-      base.preview && cms.preview
-        ? { ...base.preview, ...cms.preview }
-        : base.preview,
+    ...(cms.video ? { video: cms.video } : {}),
+    ...(cms.url ? { url: cms.url } : {}),
+  };
+}
+
+export function mergeProject(base: Project, cms: CmsProjectData | undefined): Project {
+  if (!cms) return base;
+  return {
+    ...base,
+    thumbnail: base.thumbnail ?? cms.thumbnail,
+    preview: mergePreview(base.preview, cms.preview),
     scrollyConfig: base.scrollyConfig
       ? {
           ...base.scrollyConfig,

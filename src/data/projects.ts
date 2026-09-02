@@ -67,7 +67,7 @@ export const projects: Project[] = [
     company: 'Personal Project',
     role: 'Designer & Developer',
     tags: ['AI', 'Mobile', 'Personal'],
-    thumbnail: '/assets/memento-ai.png',
+    thumbnail: '/assets/memento-journal-feed.png',
     preview: {
       frame: 'phone',
       src: '/assets/memento-journal-feed.png',

@@ -143,10 +143,8 @@
 
 .portfolio-index__bio-link:focus-visible,
 .portfolio-index__link:focus-visible,
-.portfolio-index__item:focus-visible,
 .portfolio-index__well-cta:focus-visible,
-.portfolio-index__well-device:focus-visible,
-.portfolio-index__modal-close:focus-visible {
+.portfolio-index__well-device:focus-visible {
   outline: 2px solid var(--color-focus-ring);
   outline-offset: 2px;
   border-radius: 2px;
@@ -220,6 +218,8 @@
   padding: 0;
   border: 0;
   background: none;
+  appearance: none;
+  -webkit-appearance: none;
   font: inherit;
   font-size: 14px;
   line-height: 1.4;
@@ -230,6 +230,17 @@
   touch-action: pan-y;
   opacity: 0.42;
   transition: opacity var(--transition-fast);
+  -webkit-tap-highlight-color: transparent;
+}
+
+.portfolio-index__item:focus,
+.portfolio-index__item:focus-visible,
+.portfolio-index__item:active {
+  outline: none;
+}
+
+.portfolio-index__item:focus-visible {
+  opacity: 1;
 }
 
 .portfolio-index__item.is-active,
@@ -802,8 +813,21 @@
   padding: 0;
   border: 0;
   background: none;
+  appearance: none;
+  -webkit-appearance: none;
   color: var(--color-text-primary);
   cursor: pointer;
+  -webkit-tap-highlight-color: transparent;
+}
+
+.portfolio-index__modal-close:focus,
+.portfolio-index__modal-close:focus-visible,
+.portfolio-index__modal-close:active {
+  outline: none;
+}
+
+.portfolio-index__modal-close:focus-visible {
+  opacity: 0.72;
 }
 
 .portfolio-index__modal-close:hover {
