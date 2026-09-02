@@ -1,11 +1,14 @@
 import type { Metadata, Viewport } from 'next';
+import Script from 'next/script';
 import { Analytics } from '@vercel/analytics/next';
 import { SpeedInsights } from '@vercel/speed-insights/next';
 import { SmoothScroll } from '@/components/SmoothScroll/SmoothScroll';
 import { StructuredData } from '@/components/StructuredData/StructuredData';
+import { ThemeProvider } from '@/components/ThemeToggle/ThemeProvider';
 import { sebSansVar } from '@/lib/fonts';
 import { buildSiteGraph } from '@/lib/json-ld';
 import { createMetadata } from '@/lib/metadata';
+import { THEME_BOOTSTRAP_SCRIPT } from '@/lib/theme';
 import './globals.css';
 
 export const metadata: Metadata = createMetadata({
@@ -33,7 +36,10 @@ export const viewport: Viewport = {
   width: 'device-width',
   initialScale: 1,
   viewportFit: 'cover',
-  themeColor: '#ffffff',
+  themeColor: [
+    { media: '(prefers-color-scheme: light)', color: '#f8f8f8' },
+    { media: '(prefers-color-scheme: dark)', color: '#111111' },
+  ],
 };
 
 export default function RootLayout({
@@ -42,7 +48,7 @@ export default function RootLayout({
   children: React.ReactNode;
 }) {
   return (
-    <html lang="en" className={sebSansVar.variable}>
+    <html lang="en" className={sebSansVar.variable} suppressHydrationWarning>
       <head>
         <link
           rel="alternate"
@@ -80,6 +86,9 @@ export default function RootLayout({
           href="/"
           title="Homepage as Markdown"
         />
+        <Script id="theme-bootstrap" strategy="beforeInteractive">
+          {THEME_BOOTSTRAP_SCRIPT}
+        </Script>
       </head>
       <body suppressHydrationWarning>
         <StructuredData data={buildSiteGraph()} />
@@ -87,7 +96,9 @@ export default function RootLayout({
         <a href="#main-content" className="skip-link">
           Skip to content
         </a>
-        <SmoothScroll>{children}</SmoothScroll>
+        <ThemeProvider>
+          <SmoothScroll>{children}</SmoothScroll>
+        </ThemeProvider>
         <Analytics />
         <SpeedInsights />
       </body>

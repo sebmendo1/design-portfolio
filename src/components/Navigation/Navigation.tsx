@@ -1,9 +1,9 @@
 'use client';
 
 import Link from 'next/link';
-import Image from 'next/image';
 import { motion, useReducedMotion } from 'framer-motion';
 import { DISSOLVE_DURATION, DISSOLVE_EASE } from '@/components/DissolveIn/DissolveIn';
+import { PageHeadline } from '@/components/PageHeadline/PageHeadline';
 import { SITE_CONTACT_EMAIL } from '@/lib/site';
 import './Navigation.css';
 
@@ -29,19 +29,7 @@ export function Navigation() {
               : { duration: DISSOLVE_DURATION, delay: 0.08, ease: DISSOLVE_EASE }
           }
         >
-          <Link href="/" className="nav__brand" aria-label="SebMendoDesign home">
-            <span className="nav__brand-avatar">
-              <Image
-                src="/assets/nav-avatar.png"
-                alt=""
-                width={36}
-                height={36}
-                className="nav__brand-avatar-img"
-                priority
-              />
-            </span>
-            <span className="nav__brand-text">SebMendoDesign</span>
-          </Link>
+          <PageHeadline />
         </motion.div>
 
         <motion.div

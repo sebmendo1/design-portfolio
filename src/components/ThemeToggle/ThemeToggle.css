@@ -1,0 +1,43 @@
+.theme-toggle {
+  appearance: none;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  margin: 0;
+  padding: 0;
+  border: 0;
+  background: none;
+  color: var(--color-text-primary);
+  cursor: pointer;
+  line-height: 0;
+}
+
+.theme-toggle__icon {
+  display: none;
+}
+
+.theme-toggle__icon svg {
+  display: block;
+}
+
+.theme-toggle__icon--to-dark {
+  display: block;
+}
+
+html[data-theme='dark'] .theme-toggle__icon--to-dark {
+  display: none;
+}
+
+html[data-theme='dark'] .theme-toggle__icon--to-light {
+  display: block;
+}
+
+.theme-toggle:hover {
+  opacity: 0.72;
+}
+
+.theme-toggle:focus-visible {
+  outline: 2px solid var(--color-focus-ring);
+  outline-offset: 2px;
+  border-radius: 2px;
+}

@@ -4,7 +4,7 @@ import { useRef, type CSSProperties } from 'react';
 import { OptimizedImage } from '@/components/OptimizedImage/OptimizedImage';
 import { LazyAutoplayVideo } from '@/components/LazyAutoplayVideo/LazyAutoplayVideo';
 import { getVideoMobileSrc } from '@/data/assets';
-import { useContentAspectRatio } from './useContentAspectRatio';
+import { DEFAULT_PHONE_SCREEN_AR } from './phone-aspect-ratios';
 import { usePhoneBodyWidth } from './usePhoneBodyWidth';
 import './phone-stencil.css';
 
@@ -17,6 +17,7 @@ type PhoneStencilProps = {
   variant?: 'case-study' | 'card';
   className?: string;
   priority?: boolean;
+  lockAspectRatio?: boolean;
 };
 
 export function PhoneStencil({
@@ -24,14 +25,12 @@ export function PhoneStencil({
   video,
   poster,
   alt,
-  screenAspectRatio,
   variant = 'case-study',
   className,
   priority = false,
 }: PhoneStencilProps) {
   const rootRef = useRef<HTMLDivElement>(null);
-  const { aspectRatio, onVideoMetadata, onImageLoad } = useContentAspectRatio(screenAspectRatio);
-  usePhoneBodyWidth(rootRef);
+  const screenW = usePhoneBodyWidth(rootRef);
 
   const rootClass = [
     'phone-stencil',
@@ -45,7 +44,12 @@ export function PhoneStencil({
     <div
       ref={rootRef}
       className={rootClass}
-      style={{ '--content-ar': aspectRatio } as CSSProperties}
+      style={
+        {
+          '--content-ar': DEFAULT_PHONE_SCREEN_AR,
+          ...(screenW ? { '--screen-w': `${screenW}px` } : {}),
+        } as CSSProperties
+      }
     >
       <div className="phone-stencil__body">
         <div className="phone-stencil__btn phone-stencil__btn--action" />
@@ -53,7 +57,6 @@ export function PhoneStencil({
         <div className="phone-stencil__btn phone-stencil__btn--vol-down" />
         <div className="phone-stencil__btn phone-stencil__btn--power" />
         <div className="phone-stencil__screen">
-          <div className="phone-stencil__island" aria-hidden="true" />
           {video ? (
             <LazyAutoplayVideo
               className="phone-stencil__media"
@@ -64,7 +67,6 @@ export function PhoneStencil({
               posterHeight={1748}
               posterSizes={variant === 'card' ? '(max-width: 768px) 50vw, 33vw' : '50vw'}
               priority={priority}
-              onLoadedMetadata={onVideoMetadata}
             />
           ) : src ? (
             <OptimizedImage
@@ -74,11 +76,15 @@ export function PhoneStencil({
               height={1748}
               className="phone-stencil__media"
               sizes={variant === 'card' ? '(max-width: 768px) 50vw, 33vw' : '50vw'}
-              onLoadingComplete={(img) => onImageLoad(img.naturalWidth, img.naturalHeight)}
             />
           ) : (
             <div className="phone-stencil__screen-fill" />
           )}
+          <div className="phone-stencil__island" aria-hidden="true">
+            <span className="phone-stencil__island-sensor phone-stencil__island-sensor--ir" />
+            <span className="phone-stencil__island-sensor phone-stencil__island-sensor--camera" />
+          </div>
+          <div className="phone-stencil__home-indicator" aria-hidden="true" />
         </div>
       </div>
     </div>

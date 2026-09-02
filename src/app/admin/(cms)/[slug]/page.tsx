@@ -1,5 +1,6 @@
 import { notFound } from 'next/navigation';
 import Link from 'next/link';
+import { projects } from '@/data/projects';
 import { getMergedProject } from '@/lib/cms-data';
 import { BeatsEditor } from './BeatsEditor';
 import { MediaEditor } from './MediaEditor';
@@ -7,6 +8,10 @@ import styles from '../../admin.module.css';
 
 interface Props {
   params: Promise<{ slug: string }>;
+}
+
+export async function generateStaticParams() {
+  return projects.map((p) => ({ slug: p.slug }));
 }
 
 export default async function AdminProjectPage({ params }: Props) {

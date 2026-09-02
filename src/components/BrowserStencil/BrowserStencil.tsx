@@ -19,6 +19,7 @@ type BrowserStencilProps = {
   variant?: 'case-study' | 'card';
   className?: string;
   priority?: boolean;
+  lockAspectRatio?: boolean;
 };
 
 /** Host only — stencil chrome should read like a browser, not a full href. */
@@ -40,10 +41,13 @@ export function BrowserStencil({
   variant = 'case-study',
   className,
   priority = false,
+  lockAspectRatio = false,
 }: BrowserStencilProps) {
   const rootRef = useRef<HTMLDivElement>(null);
+  const contentAspectRatio = screenAspectRatio ?? DEFAULT_BROWSER_SCREEN_AR;
   const { aspectRatio, onVideoMetadata, onImageLoad } = useContentAspectRatio(
-    screenAspectRatio ?? DEFAULT_BROWSER_SCREEN_AR,
+    contentAspectRatio,
+    lockAspectRatio,
   );
   useBrowserFrameWidth(rootRef);
 
@@ -108,26 +112,27 @@ export function BrowserStencil({
       <div className="browser-stencil__screen">
         {video ? (
           <LazyAutoplayVideo
-            className="browser-stencil__media"
             src={video}
             srcMobile={getVideoMobileSrc(video)}
             poster={poster}
             posterWidth={1280}
-            posterHeight={Math.round(1280 / (screenAspectRatio ?? DEFAULT_BROWSER_SCREEN_AR))}
+            posterHeight={Math.round(1280 / contentAspectRatio)}
             posterSizes={
               variant === 'card'
                 ? '(max-width: 768px) 100vw, 50vw'
                 : '(max-width: 900px) 100vw, 50vw'
             }
             priority={priority}
+            layout="intrinsic"
             onLoadedMetadata={onVideoMetadata}
+            onPosterLoad={onImageLoad}
           />
         ) : src ? (
           <OptimizedImage
             src={src}
             alt={`${title} interface screenshot`}
             width={1280}
-            height={854}
+            height={Math.round(1280 / contentAspectRatio)}
             className="browser-stencil__media"
             sizes={
               variant === 'card'

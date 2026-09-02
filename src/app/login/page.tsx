@@ -1,3 +1,4 @@
+import { ThemeToggle } from '@/components/ThemeToggle/ThemeToggle';
 import { siteLoginAction } from './actions';
 import styles from './login.module.css';
 
@@ -14,6 +15,9 @@ export default async function SiteLoginPage({ searchParams }: Props) {
   return (
     <div className={styles.root}>
       <div className={styles.card}>
+        <div className={styles.toolbar}>
+          <ThemeToggle />
+        </div>
         <h1 className={styles.title}>SebMendoDesign</h1>
         <p className={styles.subtitle}>Enter the site password to continue.</p>
 

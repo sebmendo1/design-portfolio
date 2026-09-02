@@ -7,6 +7,7 @@ import { useInstallMethod } from '@/components/SebSans/InstallMethodContext';
 import { dispatchDownloadClick } from '@/lib/seb-sans/download-click';
 import { FONT_RELEASE_ZIP_URL } from '@/lib/seb-sans/install-commands';
 import { SEB_SANS_BASE_PATH } from '@/lib/seb-sans/site-url';
+import { ThemeToggle } from '@/components/ThemeToggle/ThemeToggle';
 
 export function StickyNav() {
   const { channel, setChannel } = useInstallMethod();
@@ -30,9 +31,12 @@ export function StickyNav() {
   return (
     <header className={`site-nav${atTop ? '' : ' site-nav--hidden'}`}>
       <div className="site-shell site-nav-inner">
-        <Link className="brand-mark" href={SEB_SANS_BASE_PATH} aria-label="Seb Sans home">
-          <span className="brand-dot" aria-hidden="true" />
-        </Link>
+        <div className="brand-cluster">
+          <Link className="brand-mark" href={SEB_SANS_BASE_PATH} aria-label="Seb Sans home">
+            <span className="brand-dot" aria-hidden="true" />
+          </Link>
+          <ThemeToggle />
+        </div>
 
         <InstallMethodSwitch className="nav-segmented" />
 

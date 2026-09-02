@@ -32,7 +32,10 @@ type LazyAutoplayVideoProps = {
   posterSizes?: string;
   className?: string;
   priority?: boolean;
+  /** cover fills the parent (phones). intrinsic lets the poster set height (browser frames). */
+  layout?: 'cover' | 'intrinsic';
   onLoadedMetadata?: VideoHTMLAttributes<HTMLVideoElement>['onLoadedMetadata'];
+  onPosterLoad?: (naturalWidth: number, naturalHeight: number) => void;
 };
 
 function getNetworkConnection(): NetworkInformation | undefined {
@@ -80,7 +83,9 @@ export function LazyAutoplayVideo({
   posterSizes = '(max-width: 768px) 100vw, 50vw',
   className,
   priority = false,
+  layout = 'cover',
   onLoadedMetadata,
+  onPosterLoad,
 }: LazyAutoplayVideoProps) {
   const wrapperRef = useRef<HTMLDivElement>(null);
   const videoRef = useRef<HTMLVideoElement>(null);
@@ -197,11 +202,18 @@ export function LazyAutoplayVideo({
 
   const mediaClassName = ['lazy-video__el', className].filter(Boolean).join(' ');
   const posterClassName = ['lazy-video__poster', className].filter(Boolean).join(' ');
+  const wrapperClassName = [
+    'lazy-video',
+    isReady ? 'lazy-video--ready' : '',
+    layout === 'intrinsic' ? 'lazy-video--intrinsic' : '',
+  ]
+    .filter(Boolean)
+    .join(' ');
 
   return (
     <div
       ref={wrapperRef}
-      className={`lazy-video${isReady ? ' lazy-video--ready' : ''}`}
+      className={wrapperClassName}
     >
       <video
         ref={videoRef}
@@ -225,6 +237,11 @@ export function LazyAutoplayVideo({
           className={posterClassName}
           sizes={posterSizes}
           priority={priority}
+          onLoadingComplete={
+            onPosterLoad
+              ? (img) => onPosterLoad(img.naturalWidth, img.naturalHeight)
+              : undefined
+          }
         />
       ) : null}
     </div>

@@ -7,6 +7,24 @@ export const WRITER_REWRITE_SCREEN_AR = 2922 / 1854;
 /** Chorus AI product demo (1920×1080). */
 export const CHORUS_DEMO_SCREEN_AR = 1920 / 1080;
 
+/** Salesforce Help Home screenshot (1024×711). */
+export const SALESFORCE_HELP_HOME_SCREEN_AR = 1024 / 711;
+
+/** Salesforce Help Cases screenshot (1024×706). */
+export const SALESFORCE_HELP_CASES_SCREEN_AR = 1024 / 706;
+
+/** Chase MyHome calculators screenshot (1796×1500). */
+export const CHASE_MYHOME_CALCULATORS_SCREEN_AR = 1796 / 1500;
+
+/** Chase MyHome landing-page screenshot (1024×768). */
+export const CHASE_MYHOME_LANDING_SCREEN_AR = 1024 / 768;
+
+/** Chase AI internal agentic chatbot screenshot (1800×1350). */
+export const CHASE_AI_INTERNAL_CHATBOT_SCREEN_AR = 1800 / 1350;
+
+/** WRITER AI Page Editor screenshot (1024×691). */
+export const WRITER_PAGE_EDITOR_SCREEN_AR = 1024 / 691;
+
 /** Reference frame width for proportional chrome scaling. */
 export const BROWSER_REFERENCE_WIDTH = 480;
 

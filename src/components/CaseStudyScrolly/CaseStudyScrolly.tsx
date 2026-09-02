@@ -20,6 +20,7 @@ import {
   CASE_STUDY_TOUCH_SCROLL_QUERY,
   caseStudySupportsTouchScroll,
 } from '@/lib/case-study-layout';
+import { ThemeToggle } from '@/components/ThemeToggle/ThemeToggle';
 import './CaseStudyScrolly.css';
 
 const CHASE_HERO_SRC = '/assets/logos/chase-hero.png?v=11';
@@ -289,9 +290,12 @@ export function CaseStudyScrolly({
   return (
     <article className="cs-article" aria-label={config.title}>
       <div ref={layoutRef} className="cs-layout">
-        <HomeLink className="cs-floating-back" onHomeNavigate={onHomeNavigate}>
-          ← Back
-        </HomeLink>
+        <div className="cs-floating-chrome">
+          <HomeLink className="cs-floating-back" onHomeNavigate={onHomeNavigate}>
+            ← Back
+          </HomeLink>
+          <ThemeToggle className="cs-floating-theme" />
+        </div>
 
         <DissolveIn
           className="cs-text-col-viewport"

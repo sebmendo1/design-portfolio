@@ -1,4 +1,5 @@
 import Link from 'next/link';
+import { ThemeToggle } from '@/components/ThemeToggle/ThemeToggle';
 import { toNotFoundMarkdown } from '@/lib/page-markdown';
 import { getSiteUrl } from '@/lib/site';
 import '@/components/CaseStudySrArticle/CaseStudySrArticle.css';
@@ -11,9 +12,12 @@ export default function NotFound() {
     <div className="not-found">
       <h1 className="not-found__title">Page not found</h1>
       <p className="not-found__body">The page you&apos;re looking for doesn&apos;t exist.</p>
-      <Link href="/" className="not-found__link">
-        Back to work
-      </Link>
+      <div className="not-found__actions">
+        <Link href="/" className="not-found__link">
+          back
+        </Link>
+        <ThemeToggle />
+      </div>
       <nav className="not-found__recovery" aria-label="Where to look next">
         <a href="/sitemap.xml">Sitemap</a>
         <a href="/llms.txt">llms.txt</a>
@@ -31,33 +35,40 @@ export default function NotFound() {
           min-height: 100dvh;
           display: flex;
           flex-direction: column;
-          align-items: center;
+          align-items: flex-start;
           justify-content: center;
-          gap: 16px;
-          padding: 24px;
-          text-align: center;
+          gap: 12px;
+          padding: 32px 24px;
+          max-width: 560px;
         }
         .not-found__title {
-          font-size: clamp(28px, 5vw, 40px);
-          font-weight: 500;
+          font-size: 16px;
+          font-weight: normal;
         }
         .not-found__body {
-          color: #666;
+          font-size: 14px;
+          opacity: 0.4;
           max-width: 420px;
         }
-        .not-found__link {
+        .not-found__actions {
+          display: flex;
+          align-items: center;
+          gap: 16px;
           margin-top: 8px;
-          padding: 10px 20px;
-          background: #000;
-          color: #fff;
-          border-radius: 999px;
+        }
+        .not-found__link {
+          font-size: 14px;
+          color: inherit;
           text-decoration: none;
-          font-weight: 500;
+        }
+        .not-found__link:hover {
+          text-decoration: underline;
+          text-underline-offset: 0.14em;
         }
         .not-found__recovery {
           display: flex;
           flex-wrap: wrap;
-          justify-content: center;
+          justify-content: flex-start;
           gap: 12px 16px;
           max-width: 420px;
           font-size: 14px;

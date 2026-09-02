@@ -24,8 +24,8 @@ body {
   font-size: var(--font-size-body);
   font-variation-settings: var(--font-var-body);
   line-height: var(--line-height-body);
-  background-color: #ffffff;
-  color: #000000;
+  background-color: var(--color-background-page);
+  color: var(--color-text-primary);
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
   min-width: 320px;
@@ -35,7 +35,7 @@ body {
 .page-loading,
 .case-loading {
   min-height: 100dvh;
-  background: #ffffff;
+  background: var(--color-background-page);
 }
 
 .case-study__header-reveal,
@@ -53,8 +53,8 @@ body {
   left: 16px;
   z-index: 1000;
   padding: 10px 16px;
-  background: #000;
-  color: #fff;
+  background: var(--color-surface-inverse);
+  color: var(--color-text-inverse);
   border-radius: 8px;
   text-decoration: none;
   font-weight: 500;

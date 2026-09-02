@@ -32,8 +32,8 @@
 
 /* Listen / play */
 .casey-btn--listen {
-  background: #000000;
-  color: #ffffff;
+  background: var(--color-surface-inverse);
+  color: var(--color-text-inverse);
 }
 
 .casey-btn--listen:hover {
@@ -41,17 +41,17 @@
 }
 
 .casey-btn--playing {
-  background: #1a1a1a;
+  background: var(--color-primary-hover);
 }
 
 /* Text */
 .casey-btn--text {
-  background: #f4f3f2;
-  color: #000000;
+  background: var(--color-background-project-highlight);
+  color: var(--color-text-primary);
 }
 
 .casey-btn--text:hover {
-  background: #e8e7e6;
+  background: var(--color-background-icon-container);
 }
 
 @media (max-width: 900px) and (orientation: portrait) {
