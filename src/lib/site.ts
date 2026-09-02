@@ -33,7 +33,7 @@ export const SITE_SOCIAL_NAV = [
 export const SITE_SOCIAL_LINKS: string[] = SITE_SOCIAL_NAV.map((link) => link.href);
 
 export const WORK_PAGE_BIO_LEAD_PREFIX =
-  'Sebastian is a Senior Product Designer building agentic banking experiences at ';
+  'Sebastian is a Senior Product Designer building agentic financial experiences at ';
 
 export const WORK_PAGE_BIO_CURRENT = {
   label: 'Chase',
@@ -57,4 +57,10 @@ export const WORK_PAGE_BIO_LINKS = [
   },
 ] as const;
 
-export const WORK_PAGE_BIO = `${WORK_PAGE_BIO_LEAD_PREFIX}${WORK_PAGE_BIO_CURRENT.label}${WORK_PAGE_BIO_PREVIOUS_INTRO}${WORK_PAGE_BIO_LINKS.map((link) => link.label).join(' ').replace(/ ([^ ]+)$/, ' and $1')}.`;
+const WORK_PAGE_BIO_PREVIOUS_LABELS = WORK_PAGE_BIO_LINKS.map((link) => link.label);
+const WORK_PAGE_BIO_PREVIOUS_LIST =
+  WORK_PAGE_BIO_PREVIOUS_LABELS.length <= 1
+    ? (WORK_PAGE_BIO_PREVIOUS_LABELS[0] ?? '')
+    : `${WORK_PAGE_BIO_PREVIOUS_LABELS.slice(0, -1).join(', ')} and ${WORK_PAGE_BIO_PREVIOUS_LABELS.at(-1)}`;
+
+export const WORK_PAGE_BIO = `${WORK_PAGE_BIO_LEAD_PREFIX}${WORK_PAGE_BIO_CURRENT.label}${WORK_PAGE_BIO_PREVIOUS_INTRO}${WORK_PAGE_BIO_PREVIOUS_LIST}.`;

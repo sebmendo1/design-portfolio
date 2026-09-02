@@ -258,7 +258,7 @@
   }
 
   .project-card__visual-inner .phone-stencil {
-    width: 100%;
+    width: calc(100% * var(--phone-size-scale));
     max-width: 100%;
     max-height: none;
   }

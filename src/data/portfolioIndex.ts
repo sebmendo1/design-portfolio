@@ -1,7 +1,11 @@
 import type { ProjectPreview } from '@/data/projects';
 import {
+  CHASE_AI_INTERNAL_CHATBOT_SCREEN_AR,
+  CHASE_MYHOME_CALCULATORS_SCREEN_AR,
   CHASE_MYHOME_LANDING_SCREEN_AR,
+  SALESFORCE_HELP_CASES_SCREEN_AR,
   SALESFORCE_HELP_HOME_SCREEN_AR,
+  WRITER_PAGE_EDITOR_SCREEN_AR,
 } from '@/components/BrowserStencil/browser-aspect-ratios';
 
 /** Desktop landing-page screenshot for the Chase MyHome — Landing Page index row. */
@@ -10,6 +14,22 @@ export const CHASE_MYHOME_LANDING_PREVIEW: ProjectPreview = {
   src: '/assets/chase-myhome-landing.png',
   url: 'chase.com',
   screenAspectRatio: CHASE_MYHOME_LANDING_SCREEN_AR,
+};
+
+/** Desktop screenshot for the Chase AI — Internal Agentic Chatbot index row. */
+export const CHASE_AI_INTERNAL_CHATBOT_PREVIEW: ProjectPreview = {
+  frame: 'browser',
+  src: '/assets/chase-ai-internal-chatbot.png',
+  url: 'chase.com',
+  screenAspectRatio: CHASE_AI_INTERNAL_CHATBOT_SCREEN_AR,
+};
+
+/** Desktop screenshot for the WRITER AI — Page Editor index row. */
+export const WRITER_PAGE_EDITOR_PREVIEW: ProjectPreview = {
+  frame: 'browser',
+  src: '/assets/writer-page-editor.png',
+  url: 'writer.com',
+  screenAspectRatio: WRITER_PAGE_EDITOR_SCREEN_AR,
 };
 
 export type PortfolioIndexSection = 'projects' | 'work';
@@ -26,6 +46,8 @@ export type PortfolioIndexEntry = {
   /** Overrides the case-study preview for this index row. */
   preview?: ProjectPreview;
   kind?: PortfolioIndexKind;
+  /** One sentence for the index well. No dashes. */
+  summary: string;
   tint: string;
 };
 
@@ -38,7 +60,7 @@ const TINT = {
   chorus: 'rgba(80, 70, 120, 0.08)',
 } as const;
 
-export const PORTFOLIO_INDEX_DEFAULT_ID = 'chase-ai-rcs';
+export const PORTFOLIO_INDEX_DEFAULT_ID = 'memento-ai';
 
 export function getDefaultPortfolioIndexEntry(): PortfolioIndexEntry {
   return (
@@ -59,6 +81,8 @@ export const PORTFOLIO_INDEX: PortfolioIndexEntry[] = [
     section: 'projects',
     href: '/work/memento-ai',
     previewSlug: 'memento-ai',
+    summary:
+      'Memento is a fully local AI journal that allows you to write and reflect in complete privacy.',
     tint: TINT.memento,
   },
   {
@@ -68,6 +92,8 @@ export const PORTFOLIO_INDEX: PortfolioIndexEntry[] = [
     section: 'projects',
     href: '/seb-sans',
     kind: 'typeface',
+    summary:
+      'Seb Sans is a variable typeface tuned so AI generated answers, drafts, and streamed UI copy stay easy to read.',
     tint: TINT.type,
   },
   {
@@ -77,6 +103,8 @@ export const PORTFOLIO_INDEX: PortfolioIndexEntry[] = [
     section: 'work',
     href: '/work/agentic-home-lending',
     previewSlug: 'agentic-home-lending',
+    summary:
+      'Building an evaluations platform for measuring performance of Chase AI agents.',
     tint: TINT.chase,
   },
   {
@@ -84,7 +112,11 @@ export const PORTFOLIO_INDEX: PortfolioIndexEntry[] = [
     year: 2026,
     label: 'Chase AI - Internal Agentic Chatbot',
     section: 'work',
+    href: '/work/casey-ai',
     previewSlug: 'casey-ai',
+    preview: CHASE_AI_INTERNAL_CHATBOT_PREVIEW,
+    summary:
+      'Built, shipped, and maintaining 20+ AI chat components for internal dashboard use cases.',
     tint: TINT.chase,
   },
   {
@@ -94,32 +126,35 @@ export const PORTFOLIO_INDEX: PortfolioIndexEntry[] = [
     section: 'work',
     href: '/work/agentic-home-lending',
     previewSlug: 'agentic-home-lending',
+    summary:
+      'Designing a conversational AI experience for discovering your best home loan.',
     tint: TINT.chase,
   },
   {
     id: 'chase-ai-rcs',
-    year: 2026,
-    label: 'Chase AI - Conversational RCS Agent',
-    section: 'work',
-    href: '/work/casey-ai',
-    previewSlug: 'casey-ai',
-    tint: TINT.chase,
-  },
-  {
-    id: 'chase-ai-voice',
     year: 2025,
-    label: 'Chase AI - Conversational Voice AI',
+    label: 'Chase AI - Conversational Agent, Voice & RCS',
     section: 'work',
     href: '/work/casey-ai',
     previewSlug: 'casey-ai',
+    summary:
+      'Casey is Chase’s first customer facing AI agent, talking with people by voice and text in home lending.',
     tint: TINT.chase,
   },
   {
     id: 'cmh-calculators',
     year: 2025,
-    label: 'ChaseMyHome - Mortgage Calculators',
+    label: 'Chase MyHome - Mortgage Calculators',
     section: 'work',
+    href: '/work/chase-myhome',
     previewSlug: 'chase-myhome',
+    preview: {
+      frame: 'browser',
+      src: '/assets/chase-myhome-calculators.png',
+      url: 'chase.com',
+      screenAspectRatio: CHASE_MYHOME_CALCULATORS_SCREEN_AR,
+    },
+    summary: 'Public tools that let people run the mortgage math before they apply.',
     tint: TINT.chase,
   },
   {
@@ -130,15 +165,18 @@ export const PORTFOLIO_INDEX: PortfolioIndexEntry[] = [
     href: '/work/chase-myhome',
     previewSlug: 'chase-myhome',
     preview: CHASE_MYHOME_LANDING_PREVIEW,
+    summary:
+      'The Chase.com entry that introduces MyHome and routes people into rates, tools, and apply.',
     tint: TINT.chase,
   },
   {
     id: 'cmh-applications',
     year: 2024,
-    label: 'ChaseMyHome - Mortgage Applications',
+    label: 'Chase MyHome - Mortgage Applications',
     section: 'work',
     href: '/work/chase-myhome',
     previewSlug: 'chase-myhome',
+    summary: 'The in-app path for starting and completing a Chase mortgage application.',
     tint: TINT.chase,
   },
   {
@@ -148,6 +186,8 @@ export const PORTFOLIO_INDEX: PortfolioIndexEntry[] = [
     section: 'work',
     href: '/work/salesforce-help',
     previewSlug: 'salesforce-help',
+    summary:
+      'Customers describe the issue in their own words and Einstein routes them to the best channel.',
     tint: TINT.salesforce,
   },
   {
@@ -163,14 +203,25 @@ export const PORTFOLIO_INDEX: PortfolioIndexEntry[] = [
       url: 'help.salesforce.com',
       screenAspectRatio: SALESFORCE_HELP_HOME_SCREEN_AR,
     },
+    summary:
+      'The Salesforce Help homepage that orients people before they pick a support path.',
     tint: TINT.salesforce,
   },
   {
-    id: 'sf-emails',
+    id: 'sf-cases',
     year: 2022,
-    label: 'Salesforce - Support emails',
+    label: 'Salesforce Help - Cases',
     section: 'work',
+    href: '/work/salesforce-help',
     previewSlug: 'salesforce-help',
+    preview: {
+      frame: 'browser',
+      src: '/assets/salesforce-help-cases.png',
+      url: 'help.salesforce.com',
+      screenAspectRatio: SALESFORCE_HELP_CASES_SCREEN_AR,
+    },
+    summary:
+      'The Salesforce Help case surface where submitted issues are tracked after routing.',
     tint: TINT.salesforce,
   },
   {
@@ -180,15 +231,19 @@ export const PORTFOLIO_INDEX: PortfolioIndexEntry[] = [
     section: 'work',
     href: '/work/writer-ai',
     previewSlug: 'writer-ai',
+    summary:
+      'Highlight text, pick a rewrite mode, and insert the result across the editor, apps, extensions, and Figma.',
     tint: TINT.writer,
   },
   {
     id: 'writer-ds',
     year: 2021,
-    label: 'WRITER AI - Design Systems',
+    label: 'WRITER AI - Page Editor',
     section: 'work',
     href: '/work/writer-ai',
     previewSlug: 'writer-ai',
+    preview: WRITER_PAGE_EDITOR_PREVIEW,
+    summary: 'The WRITER page editor where teams draft and govern enterprise content.',
     tint: TINT.writer,
   },
   {
@@ -198,6 +253,8 @@ export const PORTFOLIO_INDEX: PortfolioIndexEntry[] = [
     section: 'work',
     href: '/work/chorus-ai',
     previewSlug: 'chorus-ai',
+    summary:
+      'A rebuilt design system that standardized Chorus UI ahead of the ZoomInfo acquisition.',
     tint: TINT.chorus,
   },
 ];

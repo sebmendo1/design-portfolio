@@ -41,6 +41,14 @@ function TypeSpecimen({ label }: { label: string }) {
   );
 }
 
+function previewFrame(
+  entry: PortfolioIndexEntry,
+  project?: ProjectCardSummary,
+): ProjectPreview['frame'] | undefined {
+  if (entry.kind === 'typeface') return undefined;
+  return entry.preview?.frame ?? project?.preview?.frame;
+}
+
 function DevicePreview({
   project,
   preview,
@@ -63,7 +71,7 @@ function DevicePreview({
         screenAspectRatio={DEFAULT_PHONE_SCREEN_AR}
         lockAspectRatio
         variant="card"
-        className="portfolio-index__device"
+        className="portfolio-index__device portfolio-index__device--phone"
         priority
       />
     );
@@ -124,7 +132,7 @@ function DevicePreview({
 
 function OpenProjectIcon() {
   return (
-    <svg viewBox="0 0 16 16" width="16" height="16" aria-hidden="true">
+    <svg viewBox="0 0 16 16" width="20" height="20" aria-hidden="true">
       <path
         d="M4 12 12 4M12 4H5M12 4v7"
         fill="none"
@@ -155,18 +163,25 @@ function PreviewWell({
   href,
   tint,
   label,
+  summary,
+  phone,
   onNavigate,
   children,
 }: {
   href?: string;
   tint: string;
   label: string;
+  summary: string;
+  phone?: boolean;
   onNavigate?: (href: string) => void;
   children: ReactNode;
 }) {
-  const className = href
-    ? 'portfolio-index__well portfolio-index__well--link'
-    : 'portfolio-index__well';
+  const className = [
+    'portfolio-index__well',
+    phone ? 'portfolio-index__well--phone' : '',
+  ]
+    .filter(Boolean)
+    .join(' ');
 
   function handleOpen(event: MouseEvent<HTMLAnchorElement>) {
     if (!href || !onNavigate) return;
@@ -174,34 +189,35 @@ function PreviewWell({
     onNavigate(href);
   }
 
-  const body = (
-    <>
-      {href ? (
-        <span className="portfolio-index__open" aria-hidden="true">
-          <OpenProjectIcon />
-        </span>
-      ) : null}
-      <div className="portfolio-index__well-stage">{children}</div>
-    </>
+  const stage = href ? (
+    <a
+      href={href}
+      className="portfolio-index__well-device"
+      aria-label={`Open ${label}`}
+      onClick={handleOpen}
+    >
+      {children}
+    </a>
+  ) : (
+    children
   );
-
-  if (href) {
-    return (
-      <a
-        href={href}
-        className={className}
-        style={{ backgroundColor: tint }}
-        aria-label={`Open ${label}`}
-        onClick={handleOpen}
-      >
-        {body}
-      </a>
-    );
-  }
 
   return (
     <div className={className} style={{ backgroundColor: tint }}>
-      {body}
+      <div className="portfolio-index__well-bar">
+        <p className="portfolio-index__well-summary">{summary}</p>
+        {href ? (
+          <a
+            href={href}
+            className="portfolio-index__well-cta"
+            onClick={handleOpen}
+          >
+            Case study
+            <OpenProjectIcon />
+          </a>
+        ) : null}
+      </div>
+      <div className="portfolio-index__well-stage">{stage}</div>
     </div>
   );
 }
@@ -234,7 +250,14 @@ export function IndexPreview({ entry, project, onNavigate }: IndexPreviewProps) 
   }, [entry, project]);
 
   return (
-    <PreviewWell href={href} tint={entry.tint} label={entry.label} onNavigate={onNavigate}>
+    <PreviewWell
+      href={href}
+      tint={entry.tint}
+      label={entry.label}
+      summary={entry.summary}
+      phone={previewFrame(entry, project) === 'phone'}
+      onNavigate={onNavigate}
+    >
       {outgoing ? (
         <div className="portfolio-index__dissolve portfolio-index__dissolve--out" key={outgoing.entry.id}>
           <PreviewLayer frame={outgoing} />
