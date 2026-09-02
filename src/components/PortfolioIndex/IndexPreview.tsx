@@ -16,7 +16,7 @@ import { DEFAULT_PHONE_SCREEN_AR } from '@/components/PhoneStencil/phone-aspect-
 import { getVideoPoster } from '@/data/assets';
 import type { PortfolioIndexEntry } from '@/data/portfolioIndex';
 import type { ProjectPreview } from '@/data/projects';
-import { getPortfolioIndexHref } from '@/lib/portfolio-index';
+import { getPortfolioIndexCtaLabel, getPortfolioIndexHref } from '@/lib/portfolio-index';
 import type { ProjectCardSummary } from '@/lib/project-cards';
 
 type IndexPreviewProps = {
@@ -182,6 +182,7 @@ function PreviewWell({
   tint,
   label,
   summary,
+  ctaLabel,
   phone,
   onNavigate,
   children,
@@ -190,6 +191,7 @@ function PreviewWell({
   tint: string;
   label: string;
   summary: string;
+  ctaLabel: string;
   phone?: boolean;
   onNavigate?: (href: string) => void;
   children: ReactNode;
@@ -230,7 +232,7 @@ function PreviewWell({
             className="portfolio-index__well-cta"
             onClick={handleOpen}
           >
-            Case study
+            {ctaLabel}
             <OpenProjectIcon />
           </a>
         ) : null}
@@ -242,6 +244,7 @@ function PreviewWell({
 
 export function IndexPreview({ entry, project, onNavigate }: IndexPreviewProps) {
   const href = getPortfolioIndexHref(entry);
+  const ctaLabel = getPortfolioIndexCtaLabel(entry);
   const [outgoing, setOutgoing] = useState<PreviewFrame | null>(null);
   const [current, setCurrent] = useState<PreviewFrame>({ entry, project });
   const currentRef = useRef(current);
@@ -273,6 +276,7 @@ export function IndexPreview({ entry, project, onNavigate }: IndexPreviewProps) 
       tint={entry.tint}
       label={entry.label}
       summary={entry.summary}
+      ctaLabel={ctaLabel}
       phone={previewFrame(entry, project) === 'phone'}
       onNavigate={onNavigate}
     >

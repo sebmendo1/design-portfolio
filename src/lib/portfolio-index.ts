@@ -71,6 +71,11 @@ export function getPortfolioIndexHref(entry: PortfolioIndexEntry): string | unde
   return undefined;
 }
 
+export function getPortfolioIndexCtaLabel(entry: PortfolioIndexEntry): string {
+  const href = getPortfolioIndexHref(entry);
+  return href?.startsWith('/work/') ? 'Case study' : 'Try it out';
+}
+
 /** Case-study preview, or a row-specific override such as Salesforce Help Home. */
 export function resolveIndexPreviewProject(
   entry: PortfolioIndexEntry,
