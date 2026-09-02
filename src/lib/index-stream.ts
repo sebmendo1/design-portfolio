@@ -9,7 +9,7 @@ import {
 } from '@/lib/site';
 
 const SECTION_GAP_MS = 32;
-const INDEX_STREAM_TARGET_MS = 5000;
+const INDEX_STREAM_TARGET_MS = 2500;
 
 export const INDEX_HEADLINE_TEXT = 'SebMendoDesign';
 

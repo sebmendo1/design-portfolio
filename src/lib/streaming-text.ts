@@ -1,7 +1,7 @@
 /** Steady cadence between word reveals, matching ChatGPT's streaming feel. */
-export const WORD_INTERVAL_MS = 55;
+export const WORD_INTERVAL_MS = 28;
 
-export const WORD_ANIMATION_MS = 280;
+export const WORD_ANIMATION_MS = 140;
 
 export type TextUnit = { word: string; space: string };
 
