@@ -148,3 +148,8 @@ b {
 a {
   color: inherit;
 }
+
+button,
+a {
+  -webkit-tap-highlight-color: transparent;
+}

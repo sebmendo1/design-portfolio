@@ -40,7 +40,7 @@ export const PHONE_SCREEN_AR = {
   mementoDemo: 750 / 1630,
   caseyRcs: 750 / 1638,
   chaseMyHomeDemo: 852 / 1848,
-  mementoPreview: 786 / 1748,
+  mementoPreview: 816 / 1770,
   caseyPreview: 786 / 1748,
   chasePreview: 786 / 1745,
   agenticPreview: 786 / 1748,
