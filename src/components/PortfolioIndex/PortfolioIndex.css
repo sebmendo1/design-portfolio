@@ -402,7 +402,7 @@
 }
 
 .portfolio-index__phone-stack {
-  --index-phone-stack-gap: 32px;
+  --index-phone-stack-gap: 48px;
   display: flex;
   flex-direction: row;
   align-items: flex-start;
@@ -803,7 +803,7 @@
 .portfolio-index__modal-well .portfolio-index__phone-stack .portfolio-index__device--phone {
   margin-inline: 0;
   width: min(
-    calc((100cqw - var(--index-phone-stack-gap, 32px)) / 2),
+    calc((100cqw - var(--index-phone-stack-gap, 48px)) / 2),
     calc(100cqh * var(--index-phone-ar) * 0.75)
   );
 }
