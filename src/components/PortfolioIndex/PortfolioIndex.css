@@ -440,6 +440,7 @@
 .portfolio-index__well-inner .portfolio-index__phone-stack .phone-stencil--card,
 .portfolio-index__preview-slot .portfolio-index__phone-stack .portfolio-index__device--phone {
   --phone-size-scale: 0.75;
+  margin-inline: 0;
   width: min(
     calc((100cqw - var(--index-phone-stack-gap)) / 2),
     calc(100cqh * var(--index-phone-well-height) * var(--index-phone-ar) * 0.75)
@@ -800,6 +801,7 @@
 .portfolio-index__modal-well .portfolio-index__phone-stack .phone-stencil,
 .portfolio-index__modal-well .portfolio-index__phone-stack .phone-stencil--card,
 .portfolio-index__modal-well .portfolio-index__phone-stack .portfolio-index__device--phone {
+  margin-inline: 0;
   width: min(
     calc((100cqw - var(--index-phone-stack-gap, 32px)) / 2),
     calc(100cqh * var(--index-phone-ar) * 0.75)
