@@ -23,12 +23,20 @@ export interface CaseStudyBlock {
   screenContent?: string;
 }
 
+export interface ProjectPreviewDevice {
+  src?: string;
+  video?: string;
+  screenAspectRatio?: number;
+}
+
 export interface ProjectPreview {
   frame: 'phone' | 'browser' | 'image' | 'fill';
   src?: string;
   video?: string;
   url?: string;
   screenAspectRatio?: number;
+  /** Extra phones shown beside the primary in the index preview well. */
+  companions?: ProjectPreviewDevice[];
 }
 
 export interface Project {
@@ -63,9 +71,14 @@ export const projects: Project[] = [
     thumbnail: '/assets/memento-ai.png',
     preview: {
       frame: 'phone',
-      src: '/assets/memento-ai.png',
-      video: ASSETS.video.mementoDemo,
-      screenAspectRatio: PHONE_SCREEN_AR.mementoDemo,
+      src: '/assets/memento-journal-feed.png',
+      screenAspectRatio: PHONE_SCREEN_AR.mementoPreview,
+      companions: [
+        {
+          src: '/assets/memento-insights.png',
+          screenAspectRatio: PHONE_SCREEN_AR.mementoPreview,
+        },
+      ],
     },
     slug: 'memento-ai',
     styles: { backgroundColor: '#f4f3f2' },

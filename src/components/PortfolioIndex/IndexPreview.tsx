@@ -60,21 +60,39 @@ function DevicePreview({
   if (!resolved) return null;
 
   if (resolved.frame === 'phone') {
-    const poster = resolved.video ? getVideoPoster(resolved.video) : undefined;
+    const phones = [
+      {
+        src: resolved.src,
+        video: resolved.video,
+        screenAspectRatio: resolved.screenAspectRatio,
+      },
+      ...(resolved.companions ?? []),
+    ];
 
-    return (
+    const nodes = phones.map((device, index) => (
       <PhoneStencil
-        src={resolved.src}
-        video={resolved.video}
-        poster={poster}
-        alt={`${project?.title ?? 'Project'} preview`}
+        key={`${device.video ?? device.src ?? index}`}
+        src={device.src}
+        video={device.video}
+        poster={device.video ? getVideoPoster(device.video) : undefined}
+        alt={
+          index === 0
+            ? `${project?.title ?? 'Project'} preview`
+            : `${project?.title ?? 'Project'} preview ${index + 1}`
+        }
         screenAspectRatio={DEFAULT_PHONE_SCREEN_AR}
         lockAspectRatio
         variant="card"
         className="portfolio-index__device portfolio-index__device--phone"
-        priority
+        priority={index === 0}
       />
-    );
+    ));
+
+    if (nodes.length > 1) {
+      return <div className="portfolio-index__phone-stack">{nodes}</div>;
+    }
+
+    return nodes[0] ?? null;
   }
 
   if (resolved.frame === 'browser') {
