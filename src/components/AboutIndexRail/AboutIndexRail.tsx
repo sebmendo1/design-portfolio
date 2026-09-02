@@ -30,14 +30,16 @@ export function AboutIndexRail() {
           return (
             <Tag key={block.key} className={className} aria-label={fullText}>
               {block.parts.map((part, partIndex) => {
-                const text = (
+                const leadingSpace = part.text.match(/^\s*/)?.[0] ?? '';
+                const body = part.text.slice(leadingSpace.length);
+                const text = body ? (
                   <StreamingText
-                    text={part.text}
+                    text={body}
                     as="span"
                     startDelayMs={delays.blocks[blockIndex]?.[partIndex] ?? 0}
                     intervalMs={delays.intervalMs}
                   />
-                );
+                ) : null;
 
                 if (part.type === 'link') {
                   return (
@@ -53,7 +55,12 @@ export function AboutIndexRail() {
                   );
                 }
 
-                return <span key={`text-${partIndex}`}>{text}</span>;
+                return (
+                  <span key={`text-${partIndex}`}>
+                    {leadingSpace}
+                    {text}
+                  </span>
+                );
               })}
             </Tag>
           );
