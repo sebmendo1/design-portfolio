@@ -77,6 +77,25 @@
   text-wrap: pretty;
 }
 
+.about-index__bio-link {
+  color: inherit;
+  text-decoration: underline;
+  text-decoration-color: currentColor;
+  text-decoration-thickness: 1px;
+  text-underline-offset: 0.18em;
+  text-decoration-skip-ink: none;
+}
+
+.about-index__bio-link:hover {
+  opacity: 0.72;
+}
+
+.about-index__bio-link:focus-visible {
+  outline: 2px solid var(--color-focus-ring);
+  outline-offset: 2px;
+  border-radius: 2px;
+}
+
 .about-index__links {
   display: flex;
   flex-wrap: wrap;

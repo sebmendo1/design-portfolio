@@ -122,8 +122,19 @@
 .portfolio-index__bio-link {
   color: inherit;
   text-decoration: underline;
+  text-decoration-color: currentColor;
   text-decoration-thickness: 1px;
-  text-underline-offset: 0.14em;
+  text-underline-offset: 0.18em;
+  text-decoration-skip-ink: none;
+}
+
+/* Streaming words are inline-block, so the parent underline does not paint. */
+.portfolio-index__bio-link .streaming-text__word {
+  text-decoration: underline;
+  text-decoration-color: currentColor;
+  text-decoration-thickness: 1px;
+  text-underline-offset: 0.18em;
+  text-decoration-skip-ink: none;
 }
 
 .portfolio-index__bio-link:hover {
