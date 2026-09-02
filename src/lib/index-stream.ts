@@ -1,6 +1,5 @@
 import { splitIntoUnits, WORD_ANIMATION_MS } from '@/lib/streaming-text';
-import { getDefaultPortfolioIndexEntry } from '@/data/portfolioIndex';
-import { getPortfolioIndexCta, groupPortfolioIndex } from '@/lib/portfolio-index';
+import { groupPortfolioIndex } from '@/lib/portfolio-index';
 import {
   SITE_SOCIAL_NAV,
   WORK_PAGE_BIO_CURRENT,
@@ -54,8 +53,6 @@ export type IndexStreamDelays = {
   bio: number;
   bioParts: number[];
   wellFade: number;
-  wellCopy: number;
-  wellCta: number;
   headings: Record<string, number>;
   years: Record<string, number>;
   items: Record<string, number>;
@@ -70,11 +67,6 @@ function wordCount(text: string) {
 function indexStreamBlocks() {
   const bio = INDEX_BIO_PARTS.filter((part) => part.type !== 'gap').map((part) => part.text);
   const afterBio: string[] = [];
-  const defaultEntry = getDefaultPortfolioIndexEntry();
-  const defaultCta = getPortfolioIndexCta(defaultEntry);
-
-  afterBio.push(defaultEntry.summary);
-  if (defaultCta?.label) afterBio.push(defaultCta.label);
 
   for (const section of groupPortfolioIndex()) {
     afterBio.push(section.id);
@@ -122,10 +114,6 @@ export function buildIndexStreamDelays(): IndexStreamDelays {
   cursor += SECTION_GAP_MS;
 
   const wellFade = cursor;
-  const defaultEntry = getDefaultPortfolioIndexEntry();
-  const defaultCta = getPortfolioIndexCta(defaultEntry);
-  const wellCopy = take(defaultEntry.summary);
-  const wellCta = defaultCta?.label ? take(defaultCta.label) : wellCopy;
 
   const headings: Record<string, number> = {};
   const years: Record<string, number> = {};
@@ -154,8 +142,6 @@ export function buildIndexStreamDelays(): IndexStreamDelays {
     bio,
     bioParts,
     wellFade,
-    wellCopy,
-    wellCta,
     headings,
     years,
     items,

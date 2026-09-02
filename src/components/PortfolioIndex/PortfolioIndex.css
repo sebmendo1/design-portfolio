@@ -318,12 +318,6 @@
   flex-shrink: 0;
 }
 
-.portfolio-index__well-cta-icon {
-  display: inline-flex;
-  opacity: 0;
-  animation: index-theme-in 0.28s ease-out both;
-}
-
 .portfolio-index__well-stage {
   position: relative;
   flex: 1 1 auto;
@@ -426,8 +420,7 @@
     animation: none;
   }
 
-  .portfolio-index__theme-stream,
-  .portfolio-index__well-cta-icon {
+  .portfolio-index__theme-stream {
     opacity: 1;
     animation: none;
   }

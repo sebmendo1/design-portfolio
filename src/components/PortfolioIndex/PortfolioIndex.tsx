@@ -126,8 +126,6 @@ export function PortfolioIndex({
   const delays = useMemo(() => buildIndexStreamDelays(), []);
   const shouldReduce = useReducedMotion();
   const [wellVisible, setWellVisible] = useState(false);
-  const [instantCopy, setInstantCopy] = useState(false);
-  const hasActivatedRef = useRef(false);
   const active = findPortfolioIndexEntry(activeId);
   const previewProject = resolveIndexPreviewProject(active, projects);
   useIndexScroll(layoutRef, railRef);
@@ -135,17 +133,12 @@ export function PortfolioIndex({
   useEffect(() => {
     if (shouldReduce) {
       setWellVisible(true);
-      setInstantCopy(true);
       return;
     }
 
-    const fadeId = window.setTimeout(() => setWellVisible(true), delays.wellFade);
-    const copyId = window.setTimeout(() => setInstantCopy(true), delays.theme);
-    return () => {
-      window.clearTimeout(fadeId);
-      window.clearTimeout(copyId);
-    };
-  }, [delays.theme, delays.wellFade, shouldReduce]);
+    const timeoutId = window.setTimeout(() => setWellVisible(true), delays.wellFade);
+    return () => window.clearTimeout(timeoutId);
+  }, [delays.wellFade, shouldReduce]);
 
   useEffect(() => {
     if (!isNarrow) {
@@ -166,10 +159,6 @@ export function PortfolioIndex({
   }
 
   function handleActivate(id: string) {
-    if (!isNarrow || hasActivatedRef.current) {
-      setInstantCopy(true);
-    }
-    hasActivatedRef.current = true;
     setActiveId(id);
     if (!isNarrow) return;
     setModalMounted(true);
@@ -208,10 +197,6 @@ export function PortfolioIndex({
       entry={active}
       project={previewProject}
       onNavigate={onNavigate}
-      copyStartDelayMs={isNarrow ? 0 : delays.wellCopy}
-      ctaStartDelayMs={isNarrow ? undefined : delays.wellCta}
-      intervalMs={delays.intervalMs}
-      instantCopy={instantCopy}
     />
   );
 
