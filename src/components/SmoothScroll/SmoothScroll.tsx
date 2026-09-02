@@ -11,7 +11,7 @@ type SmoothScrollProps = {
 export function SmoothScroll({ children }: SmoothScrollProps) {
   const pathname = usePathname();
   const [reduceMotion, setReduceMotion] = useState(false);
-  const useNativeScroll = pathname === '/';
+  const useNativeScroll = pathname === '/' || pathname === '/about';
 
   useEffect(() => {
     const media = window.matchMedia('(prefers-reduced-motion: reduce)');

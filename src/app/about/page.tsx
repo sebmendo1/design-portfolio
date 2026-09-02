@@ -69,7 +69,7 @@ export default function AboutPage() {
       <StructuredData data={buildProfilePageGraphFromProfile()} />
       <AboutPageLayout>
         <div className="about-index">
-          <div className="about-index__pane about-index__pane--rail">
+          <div className="about-index__pane about-index__pane--rail" data-lenis-prevent>
             <header className="about-index__headline">
               <PageHeadline />
             </header>
@@ -96,7 +96,7 @@ export default function AboutPage() {
             </nav>
           </div>
 
-          <div className="about-index__pane about-index__pane--album">
+          <div className="about-index__pane about-index__pane--album" data-lenis-prevent>
             <AboutAlbum />
           </div>
         </div>
