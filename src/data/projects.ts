@@ -71,12 +71,11 @@ export const projects: Project[] = [
     thumbnail: '/assets/memento-ai.png',
     preview: {
       frame: 'phone',
-      src: '/assets/memento-ai.png',
-      video: ASSETS.video.mementoDemo,
-      screenAspectRatio: PHONE_SCREEN_AR.mementoDemo,
+      src: '/assets/memento-journal-feed.png',
+      screenAspectRatio: PHONE_SCREEN_AR.mementoPreview,
       companions: [
         {
-          src: '/assets/memento-ai.png',
+          src: '/assets/memento-insights.png',
           screenAspectRatio: PHONE_SCREEN_AR.mementoPreview,
         },
       ],
