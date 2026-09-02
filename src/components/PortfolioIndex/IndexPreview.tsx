@@ -16,7 +16,7 @@ import { DEFAULT_PHONE_SCREEN_AR } from '@/components/PhoneStencil/phone-aspect-
 import { getVideoPoster } from '@/data/assets';
 import type { PortfolioIndexEntry } from '@/data/portfolioIndex';
 import type { ProjectPreview } from '@/data/projects';
-import { getPortfolioIndexCtaLabel, getPortfolioIndexHref } from '@/lib/portfolio-index';
+import { getPortfolioIndexCta } from '@/lib/portfolio-index';
 import type { ProjectCardSummary } from '@/lib/project-cards';
 
 type IndexPreviewProps = {
@@ -191,7 +191,7 @@ function PreviewWell({
   tint: string;
   label: string;
   summary: string;
-  ctaLabel: string;
+  ctaLabel?: string;
   phone?: boolean;
   onNavigate?: (href: string) => void;
   children: ReactNode;
@@ -226,7 +226,7 @@ function PreviewWell({
     <div className={className} style={{ backgroundColor: tint }}>
       <div className="portfolio-index__well-bar">
         <p className="portfolio-index__well-summary">{summary}</p>
-        {href ? (
+        {href && ctaLabel ? (
           <a
             href={href}
             className="portfolio-index__well-cta"
@@ -243,8 +243,9 @@ function PreviewWell({
 }
 
 export function IndexPreview({ entry, project, onNavigate }: IndexPreviewProps) {
-  const href = getPortfolioIndexHref(entry);
-  const ctaLabel = getPortfolioIndexCtaLabel(entry);
+  const cta = getPortfolioIndexCta(entry, project);
+  const href = cta?.href;
+  const ctaLabel = cta?.label;
   const [outgoing, setOutgoing] = useState<PreviewFrame | null>(null);
   const [current, setCurrent] = useState<PreviewFrame>({ entry, project });
   const currentRef = useRef(current);
