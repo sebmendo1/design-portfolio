@@ -22,6 +22,12 @@ export type Cluster = {
   anchor: { x: number; y: number }; // percentage of stage (0-100)
 };
 
+export type CaseStudyDevice = {
+  src?: string;
+  video?: string;
+  screenAspectRatio?: number;
+};
+
 export type CaseStudyCenterpiece = {
   src?: string;
   video?: string;
@@ -29,6 +35,8 @@ export type CaseStudyCenterpiece = {
   width: number;
   frame: 'phone' | 'browser' | 'none';
   screenAspectRatio?: number;
+  /** Extra phones shown beside the primary in a horizontal stack. */
+  companions?: CaseStudyDevice[];
 };
 
 export type CaseStudyConfig = {

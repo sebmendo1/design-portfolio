@@ -4,7 +4,7 @@ import { useEffect, useRef, type CSSProperties, type ReactNode } from 'react';
 import Link from 'next/link';
 import Image from 'next/image';
 import Lenis from 'lenis';
-import type { CaseStudyConfig } from './types';
+import type { CaseStudyConfig, CaseStudyDevice } from './types';
 import { getVideoPoster } from '@/data/assets';
 import { OptimizedImage } from '@/components/OptimizedImage/OptimizedImage';
 import { PhoneStencil } from '@/components/PhoneStencil/PhoneStencil';
@@ -117,13 +117,49 @@ function HomeLink({
   );
 }
 
+function PhonePreview({
+  device,
+  title,
+  index,
+  priority,
+}: {
+  device: CaseStudyDevice;
+  title: string;
+  index: number;
+  priority?: boolean;
+}) {
+  return (
+    <PhoneStencil
+      src={device.src}
+      video={device.video}
+      poster={device.video ? getVideoPoster(device.video) : undefined}
+      alt={
+        index === 0
+          ? `${title} app screenshot`
+          : `${title} app screenshot ${index + 1}`
+      }
+      screenAspectRatio={device.screenAspectRatio}
+      variant="case-study"
+      priority={priority}
+    />
+  );
+}
+
 function DevicePreview({ config }: { config: CaseStudyConfig }) {
-  const { frame, src, video, url, screenAspectRatio } = config.stage.centerpiece;
+  const { frame, src, video, url, screenAspectRatio, companions } =
+    config.stage.centerpiece;
   const title = config.title;
   const standaloneAr = screenAspectRatio ?? 1280 / 854;
+  const phones: CaseStudyDevice[] =
+    frame === 'phone'
+      ? [{ src, video, screenAspectRatio }, ...(companions ?? [])]
+      : [];
+  const stacked = phones.length > 1;
 
   return (
-    <div className={`cs-device-card cs-device-card--${frame}`}>
+    <div
+      className={`cs-device-card cs-device-card--${frame}${stacked ? ' cs-device-card--phone-stack' : ''}`}
+    >
       {frame === 'browser' && (
         <BrowserStencil
           src={src}
@@ -136,16 +172,23 @@ function DevicePreview({ config }: { config: CaseStudyConfig }) {
           priority
         />
       )}
-      {frame === 'phone' && (
-        <PhoneStencil
-          src={src}
-          video={video}
-          poster={video ? getVideoPoster(video) : undefined}
-          alt={`${title} app screenshot`}
-          screenAspectRatio={screenAspectRatio}
-          variant="case-study"
-          priority
-        />
+      {stacked ? (
+        <div className="cs-device-stack" role="group" aria-label={`${title} app screens`}>
+          {phones.map((device, index) => (
+            <PhonePreview
+              key={`${device.video ?? device.src ?? index}`}
+              device={device}
+              title={title}
+              index={index}
+              priority={index === 0}
+            />
+          ))}
+        </div>
+      ) : (
+        frame === 'phone' &&
+        phones[0] && (
+          <PhonePreview device={phones[0]} title={title} index={0} priority />
+        )
       )}
       {frame === 'none' && src && (
         <div

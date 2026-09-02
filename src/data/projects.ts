@@ -87,6 +87,12 @@ export const projects: Project[] = [
           width: 260,
           video: ASSETS.video.mementoDemo,
           screenAspectRatio: PHONE_SCREEN_AR.mementoDemo,
+          companions: [
+            {
+              src: '/assets/memento-ai.png',
+              screenAspectRatio: PHONE_SCREEN_AR.mementoPreview,
+            },
+          ],
         },
       },
       beats: [
