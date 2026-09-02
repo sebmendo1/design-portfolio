@@ -1,11 +1,11 @@
 import type { Metadata } from 'next';
 import type { ReactNode } from 'react';
 import Link from 'next/link';
+import { AboutAlbum } from '@/components/AboutAlbum/AboutAlbum';
 import { AboutPageLayout } from '@/components/AboutPage/AboutPageLayout';
 import { PageHeadline } from '@/components/PageHeadline/PageHeadline';
 import { StructuredData } from '@/components/StructuredData/StructuredData';
 import { ThemeToggle } from '@/components/ThemeToggle/ThemeToggle';
-import { WorkTimeline } from '@/components/WorkTimeline/WorkTimeline';
 import { PROFILE } from '@/data/profile';
 import { buildProfilePageGraphFromProfile } from '@/lib/json-ld';
 import { canonicalPath, createMetadata } from '@/lib/metadata';
@@ -96,8 +96,8 @@ export default function AboutPage() {
             </nav>
           </div>
 
-          <div className="about-index__pane about-index__pane--timeline">
-            <WorkTimeline />
+          <div className="about-index__pane about-index__pane--album">
+            <AboutAlbum />
           </div>
         </div>
       </AboutPageLayout>
