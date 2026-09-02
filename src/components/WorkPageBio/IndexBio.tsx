@@ -6,15 +6,17 @@ import { WORK_PAGE_BIO } from '@/lib/site';
 
 type IndexBioProps = {
   startDelayMs?: number;
+  intervalMs?: number;
 };
 
 const delays = buildIndexStreamDelays();
 
-export function IndexBio({ startDelayMs }: IndexBioProps) {
+export function IndexBio({ startDelayMs, intervalMs }: IndexBioProps) {
   const partDelays =
     startDelayMs == null
       ? delays.bioParts
       : delays.bioParts.map((delay) => delay - delays.bio + startDelayMs);
+  const cadence = intervalMs ?? delays.intervalMs;
 
   return (
     <h1 className="portfolio-index__bio" aria-label={WORK_PAGE_BIO}>
@@ -25,7 +27,12 @@ export function IndexBio({ startDelayMs }: IndexBioProps) {
 
         const delay = partDelays[index] ?? delays.bio;
         const text = (
-          <StreamingText text={part.text} as="span" startDelayMs={delay} />
+          <StreamingText
+            text={part.text}
+            as="span"
+            startDelayMs={delay}
+            intervalMs={cadence}
+          />
         );
 
         if (part.type === 'link') {

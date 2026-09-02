@@ -10,6 +10,7 @@ type PageHeadlineProps = {
   className?: string;
   stream?: boolean;
   startDelayMs?: number;
+  intervalMs?: number;
 };
 
 export function PageHeadline({
@@ -17,6 +18,7 @@ export function PageHeadline({
   className,
   stream = false,
   startDelayMs = 0,
+  intervalMs,
 }: PageHeadlineProps) {
   return (
     <Link
@@ -47,6 +49,7 @@ export function PageHeadline({
           as="span"
           className="page-headline__text"
           startDelayMs={startDelayMs}
+          intervalMs={intervalMs}
         />
       ) : (
         <span className="page-headline__text">{HEADLINE_TEXT}</span>

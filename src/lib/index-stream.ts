@@ -1,4 +1,4 @@
-import { splitIntoUnits, WORD_INTERVAL_MS } from '@/lib/streaming-text';
+import { splitIntoUnits, WORD_ANIMATION_MS } from '@/lib/streaming-text';
 import { groupPortfolioIndex } from '@/lib/portfolio-index';
 import {
   SITE_SOCIAL_NAV,
@@ -8,7 +8,8 @@ import {
   WORK_PAGE_BIO_PREVIOUS_INTRO,
 } from '@/lib/site';
 
-const SECTION_GAP_MS = 80;
+const SECTION_GAP_MS = 32;
+const INDEX_STREAM_TARGET_MS = 5000;
 
 export const INDEX_HEADLINE_TEXT = 'SebMendoDesign';
 
@@ -47,6 +48,7 @@ export const INDEX_BIO_PARTS: IndexBioPart[] = [
 ];
 
 export type IndexStreamDelays = {
+  intervalMs: number;
   headline: number;
   bio: number;
   bioParts: number[];
@@ -62,12 +64,40 @@ function wordCount(text: string) {
   return splitIntoUnits(text).length;
 }
 
+function indexStreamBlocks() {
+  const bio = INDEX_BIO_PARTS.filter((part) => part.type !== 'gap').map((part) => part.text);
+  const afterBio: string[] = [];
+
+  for (const section of groupPortfolioIndex()) {
+    afterBio.push(section.id);
+    for (const group of section.years) {
+      afterBio.push(String(group.year));
+      for (const item of group.items) afterBio.push(item.label);
+    }
+  }
+
+  afterBio.push('about');
+  for (const link of SITE_SOCIAL_NAV) afterBio.push(link.label);
+
+  return { headline: INDEX_HEADLINE_TEXT, bio, afterBio };
+}
+
+function indexWordIntervalMs() {
+  const { headline, bio, afterBio } = indexStreamBlocks();
+  const words = [headline, ...bio, ...afterBio].reduce((count, text) => count + wordCount(text), 0);
+  const gapsBeforeLast = 2 + Math.max(0, afterBio.length - 1);
+  const budget = INDEX_STREAM_TARGET_MS - WORD_ANIMATION_MS;
+  const remaining = budget - gapsBeforeLast * SECTION_GAP_MS;
+  return Math.max(12, Math.round(remaining / Math.max(1, words - 1)));
+}
+
 export function buildIndexStreamDelays(): IndexStreamDelays {
+  const intervalMs = indexWordIntervalMs();
   let cursor = 0;
 
   const take = (text: string, gapMs = SECTION_GAP_MS) => {
     const start = cursor;
-    cursor += wordCount(text) * WORD_INTERVAL_MS + gapMs;
+    cursor += wordCount(text) * intervalMs + gapMs;
     return start;
   };
 
@@ -77,7 +107,7 @@ export function buildIndexStreamDelays(): IndexStreamDelays {
   const bioParts = INDEX_BIO_PARTS.map((part) => {
     const start = cursor;
     if (part.type !== 'gap') {
-      cursor += wordCount(part.text) * WORD_INTERVAL_MS;
+      cursor += wordCount(part.text) * intervalMs;
     }
     return start;
   });
@@ -107,6 +137,7 @@ export function buildIndexStreamDelays(): IndexStreamDelays {
   }
 
   return {
+    intervalMs,
     headline,
     bio,
     bioParts,

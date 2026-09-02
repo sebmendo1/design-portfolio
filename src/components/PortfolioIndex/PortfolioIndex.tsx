@@ -75,12 +75,14 @@ function IndexItem({
   label,
   selected,
   startDelayMs,
+  intervalMs,
   onActivate,
 }: {
   id: string;
   label: string;
   selected: boolean;
   startDelayMs: number;
+  intervalMs: number;
   onActivate: (id: string) => void;
 }) {
   const ready = useAfterDelay(startDelayMs);
@@ -93,7 +95,12 @@ function IndexItem({
       aria-pressed={selected}
       tabIndex={ready ? 0 : -1}
     >
-      <StreamingText text={label} as="span" startDelayMs={startDelayMs} />
+      <StreamingText
+        text={label}
+        as="span"
+        startDelayMs={startDelayMs}
+        intervalMs={intervalMs}
+      />
     </button>
   );
 }
@@ -201,12 +208,19 @@ export function PortfolioIndex({
       >
         <div className="portfolio-index__pane-content">
           <header className="portfolio-index__headline">
-            <PageHeadline stream startDelayMs={delays.headline} />
+            <PageHeadline
+              stream
+              startDelayMs={delays.headline}
+              intervalMs={delays.intervalMs}
+            />
           </header>
 
           <div className="portfolio-index__intro">
-            {isValidElement<{ startDelayMs?: number }>(bio)
-              ? cloneElement(bio, { startDelayMs: delays.bio })
+            {isValidElement<{ startDelayMs?: number; intervalMs?: number }>(bio)
+              ? cloneElement(bio, {
+                  startDelayMs: delays.bio,
+                  intervalMs: delays.intervalMs,
+                })
               : bio}
           </div>
 
@@ -222,6 +236,7 @@ export function PortfolioIndex({
                     text={section.id}
                     as="span"
                     startDelayMs={delays.headings[section.id] ?? 0}
+                    intervalMs={delays.intervalMs}
                   />
                 </h2>
                 {section.years.map((group) => (
@@ -231,6 +246,7 @@ export function PortfolioIndex({
                         text={String(group.year)}
                         as="span"
                         startDelayMs={delays.years[`${section.id}-${group.year}`] ?? 0}
+                        intervalMs={delays.intervalMs}
                       />
                     </p>
                     <div className="portfolio-index__items">
@@ -241,6 +257,7 @@ export function PortfolioIndex({
                           label={item.label}
                           selected={item.id === selectedId}
                           startDelayMs={delays.items[item.id] ?? 0}
+                          intervalMs={delays.intervalMs}
                           onActivate={handleActivate}
                         />
                       ))}
@@ -257,6 +274,7 @@ export function PortfolioIndex({
                 text="about"
                 as="span"
                 startDelayMs={delays.footer.about ?? 0}
+                intervalMs={delays.intervalMs}
               />
             </Link>
             {SITE_SOCIAL_NAV.map((link) => (
@@ -265,6 +283,7 @@ export function PortfolioIndex({
                   text={link.label}
                   as="span"
                   startDelayMs={delays.footer[link.label] ?? 0}
+                  intervalMs={delays.intervalMs}
                 />
               </a>
             ))}
