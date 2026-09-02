@@ -71,6 +71,21 @@ export function getPortfolioIndexHref(entry: PortfolioIndexEntry): string | unde
   return undefined;
 }
 
+export function isExternalPortfolioHref(href: string): boolean {
+  return href.startsWith('https://') || href.startsWith('http://');
+}
+
+export function getPortfolioIndexCta(
+  entry: PortfolioIndexEntry,
+): { href: string; label: 'Case study' | 'Try it out' } | undefined {
+  const href = getPortfolioIndexHref(entry);
+  if (!href) return undefined;
+  return {
+    href,
+    label: href.startsWith('/work/') ? 'Case study' : 'Try it out',
+  };
+}
+
 /** Case-study preview, or a row-specific override such as Salesforce Help Home. */
 export function resolveIndexPreviewProject(
   entry: PortfolioIndexEntry,

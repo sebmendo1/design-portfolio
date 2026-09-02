@@ -71,7 +71,7 @@ export function getDefaultPortfolioIndexEntry(): PortfolioIndexEntry {
 
 /**
  * Home index — labels and year grouping follow the 2026 Figma portfolio.
- * href/previewSlug map onto existing case studies and the Seb Sans page.
+ * href is the well CTA destination. previewSlug still picks the screenshot.
  */
 export const PORTFOLIO_INDEX: PortfolioIndexEntry[] = [
   {
@@ -146,7 +146,7 @@ export const PORTFOLIO_INDEX: PortfolioIndexEntry[] = [
     year: 2025,
     label: 'Chase MyHome - Mortgage Calculators',
     section: 'work',
-    href: '/work/chase-myhome',
+    href: 'https://www.chase.com',
     previewSlug: 'chase-myhome',
     preview: {
       frame: 'browser',
@@ -162,7 +162,7 @@ export const PORTFOLIO_INDEX: PortfolioIndexEntry[] = [
     year: 2024,
     label: 'Chase MyHome - Landing Page',
     section: 'work',
-    href: '/work/chase-myhome',
+    href: 'https://www.chase.com',
     previewSlug: 'chase-myhome',
     preview: CHASE_MYHOME_LANDING_PREVIEW,
     summary:
@@ -195,7 +195,7 @@ export const PORTFOLIO_INDEX: PortfolioIndexEntry[] = [
     year: 2022,
     label: 'Salesforce Help - Home',
     section: 'work',
-    href: '/work/salesforce-help',
+    href: 'https://help.salesforce.com',
     previewSlug: 'salesforce-help',
     preview: {
       frame: 'browser',
@@ -229,7 +229,7 @@ export const PORTFOLIO_INDEX: PortfolioIndexEntry[] = [
     year: 2021,
     label: 'WRITER AI - ReWrite',
     section: 'work',
-    href: '/work/writer-ai',
+    href: 'https://writer.com',
     previewSlug: 'writer-ai',
     summary:
       'Highlight text, pick a rewrite mode, and insert the result across the editor, apps, extensions, and Figma.',
@@ -240,7 +240,7 @@ export const PORTFOLIO_INDEX: PortfolioIndexEntry[] = [
     year: 2021,
     label: 'WRITER AI - Page Editor',
     section: 'work',
-    href: '/work/writer-ai',
+    href: 'https://writer.com',
     previewSlug: 'writer-ai',
     preview: WRITER_PAGE_EDITOR_PREVIEW,
     summary: 'The WRITER page editor where teams draft and govern enterprise content.',
@@ -251,7 +251,7 @@ export const PORTFOLIO_INDEX: PortfolioIndexEntry[] = [
     year: 2020,
     label: 'Chorus AI - Design Systems',
     section: 'work',
-    href: '/work/chorus-ai',
+    href: 'https://www.chorus.ai',
     previewSlug: 'chorus-ai',
     summary:
       'A rebuilt design system that standardized Chorus UI ahead of the ZoomInfo acquisition.',
