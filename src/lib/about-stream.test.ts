@@ -31,7 +31,7 @@ test('About stream delays follow the headline, then copy, then footer', () => {
   const delays = buildAboutStreamDelays();
 
   assert.equal(delays.headline, 0);
-  assert.equal(delays.intervalMs, 55);
+  assert.equal(delays.intervalMs, 28);
   assert.ok(delays.blocks[0]?.[0] > delays.headline);
   assert.ok((delays.footer.work ?? 0) > (delays.blocks.at(-1)?.[0] ?? 0));
   assert.equal(delays.theme, delays.footer.work);
