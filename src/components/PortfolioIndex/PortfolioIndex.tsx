@@ -1,6 +1,8 @@
 'use client';
 
 import {
+  cloneElement,
+  isValidElement,
   useEffect,
   useLayoutEffect,
   useMemo,
@@ -13,8 +15,10 @@ import {
   type SyntheticEvent,
 } from 'react';
 import Link from 'next/link';
+import { useReducedMotion } from 'framer-motion';
 import { PORTFOLIO_INDEX } from '@/data/portfolioIndex';
 import { useIndexScroll } from '@/hooks/useIndexScroll';
+import { buildIndexStreamDelays } from '@/lib/index-stream';
 import { SITE_SOCIAL_NAV } from '@/lib/site';
 import {
   findPortfolioIndexEntry,
@@ -24,6 +28,7 @@ import {
 } from '@/lib/portfolio-index';
 import type { ProjectCardSummary } from '@/lib/project-cards';
 import { PageHeadline } from '@/components/PageHeadline/PageHeadline';
+import { StreamingText } from '@/components/StreamingText/StreamingText';
 import { ThemeToggle } from '@/components/ThemeToggle/ThemeToggle';
 import { IndexPreview } from './IndexPreview';
 import './PortfolioIndex.css';
@@ -47,25 +52,55 @@ type PortfolioIndexProps = {
   initialPreviewId?: string;
 };
 
+function useAfterDelay(startDelayMs: number) {
+  const shouldReduce = useReducedMotion();
+  const [ready, setReady] = useState(shouldReduce === true || startDelayMs <= 0);
+
+  useEffect(() => {
+    if (shouldReduce || startDelayMs <= 0) {
+      setReady(true);
+      return;
+    }
+
+    setReady(false);
+    const timeoutId = window.setTimeout(() => setReady(true), startDelayMs);
+    return () => window.clearTimeout(timeoutId);
+  }, [shouldReduce, startDelayMs]);
+
+  return shouldReduce === true || ready;
+}
+
 function IndexItem({
   id,
   label,
   selected,
+  startDelayMs,
+  intervalMs,
   onActivate,
 }: {
   id: string;
   label: string;
   selected: boolean;
+  startDelayMs: number;
+  intervalMs: number;
   onActivate: (id: string) => void;
 }) {
+  const ready = useAfterDelay(startDelayMs);
+
   return (
     <button
       type="button"
-      className={`portfolio-index__item${selected ? ' is-active' : ''}`}
+      className={`portfolio-index__item${selected ? ' is-active' : ''}${ready ? '' : ' is-pending'}`}
       onClick={() => onActivate(id)}
       aria-pressed={selected}
+      tabIndex={ready ? 0 : -1}
     >
-      {label}
+      <StreamingText
+        text={label}
+        as="span"
+        startDelayMs={startDelayMs}
+        intervalMs={intervalMs}
+      />
     </button>
   );
 }
@@ -88,9 +123,29 @@ export function PortfolioIndex({
   const railRef = useRef<HTMLDivElement>(null);
   const dialogRef = useRef<HTMLDialogElement>(null);
   const sections = useMemo(() => groupPortfolioIndex(PORTFOLIO_INDEX), []);
+  const delays = useMemo(() => buildIndexStreamDelays(), []);
+  const shouldReduce = useReducedMotion();
+  const [wellVisible, setWellVisible] = useState(false);
+  const [instantCopy, setInstantCopy] = useState(false);
+  const hasActivatedRef = useRef(false);
   const active = findPortfolioIndexEntry(activeId);
   const previewProject = resolveIndexPreviewProject(active, projects);
   useIndexScroll(layoutRef, railRef);
+
+  useEffect(() => {
+    if (shouldReduce) {
+      setWellVisible(true);
+      setInstantCopy(true);
+      return;
+    }
+
+    const fadeId = window.setTimeout(() => setWellVisible(true), delays.wellFade);
+    const copyId = window.setTimeout(() => setInstantCopy(true), delays.theme);
+    return () => {
+      window.clearTimeout(fadeId);
+      window.clearTimeout(copyId);
+    };
+  }, [delays.theme, delays.wellFade, shouldReduce]);
 
   useEffect(() => {
     if (!isNarrow) {
@@ -111,6 +166,10 @@ export function PortfolioIndex({
   }
 
   function handleActivate(id: string) {
+    if (!isNarrow || hasActivatedRef.current) {
+      setInstantCopy(true);
+    }
+    hasActivatedRef.current = true;
     setActiveId(id);
     if (!isNarrow) return;
     setModalMounted(true);
@@ -149,6 +208,10 @@ export function PortfolioIndex({
       entry={active}
       project={previewProject}
       onNavigate={onNavigate}
+      copyStartDelayMs={isNarrow ? 0 : delays.wellCopy}
+      ctaStartDelayMs={isNarrow ? undefined : delays.wellCta}
+      intervalMs={delays.intervalMs}
+      instantCopy={instantCopy}
     />
   );
 
@@ -160,11 +223,20 @@ export function PortfolioIndex({
       >
         <div className="portfolio-index__pane-content">
           <header className="portfolio-index__headline">
-            <PageHeadline />
+            <PageHeadline
+              stream
+              startDelayMs={delays.headline}
+              intervalMs={delays.intervalMs}
+            />
           </header>
 
           <div className="portfolio-index__intro">
-            {bio}
+            {isValidElement<{ startDelayMs?: number; intervalMs?: number }>(bio)
+              ? cloneElement(bio, {
+                  startDelayMs: delays.bio,
+                  intervalMs: delays.intervalMs,
+                })
+              : bio}
           </div>
 
           <div className="portfolio-index__rail">
@@ -175,11 +247,23 @@ export function PortfolioIndex({
                 aria-labelledby={`index-${section.id}`}
               >
                 <h2 id={`index-${section.id}`} className="portfolio-index__heading">
-                  {section.id}
+                  <StreamingText
+                    text={section.id}
+                    as="span"
+                    startDelayMs={delays.headings[section.id] ?? 0}
+                    intervalMs={delays.intervalMs}
+                  />
                 </h2>
                 {section.years.map((group) => (
                   <div key={`${section.id}-${group.year}`} className="portfolio-index__year-row">
-                    <p className="portfolio-index__year">{group.year}</p>
+                    <p className="portfolio-index__year">
+                      <StreamingText
+                        text={String(group.year)}
+                        as="span"
+                        startDelayMs={delays.years[`${section.id}-${group.year}`] ?? 0}
+                        intervalMs={delays.intervalMs}
+                      />
+                    </p>
                     <div className="portfolio-index__items">
                       {group.items.map((item) => (
                         <IndexItem
@@ -187,6 +271,8 @@ export function PortfolioIndex({
                           id={item.id}
                           label={item.label}
                           selected={item.id === selectedId}
+                          startDelayMs={delays.items[item.id] ?? 0}
+                          intervalMs={delays.intervalMs}
                           onActivate={handleActivate}
                         />
                       ))}
@@ -199,20 +285,37 @@ export function PortfolioIndex({
 
           <nav className="portfolio-index__links" aria-label="Page">
             <Link href="/about" className="portfolio-index__link">
-              about
+              <StreamingText
+                text="about"
+                as="span"
+                startDelayMs={delays.footer.about ?? 0}
+                intervalMs={delays.intervalMs}
+              />
             </Link>
             {SITE_SOCIAL_NAV.map((link) => (
               <a key={link.href} href={link.href} className="portfolio-index__link" rel="me">
-                {link.label}
+                <StreamingText
+                  text={link.label}
+                  as="span"
+                  startDelayMs={delays.footer[link.label] ?? 0}
+                  intervalMs={delays.intervalMs}
+                />
               </a>
             ))}
-            <ThemeToggle />
+            <span
+              className="portfolio-index__theme-stream"
+              style={{ animationDelay: `${delays.theme}ms` }}
+            >
+              <ThemeToggle />
+            </span>
           </nav>
         </div>
       </div>
 
       {!isNarrow ? (
-        <div className="portfolio-index__pane portfolio-index__pane--stage">
+        <div
+          className={`portfolio-index__pane portfolio-index__pane--stage${wellVisible ? ' is-visible' : ''}`}
+        >
           {preview}
         </div>
       ) : null}

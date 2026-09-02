@@ -16,13 +16,19 @@ import { DEFAULT_PHONE_SCREEN_AR } from '@/components/PhoneStencil/phone-aspect-
 import { getVideoPoster } from '@/data/assets';
 import type { PortfolioIndexEntry } from '@/data/portfolioIndex';
 import type { ProjectPreview } from '@/data/projects';
+import { StreamingText } from '@/components/StreamingText/StreamingText';
 import { getPortfolioIndexCta, isExternalPortfolioHref } from '@/lib/portfolio-index';
 import type { ProjectCardSummary } from '@/lib/project-cards';
+import { splitIntoUnits, WORD_INTERVAL_MS } from '@/lib/streaming-text';
 
 type IndexPreviewProps = {
   entry: PortfolioIndexEntry;
   project?: ProjectCardSummary;
   onNavigate?: (href: string) => void;
+  copyStartDelayMs?: number;
+  ctaStartDelayMs?: number;
+  intervalMs?: number;
+  instantCopy?: boolean;
 };
 
 type PreviewFrame = {
@@ -185,6 +191,10 @@ function PreviewWell({
   ctaLabel,
   phone,
   onNavigate,
+  copyStartDelayMs = 0,
+  ctaStartDelayMs,
+  intervalMs = WORD_INTERVAL_MS,
+  instantCopy = false,
   children,
 }: {
   href?: string;
@@ -194,6 +204,10 @@ function PreviewWell({
   ctaLabel?: string;
   phone?: boolean;
   onNavigate?: (href: string) => void;
+  copyStartDelayMs?: number;
+  ctaStartDelayMs?: number;
+  intervalMs?: number;
+  instantCopy?: boolean;
   children: ReactNode;
 }) {
   const className = [
@@ -202,6 +216,10 @@ function PreviewWell({
   ]
     .filter(Boolean)
     .join(' ');
+
+  const resolvedCtaDelay =
+    ctaStartDelayMs ??
+    copyStartDelayMs + splitIntoUnits(summary).length * intervalMs;
 
   const external = Boolean(href && isExternalPortfolioHref(href));
   const externalLinkProps = external
@@ -231,7 +249,14 @@ function PreviewWell({
   return (
     <div className={className} style={{ backgroundColor: tint }}>
       <div className="portfolio-index__well-bar">
-        <p className="portfolio-index__well-summary">{summary}</p>
+        <StreamingText
+          text={summary}
+          as="p"
+          className="portfolio-index__well-summary"
+          startDelayMs={copyStartDelayMs}
+          intervalMs={intervalMs}
+          instant={instantCopy}
+        />
         {href && ctaLabel ? (
           <a
             href={href}
@@ -239,8 +264,19 @@ function PreviewWell({
             onClick={handleOpen}
             {...externalLinkProps}
           >
-            {ctaLabel}
-            <OpenProjectIcon />
+            <StreamingText
+              text={ctaLabel}
+              as="span"
+              startDelayMs={resolvedCtaDelay}
+              intervalMs={intervalMs}
+              instant={instantCopy}
+            />
+            <span
+              className={instantCopy ? undefined : 'portfolio-index__well-cta-icon'}
+              style={instantCopy ? undefined : { animationDelay: `${resolvedCtaDelay}ms` }}
+            >
+              <OpenProjectIcon />
+            </span>
           </a>
         ) : null}
       </div>
@@ -249,7 +285,15 @@ function PreviewWell({
   );
 }
 
-export function IndexPreview({ entry, project, onNavigate }: IndexPreviewProps) {
+export function IndexPreview({
+  entry,
+  project,
+  onNavigate,
+  copyStartDelayMs,
+  ctaStartDelayMs,
+  intervalMs,
+  instantCopy,
+}: IndexPreviewProps) {
   const cta = getPortfolioIndexCta(entry);
   const href = cta?.href;
   const ctaLabel = cta?.label;
@@ -287,6 +331,10 @@ export function IndexPreview({ entry, project, onNavigate }: IndexPreviewProps) 
       ctaLabel={ctaLabel}
       phone={previewFrame(entry, project) === 'phone'}
       onNavigate={onNavigate}
+      copyStartDelayMs={copyStartDelayMs}
+      ctaStartDelayMs={ctaStartDelayMs}
+      intervalMs={intervalMs}
+      instantCopy={instantCopy}
     >
       {outgoing ? (
         <div className="portfolio-index__dissolve portfolio-index__dissolve--out" key={outgoing.entry.id}>

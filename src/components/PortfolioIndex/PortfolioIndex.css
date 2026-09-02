@@ -51,6 +51,29 @@
   background: var(--color-background-page);
   overflow: hidden;
   touch-action: none;
+  opacity: 0;
+  filter: blur(16px);
+  transform: translateY(14px);
+  pointer-events: none;
+}
+
+.portfolio-index__pane--stage.is-visible {
+  pointer-events: auto;
+  animation: index-stage-in 0.72s cubic-bezier(0.22, 1, 0.36, 1) both;
+}
+
+@keyframes index-stage-in {
+  from {
+    opacity: 0;
+    filter: blur(16px);
+    transform: translateY(14px);
+  }
+
+  to {
+    opacity: 1;
+    filter: blur(0);
+    transform: none;
+  }
 }
 
 .portfolio-index__well-inner,
@@ -203,6 +226,30 @@
   opacity: 1;
 }
 
+.portfolio-index__item.is-pending {
+  pointer-events: none;
+}
+
+.portfolio-index__theme-stream {
+  display: inline-flex;
+  opacity: 0;
+  animation: index-theme-in 0.28s ease-out both;
+}
+
+@keyframes index-theme-in {
+  from {
+    opacity: 0;
+    filter: blur(4px);
+    transform: translateY(2px);
+  }
+
+  to {
+    opacity: 1;
+    filter: blur(0);
+    transform: none;
+  }
+}
+
 .portfolio-index__well {
   position: relative;
   display: flex;
@@ -269,6 +316,12 @@
 .portfolio-index__well-cta svg {
   display: block;
   flex-shrink: 0;
+}
+
+.portfolio-index__well-cta-icon {
+  display: inline-flex;
+  opacity: 0;
+  animation: index-theme-in 0.28s ease-out both;
 }
 
 .portfolio-index__well-stage {
@@ -361,6 +414,21 @@
 
   .portfolio-index__dissolve--in,
   .portfolio-index__dissolve--out {
+    animation: none;
+  }
+
+  .portfolio-index__pane--stage,
+  .portfolio-index__pane--stage.is-visible {
+    opacity: 1;
+    filter: none;
+    transform: none;
+    pointer-events: auto;
+    animation: none;
+  }
+
+  .portfolio-index__theme-stream,
+  .portfolio-index__well-cta-icon {
+    opacity: 1;
     animation: none;
   }
 }
