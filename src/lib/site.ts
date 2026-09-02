@@ -43,7 +43,7 @@ export const WORK_PAGE_BIO_LEAD_PREFIX =
   'Sebastian is a Senior Product Designer building agentic financial experiences at ';
 
 export const WORK_PAGE_BIO_CURRENT = {
-  label: 'Chase',
+  label: 'Chase AI',
   href: 'https://www.chase.com',
 } as const;
 

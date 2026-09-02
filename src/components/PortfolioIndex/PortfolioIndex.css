@@ -121,6 +121,10 @@
 
 .portfolio-index__bio-link {
   color: inherit;
+  text-decoration: none;
+}
+
+.portfolio-index__bio-link .streaming-text__word {
   text-decoration: underline;
   text-decoration-thickness: 1px;
   text-underline-offset: 0.14em;
