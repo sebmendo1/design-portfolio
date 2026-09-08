@@ -1,6 +1,6 @@
 'use client';
 
-import { useEffect, useMemo, useRef, useState } from 'react';
+import { useEffect, useMemo, useRef, useState, type CSSProperties } from 'react';
 import { useReducedMotion } from 'framer-motion';
 import { splitIntoUnits, WORD_INTERVAL_MS } from '@/lib/streaming-text';
 import './StreamingText.css';
@@ -98,19 +98,30 @@ export function StreamingText({
 
   return (
     <Tag className={className} aria-label={ariaLabel ?? text}>
-      {units.map((unit, index) => (
-        <span
-          key={index}
-          className={
-            index < visibleCount
-              ? 'streaming-text__unit streaming-text__unit--visible'
-              : 'streaming-text__unit streaming-text__unit--pending'
-          }
-        >
-          <span className="streaming-text__word">{unit.word}</span>
-          {unit.space}
-        </span>
-      ))}
+      {units.map((unit, index) => {
+        const streamAt = !reveal
+          ? undefined
+          : skipAnimation
+            ? '0ms'
+            : `${startDelayMs + index * intervalMs}ms`;
+
+        return (
+          <span
+            key={index}
+            className={
+              !reveal
+                ? 'streaming-text__unit streaming-text__unit--hidden'
+                : index < visibleCount
+                  ? 'streaming-text__unit streaming-text__unit--visible'
+                  : 'streaming-text__unit streaming-text__unit--pending'
+            }
+            style={{ '--stream-at': streamAt } as CSSProperties}
+          >
+            <span className="streaming-text__word">{unit.word}</span>
+            {unit.space}
+          </span>
+        );
+      })}
     </Tag>
   );
 }
