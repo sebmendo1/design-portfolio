@@ -32,6 +32,7 @@ export function AboutIndexRail() {
                   <StreamingText
                     text={body}
                     as="span"
+                    instant={block.key === 'title'}
                     startDelayMs={delays.blocks[blockIndex]?.[partIndex] ?? 0}
                     intervalMs={delays.intervalMs}
                   />
