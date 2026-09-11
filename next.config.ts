@@ -3,12 +3,12 @@ import { BLOB_HOST } from './src/data/assets';
 
 const CONTENT_SECURITY_POLICY = [
   "default-src 'self'",
-  "script-src 'self' 'unsafe-inline'",
+  "script-src 'self' 'unsafe-inline' https://va.vercel-scripts.com",
   "style-src 'self' 'unsafe-inline'",
   `img-src 'self' data: https://${BLOB_HOST}`,
   `media-src 'self' https://${BLOB_HOST}`,
   "font-src 'self' data:",
-  "connect-src 'self'",
+  "connect-src 'self' https://vitals.vercel-insights.com https://va.vercel-scripts.com",
   "frame-ancestors 'none'",
   "base-uri 'self'",
   "form-action 'self'",

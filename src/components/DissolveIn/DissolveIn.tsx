@@ -34,7 +34,7 @@ export function DissolveIn({
   return (
     <motion.div
       className={className}
-      initial={shouldReduce ? false : { opacity: 0, y: 12 }}
+      initial={false}
       animate={isVisible ? { opacity: 1, y: 0 } : { opacity: 0, y: 12 }}
       transition={{
         duration: shouldReduce ? 0 : duration,

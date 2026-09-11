@@ -45,6 +45,15 @@ function getNarrowViewportSnapshot() {
   return window.matchMedia(NARROW_QUERY).matches;
 }
 
+function subscribePreviewQuery(onChange: () => void) {
+  window.addEventListener('popstate', onChange);
+  return () => window.removeEventListener('popstate', onChange);
+}
+
+function getPreviewQuerySnapshot() {
+  return new URLSearchParams(window.location.search).get('preview');
+}
+
 type PortfolioIndexProps = {
   bio: ReactNode;
   projects: ProjectCardSummary[];
@@ -107,7 +116,15 @@ export function PortfolioIndex({
   onNavigate,
   initialPreviewId,
 }: PortfolioIndexProps) {
-  const [activeId, setActiveId] = useState(() => resolvePortfolioIndexId(initialPreviewId));
+  const previewFromUrl = useSyncExternalStore(
+    subscribePreviewQuery,
+    getPreviewQuerySnapshot,
+    () => null,
+  );
+  const [userActiveId, setActiveId] = useState<string | null>(null);
+  const activeId = resolvePortfolioIndexId(
+    userActiveId ?? initialPreviewId ?? previewFromUrl ?? undefined,
+  );
   const [modalOpen, setModalOpen] = useState(false);
   const [modalMounted, setModalMounted] = useState(false);
   const isNarrow = useSyncExternalStore(
@@ -202,11 +219,7 @@ export function PortfolioIndex({
       >
         <div className="portfolio-index__pane-content">
           <header className="portfolio-index__headline">
-            <PageHeadline
-              stream
-              startDelayMs={delays.headline}
-              intervalMs={delays.intervalMs}
-            />
+            <PageHeadline />
           </header>
 
           <div className="portfolio-index__intro">

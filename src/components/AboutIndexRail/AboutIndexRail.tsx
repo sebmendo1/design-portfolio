@@ -13,11 +13,7 @@ export function AboutIndexRail() {
   return (
     <>
       <header className="about-index__headline">
-        <PageHeadline
-          stream
-          startDelayMs={delays.headline}
-          intervalMs={delays.intervalMs}
-        />
+        <PageHeadline />
       </header>
 
       <div className="about-index__intro">
@@ -36,6 +32,7 @@ export function AboutIndexRail() {
                   <StreamingText
                     text={body}
                     as="span"
+                    instant={block.key === 'title'}
                     startDelayMs={delays.blocks[blockIndex]?.[partIndex] ?? 0}
                     intervalMs={delays.intervalMs}
                   />

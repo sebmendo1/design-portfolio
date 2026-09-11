@@ -2,22 +2,16 @@
 
 import { motion, useReducedMotion } from 'framer-motion';
 import { WorkPageContent } from '@/components/WorkPageContent/WorkPageContent';
-import {
-  DISSOLVE_EASE,
-  DISSOLVE_EXIT_DURATION,
-  DISSOLVE_REVEAL_DURATION,
-  DISSOLVE_REVEAL_EASE,
-} from '@/components/DissolveIn/DissolveIn';
+import { DISSOLVE_EASE, DISSOLVE_EXIT_DURATION } from '@/components/DissolveIn/DissolveIn';
 import { useDissolveNavigate } from '@/hooks/useDissolveNavigate';
 import type { ProjectCardSummary } from '@/lib/project-cards';
 
 type WorkPageShellProps = {
   bioText: string;
   projects: ProjectCardSummary[];
-  initialPreviewId?: string;
 };
 
-export function WorkPageShell({ bioText, projects, initialPreviewId }: WorkPageShellProps) {
+export function WorkPageShell({ bioText, projects }: WorkPageShellProps) {
   const { navigate, isExiting } = useDissolveNavigate();
   const shouldReduce = useReducedMotion();
 
@@ -25,15 +19,11 @@ export function WorkPageShell({ bioText, projects, initialPreviewId }: WorkPageS
     <div className="work-page">
       <motion.div
         className="work-page__content"
-        initial={shouldReduce ? false : { opacity: 0 }}
+        initial={false}
         animate={{ opacity: isExiting ? 0 : 1 }}
         transition={{
-          duration: shouldReduce
-            ? 0
-            : isExiting
-              ? DISSOLVE_EXIT_DURATION
-              : DISSOLVE_REVEAL_DURATION,
-          ease: isExiting ? DISSOLVE_EASE : DISSOLVE_REVEAL_EASE,
+          duration: shouldReduce || !isExiting ? 0 : DISSOLVE_EXIT_DURATION,
+          ease: DISSOLVE_EASE,
         }}
         style={{ pointerEvents: isExiting ? 'none' : undefined }}
       >
@@ -42,7 +32,6 @@ export function WorkPageShell({ bioText, projects, initialPreviewId }: WorkPageS
             bioText={bioText}
             projects={projects}
             onProjectNavigate={navigate}
-            initialPreviewId={initialPreviewId}
           />
         </main>
       </motion.div>
