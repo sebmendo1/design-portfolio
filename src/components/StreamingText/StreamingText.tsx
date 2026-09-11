@@ -41,7 +41,9 @@ export function StreamingText({
   const shouldReduce = useReducedMotion();
   const units = useMemo(() => splitIntoUnits(text), [text]);
   const skipAnimation = instant || !reveal || shouldReduce;
-  const [revealedCount, setRevealedCount] = useState(0);
+  const [revealedCount, setRevealedCount] = useState(() =>
+    reveal && startDelayMs <= 0 ? 1 : 0,
+  );
   const hasCompletedRef = useRef(false);
 
   useEffect(() => {

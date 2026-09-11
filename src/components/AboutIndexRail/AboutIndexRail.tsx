@@ -13,11 +13,7 @@ export function AboutIndexRail() {
   return (
     <>
       <header className="about-index__headline">
-        <PageHeadline
-          stream
-          startDelayMs={delays.headline}
-          intervalMs={delays.intervalMs}
-        />
+        <PageHeadline />
       </header>
 
       <div className="about-index__intro">

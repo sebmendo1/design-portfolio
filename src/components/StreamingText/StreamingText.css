@@ -2,9 +2,22 @@
   display: inline-block;
 }
 
-.streaming-text__unit:not(.streaming-text__unit--hidden) .streaming-text__word {
+.streaming-text__unit--pending .streaming-text__word,
+.streaming-text__unit--hidden .streaming-text__word {
+  opacity: 0;
+  animation: none;
+  pointer-events: none;
+}
+
+.streaming-text__unit--visible .streaming-text__word {
   animation: streaming-text-word-in 0.14s ease-out both;
   animation-delay: var(--stream-at, 0ms);
+}
+
+.streaming-text__unit--visible:first-child .streaming-text__word {
+  animation: none;
+  opacity: 1;
+  transform: none;
 }
 
 .streaming-text__unit--hidden,
@@ -27,7 +40,8 @@
 }
 
 @media (prefers-reduced-motion: reduce) {
-  .streaming-text__unit:not(.streaming-text__unit--hidden) .streaming-text__word {
+  .streaming-text__unit--visible .streaming-text__word,
+  .streaming-text__unit--pending .streaming-text__word {
     animation: none;
     opacity: 1;
     transform: none;

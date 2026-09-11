@@ -36,6 +36,18 @@ body {
 .case-loading {
   min-height: 100dvh;
   background: var(--color-background-page);
+  color: var(--color-text-primary);
+  display: flex;
+  align-items: flex-start;
+  padding: 24px 20px;
+}
+
+.page-loading__title,
+.case-loading__title {
+  font-family: var(--font-family-primary);
+  font-size: 16px;
+  font-weight: 500;
+  line-height: normal;
 }
 
 .case-study__header-reveal,
