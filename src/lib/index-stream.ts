@@ -1,4 +1,9 @@
-import { splitIntoUnits, WORD_ANIMATION_MS } from '@/lib/streaming-text';
+import {
+  splitIntoUnits,
+  STREAM_LINE_GAP_MS,
+  streamLineEndMs,
+  WORD_INTERVAL_MS,
+} from '@/lib/streaming-text';
 import { groupPortfolioIndex } from '@/lib/portfolio-index';
 import {
   SITE_SOCIAL_NAV,
@@ -7,9 +12,6 @@ import {
   WORK_PAGE_BIO_LINKS,
   WORK_PAGE_BIO_PREVIOUS_INTRO,
 } from '@/lib/site';
-
-const SECTION_GAP_MS = 32;
-const INDEX_STREAM_TARGET_MS = 2500;
 
 export const INDEX_HEADLINE_TEXT = 'SebMendoDesign';
 
@@ -64,54 +66,20 @@ function wordCount(text: string) {
   return splitIntoUnits(text).length;
 }
 
-function indexStreamBlocks() {
-  const bio = INDEX_BIO_PARTS.filter((part) => part.type !== 'gap').map((part) => part.text);
-  const afterBio: string[] = [];
-
-  for (const section of groupPortfolioIndex()) {
-    afterBio.push(section.id);
-    for (const group of section.years) {
-      afterBio.push(String(group.year));
-      for (const item of group.items) afterBio.push(item.label);
-    }
-  }
-
-  afterBio.push('about');
-  for (const link of SITE_SOCIAL_NAV) afterBio.push(link.label);
-
-  return { headline: INDEX_HEADLINE_TEXT, bio, afterBio };
-}
-
-function indexWordIntervalMs() {
-  const { headline, bio, afterBio } = indexStreamBlocks();
-  const words = [headline, ...bio, ...afterBio].reduce((count, text) => count + wordCount(text), 0);
-  const gapsBeforeLast = 2 + Math.max(0, afterBio.length - 1);
-  const budget = INDEX_STREAM_TARGET_MS - WORD_ANIMATION_MS;
-  const remaining = budget - gapsBeforeLast * SECTION_GAP_MS;
-  return Math.max(12, Math.round(remaining / Math.max(1, words - 1)));
-}
-
 export function buildIndexStreamDelays(): IndexStreamDelays {
-  const intervalMs = indexWordIntervalMs();
+  const intervalMs = WORD_INTERVAL_MS;
   let cursor = 0;
 
-  const take = (text: string, gapMs = SECTION_GAP_MS) => {
+  const takeLine = (text: string) => {
     const start = cursor;
-    cursor += wordCount(text) * intervalMs + gapMs;
+    cursor += streamLineEndMs(wordCount(text), intervalMs) + STREAM_LINE_GAP_MS;
     return start;
   };
 
-  const headline = take(INDEX_HEADLINE_TEXT);
-
-  const bio = cursor;
-  const bioParts = INDEX_BIO_PARTS.map((part) => {
-    const start = cursor;
-    if (part.type !== 'gap') {
-      cursor += wordCount(part.text) * intervalMs;
-    }
-    return start;
-  });
-  cursor += SECTION_GAP_MS;
+  // Headline and bio paint immediately; keep their delay slots at 0.
+  const headline = 0;
+  const bio = 0;
+  const bioParts = INDEX_BIO_PARTS.map(() => 0);
 
   const wellFade = cursor;
 
@@ -120,20 +88,20 @@ export function buildIndexStreamDelays(): IndexStreamDelays {
   const items: Record<string, number> = {};
 
   for (const section of groupPortfolioIndex()) {
-    headings[section.id] = take(section.id);
+    headings[section.id] = takeLine(section.id);
     for (const group of section.years) {
-      years[`${section.id}-${group.year}`] = take(String(group.year));
+      years[`${section.id}-${group.year}`] = takeLine(String(group.year));
       for (const item of group.items) {
-        items[item.id] = take(item.label);
+        items[item.id] = takeLine(item.label);
       }
     }
   }
 
   const footer: Record<string, number> = {
-    about: take('about'),
+    about: takeLine('about'),
   };
   for (const link of SITE_SOCIAL_NAV) {
-    footer[link.label] = take(link.label);
+    footer[link.label] = takeLine(link.label);
   }
 
   return {
@@ -146,6 +114,6 @@ export function buildIndexStreamDelays(): IndexStreamDelays {
     years,
     items,
     footer,
-    theme: footer.about,
+    theme: cursor,
   };
 }

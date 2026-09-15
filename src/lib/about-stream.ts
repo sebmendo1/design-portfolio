@@ -1,12 +1,15 @@
-import { splitIntoUnits, WORD_INTERVAL_MS } from '@/lib/streaming-text';
+import {
+  splitIntoUnits,
+  STREAM_LINE_GAP_MS,
+  streamLineEndMs,
+  WORD_INTERVAL_MS,
+} from '@/lib/streaming-text';
 import { PROFILE } from '@/data/profile';
 import {
   SITE_SOCIAL_NAV,
   WORK_PAGE_BIO_CURRENT,
   WORK_PAGE_BIO_LINKS,
 } from '@/lib/site';
-
-const SECTION_GAP_MS = 32;
 
 export const ABOUT_HEADLINE_TEXT = 'SebMendoDesign';
 
@@ -67,29 +70,38 @@ export function buildAboutStreamDelays(): AboutStreamDelays {
   const intervalMs = WORD_INTERVAL_MS;
   let cursor = 0;
 
-  const take = (text: string, gapMs = SECTION_GAP_MS) => {
+  const takeLine = (text: string) => {
     const start = cursor;
-    cursor += wordCount(text) * intervalMs + gapMs;
+    cursor += streamLineEndMs(wordCount(text), intervalMs) + STREAM_LINE_GAP_MS;
     return start;
   };
 
-  const headline = take(ABOUT_HEADLINE_TEXT);
+  const takeParagraph = (parts: readonly { text: string }[]) => {
+    const starts: number[] = [];
+    const lineStart = cursor;
 
-  const blocks = ABOUT_INTRO_BLOCKS.map((block) => {
-    const partDelays = block.parts.map((part) => {
-      const start = cursor;
-      cursor += wordCount(part.text) * intervalMs;
-      return start;
-    });
-    cursor += SECTION_GAP_MS;
-    return partDelays;
-  });
+    for (const part of parts) {
+      starts.push(cursor);
+      const count = wordCount(part.text);
+      if (count > 0) cursor += count * intervalMs;
+    }
+
+    const totalWords = parts.reduce((sum, part) => sum + wordCount(part.text), 0);
+    cursor = lineStart + streamLineEndMs(totalWords, intervalMs) + STREAM_LINE_GAP_MS;
+    return starts;
+  };
+
+  // Headline and title paint immediately; stream one paragraph (then footer link) at a time.
+  const headline = 0;
+  const blocks = ABOUT_INTRO_BLOCKS.map((block) =>
+    block.key === 'title' ? block.parts.map(() => 0) : takeParagraph(block.parts),
+  );
 
   const footer: Record<string, number> = {
-    work: take('work'),
+    work: takeLine('work'),
   };
   for (const link of SITE_SOCIAL_NAV) {
-    footer[link.label] = take(link.label);
+    footer[link.label] = takeLine(link.label);
   }
 
   return {
@@ -97,6 +109,6 @@ export function buildAboutStreamDelays(): AboutStreamDelays {
     headline,
     blocks,
     footer,
-    theme: footer.work,
+    theme: cursor,
   };
 }
