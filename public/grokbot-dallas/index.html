@@ -2,17 +2,52 @@
 <html lang="en">
 <head>
 <meta charset="utf-8">
-<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="viewport" content="width=device-width, initial-scale=1">
 <title>GrokBot Dallas</title>
 <style>
-body{font-family:system-ui,-apple-system,sans-serif;max-width:28rem;margin:2.5rem auto;padding:0 1.25rem;color:#111;line-height:1.45}
-a.btn{display:inline-block;background:#111;color:#fff;padding:.85rem 1.35rem;border-radius:10px;text-decoration:none;font-weight:600}
-p.meta{color:#555;font-size:.95rem}
+  :root { color-scheme: light dark; }
+  body { font-family: system-ui, -apple-system, sans-serif; max-width: 24rem; margin: 2.5rem auto; padding: 0 1.25rem; line-height: 1.45; }
+  h1 { font-size: 1.5rem; margin: 0 0 .35rem; }
+  .meta { color: #666; margin: 0 0 1.5rem; }
+  .btn { display: block; text-align: center; text-decoration: none; padding: .95rem 1.1rem; border-radius: 12px; font-weight: 650; margin: .6rem 0; }
+  .primary { background: #111; color: #fff; }
+  .secondary { background: #eee; color: #111; }
+  @media (prefers-color-scheme: dark) {
+    .meta { color: #aaa; }
+    .primary { background: #f2f2f2; color: #111; }
+    .secondary { background: #2a2a2a; color: #f2f2f2; }
+  }
+  .hint { font-size: .9rem; color: #777; margin-top: 1.25rem; }
 </style>
 </head>
 <body>
-<h1>GrokBot Dallas</h1>
-<p class="meta">SpaceXAI · Dallas meetup contact<br>+1 (205) 503-0484</p>
-<p><a class="btn" href="GrokBot-Dallas.vcf">Save contact (with photo)</a></p>
+  <h1>GrokBot Dallas</h1>
+  <p class="meta">SpaceXAI · +1 (205) 503-0484</p>
+  <a class="btn primary" id="chat" href="#">Message GrokBot</a>
+  <a class="btn secondary" id="save" href="GrokBot-Dallas.vcf">Save contact (with photo)</a>
+  <p class="hint">Saving the contact, then opening Messages so you can start chatting.</p>
+<script>
+(function () {
+  var body = encodeURIComponent("Hi GrokBot — I'm at the Dallas meetup.");
+  var ios = /iPhone|iPad|iPod/i.test(navigator.userAgent);
+  var sms = ios
+    ? "sms:+12055030484&body=" + body
+    : "sms:+12055030484?body=" + body;
+  document.getElementById("chat").href = sms;
+
+  try {
+    var a = document.createElement("a");
+    a.href = "GrokBot-Dallas.vcf";
+    a.setAttribute("download", "GrokBot-Dallas.vcf");
+    a.style.display = "none";
+    document.body.appendChild(a);
+    a.click();
+  } catch (e) {}
+
+  setTimeout(function () {
+    window.location.href = sms;
+  }, 700);
+})();
+</script>
 </body>
 </html>
