@@ -1,0 +1,8 @@
+BEGIN:VCARD
+VERSION:3.0
+N:Dallas;GrokBot;;;
+FN:GrokBot Dallas
+ORG:SpaceXAI
+TEL;TYPE=CELL,VOICE,PREF:+12055030484
+NOTE:Dallas GrokBot / SpaceXAI representative. Text for meetup and product questions.
+END:VCARD
