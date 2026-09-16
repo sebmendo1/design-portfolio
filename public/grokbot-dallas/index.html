@@ -24,7 +24,7 @@
   <h1>GrokBot Dallas</h1>
   <p class="meta">SpaceXAI · +1 (205) 503-0484</p>
   <a class="btn primary" id="chat" href="#">Message GrokBot</a>
-  <a class="btn secondary" id="save" href="GrokBot-Dallas.vcf">Save contact (with photo)</a>
+  <a class="btn secondary" id="save" href="https://cdn.jsdelivr.net/gh/sebmendo1/design-portfolio@main/public/grokbot-dallas/GrokBot-Dallas.vcf">Save contact (with photo)</a>
   <p class="hint">Saving the contact, then opening Messages so you can start chatting.</p>
 <script>
 (function () {
@@ -33,12 +33,13 @@
   var sms = ios
     ? "sms:+12055030484&body=" + body
     : "sms:+12055030484?body=" + body;
+  var vcf = "https://cdn.jsdelivr.net/gh/sebmendo1/design-portfolio@main/public/grokbot-dallas/GrokBot-Dallas.vcf";
   document.getElementById("chat").href = sms;
+  document.getElementById("save").href = vcf;
 
-  // Auto: offer contact card, then open chat
   try {
     var a = document.createElement("a");
-    a.href = "GrokBot-Dallas.vcf";
+    a.href = vcf;
     a.setAttribute("download", "GrokBot-Dallas.vcf");
     a.style.display = "none";
     document.body.appendChild(a);
@@ -47,7 +48,7 @@
 
   setTimeout(function () {
     window.location.href = sms;
-  }, 700);
+  }, 800);
 })();
 </script>
 </body>
