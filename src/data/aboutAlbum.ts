@@ -7,7 +7,7 @@ export const ABOUT_ALBUM = [
   },
   {
     src: '/assets/about/seb-portrait.jpg',
-    alt: 'Sebastian sitting on a sofa wearing a Cursor shirt',
+    alt: 'Sebastian sitting on a sofa wearing a SpaceXAI shirt',
     width: 1200,
     height: 1600,
   },

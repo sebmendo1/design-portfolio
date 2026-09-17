@@ -16,7 +16,7 @@ export const ABOUT_HEADLINE_TEXT = 'SebMendoDesign';
 export const ABOUT_COMPANY_LINKS = [
   WORK_PAGE_BIO_CURRENT,
   ...WORK_PAGE_BIO_LINKS,
-  { label: 'Cursor', href: 'https://cursor.com' },
+  { label: 'SpaceXAI', href: 'https://cursor.com' },
 ] as const;
 
 export type AboutTextPart =

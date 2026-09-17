@@ -103,7 +103,7 @@ export const PROFILE = {
     paragraphs: [
       'I\'m a Senior Product Designer at JPMorgan Chase working on Consumer AI. I\'ve designed and shipped voice agents, RCS bots, and conversational flows within the regulated environment of consumer banking, partnering with flagship frontier AI labs.',
       'Previously, I worked with some incredible people at Salesforce, Writer AI, and Chorus AI, where we designed AI experiences since before the launch of ChatGPT.',
-      'Outside of work, I\'m a Cursor ambassador - I help other designers and builders get fluent with AI-native tools. I also like to design my own iOS apps, and participate in tech meetups and run clubs.',
+      'Outside of work, I\'m a SpaceXAI ambassador - I help other designers and builders get fluent with AI-native tools. I also like to design my own iOS apps, and participate in tech meetups and run clubs.',
     ],
   },
   executiveSummary:
@@ -127,9 +127,9 @@ export const PROFILE = {
     'WCAG accessibility documentation',
     'Design system contribution',
     'Mentoring and design leadership',
-    'AI-native prototyping with Cursor, Claude Code, VSCode, and Figma MCP',
+    'AI-native prototyping with SpaceXAI, Claude Code, VSCode, and Figma MCP',
   ],
-  tools: ['Figma', 'Cursor', 'Claude Code', 'VSCode', 'Figma MCP'],
+  tools: ['Figma', 'SpaceXAI', 'Claude Code', 'VSCode', 'Figma MCP'],
   staffLevelEvidence: [
     'Led design and launch of Casey AI, Chase\'s first consumer-facing AI agent',
     'Drove strategic redesign of Chase MyHome onboarding with measurable account-creation lift',
@@ -192,7 +192,7 @@ export const PROFILE_ROLES: ProfileRole[] = [
       'Lead design thinking sessions for strategic AI implementation',
       'Conduct detailed QA for agentic edge-case prioritization and guardrail resolution',
       'Build and ship customer-centric UI through AI-native development processes',
-      'Train and mentor junior designers on AI-native programming with Cursor, Claude Code, VSCode, and Figma MCP',
+      'Train and mentor junior designers on AI-native programming with SpaceXAI, Claude Code, VSCode, and Figma MCP',
     ],
     outcomes: [
       'Casey AI shipped to production with voice and RCS channels',

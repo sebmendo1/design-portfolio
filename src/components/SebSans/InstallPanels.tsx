@@ -110,7 +110,7 @@ export function InstallPanels({
           <div className="panel-heading">
             <h3>Install via Agent</h3>
             <p>
-              Paste a prompt into Cursor, Claude Code, or any coding agent.
+              Paste a prompt into SpaceXAI, Claude Code, or any coding agent.
               Ships with a typography skill in the package.
             </p>
           </div>
