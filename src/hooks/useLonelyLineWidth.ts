@@ -4,7 +4,8 @@ import { useLayoutEffect, useState, type RefObject } from 'react';
 const WIDTH_STEPS = [92, 96, 100] as const;
 
 function hasLonelyLine(container: HTMLElement): boolean {
-  const units = container.querySelectorAll<HTMLElement>('.streaming-text__unit--visible');
+  // Words are never nested, so they line-count cleanly even inside link groups.
+  const units = container.querySelectorAll<HTMLElement>('.streaming-text__word');
   if (units.length < 3) return false;
 
   const lineCounts = new Map<number, number>();

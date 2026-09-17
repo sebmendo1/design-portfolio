@@ -10,6 +10,7 @@ import {
   useState,
   useSyncExternalStore,
   type AnimationEvent,
+  type CSSProperties,
   type MouseEvent,
   type ReactNode,
   type SyntheticEvent,
@@ -18,7 +19,7 @@ import Link from 'next/link';
 import { useReducedMotion } from 'framer-motion';
 import { PORTFOLIO_INDEX } from '@/data/portfolioIndex';
 import { useIndexScroll } from '@/hooks/useIndexScroll';
-import { buildIndexStreamDelays } from '@/lib/index-stream';
+import { buildIndexStreamPlan } from '@/lib/index-stream';
 import { SITE_SOCIAL_NAV } from '@/lib/site';
 import {
   findPortfolioIndexEntry,
@@ -28,7 +29,10 @@ import {
 } from '@/lib/portfolio-index';
 import type { ProjectCardSummary } from '@/lib/project-cards';
 import { PageHeadline } from '@/components/PageHeadline/PageHeadline';
-import { StreamingText } from '@/components/StreamingText/StreamingText';
+import {
+  StreamingText,
+  streamWordDelay,
+} from '@/components/StreamingText/StreamingText';
 import { ThemeToggle } from '@/components/ThemeToggle/ThemeToggle';
 import { IndexPreview } from './IndexPreview';
 import './PortfolioIndex.css';
@@ -61,49 +65,42 @@ type PortfolioIndexProps = {
   initialPreviewId?: string;
 };
 
-function useAfterDelay(startDelayMs: number) {
-  const shouldReduce = useReducedMotion();
-  const immediate = shouldReduce === true || startDelayMs <= 0;
-  const [timedReady, setTimedReady] = useState(false);
-
-  useEffect(() => {
-    if (immediate) return;
-    const timeoutId = window.setTimeout(() => setTimedReady(true), startDelayMs);
-    return () => window.clearTimeout(timeoutId);
-  }, [immediate, startDelayMs]);
-
-  return immediate || timedReady;
-}
-
 function IndexItem({
   id,
   label,
   selected,
-  startDelayMs,
+  startIndex,
+  totalWords,
   intervalMs,
+  interactive,
   onActivate,
 }: {
   id: string;
   label: string;
   selected: boolean;
-  startDelayMs: number;
+  startIndex: number;
+  totalWords: number;
   intervalMs: number;
+  interactive: boolean;
   onActivate: (id: string) => void;
 }) {
-  const ready = useAfterDelay(startDelayMs);
-
+  // CSS holds the button inert until its label has faded in.
   return (
     <button
       type="button"
-      className={`portfolio-index__item${selected ? ' is-active' : ''}${ready ? '' : ' is-pending'}`}
+      className={`portfolio-index__item${selected ? ' is-active' : ''}`}
+      style={
+        { '--stream-at': `${streamWordDelay(startIndex, totalWords)}ms` } as CSSProperties
+      }
       onClick={() => onActivate(id)}
       aria-pressed={selected}
-      tabIndex={ready ? 0 : -1}
+      tabIndex={interactive ? 0 : -1}
     >
       <StreamingText
         text={label}
         as="span"
-        startDelayMs={startDelayMs}
+        startIndex={startIndex}
+        totalWords={totalWords}
         intervalMs={intervalMs}
       />
     </button>
@@ -136,19 +133,21 @@ export function PortfolioIndex({
   const railRef = useRef<HTMLDivElement>(null);
   const dialogRef = useRef<HTMLDialogElement>(null);
   const sections = useMemo(() => groupPortfolioIndex(PORTFOLIO_INDEX), []);
-  const delays = useMemo(() => buildIndexStreamDelays(), []);
+  const plan = useMemo(() => buildIndexStreamPlan(), []);
   const shouldReduce = useReducedMotion();
-  const [wellRevealed, setWellRevealed] = useState(false);
-  const wellVisible = shouldReduce === true || wellRevealed;
+  const [streamComplete, setStreamComplete] = useState(false);
+  const interactive = shouldReduce === true || streamComplete;
   const active = findPortfolioIndexEntry(activeId);
   const previewProject = resolveIndexPreviewProject(active, projects);
   useIndexScroll(layoutRef, railRef);
 
+  // One timer for the whole rail: the visuals are CSS-scheduled, this only
+  // hands keyboard focus to the items once they have landed.
   useEffect(() => {
     if (shouldReduce === true) return;
-    const timeoutId = window.setTimeout(() => setWellRevealed(true), delays.wellFade);
+    const timeoutId = window.setTimeout(() => setStreamComplete(true), plan.durationMs);
     return () => window.clearTimeout(timeoutId);
-  }, [delays.wellFade, shouldReduce]);
+  }, [plan.durationMs, shouldReduce]);
 
   if (!isNarrow && (modalOpen || modalMounted)) {
     setModalOpen(false);
@@ -223,10 +222,10 @@ export function PortfolioIndex({
           </header>
 
           <div className="portfolio-index__intro">
-            {isValidElement<{ startDelayMs?: number; intervalMs?: number }>(bio)
+            {isValidElement<{ startIndex?: number; intervalMs?: number }>(bio)
               ? cloneElement(bio, {
-                  startDelayMs: delays.bio,
-                  intervalMs: delays.intervalMs,
+                  startIndex: plan.bio,
+                  intervalMs: plan.intervalMs,
                 })
               : bio}
           </div>
@@ -242,8 +241,9 @@ export function PortfolioIndex({
                   <StreamingText
                     text={section.id}
                     as="span"
-                    startDelayMs={delays.headings[section.id] ?? 0}
-                    intervalMs={delays.intervalMs}
+                    startIndex={plan.headings[section.id] ?? 0}
+                    totalWords={plan.totalWords}
+                    intervalMs={plan.intervalMs}
                   />
                 </h2>
                 {section.years.map((group) => (
@@ -252,8 +252,9 @@ export function PortfolioIndex({
                       <StreamingText
                         text={String(group.year)}
                         as="span"
-                        startDelayMs={delays.years[`${section.id}-${group.year}`] ?? 0}
-                        intervalMs={delays.intervalMs}
+                        startIndex={plan.years[`${section.id}-${group.year}`] ?? 0}
+                        totalWords={plan.totalWords}
+                        intervalMs={plan.intervalMs}
                       />
                     </p>
                     <div className="portfolio-index__items">
@@ -263,8 +264,10 @@ export function PortfolioIndex({
                           id={item.id}
                           label={item.label}
                           selected={item.id === selectedId}
-                          startDelayMs={delays.items[item.id] ?? 0}
-                          intervalMs={delays.intervalMs}
+                          startIndex={plan.items[item.id] ?? 0}
+                          totalWords={plan.totalWords}
+                          intervalMs={plan.intervalMs}
+                          interactive={interactive}
                           onActivate={handleActivate}
                         />
                       ))}
@@ -280,8 +283,9 @@ export function PortfolioIndex({
               <StreamingText
                 text="about"
                 as="span"
-                startDelayMs={delays.footer.about ?? 0}
-                intervalMs={delays.intervalMs}
+                startIndex={plan.footer.about ?? 0}
+                totalWords={plan.totalWords}
+                intervalMs={plan.intervalMs}
               />
             </Link>
             {SITE_SOCIAL_NAV.map((link) => (
@@ -289,14 +293,15 @@ export function PortfolioIndex({
                 <StreamingText
                   text={link.label}
                   as="span"
-                  startDelayMs={delays.footer[link.label] ?? 0}
-                  intervalMs={delays.intervalMs}
+                  startIndex={plan.footer[link.label] ?? 0}
+                  totalWords={plan.totalWords}
+                  intervalMs={plan.intervalMs}
                 />
               </a>
             ))}
             <span
               className="portfolio-index__theme-stream"
-              style={{ animationDelay: `${delays.theme}ms` }}
+              style={{ animationDelay: `${plan.themeMs}ms` }}
             >
               <ThemeToggle />
             </span>
@@ -306,7 +311,7 @@ export function PortfolioIndex({
 
       {!isNarrow ? (
         <div
-          className={`portfolio-index__pane portfolio-index__pane--stage${wellVisible ? ' is-visible' : ''}`}
+          className="portfolio-index__pane portfolio-index__pane--stage is-visible"
         >
           {preview}
         </div>

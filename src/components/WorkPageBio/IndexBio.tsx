@@ -2,7 +2,7 @@ import { INDEX_BIO_PARTS } from '@/lib/index-stream';
 import { WORK_PAGE_BIO } from '@/lib/site';
 
 type IndexBioProps = {
-  startDelayMs?: number;
+  startIndex?: number;
   intervalMs?: number;
 };
 

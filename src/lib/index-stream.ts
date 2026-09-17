@@ -1,7 +1,7 @@
 import {
-  splitIntoUnits,
-  STREAM_LINE_GAP_MS,
-  streamLineEndMs,
+  createStreamCursor,
+  streamDurationMs,
+  streamWordDelay,
   WORD_INTERVAL_MS,
 } from '@/lib/streaming-text';
 import { groupPortfolioIndex } from '@/lib/portfolio-index';
@@ -49,71 +49,69 @@ export const INDEX_BIO_PARTS: IndexBioPart[] = [
   { type: 'text', text: '.' },
 ];
 
-export type IndexStreamDelays = {
+export type IndexStreamPlan = {
+  /** Every streamed word in the rail shares this total, so they ride one curve. */
+  totalWords: number;
   intervalMs: number;
   headline: number;
   bio: number;
   bioParts: number[];
-  wellFade: number;
+  /** Word offsets into the shared stream. */
   headings: Record<string, number>;
   years: Record<string, number>;
   items: Record<string, number>;
   footer: Record<string, number>;
-  theme: number;
+  /** Wall-clock milliseconds, derived from the same curve. */
+  wellFadeMs: number;
+  themeMs: number;
+  durationMs: number;
 };
 
-function wordCount(text: string) {
-  return splitIntoUnits(text).length;
-}
-
-export function buildIndexStreamDelays(): IndexStreamDelays {
-  const intervalMs = WORD_INTERVAL_MS;
-  let cursor = 0;
-
-  const takeLine = (text: string) => {
-    const start = cursor;
-    cursor += streamLineEndMs(wordCount(text), intervalMs) + STREAM_LINE_GAP_MS;
-    return start;
-  };
-
-  // Headline and bio paint immediately; keep their delay slots at 0.
-  const headline = 0;
-  const bio = 0;
-  const bioParts = INDEX_BIO_PARTS.map(() => 0);
-
-  const wellFade = cursor;
+/**
+ * The rail streams as one continuous run of words: headings, years, items and
+ * footer links all sit on a single timeline, so nothing waits for the line
+ * above it to finish. Headline and bio are the anchor and paint immediately.
+ */
+export function buildIndexStreamPlan(): IndexStreamPlan {
+  const cursor = createStreamCursor();
 
   const headings: Record<string, number> = {};
   const years: Record<string, number> = {};
   const items: Record<string, number> = {};
 
   for (const section of groupPortfolioIndex()) {
-    headings[section.id] = takeLine(section.id);
+    headings[section.id] = cursor.take(section.id);
     for (const group of section.years) {
-      years[`${section.id}-${group.year}`] = takeLine(String(group.year));
+      years[`${section.id}-${group.year}`] = cursor.take(String(group.year));
       for (const item of group.items) {
-        items[item.id] = takeLine(item.label);
+        items[item.id] = cursor.take(item.label);
       }
     }
   }
 
   const footer: Record<string, number> = {
-    about: takeLine('about'),
+    about: cursor.take('about'),
   };
   for (const link of SITE_SOCIAL_NAV) {
-    footer[link.label] = takeLine(link.label);
+    footer[link.label] = cursor.take(link.label);
   }
 
+  const totalWords = cursor.total;
+  const durationMs = streamDurationMs(totalWords);
+
   return {
-    intervalMs,
-    headline,
-    bio,
-    bioParts,
-    wellFade,
+    totalWords,
+    intervalMs: WORD_INTERVAL_MS,
+    headline: 0,
+    bio: 0,
+    bioParts: INDEX_BIO_PARTS.map(() => 0),
     headings,
     years,
     items,
     footer,
-    theme: cursor,
+    // The stage well rides in with the first words rather than after the rail.
+    wellFadeMs: 0,
+    themeMs: streamWordDelay(Math.max(0, totalWords - 1), totalWords),
+    durationMs,
   };
 }

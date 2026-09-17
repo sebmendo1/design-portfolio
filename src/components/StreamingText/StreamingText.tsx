@@ -1,13 +1,21 @@
 'use client';
 
-import { useEffect, useMemo, useRef, useState, type CSSProperties } from 'react';
+import { useEffect, useMemo, useRef, type CSSProperties } from 'react';
 import { useReducedMotion } from 'framer-motion';
-import { splitIntoUnits, WORD_INTERVAL_MS } from '@/lib/streaming-text';
+import {
+  splitIntoUnits,
+  streamWordDelay,
+  WORD_ANIMATION_MS,
+  WORD_INTERVAL_MS,
+} from '@/lib/streaming-text';
 import './StreamingText.css';
 
 export {
+  countWords,
+  createStreamCursor,
   splitIntoUnits,
   streamDurationMs,
+  streamWordDelay,
   WORD_ANIMATION_MS,
   WORD_INTERVAL_MS,
 } from '@/lib/streaming-text';
@@ -19,9 +27,16 @@ type StreamingTextProps = {
   text: string;
   className?: string;
   reveal?: boolean;
-  /** Show full text immediately without re-running the stream animation. */
+  /** Show full text immediately without running the stream animation. */
   instant?: boolean;
-  startDelayMs?: number;
+  /**
+   * Where this text's first word sits in the surrounding stream. Segments that
+   * share a `totalWords` ride one continuous timeline, so a heading and the
+   * items beneath it flow together instead of taking turns.
+   */
+  startIndex?: number;
+  /** Word count of the whole stream. Defaults to this text alone. */
+  totalWords?: number;
   intervalMs?: number;
   onComplete?: () => void;
   'aria-label'?: string;
@@ -33,91 +48,61 @@ export function StreamingText({
   className,
   reveal = true,
   instant = false,
-  startDelayMs = 0,
+  startIndex = 0,
+  totalWords,
   intervalMs = WORD_INTERVAL_MS,
   onComplete,
   'aria-label': ariaLabel,
 }: StreamingTextProps) {
   const shouldReduce = useReducedMotion();
   const units = useMemo(() => splitIntoUnits(text), [text]);
-  const skipAnimation = instant || !reveal || shouldReduce;
-  const [revealedCount, setRevealedCount] = useState(() =>
-    reveal && startDelayMs <= 0 ? 1 : 0,
-  );
-  const hasCompletedRef = useRef(false);
+  const skipAnimation = instant || !reveal || shouldReduce === true;
+  const total = totalWords ?? startIndex + units.length;
+  const onCompleteRef = useRef(onComplete);
 
   useEffect(() => {
-    hasCompletedRef.current = false;
+    onCompleteRef.current = onComplete;
+  }, [onComplete]);
 
-    if (skipAnimation) {
-      queueMicrotask(() => {
-        if (!hasCompletedRef.current) {
-          hasCompletedRef.current = true;
-          onComplete?.();
-        }
-      });
+  // Timing lives entirely in CSS, so the stream runs on the compositor and
+  // never re-renders. This only reports when the last word has landed.
+  useEffect(() => {
+    if (!reveal) return;
+
+    if (skipAnimation || units.length === 0) {
+      queueMicrotask(() => onCompleteRef.current?.());
       return;
     }
 
-    let intervalId: ReturnType<typeof setInterval> | undefined;
-    let count = 0;
+    const lastStart = streamWordDelay(startIndex + units.length - 1, total, {
+      intervalMs,
+    });
+    const timeoutId = window.setTimeout(
+      () => onCompleteRef.current?.(),
+      lastStart + WORD_ANIMATION_MS,
+    );
 
-    const tick = () => {
-      count += 1;
-      setRevealedCount(count);
-      if (count >= units.length) {
-        if (intervalId) clearInterval(intervalId);
-        if (!hasCompletedRef.current) {
-          hasCompletedRef.current = true;
-          onComplete?.();
-        }
-      }
-    };
-
-    const startTimeoutId = setTimeout(() => {
-      if (units.length === 0) {
-        if (!hasCompletedRef.current) {
-          hasCompletedRef.current = true;
-          onComplete?.();
-        }
-        return;
-      }
-
-      setRevealedCount(0);
-      tick();
-      if (units.length > 1) {
-        intervalId = setInterval(tick, intervalMs);
-      }
-    }, startDelayMs);
-
-    return () => {
-      clearTimeout(startTimeoutId);
-      if (intervalId) clearInterval(intervalId);
-    };
-  }, [instant, skipAnimation, units, startDelayMs, intervalMs, onComplete, text]);
-
-  const visibleCount = !reveal ? 0 : skipAnimation ? units.length : revealedCount;
+    return () => window.clearTimeout(timeoutId);
+  }, [reveal, skipAnimation, units.length, startIndex, total, intervalMs]);
 
   return (
     <Tag className={className} aria-label={ariaLabel ?? text}>
       {units.map((unit, index) => {
-        const streamAt = !reveal
-          ? undefined
-          : skipAnimation
-            ? '0ms'
-            : `${startDelayMs + index * intervalMs}ms`;
+        const delay = skipAnimation
+          ? 0
+          : streamWordDelay(startIndex + index, total, { intervalMs });
 
         return (
           <span
             key={index}
             className={
-              !reveal
-                ? 'streaming-text__unit streaming-text__unit--hidden'
-                : index < visibleCount
-                  ? 'streaming-text__unit streaming-text__unit--visible'
-                  : 'streaming-text__unit streaming-text__unit--pending'
+              reveal
+                ? skipAnimation
+                  ? 'streaming-text__unit streaming-text__unit--instant'
+                  : 'streaming-text__unit streaming-text__unit--streaming'
+                : 'streaming-text__unit streaming-text__unit--hidden'
             }
-            style={{ '--stream-at': streamAt } as CSSProperties}
+            style={{ '--stream-at': `${delay}ms` } as CSSProperties}
           >
             <span className="streaming-text__word">{unit.word}</span>
             {unit.space}

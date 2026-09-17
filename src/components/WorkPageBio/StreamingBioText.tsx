@@ -11,7 +11,8 @@ import {
 import { useReducedMotion } from 'framer-motion';
 import {
   splitIntoUnits,
-  WORD_INTERVAL_MS,
+  streamDurationMs,
+  streamWordDelay,
 } from '@/components/StreamingText/StreamingText';
 import '@/components/StreamingText/StreamingText.css';
 import { useLonelyLineWidth } from '@/hooks/useLonelyLineWidth';
@@ -105,15 +106,31 @@ function buildBioStreamItems(): BioStreamItem[] {
   return items;
 }
 
-function BioWord({ item, visible }: { item: BioWordItem; visible: boolean }) {
+function streamStyle(index: number, total: number, skip: boolean): CSSProperties {
+  return {
+    '--stream-at': `${skip ? 0 : streamWordDelay(index, total)}ms`,
+  } as CSSProperties;
+}
+
+function unitClass(skip: boolean) {
+  return skip
+    ? 'streaming-text__unit streaming-text__unit--instant'
+    : 'streaming-text__unit streaming-text__unit--streaming';
+}
+
+function BioWord({
+  item,
+  index,
+  total,
+  skip,
+}: {
+  item: BioWordItem;
+  index: number;
+  total: number;
+  skip: boolean;
+}) {
   return (
-    <span
-      className={
-        visible
-          ? 'streaming-text__unit streaming-text__unit--visible'
-          : 'streaming-text__unit streaming-text__unit--pending'
-      }
-    >
+    <span className={unitClass(skip)} style={streamStyle(index, total, skip)}>
       <span className="streaming-text__word">{item.word}</span>
       {item.space}
     </span>
@@ -123,47 +140,48 @@ function BioWord({ item, visible }: { item: BioWordItem; visible: boolean }) {
 function BioLinkGroup({
   group,
   startIndex,
-  visibleCount,
+  total,
+  skip,
+  interactive,
 }: {
   group: BioLinkWordItem[];
   startIndex: number;
-  visibleCount: number;
+  total: number;
+  skip: boolean;
+  interactive: boolean;
 }) {
-  const isComplete = startIndex + group.length <= visibleCount;
-  const hasStarted = startIndex < visibleCount;
-  const unitClass = hasStarted
-    ? 'streaming-text__unit streaming-text__unit--visible'
-    : 'streaming-text__unit streaming-text__unit--pending';
-
   const { link } = group[0];
+  const lastIndex = startIndex + group.length - 1;
 
   return (
-    <span className={unitClass}>
+    <span className="work-page__bio-link-group">
       <a
         href={link.href}
         className="work-page__bio-link"
         target="_blank"
         rel="noopener noreferrer"
-        tabIndex={isComplete ? 0 : -1}
+        tabIndex={interactive ? 0 : -1}
         aria-label={link.label}
       >
         <span className="work-page__bio-link-text">
-          {group.map((part, index) => {
-            const globalIndex = startIndex + index;
-            const justRevealed = globalIndex === visibleCount - 1;
-
-            return (
-              <span key={`${part.word}-${index}`}>
-                {index > 0 ? group[index - 1].intraSpace : ''}
-                {justRevealed ? (
-                  <span className="streaming-text__word">{part.word}</span>
-                ) : (
-                  part.word
-                )}
+          {group.map((part, index) => (
+            <span key={`${part.word}-${index}`}>
+              {index > 0 ? group[index - 1].intraSpace : ''}
+              <span
+                className={unitClass(skip)}
+                style={streamStyle(startIndex + index, total, skip)}
+              >
+                <span className="streaming-text__word">{part.word}</span>
               </span>
-            );
-          })}
-          {isComplete ? <span aria-hidden="true"> ↗</span> : null}
+            </span>
+          ))}
+          <span
+            className={unitClass(skip)}
+            style={streamStyle(lastIndex, total, skip)}
+            aria-hidden="true"
+          >
+            <span className="streaming-text__word">&nbsp;↗</span>
+          </span>
         </span>
       </a>
       {group[group.length - 1].afterLinkSpace ?? null}
@@ -171,7 +189,12 @@ function BioLinkGroup({
   );
 }
 
-function renderBioStream(items: BioStreamItem[], visibleCount: number): ReactNode[] {
+function renderBioStream(
+  items: BioStreamItem[],
+  total: number,
+  skip: boolean,
+  interactive: boolean,
+): ReactNode[] {
   const nodes: ReactNode[] = [];
   let index = 0;
 
@@ -180,17 +203,20 @@ function renderBioStream(items: BioStreamItem[], visibleCount: number): ReactNod
 
     if (item.type === 'word') {
       nodes.push(
-        <BioWord key={`word-${index}`} item={item} visible={index < visibleCount} />,
+        <BioWord
+          key={`word-${index}`}
+          item={item}
+          index={index}
+          total={total}
+          skip={skip}
+        />,
       );
       index += 1;
       continue;
     }
 
     const startIndex = index;
-    const firstLinkItem = items[index];
-    if (firstLinkItem.type !== 'linkWord') break;
-    const linkId = firstLinkItem.link.linkId;
-
+    const linkId = item.link.linkId;
     const group: BioLinkWordItem[] = [];
 
     while (index < items.length) {
@@ -205,7 +231,9 @@ function renderBioStream(items: BioStreamItem[], visibleCount: number): ReactNod
         key={`link-${linkId}-${startIndex}`}
         group={group}
         startIndex={startIndex}
-        visibleCount={visibleCount}
+        total={total}
+        skip={skip}
+        interactive={interactive}
       />,
     );
   }
@@ -217,88 +245,36 @@ type StreamingBioTextProps = {
   onComplete?: () => void;
 };
 
-type StreamingBioTextInnerProps = {
-  onComplete?: () => void;
-  skipAnimation: boolean;
-};
-
-function StreamingBioTextInner({ onComplete, skipAnimation }: StreamingBioTextInnerProps) {
+export function StreamingBioText({ onComplete }: StreamingBioTextProps) {
+  const shouldReduce = useReducedMotion();
+  const skip = shouldReduce === true;
   const items = useMemo(() => buildBioStreamItems(), []);
-  const [revealedCount, setRevealedCount] = useState(0);
   const headingRef = useRef<HTMLHeadingElement>(null);
+  const [timedComplete, setTimedComplete] = useState(false);
+  const complete = skip || items.length === 0 || timedComplete;
   const onCompleteRef = useRef(onComplete);
-  const hasCompletedRef = useRef(false);
-  const streamStateRef = useRef<'idle' | 'running' | 'done'>('idle');
 
   useEffect(() => {
     onCompleteRef.current = onComplete;
   }, [onComplete]);
 
+  // Timing is CSS-scheduled; this single timer only reports the landing so
+  // links become focusable and the lonely-line measurement can run.
   useEffect(() => {
-    streamStateRef.current = 'idle';
-    hasCompletedRef.current = false;
-
-    if (skipAnimation) {
-      streamStateRef.current = 'done';
-      queueMicrotask(() => {
-        if (!hasCompletedRef.current) {
-          hasCompletedRef.current = true;
-          onCompleteRef.current?.();
-        }
-      });
+    if (skip || items.length === 0) {
+      queueMicrotask(() => onCompleteRef.current?.());
       return;
     }
 
-    streamStateRef.current = 'running';
+    const timeoutId = window.setTimeout(() => {
+      setTimedComplete(true);
+      onCompleteRef.current?.();
+    }, streamDurationMs(items.length));
 
-    let intervalId: ReturnType<typeof setInterval> | undefined;
-    let count = 0;
+    return () => window.clearTimeout(timeoutId);
+  }, [skip, items]);
 
-    const finish = () => {
-      streamStateRef.current = 'done';
-      if (!hasCompletedRef.current) {
-        hasCompletedRef.current = true;
-        onCompleteRef.current?.();
-      }
-    };
-
-    const tick = () => {
-      count += 1;
-      setRevealedCount(count);
-      if (count >= items.length) {
-        if (intervalId) clearInterval(intervalId);
-        finish();
-      }
-    };
-
-    const startTimeoutId = setTimeout(() => {
-      if (items.length === 0) {
-        finish();
-        return;
-      }
-
-      setRevealedCount(0);
-      tick();
-      if (items.length > 1) {
-        intervalId = setInterval(tick, WORD_INTERVAL_MS);
-      }
-    }, 0);
-
-    return () => {
-      clearTimeout(startTimeoutId);
-      if (intervalId) clearInterval(intervalId);
-      if (streamStateRef.current !== 'done') {
-        streamStateRef.current = 'idle';
-      }
-    };
-  }, [skipAnimation, items]);
-
-  const visibleCount = skipAnimation ? items.length : revealedCount;
-  const isStreamComplete = visibleCount >= items.length;
-  const widthPercent = useLonelyLineWidth(
-    headingRef,
-    isStreamComplete ? visibleCount : -1,
-  );
+  const widthPercent = useLonelyLineWidth(headingRef, complete ? items.length : -1);
 
   return (
     <h1
@@ -307,20 +283,7 @@ function StreamingBioTextInner({ onComplete, skipAnimation }: StreamingBioTextIn
       style={{ '--work-page-bio-width': `${widthPercent}%` } as CSSProperties}
       aria-label={WORK_PAGE_BIO}
     >
-      {renderBioStream(items, visibleCount)}
+      {renderBioStream(items, items.length, skip, skip || complete)}
     </h1>
-  );
-}
-
-export function StreamingBioText({ onComplete }: StreamingBioTextProps) {
-  const shouldReduce = useReducedMotion();
-  const skipAnimation = shouldReduce ?? false;
-
-  return (
-    <StreamingBioTextInner
-      key={String(skipAnimation)}
-      onComplete={onComplete}
-      skipAnimation={skipAnimation}
-    />
   );
 }

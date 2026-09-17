@@ -3,10 +3,11 @@ import { test } from 'node:test';
 import { PROFILE } from '../data/profile';
 import {
   ABOUT_INTRO_BLOCKS,
-  buildAboutStreamDelays,
+  buildAboutStreamPlan,
   splitAboutText,
 } from './about-stream';
-import { splitIntoUnits, streamLineEndMs } from './streaming-text';
+import { SITE_SOCIAL_NAV } from './site';
+import { countWords, streamDurationMs, WORD_INTERVAL_MS } from './streaming-text';
 
 test('About stream reconstructs the intro and keeps company links', () => {
   const title = ABOUT_INTRO_BLOCKS[0];
@@ -28,28 +29,49 @@ test('About stream reconstructs the intro and keeps company links', () => {
   assert.equal(chase[2]?.text.startsWith(' '), true);
 });
 
-test('About stream delays follow the headline, then copy, then footer', () => {
-  const delays = buildAboutStreamDelays();
+test('the headline and title anchor the page and paint immediately', () => {
+  const plan = buildAboutStreamPlan();
 
-  assert.equal(delays.headline, 0);
-  assert.equal(delays.intervalMs, 28);
-  assert.deepEqual(delays.blocks[0], ABOUT_INTRO_BLOCKS[0].parts.map(() => 0));
-  assert.ok((delays.blocks[1]?.[0] ?? 0) >= delays.headline);
-  assert.ok((delays.footer.work ?? 0) > (delays.blocks.at(-1)?.[0] ?? 0));
-  assert.ok(delays.theme >= (delays.footer.work ?? 0));
+  assert.equal(plan.headline, 0);
+  assert.equal(plan.intervalMs, WORD_INTERVAL_MS);
+  assert.deepEqual(plan.blocks[0], ABOUT_INTRO_BLOCKS[0].parts.map(() => 0));
 });
 
-test('About stream finishes each paragraph before the next starts', () => {
-  const delays = buildAboutStreamDelays();
+test('paragraphs and footer ride one contiguous stream', () => {
+  const plan = buildAboutStreamPlan();
 
-  let previousEnd = 0;
-  ABOUT_INTRO_BLOCKS.forEach((block, index) => {
+  let expected = 0;
+  ABOUT_INTRO_BLOCKS.forEach((block, blockIndex) => {
     if (block.key === 'title') return;
-    const start = delays.blocks[index]?.[0] ?? 0;
-    const words = block.parts.reduce((count, part) => count + splitIntoUnits(part.text).length, 0);
-    assert.ok(start >= previousEnd, `${block.key} overlapped the previous paragraph`);
-    previousEnd = start + streamLineEndMs(words, delays.intervalMs);
+
+    block.parts.forEach((part, partIndex) => {
+      assert.equal(
+        plan.blocks[blockIndex]?.[partIndex],
+        expected,
+        `${block.key} part ${partIndex} left a gap`,
+      );
+      expected += countWords(part.text);
+    });
   });
 
-  assert.ok((delays.footer.work ?? 0) >= previousEnd);
+  assert.equal(plan.footer.work, expected, 'footer restarted instead of continuing');
+  expected += countWords('work');
+
+  for (const link of SITE_SOCIAL_NAV) {
+    assert.equal(plan.footer[link.label], expected, `${link.label} left a gap`);
+    expected += countWords(link.label);
+  }
+
+  assert.equal(plan.totalWords, expected);
+});
+
+test('the About rail lands fast', () => {
+  const plan = buildAboutStreamPlan();
+
+  assert.equal(plan.durationMs, streamDurationMs(plan.totalWords));
+  assert.ok(
+    plan.durationMs < 2000,
+    `About rail takes ${plan.durationMs}ms to paint, which reads as a crawl`,
+  );
+  assert.ok(plan.themeMs < plan.durationMs);
 });

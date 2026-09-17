@@ -27,7 +27,7 @@ export function AnimatedProjectCard({
 }: AnimatedProjectCardProps) {
   if (streamIn) {
     return (
-      <div className="work-page__card-reveal streaming-text__unit streaming-text__unit--visible">
+      <div className="work-page__card-reveal streaming-text__unit streaming-text__unit--streaming">
         <div className="streaming-text__word work-page__card-reveal-inner">
           <ProjectCard project={project} onNavigate={onNavigate} />
         </div>

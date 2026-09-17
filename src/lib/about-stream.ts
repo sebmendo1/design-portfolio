@@ -1,7 +1,7 @@
 import {
-  splitIntoUnits,
-  STREAM_LINE_GAP_MS,
-  streamLineEndMs,
+  createStreamCursor,
+  streamDurationMs,
+  streamWordDelay,
   WORD_INTERVAL_MS,
 } from '@/lib/streaming-text';
 import { PROFILE } from '@/data/profile';
@@ -54,61 +54,47 @@ export const ABOUT_INTRO_BLOCKS = [
   })),
 ] as const;
 
-export type AboutStreamDelays = {
+export type AboutStreamPlan = {
+  totalWords: number;
   intervalMs: number;
   headline: number;
+  /** Word offsets into the shared stream, per block then per part. */
   blocks: number[][];
   footer: Record<string, number>;
-  theme: number;
+  themeMs: number;
+  durationMs: number;
 };
 
-function wordCount(text: string) {
-  return splitIntoUnits(text).length;
-}
+/**
+ * Headline and title are the anchor and paint immediately. Everything after
+ * them — every paragraph and footer link — rides one continuous word stream,
+ * so paragraphs bleed into each other instead of queueing up.
+ */
+export function buildAboutStreamPlan(): AboutStreamPlan {
+  const cursor = createStreamCursor();
 
-export function buildAboutStreamDelays(): AboutStreamDelays {
-  const intervalMs = WORD_INTERVAL_MS;
-  let cursor = 0;
-
-  const takeLine = (text: string) => {
-    const start = cursor;
-    cursor += streamLineEndMs(wordCount(text), intervalMs) + STREAM_LINE_GAP_MS;
-    return start;
-  };
-
-  const takeParagraph = (parts: readonly { text: string }[]) => {
-    const starts: number[] = [];
-    const lineStart = cursor;
-
-    for (const part of parts) {
-      starts.push(cursor);
-      const count = wordCount(part.text);
-      if (count > 0) cursor += count * intervalMs;
-    }
-
-    const totalWords = parts.reduce((sum, part) => sum + wordCount(part.text), 0);
-    cursor = lineStart + streamLineEndMs(totalWords, intervalMs) + STREAM_LINE_GAP_MS;
-    return starts;
-  };
-
-  // Headline and title paint immediately; stream one paragraph (then footer link) at a time.
-  const headline = 0;
   const blocks = ABOUT_INTRO_BLOCKS.map((block) =>
-    block.key === 'title' ? block.parts.map(() => 0) : takeParagraph(block.parts),
+    block.key === 'title'
+      ? block.parts.map(() => 0)
+      : block.parts.map((part) => cursor.take(part.text)),
   );
 
   const footer: Record<string, number> = {
-    work: takeLine('work'),
+    work: cursor.take('work'),
   };
   for (const link of SITE_SOCIAL_NAV) {
-    footer[link.label] = takeLine(link.label);
+    footer[link.label] = cursor.take(link.label);
   }
 
+  const totalWords = cursor.total;
+
   return {
-    intervalMs,
-    headline,
+    totalWords,
+    intervalMs: WORD_INTERVAL_MS,
+    headline: 0,
     blocks,
     footer,
-    theme: cursor,
+    themeMs: streamWordDelay(Math.max(0, totalWords - 1), totalWords),
+    durationMs: streamDurationMs(totalWords),
   };
 }

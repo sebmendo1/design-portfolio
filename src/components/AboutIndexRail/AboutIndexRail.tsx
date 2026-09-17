@@ -4,10 +4,10 @@ import Link from 'next/link';
 import { PageHeadline } from '@/components/PageHeadline/PageHeadline';
 import { StreamingText } from '@/components/StreamingText/StreamingText';
 import { ThemeToggle } from '@/components/ThemeToggle/ThemeToggle';
-import { ABOUT_INTRO_BLOCKS, buildAboutStreamDelays } from '@/lib/about-stream';
+import { ABOUT_INTRO_BLOCKS, buildAboutStreamPlan } from '@/lib/about-stream';
 import { SITE_SOCIAL_NAV } from '@/lib/site';
 
-const delays = buildAboutStreamDelays();
+const plan = buildAboutStreamPlan();
 
 export function AboutIndexRail() {
   return (
@@ -33,8 +33,9 @@ export function AboutIndexRail() {
                     text={body}
                     as="span"
                     instant={block.key === 'title'}
-                    startDelayMs={delays.blocks[blockIndex]?.[partIndex] ?? 0}
-                    intervalMs={delays.intervalMs}
+                    startIndex={plan.blocks[blockIndex]?.[partIndex] ?? 0}
+                    totalWords={plan.totalWords}
+                    intervalMs={plan.intervalMs}
                   />
                 ) : null;
 
@@ -71,8 +72,9 @@ export function AboutIndexRail() {
           <StreamingText
             text="work"
             as="span"
-            startDelayMs={delays.footer.work ?? 0}
-            intervalMs={delays.intervalMs}
+            startIndex={plan.footer.work ?? 0}
+            totalWords={plan.totalWords}
+            intervalMs={plan.intervalMs}
           />
         </Link>
         {SITE_SOCIAL_NAV.map((link) => (
@@ -80,14 +82,15 @@ export function AboutIndexRail() {
             <StreamingText
               text={link.label}
               as="span"
-              startDelayMs={delays.footer[link.label] ?? 0}
-              intervalMs={delays.intervalMs}
+              startIndex={plan.footer[link.label] ?? 0}
+              totalWords={plan.totalWords}
+              intervalMs={plan.intervalMs}
             />
           </a>
         ))}
         <span
           className="about-index__theme-stream"
-          style={{ animationDelay: `${delays.theme}ms` }}
+          style={{ animationDelay: `${plan.themeMs}ms` }}
         >
           <ThemeToggle />
         </span>

@@ -1,23 +1,25 @@
+/*
+ * The stream is driven entirely by animation-delay: every word mounts at once
+ * and CSS decides when it lands. Nothing re-renders mid-stream, so the whole
+ * cascade runs on the compositor.
+ */
+
 .streaming-text__word {
   display: inline-block;
+  will-change: opacity, transform, filter;
 }
 
-.streaming-text__unit--pending .streaming-text__word,
-.streaming-text__unit--hidden .streaming-text__word {
-  opacity: 0;
-  animation: none;
-  pointer-events: none;
-}
-
-.streaming-text__unit--visible .streaming-text__word {
-  animation: streaming-text-word-in 0.14s ease-out both;
+.streaming-text__unit--streaming .streaming-text__word {
+  /* `both` holds the word invisible through its delay, then keeps the end state. */
+  animation: streaming-text-word-in 0.46s cubic-bezier(0.22, 1, 0.36, 1) both;
   animation-delay: var(--stream-at, 0ms);
 }
 
-.streaming-text__unit--visible:first-child .streaming-text__word {
-  animation: none;
+.streaming-text__unit--instant .streaming-text__word {
   opacity: 1;
   transform: none;
+  filter: none;
+  animation: none;
 }
 
 .streaming-text__unit--hidden,
@@ -30,21 +32,32 @@
 @keyframes streaming-text-word-in {
   from {
     opacity: 0;
-    transform: translateY(2px);
+    transform: translateY(6px) scale(0.985);
+    filter: blur(5px);
+  }
+
+  60% {
+    filter: blur(0);
   }
 
   to {
     opacity: 1;
-    transform: translateY(0);
+    transform: translateY(0) scale(1);
+    filter: blur(0);
   }
 }
 
 @media (prefers-reduced-motion: reduce) {
-  .streaming-text__unit--visible .streaming-text__word,
-  .streaming-text__unit--pending .streaming-text__word {
+  .streaming-text__word {
+    will-change: auto;
+  }
+
+  .streaming-text__unit--streaming .streaming-text__word,
+  .streaming-text__unit--instant .streaming-text__word {
     animation: none;
     opacity: 1;
     transform: none;
+    filter: none;
   }
 
   .streaming-text__unit--hidden,

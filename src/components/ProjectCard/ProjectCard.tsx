@@ -10,8 +10,7 @@ import { BrowserStencil } from '@/components/BrowserStencil/BrowserStencil';
 import { OptimizedImage } from '@/components/OptimizedImage/OptimizedImage';
 import { PhoneStencil } from '@/components/PhoneStencil/PhoneStencil';
 import {
-  splitIntoUnits,
-  streamDurationMs,
+  countWords,
   StreamingText,
 } from '@/components/StreamingText/StreamingText';
 import '@/components/StreamingText/StreamingText.css';
@@ -102,10 +101,15 @@ export function ProjectCard({
   const bg = project.styles?.backgroundColor ?? '#f4f3f2';
   const href = `/work/${project.slug}`;
   const frame = project.preview?.frame ?? 'phone';
-  const taglineDelayMs = useMemo(
-    () => streamDurationMs(splitIntoUnits(project.title).length),
-    [project.title],
-  );
+  // Title and tagline ride one stream, so the tagline starts mid-title
+  // instead of waiting for it to finish.
+  const stream = useMemo(() => {
+    const titleWords = countWords(project.title);
+    return {
+      titleWords,
+      totalWords: titleWords + countWords(project.tagline ?? ''),
+    };
+  }, [project.title, project.tagline]);
 
   return (
     <Link
@@ -131,6 +135,7 @@ export function ProjectCard({
               className="project-card__title"
               text={project.title}
               reveal={metaReveal}
+              totalWords={stream.totalWords}
               aria-label={project.title}
             />
             {project.tagline && (
@@ -139,7 +144,8 @@ export function ProjectCard({
                 className="project-card__description"
                 text={project.tagline}
                 reveal={metaReveal}
-                startDelayMs={taglineDelayMs}
+                startIndex={stream.titleWords}
+                totalWords={stream.totalWords}
               />
             )}
           </>

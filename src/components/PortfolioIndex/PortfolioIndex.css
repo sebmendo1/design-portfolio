@@ -243,8 +243,21 @@
   color: var(--color-text-primary);
 }
 
-.portfolio-index__item.is-pending {
-  pointer-events: none;
+.portfolio-index__item {
+  /* Discrete properties flip at the midpoint, so the item becomes clickable
+     once its label is mostly painted rather than while it is still blank. */
+  animation: index-item-enable 0.46s linear both;
+  animation-delay: var(--stream-at, 0ms);
+}
+
+@keyframes index-item-enable {
+  from {
+    pointer-events: none;
+  }
+
+  to {
+    pointer-events: auto;
+  }
 }
 
 .portfolio-index__theme-stream {
@@ -439,6 +452,10 @@
 
   .portfolio-index__theme-stream {
     opacity: 1;
+    animation: none;
+  }
+
+  .portfolio-index__item {
     animation: none;
   }
 }
