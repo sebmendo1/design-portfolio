@@ -5,7 +5,7 @@ export const caseyAi: CaseStudy = {
   slug: 'casey-ai',
   section: 'chase-ai',
   title: 'Chase’s first customer-facing AI agent, live on voice and RCS',
-  summary: 'One agent for voice and text, proven in home lending, built around the handoff to a human.',
+  summary: 'One AI agent for calls and texts, launched in home lending, that hands anything it cannot answer to a licensed associate.',
   company: 'JPMorgan Chase',
   year: '2025–2026',
   meta: {
@@ -18,13 +18,13 @@ export const caseyAi: CaseStudy = {
   },
   hero: {
     media: [{ type: 'phone', video: ASSETS.video.caseyRcs, alt: 'Casey RCS conversation on iPhone' }],
-    caption: 'A saved mortgage application comes back to life over RCS, from a verified Chase sender.',
+    caption: 'A customer who saved a mortgage application gets an RCS message from a verified Chase sender, with a link back to it.',
   },
   caseyActions: true,
   tldr: {
-    situation: 'Chase needed an AI agent that could talk to customers without creating legal exposure.',
-    task: 'As design lead, I had to prove it in home lending, the bank’s most regulated journey.',
-    action: 'I designed Casey as one agent across voice and RCS, built around the handoff to a licensed human.',
+    situation: 'Chase wanted an AI agent that could talk to customers without creating legal risk.',
+    task: 'As design lead, I had to prove it in home lending, where rules are strictest.',
+    action: 'I designed Casey as one agent across voice and RCS that routes advice and quotes to a licensed associate.',
     // TODO(seb): verify timeframe for the 3,000+ calls figure.
     result: 'Casey Voice has handled 3,000+ production calls at about 12% lead conversion.',
     keyResult: {
@@ -36,78 +36,78 @@ export const caseyAi: CaseStudy = {
     },
   },
   context: {
-    heading: 'Every sentence the agent says is a sentence the bank said.',
+    heading: 'In home lending, one wrong answer about a rate is a compliance issue.',
     body: [
-      'Voice and text are the two channels federal law watches most closely. One confident but wrong answer about a rate is a compliance event, not a UX bug.',
-      'Home lending raised the stakes: the most regulation, the largest dollar amounts, and a journey where customers stall mid-application and rarely come back on their own.',
+      'Casey speaks for Chase on calls and texts, and both channels carry consent and disclosure rules. If it quoted a rate or gave advice, the bank would be on the hook.',
+      'We started in home lending because it has the most regulation and the largest loans in consumer banking. Customers also stall halfway through applications and rarely come back on their own.',
     ],
     constraints: [
-      'Casey may not advise or quote',
+      'No advice or rate quotes',
       'Consent and disclosure on every call and text',
-      'Same limits on voice and text',
+      'Same rules on voice and text',
     ],
   },
   // TODO(seb): verify every decision's "Instead of" and trade-off; they are inferred from existing copy, not supplied.
   decisions: {
-    heading: 'The design work was deciding what Casey should refuse to do.',
+    heading: 'Most of the design work defined when Casey hands a customer to a person.',
     items: [
       {
-        title: 'One agent with two surfaces, not a mortgage bot',
-        body: 'I framed Casey as a single system with one model of what it knows, what it may say, and when it steps aside, then proved it where the rules are strictest.',
+        title: 'One agent across voice and text',
+        body: 'I designed Casey as one system with one set of rules: what it knows, what it may say, and when it hands off. Home lending was the first place we shipped it.',
         // TODO(seb): verify that separate voice and text agents were a real option on the table.
         alternative: 'Separate voice and text bots owned by different teams.',
-        tradeoff: 'A slower first launch and more alignment with teams that would not ship on it for months.',
+        tradeoff: 'The first launch took longer, and I spent time aligning teams that would not use it for months.',
       },
       {
-        title: 'The handoff is the product',
-        body: 'Anything beyond Casey’s authority, any sign of stress, and any repeated confusion routes to a person with the whole conversation attached. Customers never repeat themselves.',
+        title: 'Hand off early, with the conversation attached',
+        body: 'Questions beyond Casey’s authority, signs of stress, and repeated confusion all go to a licensed associate. The transcript goes with the transfer, so the customer does not repeat anything.',
         // TODO(seb): verify that containment-first routing was the alternative considered.
-        alternative: 'Maximizing containment and keeping calls away from associates.',
-        tradeoff: 'More conversations end with a human, which a pure automation metric would punish. In lending, the warm handoff is the conversion.',
+        alternative: 'Keep as many calls as possible away from associates.',
+        tradeoff: 'More conversations end with a person, which hurts a containment metric. In lending, that handoff is often where the lead converts.',
         figure: {
           media: [{ type: 'voice', alt: 'Casey Voice waveform' }],
-          caption: 'Casey Voice qualifies, explains, and schedules. Advice and quotes go to a licensed associate, with context attached.',
+          caption: 'Casey Voice qualifies callers, tells them where their application stands, and books time. Advice and quotes go to a licensed associate.',
         },
       },
       {
-        title: 'Reach out when the customer stalls',
-        body: 'Instead of waiting for inbound calls, Casey texts customers who save and leave an application, with a link back to where they stopped and a person one tap away.',
+        title: 'Text customers who leave an application',
+        body: 'When a customer saves an application and leaves, Casey sends an RCS message with a link back to the same step and a way to reach a person.',
         alternative: 'Email reminders or an unbranded SMS short code.',
-        tradeoff: 'Proactive messages raise the bar on consent and tone. A badly timed text reads as pressure.',
+        tradeoff: 'Outbound messages need stricter consent and careful timing. A badly timed text feels like pressure.',
         figure: {
           media: [{ type: 'phone', src: '/assets/casey-ai.png', alt: 'Casey RCS message with a recovery link' }],
-          caption: 'Verified sender, one clear action, and an associate one tap away. RCS made the message trustworthy enough to act on.',
+          caption: 'A verified sender, one resume link, and a way to reach an associate. RCS shows the Chase brand, which plain SMS cannot.',
         },
       },
     ],
   },
   behavior: {
-    heading: 'Casey knows when to stop talking.',
-    intro: 'I ran edge-case QA against the guardrails with engineering before each release. These are the states every flow had to handle.',
+    heading: 'Casey hands off when a question is out of scope or the customer is struggling.',
+    intro: 'Before each release, I ran edge-case QA against the guardrails with engineering. Every flow had to handle these states.',
     states: [
       // TODO(seb): verify Casey discloses that it is an AI assistant at the start.
       { state: 'Greeting', behavior: 'Says it is Chase’s AI assistant and what it can help with.' },
-      { state: 'In scope', behavior: 'Qualifies, explains where the customer is, and schedules time.' },
-      { state: 'Repeated confusion', behavior: 'Stops trying and offers a person.' },
-      { state: 'Can’t or won’t', behavior: 'Declines advice and quotes, and says who can help.' },
-      { state: 'Stress detected', behavior: 'Moves straight to an associate.' },
+      { state: 'In scope', behavior: 'Qualifies the customer, explains their status, and books time.' },
+      { state: 'Repeated confusion', behavior: 'Stops and offers a person.' },
+      { state: 'Out of scope', behavior: 'Declines advice and quotes, and says who can help.' },
+      { state: 'Stress detected', behavior: 'Transfers to an associate right away.' },
       { state: 'Human handoff', behavior: 'Transfers with the transcript and intent attached.' },
     ],
   },
   shipped: {
-    heading: 'From the nudge to a live associate without repeating a word.',
+    heading: 'Casey RCS takes a customer from the reminder to an associate.',
     figures: [
       {
         media: [
           { type: 'phone', video: ASSETS.video.caseyRcs, alt: 'Casey RCS end-to-end flow' },
           { type: 'phone', src: '/assets/casey-ai.png', alt: 'Casey RCS recovery message' },
         ],
-        caption: 'Casey RCS, shipped May 2026 on iOS and Android: notification, resume link, and a path to Casey or a person.',
+        caption: 'Casey RCS, shipped May 2026 on iOS and Android: the notification, the resume link, and the option to reach Casey or a person.',
       },
     ],
   },
   result: {
-    heading: 'Two surfaces shipped, and the pattern the next agents start from.',
+    heading: 'Both channels shipped, and new Chase agents reuse the handoff rules.',
     metrics: [
       { value: '3,000+', label: 'Calls initiated', context: 'Casey Voice, production', confidence: 'measured' },
       { value: '~12%', label: 'Lead conversion from those calls', context: 'Casey Voice, production', confidence: 'measured' },
@@ -115,14 +115,14 @@ export const caseyAi: CaseStudy = {
       { value: '~10k', label: 'RCS messages sent', context: 'Casey RCS, since launch', confidence: 'estimated' },
     ],
     body: [
-      'Chase trademarked the Casey voice. The handoff rules became the reference model for agentic work across the business, so new agents start from limits that already cleared home lending.',
+      'Chase trademarked the Casey voice. The handoff rules are now the reference for agentic work across the business, so new agents start with limits that already passed review in home lending.',
     ],
   },
   reflection: {
-    heading: 'I would put legal in the prototype reviews from week one.',
+    heading: 'I would bring legal into prototype reviews from the first week.',
     body: [
       // TODO(seb): verify this reflection is yours.
-      'Their questions changed the flows more than any usability finding. Next, the same handoff model moves to servicing, where customers already have a loan.',
+      'Their questions changed the flows more than any usability finding did. Next, the same handoff model goes to servicing, for customers who already have a loan.',
     ],
   },
 };

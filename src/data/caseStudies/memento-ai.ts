@@ -4,8 +4,8 @@ import type { CaseStudy } from './types';
 export const mementoAi: CaseStudy = {
   slug: 'memento-ai',
   section: 'memento-ai',
-  title: 'A private AI journal that only reflects on your own words',
-  summary: 'A native iOS journal whose AI answers only from your entries, and shows which ones.',
+  title: 'A private iOS journal whose AI cites only your own entries',
+  summary: 'A native iOS journal. Its AI reflections draw only on your past entries and link back to them.',
   company: 'Memento AI · Personal project',
   // TODO(seb): verify year; projects.ts says 2023, the homepage and shipped log say 2026.
   year: '2026',
@@ -19,14 +19,14 @@ export const mementoAi: CaseStudy = {
   },
   hero: {
     media: [{ type: 'phone', video: ASSETS.video.mementoDemo, alt: 'Memento journaling and reflection flow' }],
-    caption: 'Write, get one question back, keep writing. The AI never says anything your journal did not.',
+    caption: 'Write an entry, answer one follow-up question, keep writing. Every reflection draws on entries you wrote.',
   },
   tldr: {
-    situation: 'AI journaling apps reply with generic, confident text that drowns out the writer’s voice.',
-    task: 'I wanted reflections grounded only in what the writer already wrote.',
-    action: 'I designed and built Memento, a native iOS journal whose local retrieval pipeline cites your past entries in every reflection.',
+    situation: 'AI journaling apps answer with generic advice that can drown out the writer’s own voice.',
+    task: 'I wanted reflections built only from what the writer had written.',
+    action: 'I designed and built Memento, a native iOS journal whose local retrieval pipeline cites past entries in every reflection.',
     // TODO(seb): verify the tester result; the key result below has the same open question.
-    result: 'Early testers wrote more often when they could see where insights came from.',
+    result: 'Early testers wrote more often once they could see where each reflection came from.',
     keyResult: {
       value: 'Beta',
       label: 'closed beta underway ahead of public launch',
@@ -35,75 +35,75 @@ export const mementoAi: CaseStudy = {
     },
   },
   context: {
-    heading: 'A journal only works if it feels completely safe.',
+    heading: 'People stop journaling when the AI feels like it is watching them.',
     body: [
-      'Generic models synthesize impersonal advice, and uncited insights leave people feeling watched rather than understood. Either one ends the habit.',
-      'I owned the whole stack, so every product promise had to be something I could also build on a phone.',
+      'Generic model responses flatten the writer’s voice, and insights with no sources feel intrusive. In a journal, either one is enough to make people stop writing.',
+      'I was also the only engineer, so every design decision had to be something I could build and run on the phone.',
     ],
-    constraints: ['Private by default', 'Answers grounded only in the user’s entries', 'One person building it'],
+    constraints: ['Private by default', 'Answers only from the user’s entries', 'Solo designer and engineer'],
   },
   // TODO(seb): verify every decision's "Instead of" and trade-off; they are inferred from existing copy, not supplied.
   decisions: {
-    heading: 'Three constraints made the AI quieter and more trustworthy.',
+    heading: 'I limited what the AI could say, and showed where each line came from.',
     items: [
       {
-        title: 'The AI can only speak from your own entries',
-        body: 'I built retrieval over the user’s journal and limited responses to what it returns, so reflections sound like the writer, not a chatbot.',
-        alternative: 'A general model that answers anything, with the journal as extra context.',
-        tradeoff: 'Memento has less to say early on, when a new user has few entries.',
+        title: 'Retrieval runs only over the user’s journal',
+        body: 'Memento finds related entries first, and the model answers only from those. Reflections reuse the writer’s own phrasing instead of generic advice.',
+        alternative: 'A general model that answers anything, with the journal passed in as extra context.',
+        tradeoff: 'With only a few entries, Memento has little to reflect on.',
       },
       {
-        title: 'Show the receipts in a Dive Deeper panel',
-        body: 'Every reflection links to the exact entries it drew on, so the user can check the insight against what they actually wrote.',
-        alternative: 'A polished summary with no visible sources.',
-        tradeoff: 'More interface on a screen I wanted to keep nearly empty.',
+        title: 'A Dive Deeper panel lists the source entries',
+        body: 'Each reflection links to the exact entries it used, so the writer can check it against what they wrote.',
+        alternative: 'A summary with no visible sources.',
+        tradeoff: 'An extra panel on a screen I wanted to keep almost empty.',
         figure: {
           media: [
             { type: 'phone', src: '/assets/memento-journal-feed.png', alt: 'Memento journal feed' },
             { type: 'phone', src: '/assets/memento-insights.png', alt: 'Memento insights with cited entries' },
           ],
-          caption: 'The feed stays plain. Insights cite the entries behind them, so trust comes from evidence, not tone.',
+          caption: 'Left: the entry feed, with no scores or streaks. Right: Dive Deeper, where reflections link back to the entries they used.',
         },
       },
       {
-        title: 'No streaks, no push notifications',
-        body: 'After each entry the AI asks one follow-up question, and tapping it opens a blank page. Writing leads to more writing.',
-        alternative: 'Streaks and daily reminders, the default engagement loop for journaling apps.',
-        tradeoff: 'I gave up the easiest retention levers and have to earn return visits.',
+        title: 'No streaks and no push notifications',
+        body: 'After each entry, the AI asks one follow-up question. Tapping it opens a blank page for the next entry.',
+        alternative: 'Streaks and daily reminders, the standard retention tools for journaling apps.',
+        tradeoff: 'Without them, people come back only if writing feels worth it.',
       },
     ],
   },
   behavior: {
-    heading: 'When there is nothing to cite, Memento says so.',
+    heading: 'With too little history, Memento asks instead of guessing.',
     states: [
       { state: 'Writing', behavior: 'No AI on screen until the entry is saved.' },
-      { state: 'Reflecting', behavior: 'Retrieves related entries, then asks one question.' },
-      { state: 'Grounded answer', behavior: 'Shows the reflection with its cited entries.' },
+      { state: 'Reflecting', behavior: 'Finds related entries, then asks one question.' },
+      { state: 'Grounded answer', behavior: 'Shows the reflection with links to its source entries.' },
       // TODO(seb): verify how Memento handles too little history to cite.
-      { state: 'Not enough history', behavior: 'Asks an open question instead of inventing an insight.' },
+      { state: 'Not enough history', behavior: 'Asks an open question instead of making up an insight.' },
     ],
   },
   shipped: {
-    heading: 'A calm editorial loop, from first entry to reflection.',
+    heading: 'The shipped loop: write, answer one question, write again.',
     figures: [
       {
         media: [{ type: 'phone', src: '/assets/memento-ai.png', alt: 'Memento entry screen' }],
-        caption: 'The feed reads like a notebook: dated entries and photos, with no streaks, scores, or reminders competing for attention.',
+        caption: 'The feed shows dated entries and photos. There are no streaks, scores, or reminders.',
       },
     ],
   },
   result: {
-    heading: 'Privacy turned out to be the feature people noticed first.',
+    heading: 'Testers wrote more once they trusted that entries stayed on the phone.',
     metrics: [],
     body: [
       // TODO(seb): verify the testing claim and add numbers you can defend (testers, entries per week, baseline).
-      'In early testing, people wrote more often and at greater length once they trusted that nothing left the phone. Memento is in closed beta ahead of public launch.',
+      'In early testing, people wrote more often and at greater length once they understood their entries stayed on the device. Memento is in closed beta ahead of public launch.',
     ],
   },
   reflection: {
-    heading: 'Next, I want the first week to feel as good as the tenth.',
+    heading: 'Next: make the first week useful with only a few entries.',
     body: [
-      'Grounding is great with history and thin without it. I am designing a gentler first week that earns enough entries for reflections to matter.',
+      'Reflections improve as history grows, so the first week is the weakest. I am designing prompts that help new writers build up enough entries for reflections to be useful.',
     ],
   },
 };
