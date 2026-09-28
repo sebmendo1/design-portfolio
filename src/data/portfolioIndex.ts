@@ -41,7 +41,7 @@ export type PortfolioIndexSection =
   | 'chorus-ai'
   | 'other';
 
-export type PortfolioIndexKind = 'device' | 'typeface';
+export type PortfolioIndexKind = 'device' | 'typeface' | 'voice';
 
 export type PortfolioIndexEntry = {
   id: string;
@@ -86,13 +86,24 @@ export const PORTFOLIO_INDEX: PortfolioIndexEntry[] = [
   },
   {
     id: 'chase-ai-rcs',
-    year: 2025,
-    label: 'Chase AI - Conversational Agent, Voice & RCS',
+    year: 2026,
+    label: 'Chase AI - Agentic Conversational RCS',
     section: 'chase-ai',
     href: '/work/casey-ai',
     previewSlug: 'casey-ai',
     summary:
-      'Casey is Chase’s first customer facing AI agent, talking with people by voice and text in home lending.',
+      'Casey RCS brings Chase’s customer facing AI agent to rich text messaging on iOS and Android.',
+    description: 'Building a conversational RCS bot for consumer banking',
+  },
+  {
+    id: 'chase-ai-voice',
+    year: 2025,
+    label: 'Chase AI - Voice Agent',
+    section: 'chase-ai',
+    href: '/work/casey-ai',
+    kind: 'voice',
+    summary:
+      'Casey Voice is Chase’s first customer facing AI agent, answering home lending calls since July 2025.',
     description: 'Building Casey, Chase’s first ever consumer-facing AI agent',
   },
   {

@@ -1,6 +1,6 @@
 'use client';
 
-import type { MouseEvent } from 'react';
+import type { CSSProperties, MouseEvent } from 'react';
 import Link from 'next/link';
 import { BrowserStencil } from '@/components/BrowserStencil/BrowserStencil';
 import { DEFAULT_BROWSER_SCREEN_AR } from '@/components/BrowserStencil/browser-aspect-ratios';
@@ -30,6 +30,32 @@ function TypeSpecimen() {
     <div className="home-card__specimen" aria-hidden="true">
       <p className="home-card__specimen-word">Seb Sans</p>
       <p className="home-card__specimen-meta">Variable typeface for AI interfaces</p>
+    </div>
+  );
+}
+
+const VOICE_BARS = [
+  0.28, 0.46, 0.72, 0.52, 0.9, 0.64, 0.38, 0.58, 1, 0.74, 0.44, 0.66, 0.86, 0.5, 0.3, 0.56, 0.8,
+  0.6, 0.36, 0.24,
+];
+
+function VoiceSpecimen({ logo }: { logo?: HomeSectionLogo }) {
+  return (
+    <div className="home-card__voice" aria-hidden="true">
+      {logo ? <HomeLogo logo={logo} /> : null}
+      <div className="home-card__voice-wave">
+        {VOICE_BARS.map((height, index) => (
+          <span
+            key={index}
+            className="home-card__voice-bar"
+            style={{ '--bar-h': height, '--bar-i': index } as CSSProperties}
+          />
+        ))}
+      </div>
+      <div className="home-card__voice-caption">
+        <p className="home-card__specimen-word home-card__voice-word">Casey Voice</p>
+        <p className="home-card__specimen-meta">Live in Chase home lending since July 2025</p>
+      </div>
     </div>
   );
 }
@@ -163,6 +189,8 @@ export function HomeProjectCard({
         <div className="home-card__stage">
           {entry.kind === 'typeface' ? (
             <TypeSpecimen />
+          ) : entry.kind === 'voice' ? (
+            <VoiceSpecimen logo={logo} />
           ) : (
             <DevicePreview project={project} preview={entry.preview} priority={priority} />
           )}

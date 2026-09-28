@@ -176,6 +176,57 @@
   color: var(--color-text-muted);
 }
 
+.home-card__voice {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: clamp(20px, 6cqh, 36px);
+  text-align: center;
+}
+
+.home-card__voice .home-logo {
+  --home-logo-size: clamp(56px, 16cqh, 88px);
+}
+
+.home-card__voice-wave {
+  display: flex;
+  align-items: center;
+  gap: clamp(4px, 1.2cqw, 8px);
+  height: clamp(56px, 18cqh, 104px);
+}
+
+.home-card__voice-bar {
+  width: clamp(4px, 1.1cqw, 7px);
+  height: calc(var(--bar-h) * 100%);
+  border-radius: var(--border-radius-pill);
+  background: #005eb8;
+  transform-origin: center;
+  animation: home-voice-bar 1.6s ease-in-out infinite;
+  animation-delay: calc(var(--bar-i) * -90ms);
+}
+
+.home-card__voice-caption {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.home-card__voice-word {
+  font-size: clamp(28px, min(8cqw, 10cqh), 48px);
+}
+
+@keyframes home-voice-bar {
+  0%,
+  100% {
+    transform: scaleY(1);
+  }
+
+  50% {
+    transform: scaleY(0.55);
+  }
+}
+
 .home-card__meta {
   display: flex;
   align-items: center;
@@ -292,6 +343,10 @@
 @media (prefers-reduced-motion: reduce) {
   .home-card__stage {
     transition: none;
+  }
+
+  .home-card__voice-bar {
+    animation: none;
   }
 
   .home-card__link:hover .home-card__stage {
