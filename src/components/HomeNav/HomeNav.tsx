@@ -43,11 +43,25 @@ export function HomeNavList({ sections, activeId, onSelect }: HomeNavListProps) 
   );
 }
 
-export function HomePageLinks({ className }: { className?: string }) {
+export type HomePage = 'work' | 'about';
+
+const PAGE_SWITCH_LINK: Record<HomePage, { href: string; label: string }> = {
+  work: { href: '/about', label: 'about' },
+  about: { href: '/', label: 'work' },
+};
+
+type HomePageLinksProps = {
+  className?: string;
+  page?: HomePage;
+};
+
+export function HomePageLinks({ className, page = 'work' }: HomePageLinksProps) {
+  const pageLink = PAGE_SWITCH_LINK[page];
+
   return (
     <div className={['home-links', className].filter(Boolean).join(' ')}>
-      <Link href="/about" className="home-links__link">
-        about
+      <Link href={pageLink.href} className="home-links__link">
+        {pageLink.label}
       </Link>
       {SITE_SOCIAL_NAV.map((link) => (
         <a key={link.href} href={link.href} className="home-links__link" rel="me">
@@ -77,7 +91,14 @@ function CloseIcon() {
   );
 }
 
-export function HomeMenu({ sections, activeId, onSelect }: HomeNavListProps) {
+type HomeMenuProps = {
+  sections?: NavSection[];
+  activeId?: string | null;
+  onSelect?: (id: string) => void;
+  page?: HomePage;
+};
+
+export function HomeMenu({ sections, activeId = null, onSelect, page }: HomeMenuProps) {
   const dialogRef = useRef<HTMLDialogElement>(null);
 
   function open() {
@@ -90,7 +111,7 @@ export function HomeMenu({ sections, activeId, onSelect }: HomeNavListProps) {
 
   function handleSelect(id: string) {
     close();
-    onSelect(id);
+    onSelect?.(id);
   }
 
   function handleBackdrop(event: MouseEvent<HTMLDialogElement>) {
@@ -132,11 +153,13 @@ export function HomeMenu({ sections, activeId, onSelect }: HomeNavListProps) {
               <CloseIcon />
             </button>
           </div>
-          <nav aria-label="Projects" className="home-menu__nav">
-            <p className="home-nav__label">Projects</p>
-            <HomeNavList sections={sections} activeId={activeId} onSelect={handleSelect} />
-          </nav>
-          <HomePageLinks className="home-menu__links" />
+          {sections?.length ? (
+            <nav aria-label="Projects" className="home-menu__nav">
+              <p className="home-nav__label">Projects</p>
+              <HomeNavList sections={sections} activeId={activeId} onSelect={handleSelect} />
+            </nav>
+          ) : null}
+          <HomePageLinks className="home-menu__links" page={page} />
         </div>
       </dialog>
     </>
