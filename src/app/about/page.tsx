@@ -1,6 +1,5 @@
 import type { Metadata } from 'next';
-import { AboutAlbum } from '@/components/AboutAlbum/AboutAlbum';
-import { AboutIndexRail } from '@/components/AboutIndexRail/AboutIndexRail';
+import { AboutFeed } from '@/components/AboutFeed/AboutFeed';
 import { AboutPageLayout } from '@/components/AboutPage/AboutPageLayout';
 import { StructuredData } from '@/components/StructuredData/StructuredData';
 import { PROFILE } from '@/data/profile';
@@ -31,15 +30,7 @@ export default function AboutPage() {
     <div className="about-page">
       <StructuredData data={buildProfilePageGraphFromProfile()} />
       <AboutPageLayout>
-        <div className="about-index">
-          <div className="about-index__pane about-index__pane--rail" data-lenis-prevent>
-            <AboutIndexRail />
-          </div>
-
-          <div className="about-index__pane about-index__pane--album" data-lenis-prevent>
-            <AboutAlbum />
-          </div>
-        </div>
+        <AboutFeed />
       </AboutPageLayout>
     </div>
   );

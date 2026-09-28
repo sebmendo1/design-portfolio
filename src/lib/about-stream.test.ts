@@ -6,7 +6,6 @@ import {
   buildAboutStreamPlan,
   splitAboutText,
 } from './about-stream';
-import { SITE_SOCIAL_NAV } from './site';
 import { countWords, streamDurationMs, WORD_INTERVAL_MS } from './streaming-text';
 
 test('About stream reconstructs the intro and keeps company links', () => {
@@ -37,7 +36,7 @@ test('the headline and title anchor the page and paint immediately', () => {
   assert.deepEqual(plan.blocks[0], ABOUT_INTRO_BLOCKS[0].parts.map(() => 0));
 });
 
-test('paragraphs and footer ride one contiguous stream', () => {
+test('paragraphs ride one contiguous stream', () => {
   const plan = buildAboutStreamPlan();
 
   let expected = 0;
@@ -54,24 +53,15 @@ test('paragraphs and footer ride one contiguous stream', () => {
     });
   });
 
-  assert.equal(plan.footer.work, expected, 'footer restarted instead of continuing');
-  expected += countWords('work');
-
-  for (const link of SITE_SOCIAL_NAV) {
-    assert.equal(plan.footer[link.label], expected, `${link.label} left a gap`);
-    expected += countWords(link.label);
-  }
-
   assert.equal(plan.totalWords, expected);
 });
 
-test('the About rail lands fast', () => {
+test('the About intro lands fast', () => {
   const plan = buildAboutStreamPlan();
 
   assert.equal(plan.durationMs, streamDurationMs(plan.totalWords));
   assert.ok(
     plan.durationMs < 2000,
-    `About rail takes ${plan.durationMs}ms to paint, which reads as a crawl`,
+    `About intro takes ${plan.durationMs}ms to paint, which reads as a crawl`,
   );
-  assert.ok(plan.themeMs < plan.durationMs);
 });
