@@ -39,6 +39,7 @@ export const sebSans: CaseStudy = {
     ],
     constraints: ['Readable at 13–16px', 'Open license', 'Agent-safe installs'],
   },
+  // TODO(seb): verify every decision's "Instead of" and trade-off; they are inferred from existing copy, not supplied.
   decisions: {
     heading: 'I optimized for the transcript, not the poster.',
     items: [
@@ -46,7 +47,7 @@ export const sebSans: CaseStudy = {
         title: 'Start from Inter’s skeleton',
         body: 'I built on Inter’s open-source structure and spent the effort on rhythm, spacing, and weight for chat transcripts and summaries.',
         alternative: 'Drawing a new family from scratch.',
-        // TODO(seb): verify.
+        // TODO(seb): verify the display-size trade-off against Inter.
         tradeoff: 'Seb Sans shares Inter’s bones, so it is less distinctive at display sizes.',
         figure: {
           media: [{ type: 'typeface', variant: 'weights', alt: 'Seb Sans weight range' }],

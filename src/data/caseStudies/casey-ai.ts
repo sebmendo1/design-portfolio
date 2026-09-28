@@ -43,6 +43,7 @@ export const caseyAi: CaseStudy = {
       'Same limits on voice and text',
     ],
   },
+  // TODO(seb): verify every decision's "Instead of" and trade-off; they are inferred from existing copy, not supplied.
   decisions: {
     heading: 'The design work was deciding what Casey should refuse to do.',
     items: [

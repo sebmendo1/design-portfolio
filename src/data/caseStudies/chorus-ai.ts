@@ -41,6 +41,7 @@ export const chorusAi: CaseStudy = {
     // TODO(seb): verify these constraints (no feature freeze, small design team).
     constraints: ['No feature freeze', 'Small design team', 'Fast-moving AI product'],
   },
+  // TODO(seb): verify every decision's "Instead of" and trade-off; they are inferred from existing copy, not supplied.
   decisions: {
     heading: 'I scoped four jobs with PMs before touching Figma.',
     items: [

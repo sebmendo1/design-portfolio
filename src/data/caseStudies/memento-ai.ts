@@ -38,6 +38,7 @@ export const mementoAi: CaseStudy = {
     ],
     constraints: ['Private by default', 'Answers grounded only in the user’s entries', 'One person building it'],
   },
+  // TODO(seb): verify every decision's "Instead of" and trade-off; they are inferred from existing copy, not supplied.
   decisions: {
     heading: 'Three constraints made the AI quieter and more trustworthy.',
     items: [

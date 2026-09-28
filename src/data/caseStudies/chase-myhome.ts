@@ -40,6 +40,7 @@ export const chaseMyHome: CaseStudy = {
     ],
     constraints: ['Regulated disclosures', 'WCAG accessibility', 'Shared Manhattan Design System'],
   },
+  // TODO(seb): verify every decision's "Instead of" and trade-off; they are inferred from existing copy, not supplied.
   decisions: {
     heading: 'I traded speed for a foundation other teams could reuse.',
     items: [

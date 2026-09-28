@@ -40,6 +40,7 @@ export const agenticHomeLending: CaseStudy = {
     ],
     constraints: ['No advice or approval promises', 'Underwriting stays with people', 'Every document request explained'],
   },
+  // TODO(seb): verify every decision's "Instead of" and trade-off; they are inferred from existing copy, not supplied.
   decisions: {
     heading: 'I shifted the work from the applicant to the system.',
     items: [

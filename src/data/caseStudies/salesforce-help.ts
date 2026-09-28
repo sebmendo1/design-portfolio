@@ -52,6 +52,7 @@ export const salesforceHelp: CaseStudy = {
     ],
     constraints: ['Enterprise customers with different support plans', 'No upsell in the support flow', 'Einstein as the routing engine'],
   },
+  // TODO(seb): verify every decision's "Instead of" and trade-off; they are inferred from existing copy, not supplied.
   decisions: {
     heading: 'I moved the routing decision from the customer to the system.',
     items: [

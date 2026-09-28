@@ -50,6 +50,7 @@ export const writerAi: CaseStudy = {
     ],
     constraints: ['Brand voice and governance', 'Many host surfaces', 'Early GenAI quality'],
   },
+  // TODO(seb): verify every decision's "Instead of" and trade-off; they are inferred from existing copy, not supplied.
   decisions: {
     heading: 'I made the intent explicit so the model had less to guess.',
     items: [
