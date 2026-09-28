@@ -19,7 +19,8 @@ export const agenticHomeLending: CaseStudy = {
   },
   hero: {
     media: [{ type: 'phone', src: '/assets/agentic-home-lending.png', alt: 'Agentic home lending flow on iPhone' }],
-    caption: 'The agent asks for one document at a time and explains why, so applicants never face a checklist wall.',
+    // TODO(seb): verify this screen is the pilot's entry point.
+    caption: 'The front door is a conversation, not a form. Applicants ask about home loans before the agent asks them for anything.',
   },
   tldr: {
     body: 'Getting a mortgage meant weeks of back-and-forth over documents, and applicants rarely knew where they stood. I designed agentic flows that request each document when it is needed, flag issues before underwriting, and show progress as a confidence score. The pilot is running, and I only report its numbers with pilot scope.',

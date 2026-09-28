@@ -83,7 +83,7 @@ export const mementoAi: CaseStudy = {
     figures: [
       {
         media: [{ type: 'phone', src: '/assets/memento-ai.png', alt: 'Memento entry screen' }],
-        caption: 'Type-first, no dashboard. The only prompt is the question drawn from your last entry.',
+        caption: 'The feed reads like a notebook: dated entries and photos, with no streaks, scores, or reminders competing for attention.',
       },
     ],
   },

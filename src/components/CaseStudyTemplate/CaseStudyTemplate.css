@@ -330,6 +330,7 @@
   gap: 6px;
   margin: 0;
   padding: 20px;
+  container-type: inline-size;
   border-radius: var(--study-tile-radius);
   background: var(--color-background-project-highlight);
 }
@@ -343,7 +344,8 @@
 }
 
 .study-metric__value {
-  font-size: 32px;
+  font-size: clamp(20px, 17cqi, 32px);
+  white-space: nowrap;
   font-weight: var(--font-weight-semibold);
   font-variation-settings: 'wght' 600, 'opsz' 32;
   line-height: 1.1;
@@ -708,7 +710,7 @@
   }
 
   .study-metric__value {
-    font-size: 28px;
+    font-size: clamp(20px, 12cqi, 28px);
   }
 
   .study-state {
