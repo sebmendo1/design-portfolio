@@ -11,6 +11,7 @@
   --toc-active-y: 0px;
   --toc-active-h: 0px;
   --toc-fill: 0;
+  --toc-progress: 0;
   position: relative;
   display: flex;
   flex-direction: column;
@@ -83,8 +84,9 @@
   outline-offset: -2px;
 }
 
-/* Active segment; slides between rows. */
-.study-toc__list[data-ready='true'] .study-toc__item:first-child::before {
+/* Active row segment, then the reading-progress bar inside it; both slide between rows. */
+.study-toc__list[data-ready='true'] .study-toc__item:first-child::before,
+.study-toc__list[data-ready='true'] .study-toc__item:first-child::after {
   content: '';
   position: absolute;
   top: 0;
@@ -93,18 +95,31 @@
   width: var(--toc-track-width);
   height: var(--toc-active-h);
   border-radius: var(--toc-track-width);
-  background: var(--color-text-primary);
+  transform-origin: top;
+  pointer-events: none;
+}
+
+.study-toc__list[data-ready='true'] .study-toc__item:first-child::before {
+  background: var(--color-text-muted);
   transform: translateY(var(--toc-active-y));
   transition:
-    transform var(--transition-slow),
-    height var(--transition-slow);
-  pointer-events: none;
+    transform var(--transition-base),
+    height var(--transition-base);
+}
+
+.study-toc__list[data-ready='true'] .study-toc__item:first-child::after {
+  background: var(--color-text-primary);
+  transform: translateY(var(--toc-active-y)) scaleY(max(0.2, var(--toc-progress)));
+  transition:
+    transform var(--transition-base),
+    height var(--transition-base);
 }
 
 @media (prefers-reduced-motion: reduce) {
   .study-toc__list::after,
   .study-toc__link,
-  .study-toc__list[data-ready='true'] .study-toc__item:first-child::before {
+  .study-toc__list[data-ready='true'] .study-toc__item:first-child::before,
+  .study-toc__list[data-ready='true'] .study-toc__item:first-child::after {
     transition: none;
   }
 }

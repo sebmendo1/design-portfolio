@@ -31,8 +31,8 @@ function sectionProgress(ids: string[], activeId: string): number {
 }
 
 /**
- * Table of contents with a left track: the highlight sits on the active row
- * and a fill runs down to how far the reader is through that section.
+ * Table of contents with a left track: passed sections stay filled, the
+ * active row gets a segment, and a bar grows down it as that section is read.
  * Position is written to CSS variables every frame, so scrolling never
  * re-renders React.
  */
@@ -54,10 +54,11 @@ export function StudyToc({ sections, activeId, onSelect }: StudyTocProps) {
 
       const top = row.offsetTop;
       const height = row.offsetHeight;
-      const fill = top + height * sectionProgress(ids, id);
+      const progress = sectionProgress(ids, id);
       list.style.setProperty('--toc-active-y', `${top}px`);
       list.style.setProperty('--toc-active-h', `${height}px`);
-      list.style.setProperty('--toc-fill', `${fill}`);
+      list.style.setProperty('--toc-progress', `${progress}`);
+      list.style.setProperty('--toc-fill', `${top + height * progress}`);
       list.dataset.ready = 'true';
     };
 
