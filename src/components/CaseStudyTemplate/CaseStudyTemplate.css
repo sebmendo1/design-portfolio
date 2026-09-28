@@ -236,7 +236,7 @@
 /* Meta */
 .study-meta {
   display: grid;
-  grid-template-columns: repeat(2, minmax(0, 1fr));
+  grid-template-columns: repeat(3, minmax(0, 1fr));
   gap: 20px 24px;
   margin: 0;
   padding: 24px;
@@ -251,8 +251,8 @@
   min-width: 0;
 }
 
-.study-meta__item--team,
-.study-meta__item--impact {
+.study-meta__item--role,
+.study-meta__item--team {
   grid-column: 1 / -1;
 }
 
@@ -315,27 +315,33 @@
   margin-top: 40px;
 }
 
-.study-outcomes,
 .study-metrics {
   display: grid;
   grid-template-columns: repeat(3, minmax(0, 1fr));
   gap: 12px;
-  margin: 8px 0 0;
+  margin: 0;
   padding: 0;
   list-style: none;
 }
 
-.study-outcome,
 .study-metric {
   display: flex;
   flex-direction: column;
-  gap: 8px;
+  gap: 6px;
+  margin: 0;
   padding: 20px;
   border-radius: var(--study-tile-radius);
   background: var(--color-background-project-highlight);
 }
 
-.study-outcome__value,
+.study-metric--key {
+  flex-direction: row;
+  flex-wrap: wrap;
+  align-items: baseline;
+  column-gap: 16px;
+  margin-top: 4px;
+}
+
 .study-metric__value {
   font-size: 32px;
   font-weight: var(--font-weight-semibold);
@@ -345,65 +351,49 @@
   color: var(--color-text-primary);
 }
 
-.study-outcome__label,
 .study-metric__label {
-  font-size: 14px;
+  font-size: 15px;
   line-height: 1.4;
-  color: var(--color-text-secondary);
+  color: var(--color-text-primary);
   text-wrap: pretty;
 }
 
 .study-metric__note {
-  margin-top: auto;
-  font-size: 12px;
-  line-height: 1.3;
+  font-size: 13px;
+  line-height: 1.4;
   color: var(--color-text-muted);
 }
 
-.study-quote {
-  margin: 8px 0 0;
-  padding: 4px 0 4px 20px;
-  border-left: 2px solid var(--color-text-primary);
+.study-metric--key .study-metric__note {
+  flex-basis: 100%;
 }
 
-.study-quote p {
-  margin: 0;
-  font-size: 22px;
-  font-weight: var(--font-weight-medium);
-  line-height: 1.4;
-  letter-spacing: -0.01em;
-  color: var(--color-text-primary);
-  text-wrap: balance;
+.study-metric__confidence {
+  display: inline-block;
+  padding: 1px 8px;
+  border: 1px solid var(--color-border-strong);
+  border-radius: var(--border-radius-pill);
+  font-size: 12px;
+  line-height: 16px;
+  color: var(--color-text-secondary);
 }
 
-/* Constraints */
-.study-constraints,
-.study-explorations {
-  margin: 0;
+.study-constraints {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin: 4px 0 0;
   padding: 0;
   list-style: none;
 }
 
 .study-constraint {
-  display: grid;
-  grid-template-columns: 40px minmax(0, 1fr);
-  gap: 8px;
-  padding: 20px 0;
-  border-top: 1px solid var(--color-border-pill);
-}
-
-.study-constraint:last-child {
-  border-bottom: 1px solid var(--color-border-pill);
-}
-
-.study-constraint__index {
+  padding: 7px 14px;
+  border: 1px solid var(--color-border-pill);
+  border-radius: var(--border-radius-pill);
   font-size: 14px;
-  line-height: 22.4px;
-  color: var(--color-text-muted);
-}
-
-.study-constraint .study-body {
-  margin-top: 4px;
+  line-height: 20px;
+  color: var(--color-text-primary);
 }
 
 /* Decisions */
@@ -472,49 +462,6 @@
   color: var(--color-text-secondary);
 }
 
-/* Explorations */
-.study-exploration {
-  display: flex;
-  flex-direction: column;
-  gap: 6px;
-  padding: 20px 0;
-  border-top: 1px solid var(--color-border-pill);
-}
-
-.study-exploration:last-child {
-  border-bottom: 1px solid var(--color-border-pill);
-}
-
-.study-exploration__head {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: 12px;
-}
-
-.study-verdict {
-  flex-shrink: 0;
-  padding: 3px 10px;
-  border: 1px solid var(--color-border-pill);
-  border-radius: var(--border-radius-pill);
-  font-size: 12px;
-  font-weight: var(--font-weight-semibold);
-  line-height: 16px;
-  color: var(--color-text-muted);
-}
-
-.study-verdict--shipped {
-  border-color: var(--color-background-nav-active);
-  background: var(--color-background-nav-active);
-  color: var(--color-text-nav-active);
-}
-
-.study-verdict--evolved {
-  border-color: var(--color-surface-chip);
-  background: var(--color-surface-chip);
-  color: var(--color-text-primary);
-}
-
 .study-figures {
   display: flex;
   flex-direction: column;
@@ -522,29 +469,50 @@
   margin-top: 8px;
 }
 
-/* Reflection */
-.study-next-steps {
+/* Agent state map */
+.study-states {
+  position: relative;
   display: flex;
   flex-direction: column;
-  gap: 12px;
-  padding: 24px;
-  border: 1px solid var(--color-border-pill);
-  border-radius: var(--study-tile-radius);
-}
-
-.study-next-steps ul {
-  display: flex;
-  flex-direction: column;
-  gap: 8px;
   margin: 0;
-  padding: 0 0 0 18px;
-  font-size: 15px;
-  line-height: 1.5;
-  color: var(--color-text-secondary);
+  padding: 0;
+  list-style: none;
 }
 
-.study-next-steps li::marker {
-  color: var(--color-text-muted);
+.study-state {
+  position: relative;
+  display: grid;
+  grid-template-columns: 148px minmax(0, 1fr);
+  gap: 16px;
+  padding: 14px 0 14px 24px;
+  border-top: 1px solid var(--color-border-pill);
+}
+
+.study-state:last-child {
+  border-bottom: 1px solid var(--color-border-pill);
+}
+
+.study-state::before {
+  content: '';
+  position: absolute;
+  top: 21px;
+  left: 2px;
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: var(--color-text-primary);
+}
+
+.study-state__name {
+  font-size: 15px;
+  font-weight: var(--font-weight-semibold);
+  line-height: 22px;
+}
+
+.study-state__behavior {
+  font-size: 15px;
+  line-height: 22px;
+  color: var(--color-text-secondary);
 }
 
 /* Next case study */
@@ -731,33 +699,21 @@
     padding: 20px;
   }
 
-  .study-outcomes,
   .study-metrics {
     grid-template-columns: minmax(0, 1fr);
   }
 
-  .study-outcome,
   .study-metric {
-    flex-direction: row;
-    align-items: baseline;
-    gap: 16px;
     padding: 16px 20px;
   }
 
-  .study-outcome__value,
   .study-metric__value {
-    flex: 0 0 96px;
-    font-size: 26px;
+    font-size: 28px;
   }
 
-  .study-metric {
-    flex-wrap: wrap;
-  }
-
-  .study-metric__note {
-    flex-basis: 100%;
-    margin-top: 0;
-    padding-left: 112px;
+  .study-state {
+    grid-template-columns: minmax(0, 1fr);
+    gap: 2px;
   }
 
   .study-decision__card {
@@ -768,10 +724,6 @@
   .study-decision__why {
     grid-template-columns: minmax(0, 1fr);
     gap: 16px;
-  }
-
-  .study-quote p {
-    font-size: 19px;
   }
 
   .study-footer-links {

@@ -1,5 +1,10 @@
 import type { PortfolioIndexSection } from '@/data/portfolioIndex';
 
+/**
+ * Content model follows `.claude/skills/scannable-case-studies/SKILL.md`:
+ * claim title → meta row → TL;DR → why it was hard → 2–3 decisions → result → reflection.
+ */
+
 export type CaseStudyMedia =
   | {
       type: 'phone';
@@ -26,42 +31,39 @@ export type CaseStudyMedia =
   | { type: 'typeface'; variant: 'hero' | 'weights' | 'stream' | 'glyphs'; alt: string };
 
 export type CaseStudyFigure = {
-  /** One item fills the well; two sit side by side (phones) or stack (browsers). */
+  /** One item fills the well; two phones sit side by side, anything else stacks. */
   media: CaseStudyMedia[];
-  caption?: string;
+  /** Argues the point in 25 words or fewer. */
+  caption: string;
   /** `default` matches the homepage card well (600 / 564); `wide` suits browser shots. */
   shape?: 'default' | 'wide';
 };
 
-export type CaseStudyOutcome = {
-  value: string;
-  label: string;
-};
-
-export type CaseStudyConstraint = {
-  title: string;
-  body: string;
-};
-
-export type CaseStudyDecision = {
-  title: string;
-  body: string;
-  tradeoff: string;
-  rationale: string;
-  figure?: CaseStudyFigure;
-};
-
-export type CaseStudyExploration = {
-  title: string;
-  body: string;
-  verdict: 'shipped' | 'dropped' | 'evolved';
-};
+/** How sure we are of a number; rendered next to it. */
+export type MetricConfidence = 'measured' | 'estimated' | 'directional';
 
 export type CaseStudyMetric = {
   value: string;
   label: string;
-  /** Short qualifier, e.g. "pilot scope" or "first 30 days". */
-  note?: string;
+  /** Baseline, timeframe, and scope in a few words, e.g. "from 18%, application flow". */
+  context?: string;
+  confidence?: MetricConfidence;
+};
+
+export type CaseStudyDecision = {
+  /** Claim headline. */
+  title: string;
+  /** What I picked and why. */
+  body: string;
+  /** The option we did not take. */
+  alternative: string;
+  tradeoff: string;
+  figure?: CaseStudyFigure;
+};
+
+export type CaseStudyAgentState = {
+  state: string;
+  behavior: string;
 };
 
 export type CaseStudyLink = {
@@ -69,12 +71,15 @@ export type CaseStudyLink = {
   href: string;
 };
 
+export type CaseStudyStatus = 'Shipped' | 'Pilot' | 'Concept' | 'In beta' | 'In progress';
+
 export type CaseStudy = {
   slug: string;
   /** Homepage section; drives the app-icon logo. */
   section: PortfolioIndexSection;
+  /** The outcome as a claim, 12 words or fewer. */
   title: string;
-  /** One line under the title. */
+  /** One line for the next-study card and meta description. */
   summary: string;
   company: string;
   year: string;
@@ -83,63 +88,58 @@ export type CaseStudy = {
     team: string;
     timeline: string;
     platform: string;
-    impact: string;
+    status: CaseStudyStatus;
   };
   hero: CaseStudyFigure;
   links?: CaseStudyLink[];
-  /** Renders the Casey listen / text buttons under the meta block. */
+  /** Renders the Casey listen / text buttons under the meta row. */
   caseyActions?: boolean;
   tldr: {
-    heading: string;
+    /** Problem → what I did → result, 60 words or fewer. */
     body: string;
-    outcomes: CaseStudyOutcome[];
+    keyResult?: CaseStudyMetric;
   };
-  problem: {
+  context: {
     heading: string;
     body: string[];
-    quote?: string;
-  };
-  constraints: {
-    heading: string;
-    items: CaseStudyConstraint[];
+    constraints?: string[];
   };
   decisions: {
     heading: string;
-    intro?: string;
     items: CaseStudyDecision[];
   };
-  explorations: {
+  /** AI work: the state map, including failure and handoff. */
+  behavior?: {
     heading: string;
     intro?: string;
-    items: CaseStudyExploration[];
-    figure?: CaseStudyFigure;
+    states: CaseStudyAgentState[];
   };
-  finalDesign: {
+  shipped?: {
     heading: string;
-    body: string[];
+    body?: string;
     figures: CaseStudyFigure[];
   };
-  results: {
+  result: {
     heading: string;
     metrics: CaseStudyMetric[];
     body: string[];
   };
-  reflection: {
+  reflection?: {
     heading: string;
     body: string[];
-    next: string[];
   };
 };
 
-export const CASE_STUDY_SECTIONS = [
-  { id: 'overview', label: 'Overview' },
-  { id: 'problem', label: 'Problem' },
-  { id: 'constraints', label: 'Constraints' },
-  { id: 'decisions', label: 'Key decisions' },
-  { id: 'explorations', label: 'Explorations' },
-  { id: 'final-design', label: 'Final design' },
-  { id: 'results', label: 'Results' },
-  { id: 'reflection', label: 'Reflection' },
-] as const;
+export type CaseStudySection = { id: string; label: string };
 
-export type CaseStudySectionId = (typeof CASE_STUDY_SECTIONS)[number]['id'];
+export function getCaseStudySections(study: CaseStudy): CaseStudySection[] {
+  return [
+    { id: 'overview', label: 'Overview' },
+    { id: 'context', label: 'Why it was hard' },
+    { id: 'decisions', label: 'Decisions' },
+    ...(study.behavior ? [{ id: 'behavior', label: 'How it behaves' }] : []),
+    ...(study.shipped ? [{ id: 'shipped', label: 'What shipped' }] : []),
+    { id: 'result', label: 'Result' },
+    ...(study.reflection ? [{ id: 'reflection', label: 'Reflection' }] : []),
+  ];
+}

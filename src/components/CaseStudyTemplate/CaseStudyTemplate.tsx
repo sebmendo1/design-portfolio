@@ -1,13 +1,17 @@
 'use client';
 
-import { useCallback, type MouseEvent, type ReactNode } from 'react';
+import { useCallback, useMemo, type MouseEvent, type ReactNode } from 'react';
 import Link from 'next/link';
 import { motion } from 'framer-motion';
 import { CaseyActions } from '@/components/CaseyActions/CaseyActions';
 import { HomeMenu, HomeNavList, HomePageLinks } from '@/components/HomeNav/HomeNav';
 import { HomeLogo } from '@/components/HomeProjectCard/HomeProjectCard';
 import { PageHeadline } from '@/components/PageHeadline/PageHeadline';
-import { CASE_STUDY_SECTIONS, type CaseStudy } from '@/data/caseStudies/types';
+import {
+  getCaseStudySections,
+  type CaseStudy,
+  type CaseStudyMetric,
+} from '@/data/caseStudies/types';
 import { useDissolveNavigate } from '@/hooks/useDissolveNavigate';
 import { useSectionSpy } from '@/hooks/useSectionSpy';
 import { findHomeSection } from '@/lib/home-sections';
@@ -20,21 +24,13 @@ type CaseStudyTemplateProps = {
   next?: Pick<CaseStudy, 'slug' | 'title' | 'summary' | 'section'>;
 };
 
-const SECTION_IDS = CASE_STUDY_SECTIONS.map((section) => section.id);
-
 const META_FIELDS = [
   ['role', 'Role'],
   ['team', 'Team'],
   ['timeline', 'Timeline'],
   ['platform', 'Platform'],
-  ['impact', 'Impact'],
+  ['status', 'Status'],
 ] as const;
-
-const VERDICT_LABELS = {
-  shipped: 'Shipped',
-  evolved: 'Evolved',
-  dropped: 'Dropped',
-} as const;
 
 function prefersReducedMotion() {
   return window.matchMedia('(prefers-reduced-motion: reduce)').matches;
@@ -74,9 +70,37 @@ function Paragraphs({ items }: { items: string[] }) {
   );
 }
 
+function MetricBody({ metric }: { metric: CaseStudyMetric }) {
+  return (
+    <>
+      <span className="study-metric__value">{metric.value}</span>
+      <span className="study-metric__label">{metric.label}</span>
+      {metric.context || metric.confidence ? (
+        <span className="study-metric__note">
+          {metric.context}
+          {metric.context && metric.confidence ? ' · ' : null}
+          {metric.confidence ? (
+            <span className="study-metric__confidence">{metric.confidence}</span>
+          ) : null}
+        </span>
+      ) : null}
+    </>
+  );
+}
+
+function KeyResult({ metric }: { metric: CaseStudyMetric }) {
+  return (
+    <p className="study-metric study-metric--key">
+      <MetricBody metric={metric} />
+    </p>
+  );
+}
+
 export function CaseStudyTemplate({ study, next }: CaseStudyTemplateProps) {
   const { navigate, motionProps } = useDissolveNavigate();
-  const { activeId, lock } = useSectionSpy(SECTION_IDS);
+  const sections = useMemo(() => getCaseStudySections(study), [study]);
+  const sectionIds = useMemo(() => sections.map((section) => section.id), [sections]);
+  const { activeId, lock } = useSectionSpy(sectionIds);
   const logo = findHomeSection(study.section)?.logo;
   const nextLogo = next ? findHomeSection(next.section)?.logo : undefined;
 
@@ -99,8 +123,6 @@ export function CaseStudyTemplate({ study, next }: CaseStudyTemplateProps) {
     event.preventDefault();
     navigate(href);
   }
-
-  const sections = CASE_STUDY_SECTIONS.map(({ id, label }) => ({ id, label }));
 
   return (
     <motion.div className="study" {...motionProps}>
@@ -201,63 +223,42 @@ export function CaseStudyTemplate({ study, next }: CaseStudyTemplateProps) {
 
               <div className="study-tldr">
                 <p className="study-eyebrow">TL;DR</p>
-                <h2 id="tldr-heading" className="study-heading">
-                  {study.tldr.heading}
-                </h2>
                 <p className="study-lede">{study.tldr.body}</p>
-                <ul className="study-outcomes">
-                  {study.tldr.outcomes.map((outcome) => (
-                    <li key={outcome.label} className="study-outcome">
-                      <span className="study-outcome__value">{outcome.value}</span>
-                      <span className="study-outcome__label">{outcome.label}</span>
-                    </li>
-                  ))}
-                </ul>
+                {study.tldr.keyResult ? <KeyResult metric={study.tldr.keyResult} /> : null}
               </div>
             </section>
 
-            <Section id="problem" eyebrow="Problem" heading={study.problem.heading}>
-              <Paragraphs items={study.problem.body} />
-              {study.problem.quote ? (
-                <blockquote className="study-quote">
-                  <p>{study.problem.quote}</p>
-                </blockquote>
+            <Section id="context" eyebrow="Why it was hard" heading={study.context.heading}>
+              <Paragraphs items={study.context.body} />
+              {study.context.constraints?.length ? (
+                <ul className="study-constraints" aria-label="Constraints">
+                  {study.context.constraints.map((item) => (
+                    <li key={item} className="study-constraint">
+                      {item}
+                    </li>
+                  ))}
+                </ul>
               ) : null}
             </Section>
 
-            <Section id="constraints" eyebrow="Constraints" heading={study.constraints.heading}>
-              <ol className="study-constraints">
-                {study.constraints.items.map((item, index) => (
-                  <li key={item.title} className="study-constraint">
-                    <span className="study-constraint__index" aria-hidden="true">
-                      {String(index + 1).padStart(2, '0')}
-                    </span>
-                    <div>
-                      <h3 className="study-subheading">{item.title}</h3>
-                      <p className="study-body">{item.body}</p>
-                    </div>
-                  </li>
-                ))}
-              </ol>
-            </Section>
-
-            <Section id="decisions" eyebrow="Process and key decisions" heading={study.decisions.heading}>
-              {study.decisions.intro ? <p className="study-lede">{study.decisions.intro}</p> : null}
+            <Section id="decisions" eyebrow="Key decisions" heading={study.decisions.heading}>
               <ol className="study-decisions">
                 {study.decisions.items.map((item, index) => (
                   <li key={item.title} className="study-decision">
                     <div className="study-decision__card">
-                      <p className="study-decision__index">Decision {String(index + 1).padStart(2, '0')}</p>
+                      <p className="study-decision__index">
+                        Decision {String(index + 1).padStart(2, '0')}
+                      </p>
                       <h3 className="study-decision__title">{item.title}</h3>
                       <p className="study-body">{item.body}</p>
                       <dl className="study-decision__why">
                         <div>
-                          <dt>Trade-off</dt>
-                          <dd>{item.tradeoff}</dd>
+                          <dt>Instead of</dt>
+                          <dd>{item.alternative}</dd>
                         </div>
                         <div>
-                          <dt>Why</dt>
-                          <dd>{item.rationale}</dd>
+                          <dt>Trade-off</dt>
+                          <dd>{item.tradeoff}</dd>
                         </div>
                       </dl>
                     </div>
@@ -267,59 +268,49 @@ export function CaseStudyTemplate({ study, next }: CaseStudyTemplateProps) {
               </ol>
             </Section>
 
-            <Section id="explorations" eyebrow="Design explorations" heading={study.explorations.heading}>
-              {study.explorations.intro ? <p className="study-lede">{study.explorations.intro}</p> : null}
-              {study.explorations.figure ? (
-                <CaseStudyFigureView figure={study.explorations.figure} logo={logo} />
-              ) : null}
-              <ul className="study-explorations">
-                {study.explorations.items.map((item) => (
-                  <li key={item.title} className="study-exploration">
-                    <div className="study-exploration__head">
-                      <h3 className="study-subheading">{item.title}</h3>
-                      <span className={`study-verdict study-verdict--${item.verdict}`}>
-                        {VERDICT_LABELS[item.verdict]}
-                      </span>
-                    </div>
-                    <p className="study-body">{item.body}</p>
-                  </li>
-                ))}
-              </ul>
-            </Section>
+            {study.behavior ? (
+              <Section id="behavior" eyebrow="How it behaves" heading={study.behavior.heading}>
+                {study.behavior.intro ? <p className="study-body">{study.behavior.intro}</p> : null}
+                <ol className="study-states">
+                  {study.behavior.states.map((item) => (
+                    <li key={item.state} className="study-state">
+                      <span className="study-state__name">{item.state}</span>
+                      <span className="study-state__behavior">{item.behavior}</span>
+                    </li>
+                  ))}
+                </ol>
+              </Section>
+            ) : null}
 
-            <Section id="final-design" eyebrow="Final design" heading={study.finalDesign.heading}>
-              <Paragraphs items={study.finalDesign.body} />
-              <div className="study-figures">
-                {study.finalDesign.figures.map((figure, index) => (
-                  <CaseStudyFigureView key={index} figure={figure} logo={logo} />
-                ))}
-              </div>
-            </Section>
+            {study.shipped ? (
+              <Section id="shipped" eyebrow="What shipped" heading={study.shipped.heading}>
+                {study.shipped.body ? <p className="study-body">{study.shipped.body}</p> : null}
+                <div className="study-figures">
+                  {study.shipped.figures.map((figure, index) => (
+                    <CaseStudyFigureView key={index} figure={figure} logo={logo} />
+                  ))}
+                </div>
+              </Section>
+            ) : null}
 
-            <Section id="results" eyebrow="Results" heading={study.results.heading}>
-              <ul className="study-metrics">
-                {study.results.metrics.map((metric) => (
-                  <li key={metric.label} className="study-metric">
-                    <span className="study-metric__value">{metric.value}</span>
-                    <span className="study-metric__label">{metric.label}</span>
-                    {metric.note ? <span className="study-metric__note">{metric.note}</span> : null}
-                  </li>
-                ))}
-              </ul>
-              <Paragraphs items={study.results.body} />
-            </Section>
-
-            <Section id="reflection" eyebrow="Reflection" heading={study.reflection.heading}>
-              <Paragraphs items={study.reflection.body} />
-              <div className="study-next-steps">
-                <h3 className="study-subheading">What’s next</h3>
-                <ul>
-                  {study.reflection.next.map((item) => (
-                    <li key={item}>{item}</li>
+            <Section id="result" eyebrow="Result" heading={study.result.heading}>
+              {study.result.metrics.length ? (
+                <ul className="study-metrics">
+                  {study.result.metrics.map((metric) => (
+                    <li key={metric.label} className="study-metric">
+                      <MetricBody metric={metric} />
+                    </li>
                   ))}
                 </ul>
-              </div>
+              ) : null}
+              <Paragraphs items={study.result.body} />
             </Section>
+
+            {study.reflection ? (
+              <Section id="reflection" eyebrow="Reflection" heading={study.reflection.heading}>
+                <Paragraphs items={study.reflection.body} />
+              </Section>
+            ) : null}
           </article>
 
           {next ? (
