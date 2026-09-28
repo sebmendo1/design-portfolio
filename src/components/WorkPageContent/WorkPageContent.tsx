@@ -1,7 +1,6 @@
 'use client';
 
-import { IndexBio } from '@/components/WorkPageBio/IndexBio';
-import { PortfolioIndex } from '@/components/PortfolioIndex/PortfolioIndex';
+import { HomeFeed } from '@/components/HomeFeed/HomeFeed';
 import type { ProjectCardSummary } from '@/lib/project-cards';
 
 type WorkPageContentProps = {
@@ -14,11 +13,5 @@ export function WorkPageContent({
   projects,
   onProjectNavigate,
 }: WorkPageContentProps) {
-  return (
-    <PortfolioIndex
-      bio={<IndexBio />}
-      projects={projects}
-      onNavigate={onProjectNavigate}
-    />
-  );
+  return <HomeFeed projects={projects} onNavigate={onProjectNavigate} />;
 }

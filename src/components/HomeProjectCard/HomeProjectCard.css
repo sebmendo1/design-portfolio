@@ -1,0 +1,355 @@
+.home-card {
+  width: 100%;
+  min-width: 0;
+}
+
+.home-card__link {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  color: inherit;
+  text-decoration: none;
+  border-radius: var(--border-radius-lg);
+  -webkit-tap-highlight-color: transparent;
+}
+
+.home-card__link:focus-visible {
+  outline: 2px solid var(--color-focus-ring);
+  outline-offset: 4px;
+}
+
+.home-card__media {
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  aspect-ratio: 600 / 564;
+  padding: 16px 10px;
+  box-sizing: border-box;
+  border-radius: var(--border-radius-lg);
+  background: var(--color-background-project-highlight);
+  overflow: clip;
+  isolation: isolate;
+}
+
+.home-card__stage {
+  container-type: size;
+  container-name: home-card;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  height: 100%;
+  min-width: 0;
+  min-height: 0;
+  transition: transform 520ms cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+.home-card__stage video,
+.home-card__stage img,
+.home-card__stage iframe {
+  pointer-events: none;
+}
+
+@media (hover: hover) {
+  .home-card__link:hover .home-card__stage {
+    transform: scale(1.015);
+  }
+}
+
+/* Phones: iPhone chassis sized against the well height. */
+.home-card__stage .phone-stencil,
+.home-card__stage .phone-stencil--card {
+  --phone-size-scale: 1;
+  --content-ar: var(--phone-default-ar);
+  --home-phone-ar: calc(
+    var(--phone-body-scale) / (1 / var(--phone-default-ar) + 2 * var(--phone-bezel-ratio))
+  );
+  --home-phone-height: 0.9;
+  width: min(100cqw, calc(100cqh * var(--home-phone-height) * var(--home-phone-ar)));
+  max-width: 100%;
+  height: auto;
+  max-height: none;
+  aspect-ratio: var(--home-phone-ar);
+  margin-inline: 0;
+}
+
+.home-card__stage .phone-stencil--card .phone-stencil__body {
+  width: 100%;
+  max-width: 100%;
+  height: auto;
+  max-height: 100%;
+}
+
+.home-card__stage .phone-stencil--card .phone-stencil__screen {
+  width: 100%;
+  max-width: 100%;
+  height: auto;
+  aspect-ratio: var(--phone-default-ar);
+}
+
+.home-card__stage .phone-stencil__media {
+  object-fit: cover;
+}
+
+.home-card__phone-pair {
+  --home-phone-gap: clamp(16px, 6cqw, 32px);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--home-phone-gap);
+  width: 100%;
+  height: 100%;
+}
+
+.home-card__phone-pair .phone-stencil,
+.home-card__phone-pair .phone-stencil--card {
+  --home-phone-height: 0.84;
+  width: min(
+    calc((100cqw - var(--home-phone-gap)) / 2),
+    calc(100cqh * var(--home-phone-height) * var(--home-phone-ar))
+  );
+}
+
+.home-card__phone-pair .phone-stencil__body {
+  box-shadow:
+    inset 0 0 0 calc(var(--body-w) * 0.0034) rgba(255, 255, 255, 0.14),
+    inset 0 0 0 calc(var(--body-w) * 0.007) rgba(0, 0, 0, 0.45),
+    0 0 0 calc(var(--body-w) * 0.0016) rgba(255, 255, 255, 0.08),
+    0 0 0 calc(var(--body-w) * 0.0028) rgba(0, 0, 0, 0.55),
+    0 calc(var(--body-w) * 0.06) calc(var(--body-w) * 0.16) rgba(0, 0, 0, 0.22);
+}
+
+/* Browsers: product frame wraps the recording at every well size. */
+.home-card__stage .browser-stencil.home-card__device--desktop {
+  width: min(92cqw, calc((88cqh - var(--browser-chrome)) * var(--content-ar)));
+  max-width: 100%;
+  height: auto;
+  max-height: 100%;
+  box-sizing: border-box;
+}
+
+.home-card__stage .home-card__device--desktop .browser-stencil__screen {
+  flex: 0 0 auto;
+  width: 100%;
+  height: auto;
+  aspect-ratio: auto;
+}
+
+.home-card__stage .browser-stencil__media,
+.home-card__stage .browser-stencil__screen .lazy-video--intrinsic .lazy-video__el,
+.home-card__stage .browser-stencil__screen .lazy-video--intrinsic .lazy-video__poster {
+  object-fit: contain;
+  object-position: center;
+}
+
+.home-card__image {
+  width: min(92cqw, calc(88cqh * 1.499));
+  height: auto;
+  border-radius: 12px;
+  object-fit: cover;
+}
+
+.home-card__specimen {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: clamp(8px, 2cqh, 16px);
+  text-align: center;
+}
+
+.home-card__specimen-word {
+  margin: 0;
+  font-size: clamp(40px, min(18cqw, 22cqh), 104px);
+  font-variation-settings: var(--font-var-display);
+  line-height: 1;
+  letter-spacing: -0.04em;
+  color: var(--color-text-primary);
+}
+
+.home-card__specimen-meta {
+  margin: 0;
+  font-size: 14px;
+  line-height: 1.4;
+  color: var(--color-text-muted);
+}
+
+.home-card__voice {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: clamp(20px, 6cqh, 36px);
+  text-align: center;
+}
+
+.home-card__voice .home-logo {
+  --home-logo-size: clamp(56px, 16cqh, 88px);
+}
+
+.home-card__voice-wave {
+  display: flex;
+  align-items: center;
+  gap: clamp(4px, 1.2cqw, 8px);
+  height: clamp(56px, 18cqh, 104px);
+}
+
+.home-card__voice-bar {
+  width: clamp(4px, 1.1cqw, 7px);
+  height: calc(var(--bar-h) * 100%);
+  border-radius: var(--border-radius-pill);
+  background: #005eb8;
+  transform-origin: center;
+  animation: home-voice-bar 1.6s ease-in-out infinite;
+  animation-delay: calc(var(--bar-i) * -90ms);
+}
+
+.home-card__voice-caption {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.home-card__voice-word {
+  font-size: clamp(28px, min(8cqw, 10cqh), 48px);
+}
+
+@keyframes home-voice-bar {
+  0%,
+  100% {
+    transform: scaleY(1);
+  }
+
+  50% {
+    transform: scaleY(0.55);
+  }
+}
+
+.home-card__meta {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  min-height: 50px;
+  min-width: 0;
+}
+
+.home-card__text {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  gap: 2px;
+  min-width: 0;
+  flex: 1 1 auto;
+}
+
+.home-card__title,
+.home-card__description {
+  margin: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.home-card__title {
+  font-size: 16px;
+  font-weight: var(--font-weight-semibold);
+  line-height: 22.4px;
+  color: var(--color-text-primary);
+}
+
+.home-card__description {
+  font-size: 15px;
+  font-weight: var(--font-weight-regular);
+  line-height: 21px;
+  color: var(--color-text-muted);
+}
+
+/* App-icon tile: 44px, radius 16.668px in Figma. */
+.home-logo {
+  --home-logo-size: 44px;
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  width: var(--home-logo-size);
+  height: var(--home-logo-size);
+  border-radius: calc(var(--home-logo-size) * 0.3788);
+  overflow: clip;
+}
+
+.home-logo::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  box-shadow: inset 0 0 0 1px rgba(0, 0, 0, 0.08);
+  pointer-events: none;
+}
+
+.home-logo__img {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+}
+
+.home-logo--inset .home-logo__img {
+  width: 70%;
+  height: 70%;
+}
+
+.home-logo__mark {
+  position: absolute;
+  inset: 17.86% 17.86% 18.27% 17.86%;
+}
+
+.home-logo__mark-canvas {
+  position: absolute;
+  top: -203.04%;
+  left: -201.74%;
+  width: 503.48%;
+  height: 506.08%;
+  max-width: none;
+}
+
+.home-logo--monogram {
+  font-size: calc(var(--home-logo-size) * 0.42);
+  font-weight: var(--font-weight-semibold);
+  line-height: 1;
+  letter-spacing: -0.02em;
+}
+
+@media (max-width: 900px) {
+  .home-card__link {
+    gap: 12px;
+  }
+
+  .home-logo {
+    --home-logo-size: 40px;
+  }
+
+  /* Wrap instead of truncating on narrow cards. */
+  .home-card__title,
+  .home-card__description {
+    display: -webkit-box;
+    -webkit-box-orient: vertical;
+    -webkit-line-clamp: 2;
+    white-space: normal;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .home-card__stage {
+    transition: none;
+  }
+
+  .home-card__voice-bar {
+    animation: none;
+  }
+
+  .home-card__link:hover .home-card__stage {
+    transform: none;
+  }
+}
