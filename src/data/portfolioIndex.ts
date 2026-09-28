@@ -261,7 +261,7 @@ export const PORTFOLIO_INDEX: PortfolioIndexEntry[] = [
     year: 2026,
     label: 'Seb Sans - Custom Typeface',
     section: 'other',
-    href: '/seb-sans',
+    href: '/work/seb-sans',
     kind: 'typeface',
     summary:
       'Seb Sans is a variable typeface tuned so AI generated answers, drafts, and streamed UI copy stay easy to read.',
