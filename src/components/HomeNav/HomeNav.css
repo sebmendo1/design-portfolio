@@ -162,6 +162,10 @@
   padding-top: 8px;
 }
 
+.home-menu__toc {
+  padding: 0 16px;
+}
+
 .home-menu__links {
   padding: 24px 24px 0;
 }

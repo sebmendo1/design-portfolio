@@ -34,7 +34,10 @@ export const writerAi: CaseStudy = {
     caption: 'Highlight, open the W menu, pick a mode. The writer states the intent before the model runs.',
   },
   tldr: {
-    body: 'Enterprise writers needed to rephrase without losing meaning or brand voice, and one “rewrite” action was too blunt. I designed ReWrite as a selection-first flow with six named modes. It shipped across WRITER’s editor, desktop apps, browser extensions, and Figma, before open-ended chat became the default for writing tools.',
+    situation: 'Enterprise writers needed to rephrase without losing meaning or brand voice, and one “rewrite” action was too blunt.',
+    task: 'I was the product designer on ReWrite, WRITER’s rephrasing feature.',
+    action: 'I designed it as a selection-first flow with six named modes.',
+    result: 'It shipped in April 2021 across the editor, desktop apps, browser extensions, and Figma.',
     keyResult: {
       value: '4',
       label: 'surfaces with the same ReWrite flow at launch',

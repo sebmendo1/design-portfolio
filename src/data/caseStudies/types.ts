@@ -94,9 +94,15 @@ export type CaseStudy = {
   links?: CaseStudyLink[];
   /** Renders the Casey listen / text buttons under the meta row. */
   caseyActions?: boolean;
+  /**
+   * STAR summary, one sentence per field, read as one paragraph in the
+   * sidebar. 60 words and 4 sentences or fewer in total.
+   */
   tldr: {
-    /** Problem → what I did → result, 60 words or fewer. */
-    body: string;
+    situation: string;
+    task: string;
+    action: string;
+    result: string;
     keyResult?: CaseStudyMetric;
   };
   context: {
@@ -131,6 +137,15 @@ export type CaseStudy = {
 };
 
 export type CaseStudySection = { id: string; label: string };
+
+export function getTldrSentences(study: CaseStudy): string[] {
+  const { situation, task, action, result } = study.tldr;
+  return [situation, task, action, result];
+}
+
+export function getTldrText(study: CaseStudy): string {
+  return getTldrSentences(study).join(' ');
+}
 
 export function getCaseStudySections(study: CaseStudy): CaseStudySection[] {
   return [

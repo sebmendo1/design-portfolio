@@ -22,7 +22,11 @@ export const caseyAi: CaseStudy = {
   },
   caseyActions: true,
   tldr: {
-    body: 'Chase needed an AI agent that could talk to customers without creating legal exposure. I led design for Casey, one agent across voice and RCS, and proved it in home lending, the most regulated journey in the bank. Most of the work went into the handoff to a licensed human.',
+    situation: 'Chase needed an AI agent that could talk to customers without creating legal exposure.',
+    task: 'As design lead, I had to prove it in home lending, the bank’s most regulated journey.',
+    action: 'I designed Casey as one agent across voice and RCS, built around the handoff to a licensed human.',
+    // TODO(seb): verify timeframe for the 3,000+ calls figure.
+    result: 'Casey Voice has handled 3,000+ production calls at about 12% lead conversion.',
     keyResult: {
       value: '3,000+',
       label: 'calls in production at about 12% lead conversion',

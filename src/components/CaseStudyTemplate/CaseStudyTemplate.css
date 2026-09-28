@@ -10,20 +10,68 @@
 }
 
 /* Sidebar */
-.study-sidebar__project {
+.study-sidebar__tldr {
+  padding: 0 24px;
+}
+
+.study-sidebar__tldr .home-nav__label {
+  padding: 32px 0 8px;
+}
+
+.study-sidebar__tldr-body {
+  margin: 0;
+  font-size: 15px;
+  line-height: 1.55;
+  color: var(--color-text-secondary);
+  text-wrap: pretty;
+}
+
+.study-sidebar__nav .home-nav__label {
+  padding-top: 32px;
+  padding-bottom: 8px;
+}
+
+.study-sidebar__toc {
+  padding: 0 24px;
+}
+
+/* Breadcrumb above the title */
+.study-crumbs__list {
   display: flex;
-  flex-direction: column;
-  gap: 20px;
-  padding: 24px 24px 0;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 4px 10px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  font-size: 14px;
+  line-height: 20px;
+}
+
+.study-crumbs__item {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  min-width: 0;
+}
+
+.study-crumbs__item + .study-crumbs__item::before {
+  content: '/';
+  color: var(--color-border-strong);
+}
+
+.study-crumbs__current {
+  color: var(--color-text-secondary);
+}
+
+.study-crumbs__current .home-logo {
+  --home-logo-size: 20px;
 }
 
 .study-back {
   display: inline-flex;
   align-items: center;
   gap: 6px;
-  align-self: flex-start;
-  font-size: 14px;
-  line-height: 16.8px;
   color: var(--color-text-muted);
   text-decoration: none;
   transition: color var(--transition-fast);
@@ -38,56 +86,6 @@
   outline: 2px solid var(--color-focus-ring);
   outline-offset: 2px;
   border-radius: 2px;
-}
-
-.study-back--inline {
-  display: none;
-}
-
-.study-identity {
-  display: flex;
-  align-items: center;
-  gap: 12px;
-}
-
-.study-identity__text {
-  display: flex;
-  flex-direction: column;
-  gap: 2px;
-  min-width: 0;
-}
-
-.study-identity__company,
-.study-identity__year {
-  margin: 0;
-}
-
-.study-identity__company {
-  font-size: 16px;
-  font-weight: var(--font-weight-semibold);
-  line-height: 22.4px;
-}
-
-.study-identity__year {
-  font-size: 15px;
-  line-height: 21px;
-  color: var(--color-text-muted);
-}
-
-.study-sidebar__nav .home-nav__label {
-  padding-top: 32px;
-  padding-bottom: 8px;
-}
-
-.study-nav .home-nav__row {
-  height: 48px;
-  padding: 3px 8px;
-}
-
-.study-nav .home-nav__pill {
-  padding: 5px 14px;
-  font-size: 15px;
-  line-height: 24px;
 }
 
 /* Main column */
@@ -313,6 +311,16 @@
   flex-direction: column;
   gap: 16px;
   margin-top: 40px;
+}
+
+.study-tldr__summary {
+  display: none;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.study-tldr--summary-only {
+  display: none;
 }
 
 .study-metrics {
@@ -663,13 +671,23 @@
     --study-block-gap: 20px;
   }
 
-  .study-sidebar__project {
+  .study-sidebar__tldr {
     display: none;
   }
 
-  .study-back--inline {
-    display: inline-flex;
-    margin-bottom: 8px;
+  .study-tldr,
+  .study-tldr__summary {
+    display: flex;
+  }
+
+  .study-crumbs__list {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 6px;
+  }
+
+  .study-crumbs__item + .study-crumbs__item::before {
+    content: none;
   }
 
   .study-main.home-feed__main {

@@ -1,9 +1,11 @@
 import assert from 'node:assert/strict';
 import { test } from 'node:test';
 import { CASE_STUDIES } from '../data/caseStudies';
+import { getTldrSentences, getTldrText } from '../data/caseStudies/types';
 import { projects } from '../data/projects';
 import {
   BANNED_WORDS,
+  countSentences,
   countWords,
   getBodyText,
   getBodyWordCount,
@@ -18,7 +20,16 @@ for (const study of CASE_STUDIES) {
   });
 
   test(`${study.slug}: TL;DR is 60 words or fewer`, () => {
-    assert.ok(countWords(study.tldr.body) <= 60, `${countWords(study.tldr.body)} words`);
+    const text = getTldrText(study);
+    assert.ok(countWords(text) <= 60, `${countWords(text)} words`);
+  });
+
+  test(`${study.slug}: TL;DR follows STAR in 4 sentences or fewer`, () => {
+    for (const sentence of getTldrSentences(study)) {
+      assert.equal(countSentences(sentence), 1, `not one sentence: ${sentence}`);
+    }
+    const text = getTldrText(study);
+    assert.ok(countSentences(text) <= 4, `${countSentences(text)} sentences`);
   });
 
   test(`${study.slug}: 2–3 decisions, each with an alternative and a trade-off`, () => {

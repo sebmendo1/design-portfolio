@@ -1,0 +1,125 @@
+.study-toc {
+  --toc-track-x: 3px;
+  --toc-track-width: 2px;
+  padding: 16px;
+  border: 1px solid var(--color-border);
+  border-radius: var(--border-radius-md);
+  background: var(--color-background-section);
+}
+
+.study-toc__list {
+  --toc-active-y: 0px;
+  --toc-active-h: 0px;
+  --toc-fill: 0;
+  --toc-progress: 0;
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.study-toc__list::before,
+.study-toc__list::after {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: var(--toc-track-x);
+  width: var(--toc-track-width);
+  border-radius: var(--toc-track-width);
+  pointer-events: none;
+}
+
+/* Track, then the read-so-far fill on top of it. */
+.study-toc__list::before {
+  bottom: 0;
+  background: var(--color-border);
+}
+
+.study-toc__list::after {
+  height: 1px;
+  background: var(--color-text-muted);
+  opacity: 0.5;
+  transform-origin: top;
+  transform: scaleY(var(--toc-fill));
+  transition: transform 120ms linear;
+}
+
+.study-toc__item {
+  display: flex;
+}
+
+.study-toc__link {
+  position: relative;
+  flex: 1;
+  min-width: 0;
+  padding: 5px 8px 5px 20px;
+  border-radius: var(--border-radius-sm);
+  font-size: 15px;
+  font-weight: 430;
+  line-height: 22px;
+  color: var(--color-text-muted);
+  text-decoration: none;
+  text-wrap: pretty;
+  -webkit-tap-highlight-color: transparent;
+  transition:
+    color var(--transition-base),
+    font-weight var(--transition-base);
+}
+
+@media (hover: hover) {
+  .study-toc__link:hover {
+    color: var(--color-text-primary);
+  }
+}
+
+.study-toc__link.is-active {
+  font-weight: 550;
+  color: var(--color-text-primary);
+}
+
+.study-toc__link:focus-visible {
+  outline: 2px solid var(--color-focus-ring);
+  outline-offset: -2px;
+}
+
+/* Active row segment, then the reading-progress bar inside it; both slide between rows. */
+.study-toc__list[data-ready='true'] .study-toc__item:first-child::before,
+.study-toc__list[data-ready='true'] .study-toc__item:first-child::after {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: var(--toc-track-x);
+  z-index: 1;
+  width: var(--toc-track-width);
+  height: var(--toc-active-h);
+  border-radius: var(--toc-track-width);
+  transform-origin: top;
+  pointer-events: none;
+}
+
+.study-toc__list[data-ready='true'] .study-toc__item:first-child::before {
+  background: var(--color-text-muted);
+  transform: translateY(var(--toc-active-y));
+  transition:
+    transform var(--transition-base),
+    height var(--transition-base);
+}
+
+.study-toc__list[data-ready='true'] .study-toc__item:first-child::after {
+  background: var(--color-text-primary);
+  transform: translateY(var(--toc-active-y)) scaleY(max(0.2, var(--toc-progress)));
+  transition:
+    transform var(--transition-base),
+    height var(--transition-base);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .study-toc__list::after,
+  .study-toc__link,
+  .study-toc__list[data-ready='true'] .study-toc__item:first-child::before,
+  .study-toc__list[data-ready='true'] .study-toc__item:first-child::after {
+    transition: none;
+  }
+}

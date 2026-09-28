@@ -23,7 +23,10 @@ export const sebSans: CaseStudy = {
     { label: 'Source on GitHub', href: 'https://github.com/sebmendo1/seb-sans' },
   ],
   tldr: {
-    body: 'AI products are mostly generated text that people read for long sessions, and system fonts tire before the content does. I designed Seb Sans, a variable typeface derived from Inter and tuned for streamed prose at 13–16px. It ships with a non-interactive installer so coding agents can set it up too.',
+    situation: 'People read AI-generated text for long sessions, and system fonts tire before the content does.',
+    task: 'I wanted a typeface tuned for streamed prose at 13–16px.',
+    action: 'I designed Seb Sans, a variable font derived from Inter, with an installer coding agents can run.',
+    result: 'v0.7.2 ships 652 glyphs across 3 axes and 9 named weights.',
     keyResult: {
       value: '652',
       label: 'glyphs across 3 axes and 9 named weights',

@@ -23,7 +23,11 @@ export const agenticHomeLending: CaseStudy = {
     caption: 'The front door is a conversation, not a form. Applicants ask about home loans before the agent asks them for anything.',
   },
   tldr: {
-    body: 'Getting a mortgage meant weeks of back-and-forth over documents, and applicants rarely knew where they stood. I designed agentic flows that request each document when it is needed, flag issues before underwriting, and show progress as a confidence score. The pilot is running, and I only report its numbers with pilot scope.',
+    situation: 'Mortgages meant weeks of document back-and-forth, and applicants rarely knew where they stood.',
+    task: 'My job was to shift that burden from applicant to system.',
+    action: 'I designed agentic flows that request each document when needed, flag issues before underwriting, and show progress as a confidence score.',
+    // TODO(seb): verify the task framing and pilot scope.
+    result: 'The pilot is live with a limited group of applicants.',
     keyResult: {
       value: 'Pilot',
       label: 'live with a limited group of applicants',
