@@ -75,7 +75,7 @@
 
 .home-feed__bio {
   max-width: 300px;
-  padding: 20px 24px 0;
+  padding: 20px 24px 24px;
 }
 
 .home-feed__links {
@@ -177,6 +177,7 @@
   .home-feed__main {
     flex: none;
     width: calc(100% - 30px);
+    max-width: var(--home-feed-width);
     margin-top: 26px;
     padding: 0 0 24px;
   }
