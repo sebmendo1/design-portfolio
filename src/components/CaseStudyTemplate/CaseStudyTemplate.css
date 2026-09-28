@@ -4,7 +4,7 @@
 }
 
 .study-layout {
-  --study-section-gap: 96px;
+  --study-section-gap: 128px;
   --study-block-gap: 24px;
   --study-tile-radius: 24px;
 }
@@ -641,7 +641,7 @@
 
 @media (max-width: 900px) {
   .study-layout {
-    --study-section-gap: 64px;
+    --study-section-gap: 96px;
     --study-block-gap: 20px;
   }
 
