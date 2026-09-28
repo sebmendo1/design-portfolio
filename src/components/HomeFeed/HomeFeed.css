@@ -101,6 +101,18 @@
   outline: none;
 }
 
+/* The homepage bio and cards dissolve in via DissolveIn, so the sidebar entrance
+   moves onto its other children instead of the whole column. */
+.home-feed--home .home-feed__sidebar {
+  animation: none;
+}
+
+.home-feed--home .home-feed__header,
+.home-feed--home .home-feed__nav,
+.home-feed--home .home-feed__links {
+  animation: home-feed-sidebar-in 0.6s cubic-bezier(0.22, 1, 0.36, 1) both;
+}
+
 @keyframes home-feed-sidebar-in {
   from {
     opacity: 0;
@@ -133,6 +145,10 @@
     flex-direction: column;
     align-items: center;
     gap: 20px;
+  }
+
+  .home-feed--home {
+    --home-card-gap: 32px;
   }
 
   .home-feed__sidebar {
@@ -185,12 +201,24 @@
   .home-feed__section {
     scroll-margin-top: 92px;
   }
+
+  .home-feed--home .home-feed__bio {
+    animation: none;
+  }
 }
 
 @media (prefers-reduced-motion: reduce) {
   .home-feed__sidebar,
   .home-feed__header,
-  .home-feed__bio {
+  .home-feed__bio,
+  .home-feed--home .home-feed__nav,
+  .home-feed--home .home-feed__links {
     animation: none;
+  }
+
+  .home-feed__dissolve {
+    opacity: 1 !important;
+    transform: none !important;
+    filter: none !important;
   }
 }
