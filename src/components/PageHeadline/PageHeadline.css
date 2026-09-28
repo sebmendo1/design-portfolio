@@ -53,13 +53,48 @@
   white-space: nowrap;
 }
 
+/* Homepage variants follow the 2026 Figma: outlined on desktop, filled chip on phone. */
+.page-headline--home,
+.page-headline--chip {
+  box-shadow: none;
+}
+
+.page-headline--home {
+  background: var(--color-background-home);
+  border-color: var(--color-border-headline);
+}
+
+.page-headline--chip {
+  background: var(--color-surface-chip);
+  border-color: transparent;
+}
+
+.page-headline--home:hover,
+.page-headline--chip:hover {
+  box-shadow: none;
+  transform: none;
+}
+
+.page-headline--home:hover {
+  background: var(--color-surface-chip);
+}
+
+.page-headline--chip:hover {
+  background: var(--color-border-pill);
+}
+
+.page-headline--home .page-headline__text,
+.page-headline--chip .page-headline__text {
+  font-weight: var(--font-weight-medium);
+}
+
 @media (max-width: 640px) {
-  .page-headline__text {
+  .page-headline:not(.page-headline--home, .page-headline--chip) .page-headline__text {
     font-size: 14px;
     padding: 7px 8px;
   }
 
-  .page-headline__avatar {
+  .page-headline:not(.page-headline--home, .page-headline--chip) .page-headline__avatar {
     width: 32px;
     height: 32px;
   }

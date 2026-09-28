@@ -1,0 +1,204 @@
+.home-nav__label {
+  margin: 0;
+  padding: 24px 24px 16px;
+  font-size: 14px;
+  font-weight: var(--font-weight-regular);
+  line-height: 16.8px;
+  color: var(--color-text-muted);
+}
+
+.home-nav {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  margin: 0;
+  padding: 0 0 0 16px;
+  list-style: none;
+}
+
+.home-nav__row {
+  display: flex;
+  align-items: center;
+  width: 100%;
+  max-width: 334px;
+  min-width: 200px;
+  height: 56px;
+  padding: 8px;
+  box-sizing: border-box;
+  border-radius: var(--border-radius-md);
+  color: var(--color-text-primary);
+  text-decoration: none;
+  -webkit-tap-highlight-color: transparent;
+}
+
+.home-nav__row:focus-visible {
+  outline: 2px solid var(--color-focus-ring);
+  outline-offset: -2px;
+}
+
+.home-nav__pill {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 7px 16px;
+  border: 1px solid var(--color-border-pill);
+  border-radius: var(--border-radius-pill);
+  background: var(--color-background-home);
+  font-size: 16px;
+  font-weight: var(--font-weight-semibold);
+  line-height: 25.6px;
+  white-space: nowrap;
+  transition:
+    background-color var(--transition-fast),
+    border-color var(--transition-fast),
+    color var(--transition-fast);
+}
+
+@media (hover: hover) {
+  .home-nav__row:hover .home-nav__pill {
+    background: var(--color-surface-chip);
+    border-color: var(--color-surface-chip);
+  }
+}
+
+.home-nav__row.is-active .home-nav__pill,
+.home-nav__row.is-active:hover .home-nav__pill {
+  background: var(--color-background-nav-active);
+  border-color: var(--color-background-nav-active);
+  color: var(--color-text-nav-active);
+}
+
+.home-links {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 16px;
+}
+
+.home-links__link {
+  font-size: 14px;
+  line-height: 1.4;
+  color: var(--color-text-muted);
+  text-decoration: none;
+  transition: color var(--transition-fast);
+}
+
+.home-links__link:hover,
+.home-links__link:focus-visible {
+  color: var(--color-text-primary);
+}
+
+.home-links__link:focus-visible {
+  outline: 2px solid var(--color-focus-ring);
+  outline-offset: 2px;
+  border-radius: 2px;
+}
+
+.home-menu__button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  width: 44px;
+  height: 44px;
+  margin: 0;
+  padding: 0;
+  border: 0;
+  border-radius: 100px;
+  background: var(--color-surface-chip);
+  color: var(--color-text-primary);
+  cursor: pointer;
+  -webkit-tap-highlight-color: transparent;
+}
+
+.home-menu__button:focus-visible {
+  outline: 2px solid var(--color-focus-ring);
+  outline-offset: 2px;
+}
+
+.home-menu__icon {
+  width: 36px;
+  height: 36px;
+  background: currentColor;
+  mask: url('/assets/icons/menu.svg') center / 36px 36px no-repeat;
+}
+
+.home-menu {
+  inset: 0 0 auto;
+  width: 100%;
+  max-width: 100%;
+  max-height: 100dvh;
+  margin: 0;
+  padding: 0;
+  border: 0;
+  background: transparent;
+  color: var(--color-text-primary);
+  overflow: visible;
+}
+
+.home-menu::backdrop {
+  background: rgba(0, 0, 0, 0.24);
+}
+
+.home-menu__sheet {
+  display: flex;
+  flex-direction: column;
+  max-height: 100dvh;
+  padding-bottom: 24px;
+  box-sizing: border-box;
+  border-radius: 0 0 var(--border-radius-lg) var(--border-radius-lg);
+  background: var(--color-background-home);
+  overflow-y: auto;
+}
+
+.home-menu__header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: max(16px, env(safe-area-inset-top)) 16px 16px;
+}
+
+.home-menu__nav .home-nav__label {
+  padding-top: 8px;
+}
+
+.home-menu__links {
+  padding: 24px 24px 0;
+}
+
+.home-menu[open] .home-menu__sheet {
+  animation: home-menu-in 0.36s cubic-bezier(0.22, 1, 0.36, 1) both;
+}
+
+.home-menu[open]::backdrop {
+  animation: home-menu-backdrop-in 0.36s ease-out both;
+}
+
+@keyframes home-menu-in {
+  from {
+    opacity: 0;
+    transform: translateY(-12px);
+  }
+
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+
+@keyframes home-menu-backdrop-in {
+  from {
+    opacity: 0;
+  }
+
+  to {
+    opacity: 1;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .home-menu[open] .home-menu__sheet,
+  .home-menu[open]::backdrop {
+    animation: none;
+  }
+}

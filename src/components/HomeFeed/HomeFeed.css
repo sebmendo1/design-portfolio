@@ -1,0 +1,195 @@
+/* Figma "Portfolio / Desktop": 350 sidebar + 24 gap + 600 feed, centred. */
+.home-feed {
+  --home-sidebar-width: 350px;
+  --home-feed-width: 600px;
+  --home-column-gap: 24px;
+  --home-card-gap: 32px;
+  display: flex;
+  align-items: flex-start;
+  justify-content: center;
+  gap: var(--home-column-gap);
+  width: 100%;
+  min-height: 100dvh;
+  background: var(--color-background-home);
+  color: var(--color-text-primary);
+}
+
+.home-feed__sidebar {
+  position: sticky;
+  top: 0;
+  display: flex;
+  flex-direction: column;
+  flex: 0 0 var(--home-sidebar-width);
+  width: var(--home-sidebar-width);
+  height: 100dvh;
+  overflow-y: auto;
+  scrollbar-width: none;
+  animation: home-feed-sidebar-in 0.6s cubic-bezier(0.22, 1, 0.36, 1) both;
+}
+
+.home-feed__sidebar::-webkit-scrollbar {
+  display: none;
+}
+
+.home-feed__header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 24px 24px 0;
+}
+
+.home-feed__menu {
+  display: none;
+}
+
+.home-bio {
+  margin: 0;
+  font-size: 16px;
+  font-weight: var(--font-weight-regular);
+  line-height: 25.6px;
+  color: var(--color-text-secondary);
+  text-wrap: pretty;
+}
+
+.home-bio__link {
+  color: inherit;
+  text-decoration: underline;
+  text-decoration-thickness: 1px;
+  text-underline-offset: 0.18em;
+  text-decoration-color: color-mix(in srgb, currentColor 40%, transparent);
+  transition:
+    color var(--transition-fast),
+    text-decoration-color var(--transition-fast);
+}
+
+.home-bio__link:hover {
+  color: var(--color-text-primary);
+  text-decoration-color: currentColor;
+}
+
+.home-bio__link:focus-visible {
+  outline: 2px solid var(--color-focus-ring);
+  outline-offset: 2px;
+  border-radius: 2px;
+}
+
+.home-feed__bio {
+  max-width: 300px;
+  padding: 20px 24px 0;
+}
+
+.home-feed__links {
+  margin-top: auto;
+  padding: 32px 24px 24px;
+}
+
+.home-feed__main {
+  display: flex;
+  flex-direction: column;
+  gap: var(--home-card-gap);
+  flex: 0 0 var(--home-feed-width);
+  width: var(--home-feed-width);
+  min-width: 0;
+  padding: 24px 0;
+}
+
+.home-feed__section {
+  display: flex;
+  flex-direction: column;
+  gap: var(--home-card-gap);
+  scroll-margin-top: 24px;
+  outline: none;
+}
+
+@keyframes home-feed-sidebar-in {
+  from {
+    opacity: 0;
+    transform: translateY(8px);
+  }
+
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+
+@media (min-width: 901px) and (max-width: 1023px) {
+  .home-feed {
+    --home-sidebar-width: clamp(280px, 30vw, 350px);
+    padding-inline: var(--site-gutter);
+    box-sizing: border-box;
+  }
+
+  .home-feed__main {
+    flex: 1 1 auto;
+    max-width: 600px;
+  }
+}
+
+/* Figma "Portfolio / Phone": sticky header, centred bio, stacked cards. */
+@media (max-width: 900px) {
+  .home-feed {
+    --home-card-gap: 20px;
+    flex-direction: column;
+    align-items: center;
+    gap: 20px;
+  }
+
+  .home-feed__sidebar {
+    display: contents;
+  }
+
+  .home-feed__header {
+    position: sticky;
+    top: 0;
+    z-index: 10;
+    align-self: stretch;
+    padding: 16px;
+    background: var(--color-background-home);
+    animation: home-feed-sidebar-in 0.6s cubic-bezier(0.22, 1, 0.36, 1) both;
+  }
+
+  .home-feed__headline {
+    background: var(--color-surface-chip);
+    border-color: transparent;
+  }
+
+  .home-feed__headline:hover {
+    background: var(--color-border-pill);
+  }
+
+  .home-feed__menu {
+    display: block;
+  }
+
+  .home-feed__bio {
+    max-width: 300px;
+    padding: 0;
+    text-align: center;
+    animation: home-feed-sidebar-in 0.6s cubic-bezier(0.22, 1, 0.36, 1) 0.06s both;
+  }
+
+  .home-feed__nav,
+  .home-feed__links {
+    display: none;
+  }
+
+  .home-feed__main {
+    flex: none;
+    width: calc(100% - 30px);
+    margin-top: 26px;
+    padding: 0 0 24px;
+  }
+
+  .home-feed__section {
+    scroll-margin-top: 92px;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .home-feed__sidebar,
+  .home-feed__header,
+  .home-feed__bio {
+    animation: none;
+  }
+}
