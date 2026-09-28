@@ -34,7 +34,12 @@ export const HOME_SECTIONS: HomeSection[] = [
   {
     id: 'memento-ai',
     label: 'Memento AI',
-    logo: { kind: 'monogram', text: 'M', background: '#efe7dc', color: '#6b4a34' },
+    logo: {
+      kind: 'image',
+      src: '/assets/logos/memento-ai.png',
+      background: '#ffffff',
+      fit: 'cover',
+    },
   },
   {
     id: 'chase-ai',
