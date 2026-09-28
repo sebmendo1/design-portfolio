@@ -10,7 +10,6 @@ import { PageHeadline } from '@/components/PageHeadline/PageHeadline';
 import { StudyToc } from '@/components/StudyToc/StudyToc';
 import {
   getCaseStudySections,
-  getTldrText,
   type CaseStudy,
   type CaseStudyMetric,
 } from '@/data/caseStudies/types';
@@ -105,7 +104,6 @@ export function CaseStudyTemplate({ study, next }: CaseStudyTemplateProps) {
   const { activeId, lock } = useSectionSpy(sectionIds);
   const logo = findHomeSection(study.section)?.logo;
   const nextLogo = next ? findHomeSection(next.section)?.logo : undefined;
-  const tldr = getTldrText(study);
 
   const scrollToSection = useCallback(
     (id: string) => {
@@ -143,12 +141,6 @@ export function CaseStudyTemplate({ study, next }: CaseStudyTemplateProps) {
               />
             </div>
           </header>
-          <section className="study-sidebar__tldr" aria-labelledby="study-tldr-sidebar">
-            <h2 id="study-tldr-sidebar" className="home-nav__label">
-              TL;DR
-            </h2>
-            <p className="study-sidebar__tldr-body">{tldr}</p>
-          </section>
           <nav aria-label="On this page" className="home-feed__nav study-sidebar__nav">
             <p className="home-nav__label">On this page</p>
             <div className="study-sidebar__toc">
@@ -170,7 +162,8 @@ export function CaseStudyTemplate({ study, next }: CaseStudyTemplateProps) {
                         className="study-back"
                         onClick={(event) => handleInternalClick(event, '/')}
                       >
-                        <span aria-hidden="true">←</span> All projects
+                        <span aria-hidden="true">←</span>
+                        <span className="sr-only">All projects</span>
                       </Link>
                     </li>
                     <li className="study-crumbs__item study-crumbs__current" aria-current="page">
@@ -228,14 +221,11 @@ export function CaseStudyTemplate({ study, next }: CaseStudyTemplateProps) {
                 </div>
               ) : null}
 
-              <div className={`study-tldr${study.tldr.keyResult ? '' : ' study-tldr--summary-only'}`}>
-                {/* Phones hide the sidebar, so the TL;DR moves back into the column. */}
-                <div className="study-tldr__summary">
-                  <p className="study-eyebrow">TL;DR</p>
-                  <p className="study-lede">{tldr}</p>
+              {study.tldr.keyResult ? (
+                <div className="study-tldr">
+                  <KeyResult metric={study.tldr.keyResult} />
                 </div>
-                {study.tldr.keyResult ? <KeyResult metric={study.tldr.keyResult} /> : null}
-              </div>
+              ) : null}
             </section>
 
             <Section id="context" eyebrow="Why it was hard" heading={study.context.heading}>
