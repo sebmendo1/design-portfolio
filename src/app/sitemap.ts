@@ -1,4 +1,5 @@
 import type { MetadataRoute } from 'next';
+import { CASE_STUDIES } from '@/data/caseStudies';
 import { PROFILE_LAST_UPDATED } from '@/data/profile';
 import { getCachedMergedProjects } from '@/lib/cms-data';
 import { getSiteUrl } from '@/lib/site';
@@ -95,5 +96,13 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
         priority: 0.35,
       },
     ]),
+    ...CASE_STUDIES.filter((study) => !projects.some((project) => project.slug === study.slug)).map(
+      (study) => ({
+        url: `${base}/work/${study.slug}`,
+        lastModified: profileUpdated,
+        changeFrequency: 'monthly' as const,
+        priority: 0.8,
+      }),
+    ),
   ];
 }

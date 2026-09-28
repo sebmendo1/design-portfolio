@@ -1,4 +1,5 @@
 import { ImageResponse } from 'next/og';
+import { CASE_STUDIES, getCaseStudy } from '@/data/caseStudies';
 import { projects } from '@/data/projects';
 
 export const alt = 'Case study';
@@ -10,18 +11,24 @@ interface Props {
 }
 
 export async function generateStaticParams() {
-  return projects.map((p) => ({ slug: p.slug }));
+  const slugs = new Set([
+    ...projects.map((p) => p.slug),
+    ...CASE_STUDIES.map((study) => study.slug),
+  ]);
+  return [...slugs].map((slug) => ({ slug }));
 }
 
 export default async function OpenGraphImage({ params }: Props) {
   const { slug } = await params;
   const project = projects.find((p) => p.slug === slug);
-  const title = project?.title ?? 'Case Study';
+  const study = getCaseStudy(slug);
+  const title = study?.title ?? project?.title ?? 'Case Study';
   const tagline =
+    study?.summary ??
     project?.tagline ??
     project?.description ??
     'Product design case study by Sebastian Mendo';
-  const company = project?.company ?? 'Sebastian Mendo';
+  const company = study?.company ?? project?.company ?? 'Sebastian Mendo';
 
   return new ImageResponse(
     (

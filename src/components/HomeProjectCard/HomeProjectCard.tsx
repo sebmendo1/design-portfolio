@@ -25,7 +25,7 @@ type HomeProjectCardProps = {
 
 const MEDIA_SIZES = '(max-width: 900px) 90vw, 560px';
 
-function TypeSpecimen() {
+export function TypeSpecimen() {
   return (
     <div className="home-card__specimen" aria-hidden="true">
       <p className="home-card__specimen-word">Seb Sans</p>
@@ -39,7 +39,7 @@ const VOICE_BARS = [
   0.6, 0.36, 0.24,
 ];
 
-function VoiceSpecimen({ logo }: { logo?: HomeSectionLogo }) {
+export function VoiceSpecimen({ logo }: { logo?: HomeSectionLogo }) {
   return (
     <div className="home-card__voice" aria-hidden="true">
       {logo ? <HomeLogo logo={logo} /> : null}
