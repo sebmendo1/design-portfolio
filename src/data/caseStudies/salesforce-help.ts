@@ -35,7 +35,11 @@ export const salesforceHelp: CaseStudy = {
     caption: 'The customer types the problem in plain words. Einstein narrows it and recommends one channel.',
   },
   tldr: {
-    body: 'Salesforce offered every support channel, and customers could not tell which one fit. Most opened a case, often the slowest path. I designed AI Contact Support: customers describe the issue, and Einstein matches it against their history to recommend the best channel. CSAT doubled and case volume dropped.',
+    situation: 'Salesforce offered every support channel, and most customers opened a case, often the slowest path.',
+    task: 'My task was to point each customer to the channel that fit their issue.',
+    action: 'I designed AI Contact Support, where Einstein matches the described issue against the customer’s history and recommends one channel.',
+    // TODO(seb): add the CSAT baseline and measurement window.
+    result: 'CSAT doubled and case volume dropped.',
     keyResult: {
       value: '2×',
       label: 'CSAT after launch, with fewer cases created',

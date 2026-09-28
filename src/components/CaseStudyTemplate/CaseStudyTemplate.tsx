@@ -4,11 +4,13 @@ import { useCallback, useMemo, type MouseEvent, type ReactNode } from 'react';
 import Link from 'next/link';
 import { motion } from 'framer-motion';
 import { CaseyActions } from '@/components/CaseyActions/CaseyActions';
-import { HomeMenu, HomeNavList, HomePageLinks } from '@/components/HomeNav/HomeNav';
+import { HomeMenu, HomePageLinks } from '@/components/HomeNav/HomeNav';
 import { HomeLogo } from '@/components/HomeProjectCard/HomeProjectCard';
 import { PageHeadline } from '@/components/PageHeadline/PageHeadline';
+import { StudyToc } from '@/components/StudyToc/StudyToc';
 import {
   getCaseStudySections,
+  getTldrText,
   type CaseStudy,
   type CaseStudyMetric,
 } from '@/data/caseStudies/types';
@@ -103,6 +105,7 @@ export function CaseStudyTemplate({ study, next }: CaseStudyTemplateProps) {
   const { activeId, lock } = useSectionSpy(sectionIds);
   const logo = findHomeSection(study.section)?.logo;
   const nextLogo = next ? findHomeSection(next.section)?.logo : undefined;
+  const tldr = getTldrText(study);
 
   const scrollToSection = useCallback(
     (id: string) => {
@@ -136,25 +139,20 @@ export function CaseStudyTemplate({ study, next }: CaseStudyTemplateProps) {
                 activeId={activeId}
                 onSelect={scrollToSection}
                 label="On this page"
+                variant="toc"
               />
             </div>
           </header>
-          <div className="study-sidebar__project">
-            <Link href="/" className="study-back" onClick={(event) => handleInternalClick(event, '/')}>
-              <span aria-hidden="true">←</span> All projects
-            </Link>
-            <div className="study-identity">
-              {logo ? <HomeLogo logo={logo} /> : null}
-              <div className="study-identity__text">
-                <p className="study-identity__company">{study.company}</p>
-                <p className="study-identity__year">{study.year}</p>
-              </div>
-            </div>
-          </div>
+          <section className="study-sidebar__tldr" aria-labelledby="study-tldr-sidebar">
+            <h2 id="study-tldr-sidebar" className="home-nav__label">
+              TL;DR
+            </h2>
+            <p className="study-sidebar__tldr-body">{tldr}</p>
+          </section>
           <nav aria-label="On this page" className="home-feed__nav study-sidebar__nav">
             <p className="home-nav__label">On this page</p>
-            <div className="study-nav">
-              <HomeNavList sections={sections} activeId={activeId} onSelect={scrollToSection} />
+            <div className="study-sidebar__toc">
+              <StudyToc sections={sections} activeId={activeId} onSelect={scrollToSection} />
             </div>
           </nav>
           <HomePageLinks className="home-feed__links" />
@@ -164,16 +162,25 @@ export function CaseStudyTemplate({ study, next }: CaseStudyTemplateProps) {
           <article className="study-article" aria-labelledby="study-title">
             <section id="overview" className="study-hero" aria-labelledby="study-title" tabIndex={-1}>
               <div className="study-hero__intro">
-                <Link
-                  href="/"
-                  className="study-back study-back--inline"
-                  onClick={(event) => handleInternalClick(event, '/')}
-                >
-                  <span aria-hidden="true">←</span> All projects
-                </Link>
-                <p className="study-eyebrow">
-                  {study.company} · {study.year}
-                </p>
+                <nav aria-label="Breadcrumb" className="study-crumbs">
+                  <ol className="study-crumbs__list">
+                    <li className="study-crumbs__item">
+                      <Link
+                        href="/"
+                        className="study-back"
+                        onClick={(event) => handleInternalClick(event, '/')}
+                      >
+                        <span aria-hidden="true">←</span> All projects
+                      </Link>
+                    </li>
+                    <li className="study-crumbs__item study-crumbs__current" aria-current="page">
+                      {logo ? <HomeLogo logo={logo} /> : null}
+                      <span>
+                        {study.company} · {study.year}
+                      </span>
+                    </li>
+                  </ol>
+                </nav>
                 <h1 id="study-title" className="study-title">
                   {study.title}
                 </h1>
@@ -221,9 +228,12 @@ export function CaseStudyTemplate({ study, next }: CaseStudyTemplateProps) {
                 </div>
               ) : null}
 
-              <div className="study-tldr">
-                <p className="study-eyebrow">TL;DR</p>
-                <p className="study-lede">{study.tldr.body}</p>
+              <div className={`study-tldr${study.tldr.keyResult ? '' : ' study-tldr--summary-only'}`}>
+                {/* Phones hide the sidebar, so the TL;DR moves back into the column. */}
+                <div className="study-tldr__summary">
+                  <p className="study-eyebrow">TL;DR</p>
+                  <p className="study-lede">{tldr}</p>
+                </div>
                 {study.tldr.keyResult ? <KeyResult metric={study.tldr.keyResult} /> : null}
               </div>
             </section>

@@ -1,4 +1,4 @@
-import type { CaseStudy } from '@/data/caseStudies/types';
+import { getTldrText, type CaseStudy } from '@/data/caseStudies/types';
 
 /** Words the scannable-case-studies skill bans from case study copy. */
 export const BANNED_WORDS = [
@@ -20,10 +20,15 @@ export function countWords(text: string): number {
   return text.split(/\s+/).filter(Boolean).length;
 }
 
+/** Sentence-ending punctuation followed by whitespace or the end, so "v0.7.2" stays one sentence. */
+export function countSentences(text: string): number {
+  return text.match(/[.!?](?=\s|$)/g)?.length ?? 0;
+}
+
 /** Everything a reader sees below the meta row, excluding captions and metric tiles. */
 export function getBodyText(study: CaseStudy): string[] {
   return [
-    study.tldr.body,
+    getTldrText(study),
     study.context.heading,
     ...study.context.body,
     study.decisions.heading,

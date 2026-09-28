@@ -24,7 +24,10 @@ export const chaseMyHome: CaseStudy = {
     caption: 'MyHome puts value, equity, and the next payment in one view, instead of five separate screens.',
   },
   tldr: {
-    body: 'New mortgage customers were dropping out of onboarding and application flows. I led the strategic redesign of Chase MyHome onboarding and its migration to shared components, and contributed to the application flows. Accounts created rose 30% in 2024, and drop-off fell from 18% to 6–10%.',
+    situation: 'New mortgage customers were dropping out of Chase MyHome onboarding and application flows.',
+    task: 'I led the strategic redesign of onboarding and its migration to shared components.',
+    action: 'I redesigned the onboarding flow and contributed to the application flows.',
+    result: 'Accounts created rose 30% in 2024, and drop-off fell from 18% to 6–10%.',
     keyResult: {
       value: '+30%',
       label: 'accounts created in 2024',

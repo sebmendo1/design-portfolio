@@ -30,7 +30,10 @@ export const chorusAi: CaseStudy = {
     caption: 'Call review in Chorus. Every panel here now comes from the same components, grid, and tokens.',
   },
   tldr: {
-    body: 'Chorus’s design system stopped at atoms and molecules, so design and engineering argued over CSS every sprint. I scoped the rebuild with PMs, then rebuilt the library with variants, tokens, and a real grid, organized by product feature. It was standardizing feature work when ZoomInfo acquired Chorus in July 2021.',
+    situation: 'Chorus’s design system stopped at atoms and molecules, so design and engineering argued over CSS every sprint.',
+    task: 'I scoped a rebuild with PMs that could land without pausing feature work.',
+    action: 'I rebuilt the library with variants, tokens, and a real grid, organized by product feature.',
+    result: 'It was standardizing feature work when ZoomInfo acquired Chorus in July 2021.',
   },
   context: {
     heading: 'The library covered buttons, but the product was made of panels.',

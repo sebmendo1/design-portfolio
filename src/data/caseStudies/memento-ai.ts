@@ -22,7 +22,11 @@ export const mementoAi: CaseStudy = {
     caption: 'Write, get one question back, keep writing. The AI never says anything your journal did not.',
   },
   tldr: {
-    body: 'AI journaling apps answer with generic, confident text that can overwrite the writer’s voice. I designed and built Memento, a native iOS journal where a local retrieval pipeline limits every reflection to your own past entries and cites them. Early testers wrote more often when they could see where each insight came from.',
+    situation: 'AI journaling apps reply with generic, confident text that drowns out the writer’s voice.',
+    task: 'I wanted reflections grounded only in what the writer already wrote.',
+    action: 'I designed and built Memento, a native iOS journal whose local retrieval pipeline cites your past entries in every reflection.',
+    // TODO(seb): verify the tester result; the key result below has the same open question.
+    result: 'Early testers wrote more often when they could see where insights came from.',
     keyResult: {
       value: 'Beta',
       label: 'closed beta underway ahead of public launch',
