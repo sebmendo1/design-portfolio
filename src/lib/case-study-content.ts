@@ -1,4 +1,4 @@
-import { getTldrText, type CaseStudy } from '@/data/caseStudies/types';
+import type { CaseStudy } from '@/data/caseStudies/types';
 
 /** Words the scannable-case-studies skill bans from case study copy. */
 export const BANNED_WORDS = [
@@ -28,7 +28,6 @@ export function countSentences(text: string): number {
 /** Everything a reader sees below the meta row, excluding captions and metric tiles. */
 export function getBodyText(study: CaseStudy): string[] {
   return [
-    getTldrText(study),
     study.context.heading,
     ...study.context.body,
     study.decisions.heading,
