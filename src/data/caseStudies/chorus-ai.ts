@@ -5,8 +5,8 @@ import type { CaseStudy } from './types';
 export const chorusAi: CaseStudy = {
   slug: 'chorus-ai',
   section: 'chorus-ai',
-  title: 'A design system rebuilt around features, so teams stopped arguing CSS',
-  summary: 'Chorus.ai’s component library, rebuilt with variants, a real grid, and feature pages.',
+  title: 'Chorus’s design system, rebuilt around the product’s features',
+  summary: 'Chorus.ai’s component library, rebuilt with variants, a consistent grid, and one page per feature.',
   company: 'Chorus.ai',
   year: '2020–2021',
   meta: {
@@ -27,18 +27,18 @@ export const chorusAi: CaseStudy = {
       },
     ],
     shape: 'wide',
-    caption: 'Call review in Chorus. Every panel here now comes from the same components, grid, and tokens.',
+    caption: 'Call review in Chorus. Every panel on this screen uses the rebuilt components, grid, and tokens.',
   },
   tldr: {
-    situation: 'Chorus’s design system stopped at atoms and molecules, so design and engineering argued over CSS every sprint.',
+    situation: 'Chorus’s design system stopped at atoms and molecules, which caused constant back-and-forth between design and engineering.',
     task: 'I scoped a rebuild with PMs that could land without pausing feature work.',
-    action: 'I rebuilt the library with variants, tokens, and a real grid, organized by product feature.',
-    result: 'It was standardizing feature work when ZoomInfo acquired Chorus in July 2021.',
+    action: 'I rebuilt the library with variants, tokens, and a consistent grid, organized by product feature.',
+    result: 'Teams were moving feature work onto it when ZoomInfo acquired Chorus in July 2021.',
   },
   context: {
-    heading: 'The library covered buttons, but the product was made of panels.',
+    heading: 'The library had buttons, but the product was built from panels.',
     body: [
-      'There were no templates, cards, or complex components. The grid was used inconsistently, and nothing used Auto Layout or variants.',
+      'There were no templates, cards, or complex components. The grid was applied inconsistently, and nothing used Auto Layout or variants.',
       'The product was changing fast, so the rebuild had to land without pausing feature work.',
     ],
     // TODO(seb): verify these constraints (no feature freeze, small design team).
@@ -46,12 +46,12 @@ export const chorusAi: CaseStudy = {
   },
   // TODO(seb): verify every decision's "Instead of" and trade-off; they are inferred from existing copy, not supplied.
   decisions: {
-    heading: 'I scoped four jobs with PMs before touching Figma.',
+    heading: 'I agreed the scope with PMs before changing the library.',
     items: [
       {
-        title: 'Agree on must-haves before rebuilding anything',
-        body: 'With PMs I split the work into four jobs: modernize components, split large molecules by feature, build a grid and templates, and redesign the right sidebar.',
-        alternative: 'A full rewrite of the library in one pass.',
+        title: 'Agree on must-haves first',
+        body: 'With PMs, I split the work into four jobs: modernize components, split large molecules by feature, build a grid and templates, and redesign the right sidebar.',
+        alternative: 'Rewrite the whole library in one pass.',
         tradeoff: 'Some nice-to-have components waited for later cycles.',
         figure: {
           media: [
@@ -64,14 +64,14 @@ export const chorusAi: CaseStudy = {
             },
           ],
           shape: 'wide',
-          caption: 'The audit made the gap obvious: plenty of atoms, almost nothing a feature team could use as-is.',
+          caption: 'The audit showed plenty of atoms and almost nothing a feature team could use as-is.',
         },
       },
       {
-        title: 'Organize the library by feature, not by atom',
-        body: 'Recordings, Inbox, Meetings, Deals, Coaching, Analytics, and Playlists each got a page, so designers and engineers found components where they worked.',
+        title: 'Organize the library by product feature',
+        body: 'Recordings, Inbox, Meetings, Deals, Coaching, Analytics, and Playlists each got a page, so designers and engineers found components under the feature they worked on.',
         alternative: 'A strict atoms → molecules → organisms hierarchy only.',
-        tradeoff: 'Some components appear under more than one feature and need careful ownership.',
+        tradeoff: 'Some components appear under more than one feature, so each needs a clear owner.',
         figure: {
           media: [
             {
@@ -83,12 +83,12 @@ export const chorusAi: CaseStudy = {
             },
           ],
           shape: 'wide',
-          caption: 'One Figma page per feature. Atomic Design still underpins it, but people navigate by the product they build.',
+          caption: 'One Figma page per product feature. Atomic Design still sits underneath, but people browse by the feature they build.',
         },
       },
       {
-        title: 'Redesign the most reused surface first',
-        body: 'The right sidebar appears on every call review. I rebuilt it in context across Comments, Snippets, and Scorecards so every team inherited it at once.',
+        title: 'Redesign the most reused panel first',
+        body: 'The right sidebar appears on every call review. I rebuilt it in place across Comments, Snippets, and Scorecards, so every team picked up the new version at once.',
         alternative: 'Start with the simplest components to show quick progress.',
         tradeoff: 'The first release took longer and touched more teams.',
         figure: {
@@ -102,24 +102,24 @@ export const chorusAi: CaseStudy = {
             },
           ],
           shape: 'wide',
-          caption: 'Dashboards and the sidebar share one grid, so new features line up without a CSS debate.',
+          caption: 'Dashboards and the sidebar use the same grid, so new features line up without custom CSS.',
         },
       },
     ],
   },
   result: {
-    heading: 'One source of truth for a product in the middle of an acquisition.',
+    heading: 'Design and engineering shared one set of components going into the acquisition.',
     metrics: [],
     body: [
       // TODO(seb): add any adoption or speed numbers you can defend (components shipped, teams using it).
-      'Design and engineering worked from the same components, grid, and tokens. ZoomInfo announced its acquisition of Chorus on July 13, 2021, while the system was standardizing feature delivery.',
+      'Design and engineering worked from the same components, grid, and tokens. ZoomInfo announced its acquisition of Chorus on July 13, 2021, while teams were moving feature work onto the system.',
     ],
   },
   reflection: {
-    heading: 'I would measure adoption, not just coverage.',
+    heading: 'I would have tracked how many screens used the system.',
     body: [
       // TODO(seb): verify this reflection is yours.
-      'I tracked which components existed. Tracking how many product screens used them would have shown the impact much sooner.',
+      'I tracked which components existed. Counting the product screens built from them would have shown the impact much sooner.',
     ],
   },
 };

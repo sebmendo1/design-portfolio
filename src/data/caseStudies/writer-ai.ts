@@ -9,7 +9,7 @@ export const writerAi: CaseStudy = {
   slug: 'writer-ai',
   section: 'writer-ai',
   title: 'Six named rewrite modes instead of one blunt AI button',
-  summary: 'ReWrite for WRITER: highlight text, pick the job, insert the result anywhere you write.',
+  summary: 'ReWrite for WRITER: highlight text, pick the kind of edit, and insert the result where you are writing.',
   company: 'WRITER',
   year: '2021',
   meta: {
@@ -31,12 +31,12 @@ export const writerAi: CaseStudy = {
       },
     ],
     shape: 'wide',
-    caption: 'Highlight, open the W menu, pick a mode. The writer states the intent before the model runs.',
+    caption: 'Highlight text, open the W menu, and pick a mode. The writer chooses the kind of edit before the model runs.',
   },
   tldr: {
-    situation: 'Enterprise writers needed to rephrase without losing meaning or brand voice, and one “rewrite” action was too blunt.',
-    task: 'I was the product designer on ReWrite, WRITER’s rephrasing feature.',
-    action: 'I designed it as a selection-first flow with six named modes.',
+    situation: 'Enterprise writers needed to rephrase without losing meaning or brand voice, and a single “rewrite” action was too blunt.',
+    task: 'I was the product designer on ReWrite, WRITER’s rewriting feature.',
+    action: 'I designed it as a flow that starts from selected text and offers six named modes.',
     result: 'It shipped in April 2021 across the editor, desktop apps, browser extensions, and Figma.',
     keyResult: {
       value: '4',
@@ -48,33 +48,33 @@ export const writerAi: CaseStudy = {
   context: {
     heading: '“Rewrite” was one button trying to do six different jobs.',
     body: [
-      'The same word covered shortening a sentence, polishing non-native phrasing, enriching thin copy, and shifting tone for a new audience.',
-      'Enterprise teams also needed output that stayed on brand, so a free-form prompt was a governance risk as much as a usability one.',
+      'The same word covered shortening a sentence, fixing non-native phrasing, adding detail to thin copy, and changing tone for a new audience.',
+      'Enterprise teams also needed output that stayed on brand, so an open prompt box was a governance risk as well as a usability problem.',
     ],
-    constraints: ['Brand voice and governance', 'Many host surfaces', 'Early GenAI quality'],
+    constraints: ['Brand voice and governance', 'Many host apps', 'Early generative AI quality'],
   },
   // TODO(seb): verify every decision's "Instead of" and trade-off; they are inferred from existing copy, not supplied.
   decisions: {
-    heading: 'I made the intent explicit so the model had less to guess.',
+    heading: 'Writers pick the kind of edit, so the model has less to guess.',
     items: [
       {
-        title: 'Name the job instead of asking for a prompt',
-        body: 'Rephrase, Simplify, Polish, Shorten, Enrich, and Modify tone each map to a real writing task, so users pick an outcome rather than write instructions.',
+        title: 'Named modes instead of a prompt box',
+        body: 'Rephrase, Simplify, Polish, Shorten, Enrich, and Modify tone each match a real writing task. Users pick the result they want instead of writing instructions.',
         alternative: 'A blank prompt box where users describe the change they want.',
         tradeoff: 'Less flexibility for power users who wanted a custom instruction.',
       },
       {
-        title: 'Start from the selection, stay in place',
-        body: 'ReWrite opens from highlighted text and inserts the chosen alternative inline, so writers never leave the sentence they are fixing.',
+        title: 'Start from the selection and insert in place',
+        body: 'ReWrite opens from highlighted text and inserts the chosen version in the same spot, so writers stay in the sentence they are editing.',
         // TODO(seb): verify that a side panel was the alternative considered.
         alternative: 'A side panel that rewrites whole paragraphs.',
-        tradeoff: 'Less room to compare many alternatives side by side.',
+        tradeoff: 'Less room to compare several versions side by side.',
       },
       {
-        title: 'One flow on every surface',
-        body: 'The same highlight → W menu → mode → insert pattern ships in the editor, extensions, desktop apps, and Figma.',
+        title: 'The same flow in every app',
+        body: 'Highlight, open the W menu, pick a mode, insert. The same four steps ship in the editor, browser extensions, desktop apps, and Figma.',
         alternative: 'Native UI tuned to each host app.',
-        tradeoff: 'The flow had to fit the tightest host, which limited richer controls elsewhere.',
+        tradeoff: 'The flow had to fit the most cramped host, which ruled out richer controls in the others.',
         figure: {
           media: [
             {
@@ -86,33 +86,33 @@ export const writerAi: CaseStudy = {
             },
           ],
           shape: 'wide',
-          caption: 'Inside the WRITER editor, ReWrite sits next to the brand and style checks teams already trusted.',
+          caption: 'In the WRITER editor, ReWrite sits next to the brand and style checks teams already used.',
         },
       },
     ],
   },
   behavior: {
-    heading: 'The writer stays in control of every insert.',
+    heading: 'Nothing changes until the writer inserts a version.',
     // TODO(seb): verify these states match the shipped behavior.
     states: [
       { state: 'Select', behavior: 'Highlight text and open the W menu.' },
-      { state: 'Generating', behavior: 'Shows alternatives for the chosen mode.' },
-      { state: 'Review', behavior: 'Copy or insert one; nothing changes until the writer picks.' },
-      { state: 'Not good enough', behavior: 'Try another mode or regenerate; the original stays intact.' },
+      { state: 'Generating', behavior: 'Shows versions for the chosen mode.' },
+      { state: 'Review', behavior: 'Copy or insert one. The text stays as it was until the writer picks.' },
+      { state: 'Not good enough', behavior: 'Try another mode or regenerate. The original stays intact.' },
     ],
   },
   result: {
-    heading: 'Shipped on four surfaces, ahead of the chat-first wave.',
+    heading: 'Shipped in four places in April 2021.',
     metrics: [],
     body: [
-      'ReWrite launched to Starter, Team, and Enterprise plans. It set a pattern for controlled AI edits inside WRITER, and I designed Snippets and a Figma plugin for content approvals alongside it.',
+      'ReWrite launched on the Starter, Team, and Enterprise plans. At WRITER I also designed Snippets, for storing and reusing content, and a Figma plugin for content approvals.',
     ],
   },
   reflection: {
-    heading: 'Named modes aged better than I expected.',
+    heading: 'Named modes held up better than I expected.',
     body: [
       // TODO(seb): verify this reflection is yours.
-      'Chat became the default, yet the modes most people use today are still verbs like shorten and simplify. Constraints made the model feel more reliable.',
+      'Chat later became the default for writing tools. I still think named modes suit quick edits better, because the writer states the intent up front.',
     ],
   },
 };
