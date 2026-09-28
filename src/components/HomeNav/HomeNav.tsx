@@ -8,7 +8,7 @@ import type { HomeSection } from '@/lib/home-sections';
 import { SITE_SOCIAL_NAV } from '@/lib/site';
 import './HomeNav.css';
 
-type NavSection = Pick<HomeSection, 'id' | 'label'>;
+type NavSection = Pick<HomeSection, 'label'> & { id: string };
 
 type HomeNavListProps = {
   sections: NavSection[];
@@ -96,9 +96,16 @@ type HomeMenuProps = {
   activeId?: string | null;
   onSelect?: (id: string) => void;
   page?: HomePage;
+  label?: string;
 };
 
-export function HomeMenu({ sections, activeId = null, onSelect, page }: HomeMenuProps) {
+export function HomeMenu({
+  sections,
+  activeId = null,
+  onSelect,
+  page,
+  label = 'Projects',
+}: HomeMenuProps) {
   const dialogRef = useRef<HTMLDialogElement>(null);
 
   function open() {
@@ -154,8 +161,8 @@ export function HomeMenu({ sections, activeId = null, onSelect, page }: HomeMenu
             </button>
           </div>
           {sections?.length ? (
-            <nav aria-label="Projects" className="home-menu__nav">
-              <p className="home-nav__label">Projects</p>
+            <nav aria-label={label} className="home-menu__nav">
+              <p className="home-nav__label">{label}</p>
               <HomeNavList sections={sections} activeId={activeId} onSelect={handleSelect} />
             </nav>
           ) : null}

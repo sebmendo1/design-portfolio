@@ -2,7 +2,9 @@ import { notFound } from 'next/navigation';
 import type { Metadata } from 'next';
 import { CaseStudyPageContent } from '@/components/CaseStudyPageContent/CaseStudyPageContent';
 import { CaseStudySrArticle } from '@/components/CaseStudySrArticle/CaseStudySrArticle';
+import { CaseStudyTemplate } from '@/components/CaseStudyTemplate/CaseStudyTemplate';
 import { StructuredData } from '@/components/StructuredData/StructuredData';
+import { CASE_STUDIES, getCaseStudy, getNextCaseStudy } from '@/data/caseStudies';
 import { PROFILE_LAST_UPDATED } from '@/data/profile';
 import { projects } from '@/data/projects';
 import { getMergedProject } from '@/lib/cms-data';
@@ -17,17 +19,22 @@ interface Props {
 }
 
 export async function generateStaticParams() {
-  return projects.map((p) => ({ slug: p.slug }));
+  const slugs = new Set([
+    ...projects.map((p) => p.slug),
+    ...CASE_STUDIES.map((study) => study.slug),
+  ]);
+  return [...slugs].map((slug) => ({ slug }));
 }
 
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const { slug } = await params;
   const project = await getMergedProject(slug);
-  if (!project) return {};
-  const title = project.title;
-  const description = project.description ?? project.tagline;
+  const study = getCaseStudy(slug);
+  if (!project && !study) return {};
+  const title = project?.title ?? study!.title;
+  const description = study?.summary ?? project?.description ?? project?.tagline;
   const siteUrl = getSiteUrl();
-  const publishedTime = project.year
+  const publishedTime = project?.year
     ? new Date(Date.UTC(project.year, 0, 1)).toISOString()
     : undefined;
 
@@ -36,23 +43,27 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
     description,
     authors: [{ name: 'Sebastian Mendo', url: siteUrl }],
     creator: 'Sebastian Mendo',
-    keywords: project.tags,
+    keywords: project?.tags,
     alternates: {
       canonical: `/work/${slug}`,
-      types: {
-        'application/json': [
-          {
-            url: `/work/${slug}/content.json`,
-            title: `${title} structured content`,
-          },
-        ],
-        'text/markdown': [
-          {
-            url: `/work/${slug}`,
-            title: `${title} as Markdown`,
-          },
-        ],
-      },
+      ...(project
+        ? {
+            types: {
+              'application/json': [
+                {
+                  url: `/work/${slug}/content.json`,
+                  title: `${title} structured content`,
+                },
+              ],
+              'text/markdown': [
+                {
+                  url: `/work/${slug}`,
+                  title: `${title} as Markdown`,
+                },
+              ],
+            },
+          }
+        : {}),
     },
     openGraph: {
       title: `${title} — Sebastian Mendo`,
@@ -62,8 +73,8 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
       publishedTime,
       modifiedTime: new Date(PROFILE_LAST_UPDATED).toISOString(),
       authors: [siteUrl],
-      section: project.company,
-      tags: project.tags,
+      section: project?.company ?? study?.company,
+      tags: project?.tags,
     },
     twitter: {
       card: 'summary_large_image',
@@ -76,11 +87,30 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
 export default async function CaseStudyPage({ params }: Props) {
   const { slug } = await params;
   const project = await getMergedProject(slug);
-  if (!project) notFound();
+  const study = getCaseStudy(slug);
+  if (!project && !study) notFound();
 
-  const exported = exportMergedProject(project);
-  const caseStudyConfig = resolveCaseStudyConfig(project);
-  if (!caseStudyConfig) notFound();
+  const exported = project ? exportMergedProject(project) : undefined;
+
+  if (study) {
+    const next = getNextCaseStudy(slug);
+    return (
+      <>
+        {exported ? <StructuredData data={buildCreativeWorkGraph(exported)} /> : null}
+        <CaseStudyTemplate
+          study={study}
+          next={
+            next
+              ? { slug: next.slug, title: next.title, summary: next.summary, section: next.section }
+              : undefined
+          }
+        />
+      </>
+    );
+  }
+
+  const caseStudyConfig = project ? resolveCaseStudyConfig(project) : null;
+  if (!project || !exported || !caseStudyConfig) notFound();
 
   return (
     <>
