@@ -1,15 +1,6 @@
-import {
-  createStreamCursor,
-  streamDurationMs,
-  streamWordDelay,
-  WORD_INTERVAL_MS,
-} from '@/lib/streaming-text';
+import { createStreamCursor, streamDurationMs, WORD_INTERVAL_MS } from '@/lib/streaming-text';
 import { PROFILE } from '@/data/profile';
-import {
-  SITE_SOCIAL_NAV,
-  WORK_PAGE_BIO_CURRENT,
-  WORK_PAGE_BIO_LINKS,
-} from '@/lib/site';
+import { WORK_PAGE_BIO_CURRENT, WORK_PAGE_BIO_LINKS } from '@/lib/site';
 
 export const ABOUT_HEADLINE_TEXT = 'SebMendoDesign';
 
@@ -60,15 +51,13 @@ export type AboutStreamPlan = {
   headline: number;
   /** Word offsets into the shared stream, per block then per part. */
   blocks: number[][];
-  footer: Record<string, number>;
-  themeMs: number;
   durationMs: number;
 };
 
 /**
- * Headline and title are the anchor and paint immediately. Everything after
- * them — every paragraph and footer link — rides one continuous word stream,
- * so paragraphs bleed into each other instead of queueing up.
+ * Headline and title are the anchor and paint immediately. Every paragraph
+ * after them rides one continuous word stream, so paragraphs bleed into each
+ * other instead of queueing up.
  */
 export function buildAboutStreamPlan(): AboutStreamPlan {
   const cursor = createStreamCursor();
@@ -79,13 +68,6 @@ export function buildAboutStreamPlan(): AboutStreamPlan {
       : block.parts.map((part) => cursor.take(part.text)),
   );
 
-  const footer: Record<string, number> = {
-    work: cursor.take('work'),
-  };
-  for (const link of SITE_SOCIAL_NAV) {
-    footer[link.label] = cursor.take(link.label);
-  }
-
   const totalWords = cursor.total;
 
   return {
@@ -93,8 +75,6 @@ export function buildAboutStreamPlan(): AboutStreamPlan {
     intervalMs: WORD_INTERVAL_MS,
     headline: 0,
     blocks,
-    footer,
-    themeMs: streamWordDelay(Math.max(0, totalWords - 1), totalWords),
     durationMs: streamDurationMs(totalWords),
   };
 }
