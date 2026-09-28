@@ -3,6 +3,7 @@
 import { useRef, type MouseEvent, type SyntheticEvent } from 'react';
 import Link from 'next/link';
 import { PageHeadline } from '@/components/PageHeadline/PageHeadline';
+import { StudyToc } from '@/components/StudyToc/StudyToc';
 import { ThemeToggle } from '@/components/ThemeToggle/ThemeToggle';
 import type { HomeSection } from '@/lib/home-sections';
 import { SITE_SOCIAL_NAV } from '@/lib/site';
@@ -97,6 +98,8 @@ type HomeMenuProps = {
   onSelect?: (id: string) => void;
   page?: HomePage;
   label?: string;
+  /** `toc` renders the case-study table of contents instead of the project pills. */
+  variant?: 'pills' | 'toc';
 };
 
 export function HomeMenu({
@@ -105,6 +108,7 @@ export function HomeMenu({
   onSelect,
   page,
   label = 'Projects',
+  variant = 'pills',
 }: HomeMenuProps) {
   const dialogRef = useRef<HTMLDialogElement>(null);
 
@@ -163,7 +167,13 @@ export function HomeMenu({
           {sections?.length ? (
             <nav aria-label={label} className="home-menu__nav">
               <p className="home-nav__label">{label}</p>
-              <HomeNavList sections={sections} activeId={activeId} onSelect={handleSelect} />
+              {variant === 'toc' ? (
+                <div className="home-menu__toc">
+                  <StudyToc sections={sections} activeId={activeId} onSelect={handleSelect} />
+                </div>
+              ) : (
+                <HomeNavList sections={sections} activeId={activeId} onSelect={handleSelect} />
+              )}
             </nav>
           ) : null}
           <HomePageLinks className="home-menu__links" page={page} />

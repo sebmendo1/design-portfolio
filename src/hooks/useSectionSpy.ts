@@ -3,7 +3,7 @@
 import { useCallback, useEffect, useRef, useState } from 'react';
 
 /** A section is active once its top crosses this share of the viewport. */
-const ACTIVATION_LINE = 0.35;
+export const ACTIVATION_LINE = 0.35;
 /** Fallback for browsers without `scrollend`. */
 const LOCK_RELEASE_MS = 1200;
 
