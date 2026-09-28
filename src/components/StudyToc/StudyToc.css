@@ -2,9 +2,6 @@
   --toc-track-x: 3px;
   --toc-track-width: 2px;
   padding: 16px;
-  border: 1px solid var(--color-border);
-  border-radius: var(--border-radius-md);
-  background: var(--color-background-section);
 }
 
 .study-toc__list {
