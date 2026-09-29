@@ -64,7 +64,7 @@ export function HomeFeed({ projects, onNavigate }: HomeFeedProps) {
         <header className="home-feed__header load-reveal">
           <PageHeadline className="page-headline--home home-feed__headline" />
           <div className="home-feed__menu">
-            <HomeMenu sections={sections} activeId={activeId} onSelect={scrollToSection} />
+            <HomeMenu />
           </div>
         </header>
         <IndexBio className="home-feed__bio load-reveal" />
