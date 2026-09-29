@@ -3,8 +3,11 @@
 import { useCallback, useEffect, useMemo } from 'react';
 import {
   DissolveIn,
-  DISSOLVE_REVEAL_DURATION,
   DISSOLVE_REVEAL_EASE,
+  DISSOLVE_SUBTLE_BLUR,
+  DISSOLVE_SUBTLE_DURATION,
+  DISSOLVE_SUBTLE_OFFSET,
+  DISSOLVE_SUBTLE_STAGGER,
 } from '@/components/DissolveIn/DissolveIn';
 import { HomeMenu, HomeNavList, HomePageLinks } from '@/components/HomeNav/HomeNav';
 import { HomeProjectCard } from '@/components/HomeProjectCard/HomeProjectCard';
@@ -22,6 +25,40 @@ type HomeFeedProps = {
   projects: ProjectCardSummary[];
   onNavigate?: (href: string) => void;
 };
+
+// Only the cards likely above the fold on load follow the bio in sequence.
+const STAGGERED_CARD_COUNT = 3;
+
+const NO_SCRIPT_REVEAL =
+  '.home-feed__dissolve{opacity:1!important;transform:none!important;filter:none!important}';
+
+function FeedDissolve({
+  children,
+  delay = 0,
+  className,
+}: {
+  children: React.ReactNode;
+  delay?: number;
+  className?: string;
+}) {
+  return (
+    <ScrollReveal className={className}>
+      {(revealed) => (
+        <DissolveIn
+          className="home-feed__dissolve"
+          reveal={revealed}
+          delay={delay}
+          duration={DISSOLVE_SUBTLE_DURATION}
+          ease={DISSOLVE_REVEAL_EASE}
+          offset={DISSOLVE_SUBTLE_OFFSET}
+          blur={DISSOLVE_SUBTLE_BLUR}
+        >
+          {children}
+        </DissolveIn>
+      )}
+    </ScrollReveal>
+  );
+}
 
 function prefersReducedMotion() {
   return window.matchMedia('(prefers-reduced-motion: reduce)').matches;
@@ -58,9 +95,16 @@ export function HomeFeed({ projects, onNavigate }: HomeFeedProps) {
   }, []);
 
   const firstEntryId = sections[0]?.items[0]?.id;
+  const cardOrder = useMemo(
+    () => new Map(sections.flatMap((section) => section.items).map((entry, i) => [entry.id, i])),
+    [sections],
+  );
 
   return (
-    <div className="home-feed">
+    <div className="home-feed home-feed--home">
+      <noscript>
+        <style>{NO_SCRIPT_REVEAL}</style>
+      </noscript>
       <aside className="home-feed__sidebar">
         <header className="home-feed__header">
           <PageHeadline className="page-headline--home home-feed__headline" />
@@ -68,7 +112,9 @@ export function HomeFeed({ projects, onNavigate }: HomeFeedProps) {
             <HomeMenu sections={sections} activeId={activeId} onSelect={scrollToSection} />
           </div>
         </header>
-        <IndexBio className="home-feed__bio" />
+        <FeedDissolve>
+          <IndexBio className="home-feed__bio" />
+        </FeedDissolve>
         <nav aria-label="Projects" className="home-feed__nav">
           <p className="home-nav__label">Projects</p>
           <HomeNavList sections={sections} activeId={activeId} onSelect={scrollToSection} />
@@ -88,25 +134,26 @@ export function HomeFeed({ projects, onNavigate }: HomeFeedProps) {
             <h2 id={`${section.id}-heading`} className="sr-only">
               {section.label}
             </h2>
-            {section.items.map((entry) => (
-              <ScrollReveal key={entry.id} className="home-feed__card">
-                {(revealed) => (
-                  <DissolveIn
-                    reveal={revealed}
-                    duration={DISSOLVE_REVEAL_DURATION}
-                    ease={DISSOLVE_REVEAL_EASE}
-                  >
-                    <HomeProjectCard
-                      entry={entry}
-                      project={resolveIndexPreviewProject(entry, projects)}
-                      logo={section.logo}
-                      priority={entry.id === firstEntryId}
-                      onNavigate={onNavigate}
-                    />
-                  </DissolveIn>
-                )}
-              </ScrollReveal>
-            ))}
+            {section.items.map((entry) => {
+              const order = cardOrder.get(entry.id) ?? STAGGERED_CARD_COUNT;
+              return (
+                <FeedDissolve
+                  key={entry.id}
+                  className="home-feed__card"
+                  delay={
+                    order < STAGGERED_CARD_COUNT ? (order + 1) * DISSOLVE_SUBTLE_STAGGER : 0
+                  }
+                >
+                  <HomeProjectCard
+                    entry={entry}
+                    project={resolveIndexPreviewProject(entry, projects)}
+                    logo={section.logo}
+                    priority={entry.id === firstEntryId}
+                    onNavigate={onNavigate}
+                  />
+                </FeedDissolve>
+              );
+            })}
           </section>
         ))}
       </div>
