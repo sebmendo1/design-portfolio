@@ -1,18 +1,13 @@
 'use client';
 
-import {
-  DissolveIn,
-  DISSOLVE_REVEAL_DURATION,
-  DISSOLVE_REVEAL_EASE,
-} from '@/components/DissolveIn/DissolveIn';
 import { HomeMenu, HomePageLinks } from '@/components/HomeNav/HomeNav';
 import { HomePhotoCard } from '@/components/HomeProjectCard/HomePhotoCard';
 import { PageHeadline } from '@/components/PageHeadline/PageHeadline';
-import { ScrollReveal } from '@/components/ScrollReveal/ScrollReveal';
 import { StreamingText } from '@/components/StreamingText/StreamingText';
 import { ABOUT_ALBUM } from '@/data/aboutAlbum';
 import { ABOUT_INTRO_BLOCKS, buildAboutStreamPlan } from '@/lib/about-stream';
 import { findHomeSection } from '@/lib/home-sections';
+import { feedRevealSlot, revealSlot } from '@/lib/load-reveal';
 import '@/components/HomeFeed/HomeFeed.css';
 
 const plan = buildAboutStreamPlan();
@@ -74,33 +69,29 @@ export function AboutFeed() {
   return (
     <div className="home-feed about-feed">
       <aside className="home-feed__sidebar">
-        <header className="home-feed__header">
+        <header className="home-feed__header load-reveal">
           <PageHeadline className="page-headline--home home-feed__headline" />
           <div className="home-feed__menu">
             <HomeMenu page="about" />
           </div>
         </header>
         <AboutIntro />
-        <HomePageLinks className="home-feed__links" page="about" />
+        <HomePageLinks className="home-feed__links load-reveal" page="about" />
       </aside>
 
       <section className="home-feed__main" aria-label="Photos">
         {ABOUT_ALBUM.map((photo, index) => (
-          <ScrollReveal key={photo.src} className="home-feed__card">
-            {(revealed) => (
-              <DissolveIn
-                reveal={revealed}
-                duration={DISSOLVE_REVEAL_DURATION}
-                ease={DISSOLVE_REVEAL_EASE}
-              >
-                <HomePhotoCard
-                  {...photo}
-                  logo={photo.logoSection ? findHomeSection(photo.logoSection)?.logo : undefined}
-                  priority={index === 0}
-                />
-              </DissolveIn>
-            )}
-          </ScrollReveal>
+          <div
+            key={photo.src}
+            className="home-feed__card load-reveal load-reveal--media"
+            style={revealSlot(feedRevealSlot(index))}
+          >
+            <HomePhotoCard
+              {...photo}
+              logo={photo.logoSection ? findHomeSection(photo.logoSection)?.logo : undefined}
+              priority={index === 0}
+            />
+          </div>
         ))}
       </section>
     </div>
