@@ -1,8 +1,9 @@
 import type { PortfolioIndexSection } from '@/data/portfolioIndex';
 
 /**
- * Content model follows `.claude/skills/scannable-case-studies/SKILL.md`:
- * claim title → meta row → TL;DR → why it was hard → 2–3 decisions → result → reflection.
+ * Content model follows `.claude/skills/scannable-case-studies/SKILL.md`,
+ * styled like a Cursor research post: claim title → byline → hero → lede →
+ * problem → why it matters → decisions → how it works → impact → reflection.
  */
 
 export type CaseStudyMedia =
@@ -92,11 +93,16 @@ export type CaseStudy = {
   };
   hero: CaseStudyFigure;
   links?: CaseStudyLink[];
-  /** Renders the Casey listen / text buttons under the meta row. */
+  /** Renders the Casey listen / text buttons under the hero. */
   caseyActions?: boolean;
   /**
-   * STAR summary, one sentence per field, read as one paragraph in the
-   * sidebar. 60 words and 4 sentences or fewer in total.
+   * Opening paragraphs after the hero: problem → what I did → result.
+   * 2–3 paragraphs, ≤80 words total. Wrap the one key number in `**…**`.
+   */
+  lede: string[];
+  /**
+   * STAR summary kept for machine-readable exports and tests.
+   * Not rendered on the study page (the lede carries that job).
    */
   tldr: {
     situation: string;
@@ -109,6 +115,7 @@ export type CaseStudy = {
   problem: {
     heading: string;
     body: string[];
+    /** Kept as source notes; the page folds these into First/Second/Third prose. */
     constraints?: string[];
   };
   /** What was at stake for customers and the business. */
@@ -149,7 +156,7 @@ export type CaseStudySectionId =
 
 export type CaseStudySection = { id: CaseStudySectionId; label: string };
 
-/** Shared by the "On this page" nav and each section's eyebrow. */
+/** Shared by the "On this page" nav. In-page sections use claim headings only. */
 export const CASE_STUDY_SECTION_LABELS: Record<CaseStudySectionId, string> = {
   overview: 'Overview',
   problem: 'Problem',

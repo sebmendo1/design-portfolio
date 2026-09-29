@@ -22,6 +22,11 @@ export const agenticHomeLending: CaseStudy = {
     // TODO(seb): verify this screen is the pilot's entry point.
     caption: 'Applicants start by asking questions in a chat. The agent asks for documents later, once the application needs them.',
   },
+  lede: [
+    'Getting a mortgage meant weeks of document requests, and applicants rarely knew where they stood.',
+    'I designed agentic flows that request each document when needed, flag issues before underwriting, and show progress as a certainty score.',
+    'The **pilot** is live with a limited group of applicants.',
+  ],
   tldr: {
     situation: 'Getting a mortgage meant weeks of document requests, and applicants rarely knew where they stood.',
     task: 'My job was to move that tracking work from the applicant to the system.',
@@ -40,6 +45,7 @@ export const agenticHomeLending: CaseStudy = {
     body: [
       // TODO(seb): verify the 45-day figure and its source.
       'Origination could take about 45 days of document exchanges, and each re-request felt like going backwards.',
+      'Three rules shaped the agent: first, no advice or approval promises; second, underwriting decisions stay with people; and third, every document request is explained.',
     ],
     constraints: ['No advice or approval promises', 'Underwriting decisions stay with people', 'Every document request explained'],
   },

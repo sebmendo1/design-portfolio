@@ -34,6 +34,11 @@ export const salesforceHelp: CaseStudy = {
     shape: 'wide',
     caption: 'The customer describes the problem in plain words. Einstein suggests topics to narrow it, then recommends one channel.',
   },
+  lede: [
+    'Salesforce offered every support channel, and most customers opened a case, often the slowest option.',
+    'I designed AI Contact Support, where Einstein matches the described issue against the customer’s history and recommends one channel.',
+    'CSAT **doubled** after launch, and case volume dropped.',
+  ],
   tldr: {
     situation: 'Salesforce offered every support channel, and most customers opened a case, often the slowest option.',
     task: 'I needed to send each customer to the channel that fit their issue.',
@@ -52,6 +57,7 @@ export const salesforceHelp: CaseStudy = {
     heading: 'The page asked customers to make a decision they had no information to make.',
     body: [
       'Contact Support listed every channel with no sign of which fit the issue, which the customer’s plan included, or which was fastest. Dashboards, support tickets, interviews, and a survey with 90+ responses all pointed to this.',
+      'Three limits shaped the flow: first, enterprise customers on different support plans; second, no upselling in the support flow; and third, Einstein as the routing engine.',
     ],
     constraints: ['Enterprise customers on different support plans', 'No upselling in the support flow', 'Einstein as the routing engine'],
   },

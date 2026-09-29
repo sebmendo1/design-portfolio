@@ -29,6 +29,11 @@ export const chorusAi: CaseStudy = {
     shape: 'wide',
     caption: 'Call review in Chorus. Every panel on this screen uses the rebuilt components, grid, and tokens.',
   },
+  lede: [
+    'Chorus’s design system stopped at atoms and molecules, which caused constant back-and-forth between design and engineering.',
+    'I scoped a rebuild with PMs that could land without pausing feature work, then rebuilt the library with variants, tokens, and a consistent grid.',
+    'Teams were moving feature work onto it when ZoomInfo acquired Chorus in July 2021.',
+  ],
   tldr: {
     situation: 'Chorus’s design system stopped at atoms and molecules, which caused constant back-and-forth between design and engineering.',
     task: 'I scoped a rebuild with PMs that could land without pausing feature work.',
@@ -39,8 +44,9 @@ export const chorusAi: CaseStudy = {
     heading: 'The library had buttons, but the product was built from panels.',
     body: [
       'There were no templates, cards, or complex components. The grid was applied inconsistently, and nothing used Auto Layout or variants.',
+      // TODO(seb): verify these constraints (no feature freeze, small design team).
+      'Three limits shaped the rebuild: first, no feature freeze; second, a small design team; and third, a fast-moving AI product.',
     ],
-    // TODO(seb): verify these constraints (no feature freeze, small design team).
     constraints: ['No feature freeze', 'Small design team', 'Fast-moving AI product'],
   },
   whyItMatters: {
