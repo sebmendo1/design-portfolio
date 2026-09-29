@@ -45,10 +45,7 @@ html:has(.about-page) body {
 .about-photo {
   display: flex;
   flex-direction: column;
-  gap: 12px;
   margin: 0;
-  scroll-margin-top: 24px;
-  outline: none;
 }
 
 .about-photo__image {
@@ -56,23 +53,6 @@ html:has(.about-page) body {
   width: 100%;
   height: auto;
   border-radius: var(--border-radius-lg);
-}
-
-.about-photo__caption {
-  display: flex;
-  flex-direction: column;
-  gap: 2px;
-  font-size: 14px;
-  line-height: 1.4;
-}
-
-.about-photo__title {
-  font-weight: var(--font-weight-semibold);
-  color: var(--color-text-primary);
-}
-
-.about-photo__text {
-  color: var(--color-text-muted);
 }
 
 /* Three paragraphs read poorly centred, so the phone intro stays left-aligned at card width. */
@@ -84,9 +64,5 @@ html:has(.about-page) body {
     box-sizing: border-box;
     padding: 4px 4px 0;
     text-align: left;
-  }
-
-  .about-photo {
-    scroll-margin-top: 92px;
   }
 }
