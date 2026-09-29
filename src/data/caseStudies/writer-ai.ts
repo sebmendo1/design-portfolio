@@ -33,6 +33,11 @@ export const writerAi: CaseStudy = {
     shape: 'wide',
     caption: 'Highlight text, open the W menu, and pick a mode. The writer chooses the kind of edit before the model runs.',
   },
+  lede: [
+    'Enterprise writers needed to rephrase without losing meaning or brand voice, and a single “rewrite” action was too blunt.',
+    'I designed ReWrite as a flow that starts from selected text and offers six named modes.',
+    'It shipped in April 2021 across **4** surfaces: the editor, desktop apps, browser extensions, and Figma.',
+  ],
   tldr: {
     situation: 'Enterprise writers needed to rephrase without losing meaning or brand voice, and a single “rewrite” action was too blunt.',
     task: 'I was the product designer on ReWrite, WRITER’s rewriting feature.',
@@ -49,6 +54,7 @@ export const writerAi: CaseStudy = {
     heading: '“Rewrite” was one button trying to do six different jobs.',
     body: [
       'The same word covered shortening a sentence, fixing non-native phrasing, adding detail to thin copy, and changing tone for a new audience.',
+      'Three constraints shaped ReWrite: first, brand voice and governance; second, many host apps; and third, early generative AI quality.',
     ],
     constraints: ['Brand voice and governance', 'Many host apps', 'Early generative AI quality'],
   },

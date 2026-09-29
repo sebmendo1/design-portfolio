@@ -25,9 +25,15 @@ export function countSentences(text: string): number {
   return text.match(/[.!?](?=\s|$)/g)?.length ?? 0;
 }
 
-/** Everything a reader sees below the meta row, excluding captions and metric tiles. */
+/** Strip `**bold**` markers before counting words. */
+export function stripMarkdownBold(text: string): string {
+  return text.replace(/\*\*([^*]+)\*\*/g, '$1');
+}
+
+/** Everything a reader sees below the hero, excluding captions and metric tiles. */
 export function getBodyText(study: CaseStudy): string[] {
   return [
+    ...study.lede.map(stripMarkdownBold),
     study.problem.heading,
     ...study.problem.body,
     study.whyItMatters.heading,
@@ -57,4 +63,17 @@ export function getCaptions(study: CaseStudy): string[] {
 
 export function getBodyWordCount(study: CaseStudy): number {
   return getBodyText(study).reduce((total, text) => total + countWords(text), 0);
+}
+
+/** Approximate read time for the byline, rounded up at 200 words per minute. */
+export function getReadMinutes(study: CaseStudy): number {
+  return Math.max(1, Math.ceil(getBodyWordCount(study) / 200));
+}
+
+export function getLedeWordCount(study: CaseStudy): number {
+  return study.lede.reduce((total, text) => total + countWords(stripMarkdownBold(text)), 0);
+}
+
+export function countLedeBoldSpans(study: CaseStudy): number {
+  return study.lede.reduce((total, text) => total + (text.match(/\*\*[^*]+\*\*/g)?.length ?? 0), 0);
 }

@@ -21,6 +21,11 @@ export const mementoAi: CaseStudy = {
     media: [{ type: 'phone', video: ASSETS.video.mementoDemo, alt: 'Memento journaling and reflection flow' }],
     caption: 'Write an entry, answer one follow-up question, keep writing. Every reflection draws on entries you wrote.',
   },
+  lede: [
+    'AI journaling apps answer with generic advice that can drown out the writer’s own voice. I wanted reflections built only from what the writer had written.',
+    'I designed and built Memento, a native iOS journal whose local retrieval pipeline cites past entries in every reflection.',
+    'Early testers wrote more often once they could see where each reflection came from.',
+  ],
   tldr: {
     situation: 'AI journaling apps answer with generic advice that can drown out the writer’s own voice.',
     task: 'I wanted reflections built only from what the writer had written.',
@@ -38,6 +43,7 @@ export const mementoAi: CaseStudy = {
     heading: 'People stop journaling when the AI feels like it is watching them.',
     body: [
       'Generic model responses flatten the writer’s voice, and insights with no sources feel intrusive. Either one is enough to make people stop writing.',
+      'Three limits shaped the product: first, private by default; second, answers only from the user’s entries; and third, I was the only designer and engineer.',
     ],
     constraints: ['Private by default', 'Answers only from the user’s entries', 'Solo designer and engineer'],
   },

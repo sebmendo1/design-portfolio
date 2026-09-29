@@ -21,6 +21,11 @@ export const caseyAi: CaseStudy = {
     caption: 'A customer who saved a mortgage application gets an RCS message from a verified Chase sender, with a link back to it.',
   },
   caseyActions: true,
+  lede: [
+    'Chase wanted an AI agent that could talk to customers without creating legal risk. We started in home lending, where the rules are strictest and the loans are largest.',
+    'I designed Casey as one agent across voice and RCS. It qualifies customers, tells them where their application stands, and hands advice and quotes to a licensed associate.',
+    'Casey Voice has handled **3,000+** production calls at about 12% lead conversion.',
+  ],
   tldr: {
     situation: 'Chase wanted an AI agent that could talk to customers without creating legal risk.',
     task: 'As design lead, I had to prove it in home lending, where rules are strictest.',
@@ -38,7 +43,8 @@ export const caseyAi: CaseStudy = {
   problem: {
     heading: 'Customers stalled halfway through mortgage applications and rarely came back.',
     body: [
-      'Chase needed a way to reach those customers by phone and text. Any agent doing that speaks for the bank, and both channels carry consent and disclosure rules.',
+      'Chase needed a way to reach those customers by phone and text. Any agent doing that speaks for the bank.',
+      'Three rules shaped everything: first, Casey cannot give advice or quote rates; second, every call and text needs consent and a disclosure; and third, voice and text follow the same rules.',
     ],
     constraints: [
       'No advice or rate quotes',

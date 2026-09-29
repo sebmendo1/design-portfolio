@@ -23,6 +23,11 @@ export const chaseMyHome: CaseStudy = {
     media: [{ type: 'phone', video: ASSETS.video.chaseMyHomeDemo, alt: 'Chase MyHome app walkthrough' }],
     caption: 'The MyHome home view shows home value, equity, and the next payment together.',
   },
+  lede: [
+    'New mortgage customers were dropping out of Chase MyHome onboarding and application flows.',
+    'I led the onboarding redesign on the Manhattan Design System and contributed to the application flows.',
+    'Accounts created rose **30%** in 2024, and drop-off fell from 18% to 6–10%.',
+  ],
   tldr: {
     situation: 'New mortgage customers were dropping out of Chase MyHome onboarding and application flows.',
     task: 'I led the onboarding redesign for new mortgage customers.',
@@ -39,6 +44,7 @@ export const chaseMyHome: CaseStudy = {
     heading: 'New mortgage customers were dropping out of onboarding and applications.',
     body: [
       'Drop-off in the mortgage application flows was 18%. Customers who got through faced balance, value, equity, rate, taxes, insurance, and payments, with few ways to make sense of them.',
+      'Three constraints shaped every screen: first, regulated disclosures; second, WCAG accessibility; and third, the shared Manhattan Design System.',
     ],
     constraints: ['Regulated disclosures', 'WCAG accessibility', 'Shared Manhattan Design System'],
   },

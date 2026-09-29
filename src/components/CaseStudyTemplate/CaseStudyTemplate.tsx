@@ -1,6 +1,6 @@
 'use client';
 
-import { useCallback, useMemo, type MouseEvent, type ReactNode } from 'react';
+import { Fragment, useCallback, useMemo, type MouseEvent, type ReactNode } from 'react';
 import Link from 'next/link';
 import { motion } from 'framer-motion';
 import { CaseyActions } from '@/components/CaseyActions/CaseyActions';
@@ -9,7 +9,6 @@ import { HomeLogo } from '@/components/HomeProjectCard/HomeProjectCard';
 import { PageHeadline } from '@/components/PageHeadline/PageHeadline';
 import { StudyToc } from '@/components/StudyToc/StudyToc';
 import {
-  CASE_STUDY_SECTION_LABELS,
   getCaseStudySections,
   type CaseStudy,
   type CaseStudyMetric,
@@ -18,6 +17,7 @@ import {
 import { useDissolveNavigate } from '@/hooks/useDissolveNavigate';
 import { useSectionSpy } from '@/hooks/useSectionSpy';
 import { findHomeSection } from '@/lib/home-sections';
+import { getReadMinutes } from '@/lib/case-study-content';
 import { CaseStudyFigureView } from './CaseStudyMedia';
 import '@/components/HomeFeed/HomeFeed.css';
 import './CaseStudyTemplate.css';
@@ -27,16 +27,24 @@ type CaseStudyTemplateProps = {
   next?: Pick<CaseStudy, 'slug' | 'title' | 'summary' | 'section'>;
 };
 
-const META_FIELDS = [
-  ['role', 'Role'],
-  ['team', 'Team'],
-  ['timeline', 'Timeline'],
-  ['platform', 'Platform'],
-  ['status', 'Status'],
-] as const;
-
 function prefersReducedMotion() {
   return window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+}
+
+/** Renders `**bold**` spans from lede copy. */
+function RichText({ text }: { text: string }) {
+  const parts = text.split(/(\*\*[^*]+\*\*)/g);
+  return (
+    <>
+      {parts.map((part, index) => {
+        const bold = part.match(/^\*\*(.+)\*\*$/);
+        if (bold) {
+          return <strong key={index}>{bold[1]}</strong>;
+        }
+        return <Fragment key={index}>{part}</Fragment>;
+      })}
+    </>
+  );
 }
 
 function Section({
@@ -50,12 +58,9 @@ function Section({
 }) {
   return (
     <section id={id} className="study-section" aria-labelledby={`${id}-heading`} tabIndex={-1}>
-      <header className="study-section__header">
-        <p className="study-eyebrow">{CASE_STUDY_SECTION_LABELS[id]}</p>
-        <h2 id={`${id}-heading`} className="study-heading">
-          {heading}
-        </h2>
-      </header>
+      <h2 id={`${id}-heading`} className="study-heading">
+        {heading}
+      </h2>
       {children}
     </section>
   );
@@ -89,14 +94,6 @@ function MetricBody({ metric }: { metric: CaseStudyMetric }) {
   );
 }
 
-function KeyResult({ metric }: { metric: CaseStudyMetric }) {
-  return (
-    <p className="study-metric study-metric--key">
-      <MetricBody metric={metric} />
-    </p>
-  );
-}
-
 export function CaseStudyTemplate({ study, next }: CaseStudyTemplateProps) {
   const { navigate, motionProps } = useDissolveNavigate();
   const sections = useMemo(() => getCaseStudySections(study), [study]);
@@ -104,6 +101,7 @@ export function CaseStudyTemplate({ study, next }: CaseStudyTemplateProps) {
   const { activeId, lock } = useSectionSpy(sectionIds);
   const logo = findHomeSection(study.section)?.logo;
   const nextLogo = next ? findHomeSection(next.section)?.logo : undefined;
+  const readMinutes = getReadMinutes(study);
 
   const scrollToSection = useCallback(
     (id: string) => {
@@ -177,19 +175,25 @@ export function CaseStudyTemplate({ study, next }: CaseStudyTemplateProps) {
                 <h1 id="study-title" className="study-title">
                   {study.title}
                 </h1>
-                <p className="study-summary">{study.summary}</p>
+                <p className="study-byline">
+                  <span>{study.meta.role}</span>
+                  <span aria-hidden="true"> · </span>
+                  <span>{study.meta.timeline}</span>
+                  <span aria-hidden="true"> · </span>
+                  <span>{study.meta.status}</span>
+                  <span aria-hidden="true"> · </span>
+                  <span>
+                    {readMinutes} min read
+                  </span>
+                </p>
+                <p className="study-byline study-byline--secondary">
+                  <span>{study.meta.team}</span>
+                  <span aria-hidden="true"> · </span>
+                  <span>{study.meta.platform}</span>
+                </p>
               </div>
 
               <CaseStudyFigureView figure={study.hero} logo={logo} priority />
-
-              <dl className="study-meta">
-                {META_FIELDS.map(([key, label]) => (
-                  <div key={key} className={`study-meta__item study-meta__item--${key}`}>
-                    <dt>{label}</dt>
-                    <dd>{study.meta[key]}</dd>
-                  </div>
-                ))}
-              </dl>
 
               {study.caseyActions || study.links?.length ? (
                 <div className="study-actions">
@@ -221,24 +225,17 @@ export function CaseStudyTemplate({ study, next }: CaseStudyTemplateProps) {
                 </div>
               ) : null}
 
-              {study.tldr.keyResult ? (
-                <div className="study-tldr">
-                  <KeyResult metric={study.tldr.keyResult} />
-                </div>
-              ) : null}
+              <div className="study-lede">
+                {study.lede.map((paragraph) => (
+                  <p key={paragraph}>
+                    <RichText text={paragraph} />
+                  </p>
+                ))}
+              </div>
             </section>
 
             <Section id="problem" heading={study.problem.heading}>
               <Paragraphs items={study.problem.body} />
-              {study.problem.constraints?.length ? (
-                <ul className="study-constraints" aria-label="Constraints">
-                  {study.problem.constraints.map((item) => (
-                    <li key={item} className="study-constraint">
-                      {item}
-                    </li>
-                  ))}
-                </ul>
-              ) : null}
             </Section>
 
             <Section id="why-it-matters" heading={study.whyItMatters.heading}>
@@ -247,25 +244,16 @@ export function CaseStudyTemplate({ study, next }: CaseStudyTemplateProps) {
 
             <Section id="decisions" heading={study.decisions.heading}>
               <ol className="study-decisions">
-                {study.decisions.items.map((item, index) => (
+                {study.decisions.items.map((item) => (
                   <li key={item.title} className="study-decision">
-                    <div className="study-decision__card">
-                      <p className="study-decision__index">
-                        Decision {String(index + 1).padStart(2, '0')}
-                      </p>
-                      <h3 className="study-decision__title">{item.title}</h3>
-                      <p className="study-body">{item.body}</p>
-                      <dl className="study-decision__why">
-                        <div>
-                          <dt>Instead of</dt>
-                          <dd>{item.alternative}</dd>
-                        </div>
-                        <div>
-                          <dt>Trade-off</dt>
-                          <dd>{item.tradeoff}</dd>
-                        </div>
-                      </dl>
-                    </div>
+                    <h3 className="study-decision__title">{item.title}</h3>
+                    <p className="study-body">{item.body}</p>
+                    <p className="study-decision__aside">
+                      <span className="study-decision__aside-label">Instead of</span> {item.alternative}
+                    </p>
+                    <p className="study-decision__aside">
+                      <span className="study-decision__aside-label">Trade-off</span> {item.tradeoff}
+                    </p>
                     {item.figure ? <CaseStudyFigureView figure={item.figure} logo={logo} /> : null}
                   </li>
                 ))}
