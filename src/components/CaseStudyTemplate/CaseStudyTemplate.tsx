@@ -123,213 +123,222 @@ export function CaseStudyTemplate({ study, next }: CaseStudyTemplateProps) {
     navigate(href);
   }
 
+  const toc = (
+    <>
+      <p className="home-nav__label">On this page</p>
+      <div className="study-rail__toc">
+        <StudyToc sections={sections} activeId={activeId} onSelect={scrollToSection} />
+      </div>
+    </>
+  );
+
   return (
     <motion.div className="study" {...motionProps}>
-      <div className="home-feed study-layout">
-        <aside className="home-feed__sidebar study-sidebar">
-          <header className="home-feed__header load-reveal">
-            <PageHeadline className="page-headline--home home-feed__headline" />
-            <div className="home-feed__menu">
-              <HomeMenu
-                sections={sections}
-                activeId={activeId}
-                onSelect={scrollToSection}
-                label="On this page"
-                variant="toc"
-              />
-            </div>
-          </header>
-          <nav aria-label="On this page" className="home-feed__nav study-sidebar__nav load-reveal">
-            <p className="home-nav__label">On this page</p>
-            <div className="study-sidebar__toc">
-              <StudyToc sections={sections} activeId={activeId} onSelect={scrollToSection} />
-            </div>
-          </nav>
-          <HomePageLinks className="home-feed__links load-reveal" />
-        </aside>
+      <div className="study-shell">
+        <header className="home-feed__header study-topbar load-reveal">
+          <PageHeadline className="page-headline--home home-feed__headline" />
+          <div className="home-feed__menu study-topbar__menu">
+            <HomeMenu
+              sections={sections}
+              activeId={activeId}
+              onSelect={scrollToSection}
+              label="On this page"
+              variant="toc"
+            />
+          </div>
+        </header>
 
-        <main id="main-content" className="home-feed__main study-main">
-          <article className="study-article" aria-labelledby="study-title">
-            <section id="overview" className="study-hero" aria-labelledby="study-title" tabIndex={-1}>
-              <div className="study-hero__intro">
-                <nav aria-label="Breadcrumb" className="study-crumbs load-reveal">
-                  <ol className="study-crumbs__list">
-                    <li className="study-crumbs__item">
-                      <Link
-                        href="/"
-                        className="study-back"
-                        onClick={(event) => handleInternalClick(event, '/')}
-                      >
-                        <span aria-hidden="true">←</span>
-                        <span className="sr-only">All projects</span>
-                      </Link>
-                    </li>
-                    <li className="study-crumbs__item study-crumbs__current" aria-current="page">
-                      {logo ? <HomeLogo logo={logo} /> : null}
-                      <span>
-                        {study.company} · {study.year}
-                      </span>
-                    </li>
-                  </ol>
-                </nav>
-                <h1 id="study-title" className="study-title load-reveal">
-                  {study.title}
-                </h1>
-                <p className="study-byline load-reveal">
-                  <span>{study.meta.role}</span>
-                  <span aria-hidden="true"> · </span>
-                  <span>{study.meta.timeline}</span>
-                  <span aria-hidden="true"> · </span>
-                  <span>{study.meta.status}</span>
-                  <span aria-hidden="true"> · </span>
-                  <span>
-                    {readMinutes} min read
-                  </span>
-                </p>
-                <p className="study-byline study-byline--secondary load-reveal">
-                  <span>{study.meta.team}</span>
-                  <span aria-hidden="true"> · </span>
-                  <span>{study.meta.platform}</span>
-                </p>
-              </div>
-
-              <CaseStudyFigureView
-                figure={study.hero}
-                logo={logo}
-                priority
-                className="load-reveal load-reveal--media"
-              />
-
-              {study.caseyActions || study.links?.length ? (
-                <div className="study-actions load-reveal">
-                  {study.caseyActions ? <CaseyActions /> : null}
-                  {study.links?.map((link) => {
-                    const external = /^https?:\/\//.test(link.href);
-                    return external ? (
-                      <a
-                        key={link.href}
-                        href={link.href}
-                        className="study-link-pill"
-                        target="_blank"
-                        rel="noopener noreferrer"
-                      >
-                        {link.label} <span aria-hidden="true">↗</span>
-                        <span className="sr-only"> (opens in a new tab)</span>
-                      </a>
-                    ) : (
-                      <Link
-                        key={link.href}
-                        href={link.href}
-                        className="study-link-pill"
-                        onClick={(event) => handleInternalClick(event, link.href)}
-                      >
-                        {link.label} <span aria-hidden="true">→</span>
-                      </Link>
-                    );
-                  })}
-                </div>
-              ) : null}
-
-              <div className="study-lede load-reveal">
-                {study.lede.map((paragraph) => (
-                  <p key={paragraph}>
-                    <RichText text={paragraph} />
-                  </p>
-                ))}
-              </div>
-            </section>
-
-            <Section id="problem" heading={study.problem.heading}>
-              <Paragraphs items={study.problem.body} />
-            </Section>
-
-            <Section id="why-it-matters" heading={study.whyItMatters.heading}>
-              <Paragraphs items={study.whyItMatters.body} />
-            </Section>
-
-            <Section id="decisions" heading={study.decisions.heading}>
-              <ol className="study-decisions">
-                {study.decisions.items.map((item) => (
-                  <li key={item.title} className="study-decision">
-                    <h3 className="study-decision__title">{item.title}</h3>
-                    <p className="study-body">{item.body}</p>
-                    <p className="study-decision__aside">
-                      <span className="study-decision__aside-label">Instead of</span> {item.alternative}
-                    </p>
-                    <p className="study-decision__aside">
-                      <span className="study-decision__aside-label">Trade-off</span> {item.tradeoff}
-                    </p>
-                    {item.figure ? <CaseStudyFigureView figure={item.figure} logo={logo} /> : null}
-                  </li>
-                ))}
-              </ol>
-            </Section>
-
-            {study.howItWorks ? (
-              <Section id="how-it-works" heading={study.howItWorks.heading}>
-                {study.howItWorks.intro ? <p className="study-body">{study.howItWorks.intro}</p> : null}
-                {study.howItWorks.states?.length ? (
-                  <ol className="study-states">
-                    {study.howItWorks.states.map((item) => (
-                      <li key={item.state} className="study-state">
-                        <span className="study-state__name">{item.state}</span>
-                        <span className="study-state__behavior">{item.behavior}</span>
+        <div className="study-columns">
+          <main id="main-content" className="study-main">
+            <article className="study-article" aria-labelledby="study-title">
+              <section id="overview" className="study-hero" aria-labelledby="study-title" tabIndex={-1}>
+                <div className="study-hero__intro">
+                  <nav aria-label="Breadcrumb" className="study-crumbs load-reveal">
+                    <ol className="study-crumbs__list">
+                      <li className="study-crumbs__item">
+                        <Link
+                          href="/"
+                          className="study-back"
+                          onClick={(event) => handleInternalClick(event, '/')}
+                        >
+                          <span aria-hidden="true">←</span>
+                          <span className="sr-only">All projects</span>
+                        </Link>
                       </li>
-                    ))}
-                  </ol>
-                ) : null}
-                {study.howItWorks.figures?.length ? (
-                  <div className="study-figures">
-                    {study.howItWorks.figures.map((figure, index) => (
-                      <CaseStudyFigureView key={index} figure={figure} logo={logo} />
-                    ))}
+                      <li className="study-crumbs__item study-crumbs__current" aria-current="page">
+                        {logo ? <HomeLogo logo={logo} /> : null}
+                        <span>
+                          {study.company} · {study.year}
+                        </span>
+                      </li>
+                    </ol>
+                  </nav>
+                  <h1 id="study-title" className="study-title load-reveal">
+                    {study.title}
+                  </h1>
+                  <p className="study-byline load-reveal">
+                    <span>{study.meta.role}</span>
+                    <span aria-hidden="true"> · </span>
+                    <span>{study.meta.timeline}</span>
+                    <span aria-hidden="true"> · </span>
+                    <span>{study.meta.status}</span>
+                    <span aria-hidden="true"> · </span>
+                    <span>{readMinutes} min read</span>
+                  </p>
+                  <p className="study-byline study-byline--secondary load-reveal">
+                    <span>{study.meta.team}</span>
+                    <span aria-hidden="true"> · </span>
+                    <span>{study.meta.platform}</span>
+                  </p>
+                </div>
+
+                <CaseStudyFigureView
+                  figure={study.hero}
+                  logo={logo}
+                  priority
+                  className="load-reveal load-reveal--media"
+                />
+
+                {study.caseyActions || study.links?.length ? (
+                  <div className="study-actions load-reveal">
+                    {study.caseyActions ? <CaseyActions /> : null}
+                    {study.links?.map((link) => {
+                      const external = /^https?:\/\//.test(link.href);
+                      return external ? (
+                        <a
+                          key={link.href}
+                          href={link.href}
+                          className="study-link-pill"
+                          target="_blank"
+                          rel="noopener noreferrer"
+                        >
+                          {link.label} <span aria-hidden="true">↗</span>
+                          <span className="sr-only"> (opens in a new tab)</span>
+                        </a>
+                      ) : (
+                        <Link
+                          key={link.href}
+                          href={link.href}
+                          className="study-link-pill"
+                          onClick={(event) => handleInternalClick(event, link.href)}
+                        >
+                          {link.label} <span aria-hidden="true">→</span>
+                        </Link>
+                      );
+                    })}
                   </div>
                 ) : null}
-              </Section>
-            ) : null}
 
-            <Section id="impact" heading={study.impact.heading}>
-              {study.impact.metrics.length ? (
-                <ul className="study-metrics">
-                  {study.impact.metrics.map((metric) => (
-                    <li key={metric.label} className="study-metric">
-                      <MetricBody metric={metric} />
+                <div className="study-lede load-reveal">
+                  {study.lede.map((paragraph) => (
+                    <p key={paragraph}>
+                      <RichText text={paragraph} />
+                    </p>
+                  ))}
+                </div>
+              </section>
+
+              <Section id="problem" heading={study.problem.heading}>
+                <Paragraphs items={study.problem.body} />
+              </Section>
+
+              <Section id="why-it-matters" heading={study.whyItMatters.heading}>
+                <Paragraphs items={study.whyItMatters.body} />
+              </Section>
+
+              <Section id="decisions" heading={study.decisions.heading}>
+                <ol className="study-decisions">
+                  {study.decisions.items.map((item) => (
+                    <li key={item.title} className="study-decision">
+                      <h3 className="study-decision__title">{item.title}</h3>
+                      <p className="study-body">{item.body}</p>
+                      <p className="study-decision__aside">
+                        <span className="study-decision__aside-label">Instead of</span>{' '}
+                        {item.alternative}
+                      </p>
+                      <p className="study-decision__aside">
+                        <span className="study-decision__aside-label">Trade-off</span> {item.tradeoff}
+                      </p>
+                      {item.figure ? <CaseStudyFigureView figure={item.figure} logo={logo} /> : null}
                     </li>
                   ))}
-                </ul>
-              ) : null}
-              <Paragraphs items={study.impact.body} />
-            </Section>
-
-            {study.reflection ? (
-              <Section id="reflection" heading={study.reflection.heading}>
-                <Paragraphs items={study.reflection.body} />
+                </ol>
               </Section>
+
+              {study.howItWorks ? (
+                <Section id="how-it-works" heading={study.howItWorks.heading}>
+                  {study.howItWorks.intro ? (
+                    <p className="study-body">{study.howItWorks.intro}</p>
+                  ) : null}
+                  {study.howItWorks.states?.length ? (
+                    <ol className="study-states">
+                      {study.howItWorks.states.map((item) => (
+                        <li key={item.state} className="study-state">
+                          <span className="study-state__name">{item.state}</span>
+                          <span className="study-state__behavior">{item.behavior}</span>
+                        </li>
+                      ))}
+                    </ol>
+                  ) : null}
+                  {study.howItWorks.figures?.length ? (
+                    <div className="study-figures">
+                      {study.howItWorks.figures.map((figure, index) => (
+                        <CaseStudyFigureView key={index} figure={figure} logo={logo} />
+                      ))}
+                    </div>
+                  ) : null}
+                </Section>
+              ) : null}
+
+              <Section id="impact" heading={study.impact.heading}>
+                {study.impact.metrics.length ? (
+                  <ul className="study-metrics">
+                    {study.impact.metrics.map((metric) => (
+                      <li key={metric.label} className="study-metric">
+                        <MetricBody metric={metric} />
+                      </li>
+                    ))}
+                  </ul>
+                ) : null}
+                <Paragraphs items={study.impact.body} />
+              </Section>
+
+              {study.reflection ? (
+                <Section id="reflection" heading={study.reflection.heading}>
+                  <Paragraphs items={study.reflection.body} />
+                </Section>
+              ) : null}
+            </article>
+
+            {next ? (
+              <nav aria-label="Next case study" className="study-next load-reveal">
+                <p className="study-eyebrow">Next case study</p>
+                <Link
+                  href={`/work/${next.slug}`}
+                  className="study-next__link"
+                  onClick={(event) => handleInternalClick(event, `/work/${next.slug}`)}
+                >
+                  {nextLogo ? <HomeLogo logo={nextLogo} /> : null}
+                  <span className="study-next__text">
+                    <span className="study-next__title">{next.title}</span>
+                    <span className="study-next__summary">{next.summary}</span>
+                  </span>
+                  <span className="study-next__arrow" aria-hidden="true">
+                    →
+                  </span>
+                </Link>
+              </nav>
             ) : null}
-          </article>
 
-          {next ? (
-            <nav aria-label="Next case study" className="study-next load-reveal">
-              <p className="study-eyebrow">Next case study</p>
-              <Link
-                href={`/work/${next.slug}`}
-                className="study-next__link"
-                onClick={(event) => handleInternalClick(event, `/work/${next.slug}`)}
-              >
-                {nextLogo ? <HomeLogo logo={nextLogo} /> : null}
-                <span className="study-next__text">
-                  <span className="study-next__title">{next.title}</span>
-                  <span className="study-next__summary">{next.summary}</span>
-                </span>
-                <span className="study-next__arrow" aria-hidden="true">
-                  →
-                </span>
-              </Link>
+            <HomePageLinks className="study-footer-links load-reveal" />
+          </main>
+
+          <aside className="study-rail load-reveal" aria-label="On this page">
+            <nav className="study-rail__nav" aria-label="On this page">
+              {toc}
             </nav>
-          ) : null}
-
-          <HomePageLinks className="study-footer-links load-reveal" />
-        </main>
+          </aside>
+        </div>
       </div>
     </motion.div>
   );
