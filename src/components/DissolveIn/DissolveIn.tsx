@@ -5,7 +5,6 @@ import { motion, useReducedMotion } from 'framer-motion';
 const DISSOLVE_EASE = [0.25, 0.1, 0.25, 1] as const;
 export const DISSOLVE_REVEAL_EASE = [0.22, 1, 0.36, 1] as const;
 export const DISSOLVE_DURATION = 0.32;
-export const DISSOLVE_EXIT_DURATION = 0.18;
 export const DISSOLVE_STAGGER = 0.06;
 export const DISSOLVE_REVEAL_DURATION = 0.72;
 export const DISSOLVE_REVEAL_STAGGER = 0.14;
