@@ -28,20 +28,21 @@ export function countSentences(text: string): number {
 /** Everything a reader sees below the meta row, excluding captions and metric tiles. */
 export function getBodyText(study: CaseStudy): string[] {
   return [
-    study.context.heading,
-    ...study.context.body,
+    study.problem.heading,
+    ...study.problem.body,
+    study.whyItMatters.heading,
+    ...study.whyItMatters.body,
     study.decisions.heading,
     ...study.decisions.items.flatMap((item) => [item.title, item.body, item.alternative, item.tradeoff]),
-    ...(study.behavior
+    ...(study.howItWorks
       ? [
-          study.behavior.heading,
-          study.behavior.intro ?? '',
-          ...study.behavior.states.flatMap((item) => [item.state, item.behavior]),
+          study.howItWorks.heading,
+          study.howItWorks.intro ?? '',
+          ...(study.howItWorks.states ?? []).flatMap((item) => [item.state, item.behavior]),
         ]
       : []),
-    ...(study.shipped ? [study.shipped.heading, study.shipped.body ?? ''] : []),
-    study.result.heading,
-    ...study.result.body,
+    study.impact.heading,
+    ...study.impact.body,
     ...(study.reflection ? [study.reflection.heading, ...study.reflection.body] : []),
   ];
 }
@@ -50,7 +51,7 @@ export function getCaptions(study: CaseStudy): string[] {
   return [
     study.hero.caption,
     ...study.decisions.items.flatMap((item) => (item.figure ? [item.figure.caption] : [])),
-    ...(study.shipped?.figures.map((figure) => figure.caption) ?? []),
+    ...(study.howItWorks?.figures?.map((figure) => figure.caption) ?? []),
   ];
 }
 

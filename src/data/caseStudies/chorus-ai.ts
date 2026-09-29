@@ -35,14 +35,19 @@ export const chorusAi: CaseStudy = {
     action: 'I rebuilt the library with variants, tokens, and a consistent grid, organized by product feature.',
     result: 'Teams were moving feature work onto it when ZoomInfo acquired Chorus in July 2021.',
   },
-  context: {
+  problem: {
     heading: 'The library had buttons, but the product was built from panels.',
     body: [
       'There were no templates, cards, or complex components. The grid was applied inconsistently, and nothing used Auto Layout or variants.',
-      'The product was changing fast, so the rebuild had to land without pausing feature work.',
     ],
     // TODO(seb): verify these constraints (no feature freeze, small design team).
     constraints: ['No feature freeze', 'Small design team', 'Fast-moving AI product'],
+  },
+  whyItMatters: {
+    heading: 'Design and engineering argued over CSS values every sprint.',
+    body: [
+      'The gaps caused constant back-and-forth over exact values, visible inconsistency across the product, and hard sprint planning for PMs. The product was changing fast, so the rebuild had to land without pausing feature work.',
+    ],
   },
   // TODO(seb): verify every decision's "Instead of" and trade-off; they are inferred from existing copy, not supplied.
   decisions: {
@@ -107,7 +112,7 @@ export const chorusAi: CaseStudy = {
       },
     ],
   },
-  result: {
+  impact: {
     heading: 'Design and engineering shared one set of components going into the acquisition.',
     metrics: [],
     body: [

@@ -34,13 +34,18 @@ export const sebSans: CaseStudy = {
       confidence: 'measured',
     },
   },
-  context: {
+  problem: {
     heading: 'AI answers are read while the text is still arriving.',
     body: [
       'Answers arrive a few words at a time, rewrap as they grow, and mix prose with code and tables. Type that works in a static mockup can feel unsteady in a live transcript.',
-      'Coding agents often install fonts now, so the install path mattered as much as the letterforms.',
     ],
     constraints: ['Readable at 13–16px', 'Open license', 'Safe for agents to install'],
+  },
+  whyItMatters: {
+    heading: 'People read AI answers for long sessions, and agents now install the fonts.',
+    body: [
+      'Spacing that is slightly off becomes tiring over a long transcript. Coding agents often install fonts now, so the install path mattered as much as the letterforms.',
+    ],
   },
   // TODO(seb): verify every decision's "Instead of" and trade-off; they are inferred from existing copy, not supplied.
   decisions: {
@@ -80,7 +85,7 @@ export const sebSans: CaseStudy = {
       },
     ],
   },
-  result: {
+  impact: {
     heading: 'Published on npm and used across this site.',
     metrics: [
       { value: '652', label: 'Glyphs', context: 'v0.7.2', confidence: 'measured' },

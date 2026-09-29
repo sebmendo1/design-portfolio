@@ -35,13 +35,18 @@ export const chaseMyHome: CaseStudy = {
       confidence: 'measured',
     },
   },
-  context: {
-    heading: 'Homeowners had plenty of numbers and few ways to make sense of them.',
+  problem: {
+    heading: 'New mortgage customers were dropping out of onboarding and applications.',
     body: [
-      'A homeowner’s picture includes balance, value, equity, rate, taxes, insurance, and payments. Showing all of it at once overwhelms people, and showing too little hides what they care about.',
-      'Every screen also had to pass legal and ADA review.',
+      'Drop-off in the mortgage application flows was 18%. Customers who got through faced balance, value, equity, rate, taxes, insurance, and payments, with few ways to make sense of them.',
     ],
     constraints: ['Regulated disclosures', 'WCAG accessibility', 'Shared Manhattan Design System'],
+  },
+  whyItMatters: {
+    heading: 'Onboarding decides whether a new mortgage customer uses MyHome at all.',
+    body: [
+      'Showing everything at once overwhelms people, and showing too little hides what they care about. Every screen also had to pass legal and ADA review.',
+    ],
   },
   // TODO(seb): verify every decision's "Instead of" and trade-off; they are inferred from existing copy, not supplied.
   decisions: {
@@ -87,7 +92,7 @@ export const chaseMyHome: CaseStudy = {
       },
     ],
   },
-  shipped: {
+  howItWorks: {
     heading: 'The chase.com landing page leads into the same flows as the app.',
     figures: [
       {
@@ -105,7 +110,7 @@ export const chaseMyHome: CaseStudy = {
       },
     ],
   },
-  result: {
+  impact: {
     heading: 'More accounts, less drop-off, and a HELOC launch.',
     metrics: [
       { value: '+30%', label: 'Accounts created', context: '2024, onboarding redesign', confidence: 'measured' },

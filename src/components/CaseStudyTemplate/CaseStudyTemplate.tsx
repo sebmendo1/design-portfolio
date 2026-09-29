@@ -9,9 +9,11 @@ import { HomeLogo } from '@/components/HomeProjectCard/HomeProjectCard';
 import { PageHeadline } from '@/components/PageHeadline/PageHeadline';
 import { StudyToc } from '@/components/StudyToc/StudyToc';
 import {
+  CASE_STUDY_SECTION_LABELS,
   getCaseStudySections,
   type CaseStudy,
   type CaseStudyMetric,
+  type CaseStudySectionId,
 } from '@/data/caseStudies/types';
 import { useDissolveNavigate } from '@/hooks/useDissolveNavigate';
 import { useSectionSpy } from '@/hooks/useSectionSpy';
@@ -39,19 +41,17 @@ function prefersReducedMotion() {
 
 function Section({
   id,
-  eyebrow,
   heading,
   children,
 }: {
-  id: string;
-  eyebrow: string;
+  id: CaseStudySectionId;
   heading: string;
   children: ReactNode;
 }) {
   return (
     <section id={id} className="study-section" aria-labelledby={`${id}-heading`} tabIndex={-1}>
       <header className="study-section__header">
-        <p className="study-eyebrow">{eyebrow}</p>
+        <p className="study-eyebrow">{CASE_STUDY_SECTION_LABELS[id]}</p>
         <h2 id={`${id}-heading`} className="study-heading">
           {heading}
         </h2>
@@ -228,11 +228,11 @@ export function CaseStudyTemplate({ study, next }: CaseStudyTemplateProps) {
               ) : null}
             </section>
 
-            <Section id="context" eyebrow="Why it was hard" heading={study.context.heading}>
-              <Paragraphs items={study.context.body} />
-              {study.context.constraints?.length ? (
+            <Section id="problem" heading={study.problem.heading}>
+              <Paragraphs items={study.problem.body} />
+              {study.problem.constraints?.length ? (
                 <ul className="study-constraints" aria-label="Constraints">
-                  {study.context.constraints.map((item) => (
+                  {study.problem.constraints.map((item) => (
                     <li key={item} className="study-constraint">
                       {item}
                     </li>
@@ -241,7 +241,11 @@ export function CaseStudyTemplate({ study, next }: CaseStudyTemplateProps) {
               ) : null}
             </Section>
 
-            <Section id="decisions" eyebrow="Key decisions" heading={study.decisions.heading}>
+            <Section id="why-it-matters" heading={study.whyItMatters.heading}>
+              <Paragraphs items={study.whyItMatters.body} />
+            </Section>
+
+            <Section id="decisions" heading={study.decisions.heading}>
               <ol className="study-decisions">
                 {study.decisions.items.map((item, index) => (
                   <li key={item.title} className="study-decision">
@@ -268,46 +272,44 @@ export function CaseStudyTemplate({ study, next }: CaseStudyTemplateProps) {
               </ol>
             </Section>
 
-            {study.behavior ? (
-              <Section id="behavior" eyebrow="How it behaves" heading={study.behavior.heading}>
-                {study.behavior.intro ? <p className="study-body">{study.behavior.intro}</p> : null}
-                <ol className="study-states">
-                  {study.behavior.states.map((item) => (
-                    <li key={item.state} className="study-state">
-                      <span className="study-state__name">{item.state}</span>
-                      <span className="study-state__behavior">{item.behavior}</span>
-                    </li>
-                  ))}
-                </ol>
+            {study.howItWorks ? (
+              <Section id="how-it-works" heading={study.howItWorks.heading}>
+                {study.howItWorks.intro ? <p className="study-body">{study.howItWorks.intro}</p> : null}
+                {study.howItWorks.states?.length ? (
+                  <ol className="study-states">
+                    {study.howItWorks.states.map((item) => (
+                      <li key={item.state} className="study-state">
+                        <span className="study-state__name">{item.state}</span>
+                        <span className="study-state__behavior">{item.behavior}</span>
+                      </li>
+                    ))}
+                  </ol>
+                ) : null}
+                {study.howItWorks.figures?.length ? (
+                  <div className="study-figures">
+                    {study.howItWorks.figures.map((figure, index) => (
+                      <CaseStudyFigureView key={index} figure={figure} logo={logo} />
+                    ))}
+                  </div>
+                ) : null}
               </Section>
             ) : null}
 
-            {study.shipped ? (
-              <Section id="shipped" eyebrow="What shipped" heading={study.shipped.heading}>
-                {study.shipped.body ? <p className="study-body">{study.shipped.body}</p> : null}
-                <div className="study-figures">
-                  {study.shipped.figures.map((figure, index) => (
-                    <CaseStudyFigureView key={index} figure={figure} logo={logo} />
-                  ))}
-                </div>
-              </Section>
-            ) : null}
-
-            <Section id="result" eyebrow="Result" heading={study.result.heading}>
-              {study.result.metrics.length ? (
+            <Section id="impact" heading={study.impact.heading}>
+              {study.impact.metrics.length ? (
                 <ul className="study-metrics">
-                  {study.result.metrics.map((metric) => (
+                  {study.impact.metrics.map((metric) => (
                     <li key={metric.label} className="study-metric">
                       <MetricBody metric={metric} />
                     </li>
                   ))}
                 </ul>
               ) : null}
-              <Paragraphs items={study.result.body} />
+              <Paragraphs items={study.impact.body} />
             </Section>
 
             {study.reflection ? (
-              <Section id="reflection" eyebrow="Reflection" heading={study.reflection.heading}>
+              <Section id="reflection" heading={study.reflection.heading}>
                 <Paragraphs items={study.reflection.body} />
               </Section>
             ) : null}
