@@ -124,16 +124,18 @@ export function CaseStudyFigureView({
   figure,
   logo,
   priority = false,
+  className,
 }: {
   figure: CaseStudyFigure;
   logo?: HomeSectionLogo;
   priority?: boolean;
+  className?: string;
 }) {
   const decorative = figure.media.every((item) => item.type === 'voice' || item.type === 'typeface');
   const phones = figure.media.length > 1 && figure.media.every((item) => item.type === 'phone');
 
   return (
-    <figure className="study-figure">
+    <figure className={['study-figure', className].filter(Boolean).join(' ')}>
       <div
         className={`home-card__media study-figure__well study-figure__well--${figure.shape ?? 'default'}`}
         role={decorative ? 'img' : undefined}

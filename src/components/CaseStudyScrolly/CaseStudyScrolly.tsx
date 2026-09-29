@@ -10,12 +10,6 @@ import { OptimizedImage } from '@/components/OptimizedImage/OptimizedImage';
 import { PhoneStencil } from '@/components/PhoneStencil/PhoneStencil';
 import { BrowserStencil } from '@/components/BrowserStencil/BrowserStencil';
 import {
-  DissolveIn,
-  DISSOLVE_REVEAL_DURATION,
-  DISSOLVE_REVEAL_EASE,
-  DISSOLVE_REVEAL_STAGGER,
-} from '@/components/DissolveIn/DissolveIn';
-import {
   CASE_STUDY_PORTRAIT_STACK_QUERY,
   CASE_STUDY_TOUCH_SCROLL_QUERY,
   caseStudySupportsTouchScroll,
@@ -290,18 +284,14 @@ export function CaseStudyScrolly({
   return (
     <article className="cs-article" aria-label={config.title}>
       <div ref={layoutRef} className="cs-layout">
-        <div className="cs-floating-chrome">
+        <div className="cs-floating-chrome load-reveal">
           <HomeLink className="cs-floating-back" onHomeNavigate={onHomeNavigate}>
             ← Back
           </HomeLink>
           <ThemeToggle className="cs-floating-theme" />
         </div>
 
-        <DissolveIn
-          className="cs-text-col-viewport"
-          duration={DISSOLVE_REVEAL_DURATION}
-          ease={DISSOLVE_REVEAL_EASE}
-        >
+        <div className="cs-text-col-viewport load-reveal">
           {/*
             data-lenis-prevent stays on the nested scroller only so the root Lenis
             ignores it. Do not put it on the article/layout — that blocks nested
@@ -376,16 +366,11 @@ export function CaseStudyScrolly({
           </div>
           <div className="cs-text-col__edge cs-text-col__edge--top" aria-hidden="true" />
           <div className="cs-text-col__edge cs-text-col__edge--bottom" aria-hidden="true" />
-        </DissolveIn>
+        </div>
 
-        <DissolveIn
-          className="cs-visual-col"
-          delay={DISSOLVE_REVEAL_STAGGER}
-          duration={DISSOLVE_REVEAL_DURATION}
-          ease={DISSOLVE_REVEAL_EASE}
-        >
+        <div className="cs-visual-col load-reveal load-reveal--media">
           <DevicePreview config={config} />
-        </DissolveIn>
+        </div>
       </div>
     </article>
   );

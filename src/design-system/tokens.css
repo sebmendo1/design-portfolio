@@ -118,6 +118,14 @@
   --animation-duration-base: 250ms;
   --animation-duration-slow: 350ms;
 
+  /* Page-load reveal: critically damped spring (bounce 0, 800ms) sampled every 25ms. */
+  --reveal-duration: 800ms;
+  --reveal-step: 100ms;
+  --reveal-blur: 20px;
+  --reveal-blur-media: 30px;
+  --reveal-ease: linear(0, 0.034, 0.114, 0.215, 0.321, 0.423, 0.516, 0.599, 0.671, 0.732, 0.783, 0.825, 0.86, 0.888, 0.911, 0.93, 0.944, 0.956, 0.966, 0.973, 0.979, 0.984, 0.987, 0.99, 0.992, 0.994, 0.995, 0.996, 0.997, 0.998, 0.998, 0.999, 1);
+  --reveal-reduced-duration: 300ms;
+
   --selection-bg: rgba(0, 0, 0, 0.08);
 }
 

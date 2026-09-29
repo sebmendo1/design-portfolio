@@ -165,3 +165,45 @@ button,
 a {
   -webkit-tap-highlight-color: transparent;
 }
+
+/*
+  Page-load reveal. Blocks opt in with `.load-reveal` and set `--reveal-slot`
+  (delay = slot × --reveal-step) and optionally `--reveal-blur`. Pure CSS so the
+  page is fully visible without JS; `backwards` fill drops the filter once done
+  so no lingering stacking context / containing block for fixed descendants.
+*/
+.load-reveal {
+  animation: load-reveal var(--reveal-duration) var(--reveal-ease) backwards;
+  animation-delay: calc(var(--reveal-slot, 0) * var(--reveal-step));
+}
+
+.load-reveal--media {
+  --reveal-blur: var(--reveal-blur-media);
+}
+
+@supports not (animation-timing-function: linear(0, 1)) {
+  .load-reveal {
+    animation-timing-function: cubic-bezier(0.25, 0.9, 0.3, 1);
+  }
+}
+
+@keyframes load-reveal {
+  from {
+    opacity: 0;
+    filter: blur(var(--reveal-blur));
+  }
+}
+
+@keyframes load-reveal-fade {
+  from {
+    opacity: 0;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .load-reveal {
+    animation-name: load-reveal-fade;
+    animation-duration: var(--reveal-reduced-duration);
+    animation-timing-function: ease;
+  }
+}

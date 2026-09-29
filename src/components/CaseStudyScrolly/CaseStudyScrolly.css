@@ -24,6 +24,19 @@
   overflow: hidden;
 }
 
+/* Load-reveal order: chrome, then copy, then device. */
+.cs-floating-chrome {
+  --reveal-slot: 0;
+}
+
+.cs-text-col-viewport {
+  --reveal-slot: 2;
+}
+
+.cs-visual-col {
+  --reveal-slot: 3;
+}
+
 /* ─── Text column: internal scroll viewport ───────────────────────────────── */
 .cs-text-col-viewport {
   position: relative;

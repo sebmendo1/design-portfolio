@@ -57,7 +57,7 @@ function Section({
   children: ReactNode;
 }) {
   return (
-    <section id={id} className="study-section" aria-labelledby={`${id}-heading`} tabIndex={-1}>
+    <section id={id} className="study-section load-reveal" aria-labelledby={`${id}-heading`} tabIndex={-1}>
       <h2 id={`${id}-heading`} className="study-heading">
         {heading}
       </h2>
@@ -127,7 +127,7 @@ export function CaseStudyTemplate({ study, next }: CaseStudyTemplateProps) {
     <motion.div className="study" {...motionProps}>
       <div className="home-feed study-layout">
         <aside className="home-feed__sidebar study-sidebar">
-          <header className="home-feed__header">
+          <header className="home-feed__header load-reveal">
             <PageHeadline className="page-headline--home home-feed__headline" />
             <div className="home-feed__menu">
               <HomeMenu
@@ -139,20 +139,20 @@ export function CaseStudyTemplate({ study, next }: CaseStudyTemplateProps) {
               />
             </div>
           </header>
-          <nav aria-label="On this page" className="home-feed__nav study-sidebar__nav">
+          <nav aria-label="On this page" className="home-feed__nav study-sidebar__nav load-reveal">
             <p className="home-nav__label">On this page</p>
             <div className="study-sidebar__toc">
               <StudyToc sections={sections} activeId={activeId} onSelect={scrollToSection} />
             </div>
           </nav>
-          <HomePageLinks className="home-feed__links" />
+          <HomePageLinks className="home-feed__links load-reveal" />
         </aside>
 
         <main id="main-content" className="home-feed__main study-main">
           <article className="study-article" aria-labelledby="study-title">
             <section id="overview" className="study-hero" aria-labelledby="study-title" tabIndex={-1}>
               <div className="study-hero__intro">
-                <nav aria-label="Breadcrumb" className="study-crumbs">
+                <nav aria-label="Breadcrumb" className="study-crumbs load-reveal">
                   <ol className="study-crumbs__list">
                     <li className="study-crumbs__item">
                       <Link
@@ -172,10 +172,10 @@ export function CaseStudyTemplate({ study, next }: CaseStudyTemplateProps) {
                     </li>
                   </ol>
                 </nav>
-                <h1 id="study-title" className="study-title">
+                <h1 id="study-title" className="study-title load-reveal">
                   {study.title}
                 </h1>
-                <p className="study-byline">
+                <p className="study-byline load-reveal">
                   <span>{study.meta.role}</span>
                   <span aria-hidden="true"> · </span>
                   <span>{study.meta.timeline}</span>
@@ -186,17 +186,22 @@ export function CaseStudyTemplate({ study, next }: CaseStudyTemplateProps) {
                     {readMinutes} min read
                   </span>
                 </p>
-                <p className="study-byline study-byline--secondary">
+                <p className="study-byline study-byline--secondary load-reveal">
                   <span>{study.meta.team}</span>
                   <span aria-hidden="true"> · </span>
                   <span>{study.meta.platform}</span>
                 </p>
               </div>
 
-              <CaseStudyFigureView figure={study.hero} logo={logo} priority />
+              <CaseStudyFigureView
+                figure={study.hero}
+                logo={logo}
+                priority
+                className="load-reveal load-reveal--media"
+              />
 
               {study.caseyActions || study.links?.length ? (
-                <div className="study-actions">
+                <div className="study-actions load-reveal">
                   {study.caseyActions ? <CaseyActions /> : null}
                   {study.links?.map((link) => {
                     const external = /^https?:\/\//.test(link.href);
@@ -225,7 +230,7 @@ export function CaseStudyTemplate({ study, next }: CaseStudyTemplateProps) {
                 </div>
               ) : null}
 
-              <div className="study-lede">
+              <div className="study-lede load-reveal">
                 {study.lede.map((paragraph) => (
                   <p key={paragraph}>
                     <RichText text={paragraph} />
@@ -304,7 +309,7 @@ export function CaseStudyTemplate({ study, next }: CaseStudyTemplateProps) {
           </article>
 
           {next ? (
-            <nav aria-label="Next case study" className="study-next">
+            <nav aria-label="Next case study" className="study-next load-reveal">
               <p className="study-eyebrow">Next case study</p>
               <Link
                 href={`/work/${next.slug}`}
@@ -323,7 +328,7 @@ export function CaseStudyTemplate({ study, next }: CaseStudyTemplateProps) {
             </nav>
           ) : null}
 
-          <HomePageLinks className="study-footer-links" />
+          <HomePageLinks className="study-footer-links load-reveal" />
         </main>
       </div>
     </motion.div>

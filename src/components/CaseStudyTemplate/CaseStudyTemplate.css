@@ -92,6 +92,34 @@
   outline: none;
 }
 
+/* Load-reveal order; sidebar slots come from HomeFeed.css. */
+.study-crumbs {
+  --reveal-slot: 2;
+}
+
+.study-title {
+  --reveal-slot: 3;
+}
+
+.study-byline {
+  --reveal-slot: 4;
+}
+
+.study-hero > .study-figure,
+.study-actions {
+  --reveal-slot: 5;
+}
+
+.study-lede,
+.study-section {
+  --reveal-slot: 6;
+}
+
+.study-next,
+.study-footer-links {
+  --reveal-slot: 8;
+}
+
 .study-hero__intro {
   display: flex;
   flex-direction: column;
