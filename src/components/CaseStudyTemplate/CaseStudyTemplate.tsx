@@ -1,8 +1,7 @@
 'use client';
 
-import { Fragment, useCallback, useMemo, type MouseEvent, type ReactNode } from 'react';
+import { Fragment, useCallback, useMemo, type ReactNode } from 'react';
 import Link from 'next/link';
-import { motion } from 'framer-motion';
 import { CaseyActions } from '@/components/CaseyActions/CaseyActions';
 import { HomeMenu, HomePageLinks } from '@/components/HomeNav/HomeNav';
 import { HomeLogo } from '@/components/HomeProjectCard/HomeProjectCard';
@@ -14,7 +13,6 @@ import {
   type CaseStudyMetric,
   type CaseStudySectionId,
 } from '@/data/caseStudies/types';
-import { useDissolveNavigate } from '@/hooks/useDissolveNavigate';
 import { useSectionSpy } from '@/hooks/useSectionSpy';
 import { findHomeSection } from '@/lib/home-sections';
 import { getReadMinutes } from '@/lib/case-study-content';
@@ -95,7 +93,6 @@ function MetricBody({ metric }: { metric: CaseStudyMetric }) {
 }
 
 export function CaseStudyTemplate({ study, next }: CaseStudyTemplateProps) {
-  const { navigate, motionProps } = useDissolveNavigate();
   const sections = useMemo(() => getCaseStudySections(study), [study]);
   const sectionIds = useMemo(() => sections.map((section) => section.id), [sections]);
   const { activeId, lock } = useSectionSpy(sectionIds);
@@ -115,14 +112,6 @@ export function CaseStudyTemplate({ study, next }: CaseStudyTemplateProps) {
     [lock],
   );
 
-  function handleInternalClick(event: MouseEvent<HTMLAnchorElement>, href: string) {
-    if (event.metaKey || event.ctrlKey || event.shiftKey || event.altKey || event.button !== 0) {
-      return;
-    }
-    event.preventDefault();
-    navigate(href);
-  }
-
   const toc = (
     <>
       <p className="home-nav__label">On this page</p>
@@ -133,7 +122,7 @@ export function CaseStudyTemplate({ study, next }: CaseStudyTemplateProps) {
   );
 
   return (
-    <motion.div className="study" {...motionProps}>
+    <div className="study">
       <div className="study-shell">
         <header className="home-feed__header study-topbar load-reveal">
           <PageHeadline className="page-headline--home home-feed__headline" />
@@ -159,7 +148,6 @@ export function CaseStudyTemplate({ study, next }: CaseStudyTemplateProps) {
                         <Link
                           href="/"
                           className="study-back"
-                          onClick={(event) => handleInternalClick(event, '/')}
                         >
                           <span aria-hidden="true">←</span>
                           <span className="sr-only">All projects</span>
@@ -220,7 +208,6 @@ export function CaseStudyTemplate({ study, next }: CaseStudyTemplateProps) {
                           key={link.href}
                           href={link.href}
                           className="study-link-pill"
-                          onClick={(event) => handleInternalClick(event, link.href)}
                         >
                           {link.label} <span aria-hidden="true">→</span>
                         </Link>
@@ -316,7 +303,6 @@ export function CaseStudyTemplate({ study, next }: CaseStudyTemplateProps) {
                 <Link
                   href={`/work/${next.slug}`}
                   className="study-next__link"
-                  onClick={(event) => handleInternalClick(event, `/work/${next.slug}`)}
                 >
                   {nextLogo ? <HomeLogo logo={nextLogo} /> : null}
                   <span className="study-next__text">
@@ -340,6 +326,6 @@ export function CaseStudyTemplate({ study, next }: CaseStudyTemplateProps) {
           </aside>
         </div>
       </div>
-    </motion.div>
+    </div>
   );
 }
