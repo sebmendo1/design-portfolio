@@ -34,13 +34,18 @@ export const mementoAi: CaseStudy = {
       confidence: 'directional',
     },
   },
-  context: {
+  problem: {
     heading: 'People stop journaling when the AI feels like it is watching them.',
     body: [
-      'Generic model responses flatten the writer’s voice, and insights with no sources feel intrusive. In a journal, either one is enough to make people stop writing.',
-      'I was also the only engineer, so every design decision had to be something I could build and run on the phone.',
+      'Generic model responses flatten the writer’s voice, and insights with no sources feel intrusive. Either one is enough to make people stop writing.',
     ],
     constraints: ['Private by default', 'Answers only from the user’s entries', 'Solo designer and engineer'],
+  },
+  whyItMatters: {
+    heading: 'A journal is only useful if people keep writing in it.',
+    body: [
+      'Reflections depend on a long history of honest entries. If writers do not feel safe, they stop, and the AI has nothing to work with.',
+    ],
   },
   // TODO(seb): verify every decision's "Instead of" and trade-off; they are inferred from existing copy, not supplied.
   decisions: {
@@ -73,8 +78,8 @@ export const mementoAi: CaseStudy = {
       },
     ],
   },
-  behavior: {
-    heading: 'With too little history, Memento asks instead of guessing.',
+  howItWorks: {
+    heading: 'The AI stays off screen until you save, and asks when history is thin.',
     states: [
       { state: 'Writing', behavior: 'No AI on screen until the entry is saved.' },
       { state: 'Reflecting', behavior: 'Finds related entries, then asks one question.' },
@@ -82,9 +87,6 @@ export const mementoAi: CaseStudy = {
       // TODO(seb): verify how Memento handles too little history to cite.
       { state: 'Not enough history', behavior: 'Asks an open question instead of making up an insight.' },
     ],
-  },
-  shipped: {
-    heading: 'The shipped loop: write, answer one question, write again.',
     figures: [
       {
         media: [{ type: 'phone', src: '/assets/memento-ai.png', alt: 'Memento entry screen' }],
@@ -92,7 +94,7 @@ export const mementoAi: CaseStudy = {
       },
     ],
   },
-  result: {
+  impact: {
     heading: 'Testers wrote more once they trusted that entries stayed on the phone.',
     metrics: [],
     body: [

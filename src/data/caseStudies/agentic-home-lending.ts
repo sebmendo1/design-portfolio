@@ -35,14 +35,19 @@ export const agenticHomeLending: CaseStudy = {
       confidence: 'directional',
     },
   },
-  context: {
+  problem: {
     heading: 'Applicants could not tell whether they were close to approval or at risk.',
     body: [
       // TODO(seb): verify the 45-day figure and its source.
       'Origination could take about 45 days of document exchanges, and each re-request felt like going backwards.',
-      'As with Casey, the agent could guide applicants but could not give advice or promise approval.',
     ],
     constraints: ['No advice or approval promises', 'Underwriting decisions stay with people', 'Every document request explained'],
+  },
+  whyItMatters: {
+    heading: 'Each re-request pushed the close date back and added doubt.',
+    body: [
+      'Applicants were left confused about what was missing and unsure the loan would go through. As with Casey, the agent could guide them but could not give advice or promise approval.',
+    ],
   },
   // TODO(seb): verify every decision's "Instead of" and trade-off; they are inferred from existing copy, not supplied.
   decisions: {
@@ -68,7 +73,7 @@ export const agenticHomeLending: CaseStudy = {
       },
     ],
   },
-  behavior: {
+  howItWorks: {
     heading: 'The agent says plainly that approval is not its call.',
     // TODO(seb): verify these states match the shipped pilot.
     states: [
@@ -79,7 +84,7 @@ export const agenticHomeLending: CaseStudy = {
       { state: 'Human handoff', behavior: 'Routes loan options and exceptions to a loan officer.' },
     ],
   },
-  result: {
+  impact: {
     heading: 'Early pilot numbers point to faster closes, at limited scope.',
     metrics: [
       // TODO(seb): verify all three pilot numbers, their baselines, and whether they are cleared to publish.

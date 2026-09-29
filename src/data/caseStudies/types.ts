@@ -105,27 +105,29 @@ export type CaseStudy = {
     result: string;
     keyResult?: CaseStudyMetric;
   };
-  context: {
+  /** What was broken, and the constraints any fix had to respect. */
+  problem: {
     heading: string;
     body: string[];
     constraints?: string[];
+  };
+  /** What was at stake for customers and the business. */
+  whyItMatters: {
+    heading: string;
+    body: string[];
   };
   decisions: {
     heading: string;
     items: CaseStudyDecision[];
   };
-  /** AI work: the state map, including failure and handoff. */
-  behavior?: {
+  /** The state map for AI work (including failure and handoff) and the shipped screens. */
+  howItWorks?: {
     heading: string;
     intro?: string;
-    states: CaseStudyAgentState[];
+    states?: CaseStudyAgentState[];
+    figures?: CaseStudyFigure[];
   };
-  shipped?: {
-    heading: string;
-    body?: string;
-    figures: CaseStudyFigure[];
-  };
-  result: {
+  impact: {
     heading: string;
     metrics: CaseStudyMetric[];
     body: string[];
@@ -136,7 +138,27 @@ export type CaseStudy = {
   };
 };
 
-export type CaseStudySection = { id: string; label: string };
+export type CaseStudySectionId =
+  | 'overview'
+  | 'problem'
+  | 'why-it-matters'
+  | 'decisions'
+  | 'how-it-works'
+  | 'impact'
+  | 'reflection';
+
+export type CaseStudySection = { id: CaseStudySectionId; label: string };
+
+/** Shared by the "On this page" nav and each section's eyebrow. */
+export const CASE_STUDY_SECTION_LABELS: Record<CaseStudySectionId, string> = {
+  overview: 'Overview',
+  problem: 'Problem',
+  'why-it-matters': 'Why it matters',
+  decisions: 'Key decisions',
+  'how-it-works': 'How it works',
+  impact: 'Impact',
+  reflection: 'Reflection',
+};
 
 export function getTldrSentences(study: CaseStudy): string[] {
   const { situation, task, action, result } = study.tldr;
@@ -148,13 +170,14 @@ export function getTldrText(study: CaseStudy): string {
 }
 
 export function getCaseStudySections(study: CaseStudy): CaseStudySection[] {
-  return [
-    { id: 'overview', label: 'Overview' },
-    { id: 'context', label: 'Why it was hard' },
-    { id: 'decisions', label: 'Decisions' },
-    ...(study.behavior ? [{ id: 'behavior', label: 'How it behaves' }] : []),
-    ...(study.shipped ? [{ id: 'shipped', label: 'What shipped' }] : []),
-    { id: 'result', label: 'Result' },
-    ...(study.reflection ? [{ id: 'reflection', label: 'Reflection' }] : []),
+  const ids: CaseStudySectionId[] = [
+    'overview',
+    'problem',
+    'why-it-matters',
+    'decisions',
+    ...(study.howItWorks ? (['how-it-works'] as const) : []),
+    'impact',
+    ...(study.reflection ? (['reflection'] as const) : []),
   ];
+  return ids.map((id) => ({ id, label: CASE_STUDY_SECTION_LABELS[id] }));
 }

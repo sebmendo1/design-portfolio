@@ -35,16 +35,22 @@ export const caseyAi: CaseStudy = {
       confidence: 'measured',
     },
   },
-  context: {
-    heading: 'In home lending, one wrong answer about a rate is a compliance issue.',
+  problem: {
+    heading: 'Customers stalled halfway through mortgage applications and rarely came back.',
     body: [
-      'Casey speaks for Chase on calls and texts, and both channels carry consent and disclosure rules. If it quoted a rate or gave advice, the bank would be on the hook.',
-      'We started in home lending because it has the most regulation and the largest loans in consumer banking. Customers also stall halfway through applications and rarely come back on their own.',
+      'Chase needed a way to reach those customers by phone and text. Any agent doing that speaks for the bank, and both channels carry consent and disclosure rules.',
     ],
     constraints: [
       'No advice or rate quotes',
       'Consent and disclosure on every call and text',
       'Same rules on voice and text',
+    ],
+  },
+  whyItMatters: {
+    heading: 'In home lending, one wrong answer about a rate is a compliance issue.',
+    body: [
+      'If Casey quoted a rate or gave advice, the bank would be on the hook.',
+      'We started in home lending because it has the most regulation and the largest loans in consumer banking. An agent that works there can be reused across the bank.',
     ],
   },
   // TODO(seb): verify every decision's "Instead of" and trade-off; they are inferred from existing copy, not supplied.
@@ -81,7 +87,7 @@ export const caseyAi: CaseStudy = {
       },
     ],
   },
-  behavior: {
+  howItWorks: {
     heading: 'Casey hands off when a question is out of scope or the customer is struggling.',
     intro: 'Before each release, I ran edge-case QA against the guardrails with engineering. Every flow had to handle these states.',
     states: [
@@ -93,9 +99,6 @@ export const caseyAi: CaseStudy = {
       { state: 'Stress detected', behavior: 'Transfers to an associate right away.' },
       { state: 'Human handoff', behavior: 'Transfers with the transcript and intent attached.' },
     ],
-  },
-  shipped: {
-    heading: 'Casey RCS takes a customer from the reminder to an associate.',
     figures: [
       {
         media: [
@@ -106,7 +109,7 @@ export const caseyAi: CaseStudy = {
       },
     ],
   },
-  result: {
+  impact: {
     heading: 'Both channels shipped, and new Chase agents reuse the handoff rules.',
     metrics: [
       { value: '3,000+', label: 'Calls initiated', context: 'Casey Voice, production', confidence: 'measured' },

@@ -45,13 +45,18 @@ export const writerAi: CaseStudy = {
       confidence: 'measured',
     },
   },
-  context: {
+  problem: {
     heading: '“Rewrite” was one button trying to do six different jobs.',
     body: [
       'The same word covered shortening a sentence, fixing non-native phrasing, adding detail to thin copy, and changing tone for a new audience.',
-      'Enterprise teams also needed output that stayed on brand, so an open prompt box was a governance risk as well as a usability problem.',
     ],
     constraints: ['Brand voice and governance', 'Many host apps', 'Early generative AI quality'],
+  },
+  whyItMatters: {
+    heading: 'Enterprise teams needed AI edits that stayed on brand.',
+    body: [
+      'Writers had to rephrase without losing meaning, tone, or brand voice. An open prompt box made that harder to control, so it was a governance risk as well as a usability problem.',
+    ],
   },
   // TODO(seb): verify every decision's "Instead of" and trade-off; they are inferred from existing copy, not supplied.
   decisions: {
@@ -91,7 +96,7 @@ export const writerAi: CaseStudy = {
       },
     ],
   },
-  behavior: {
+  howItWorks: {
     heading: 'Nothing changes until the writer inserts a version.',
     // TODO(seb): verify these states match the shipped behavior.
     states: [
@@ -101,7 +106,7 @@ export const writerAi: CaseStudy = {
       { state: 'Not good enough', behavior: 'Try another mode or regenerate. The original stays intact.' },
     ],
   },
-  result: {
+  impact: {
     heading: 'Shipped in four places in April 2021.',
     metrics: [],
     body: [

@@ -48,13 +48,18 @@ export const salesforceHelp: CaseStudy = {
       confidence: 'measured',
     },
   },
-  context: {
+  problem: {
     heading: 'The page asked customers to make a decision they had no information to make.',
     body: [
-      'Dashboards, support tickets, interviews, and a survey with 90+ responses pointed to one cause. Customers could not see which channels their plan included or which would be fastest.',
-      'Showing paid-plan details in the middle of a support request read as upselling, which ruled out the obvious fix.',
+      'Contact Support listed every channel with no sign of which fit the issue, which the customer’s plan included, or which was fastest. Dashboards, support tickets, interviews, and a survey with 90+ responses all pointed to this.',
     ],
     constraints: ['Enterprise customers on different support plans', 'No upselling in the support flow', 'Einstein as the routing engine'],
+  },
+  whyItMatters: {
+    heading: 'Customers took the slowest route, and support took on cases it did not need.',
+    body: [
+      'Most customers opened a case, often the slowest option, even when chat would have solved the issue in minutes. The obvious fix, showing plan details, read as upselling in the middle of a support request.',
+    ],
   },
   // TODO(seb): verify every decision's "Instead of" and trade-off; they are inferred from existing copy, not supplied.
   decisions: {
@@ -107,7 +112,7 @@ export const salesforceHelp: CaseStudy = {
       },
     ],
   },
-  behavior: {
+  howItWorks: {
     heading: 'When Einstein is unsure, it asks before it routes.',
     states: [
       { state: 'Describe', behavior: 'The customer types the issue in plain language.' },
@@ -118,7 +123,7 @@ export const salesforceHelp: CaseStudy = {
       { state: 'No match', behavior: 'Falls back to opening a case with the description attached.' },
     ],
   },
-  result: {
+  impact: {
     heading: 'CSAT doubled, and fewer customers needed to open a case.',
     metrics: [
       { value: '2×', label: 'CSAT', context: 'AI Contact Support', confidence: 'measured' },
