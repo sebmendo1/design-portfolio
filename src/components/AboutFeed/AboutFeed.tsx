@@ -1,16 +1,24 @@
 'use client';
 
-import { HomeMenu, HomePageLinks } from '@/components/HomeNav/HomeNav';
-import { HomePhotoCard } from '@/components/HomeProjectCard/HomePhotoCard';
+import { useCallback } from 'react';
+import Image from 'next/image';
+import { HomeMenu, HomeNavList, HomePageLinks } from '@/components/HomeNav/HomeNav';
 import { PageHeadline } from '@/components/PageHeadline/PageHeadline';
 import { StreamingText } from '@/components/StreamingText/StreamingText';
 import { ABOUT_ALBUM } from '@/data/aboutAlbum';
 import { ABOUT_INTRO_BLOCKS, buildAboutStreamPlan } from '@/lib/about-stream';
-import { findHomeSection } from '@/lib/home-sections';
+import { useSectionSpy } from '@/hooks/useSectionSpy';
 import { feedRevealSlot, revealSlot } from '@/lib/load-reveal';
 import '@/components/HomeFeed/HomeFeed.css';
 
 const plan = buildAboutStreamPlan();
+
+const PHOTO_SECTIONS = ABOUT_ALBUM.map((photo) => ({ id: photo.id, label: photo.title }));
+const PHOTO_IDS = PHOTO_SECTIONS.map((section) => section.id);
+
+function prefersReducedMotion() {
+  return window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+}
 
 function AboutIntro() {
   return (
@@ -66,32 +74,66 @@ function AboutIntro() {
 }
 
 export function AboutFeed() {
+  const { activeId, lock } = useSectionSpy(PHOTO_IDS);
+
+  const scrollToPhoto = useCallback(
+    (id: string) => {
+      const node = document.getElementById(id);
+      if (!node) return;
+      lock(id);
+      node.scrollIntoView({ behavior: prefersReducedMotion() ? 'auto' : 'smooth', block: 'start' });
+      node.focus({ preventScroll: true });
+      window.history.replaceState(null, '', `#${id}`);
+    },
+    [lock],
+  );
+
   return (
     <div className="home-feed about-feed">
       <aside className="home-feed__sidebar">
         <header className="home-feed__header load-reveal">
           <PageHeadline className="page-headline--home home-feed__headline" />
           <div className="home-feed__menu">
-            <HomeMenu page="about" />
+            <HomeMenu
+              page="about"
+              label="Photos"
+              sections={PHOTO_SECTIONS}
+              activeId={activeId}
+              onSelect={scrollToPhoto}
+            />
           </div>
         </header>
         <AboutIntro />
+        <nav aria-label="Photos" className="home-feed__nav load-reveal">
+          <p className="home-nav__label">Photos</p>
+          <HomeNavList sections={PHOTO_SECTIONS} activeId={activeId} onSelect={scrollToPhoto} />
+        </nav>
         <HomePageLinks className="home-feed__links load-reveal" page="about" />
       </aside>
 
-      <section className="home-feed__main" aria-label="Photos">
+      <section className="home-feed__main about-feed__photos" aria-label="Photos">
         {ABOUT_ALBUM.map((photo, index) => (
-          <div
-            key={photo.src}
-            className="home-feed__card load-reveal load-reveal--media"
+          <figure
+            key={photo.id}
+            id={photo.id}
+            className="about-photo load-reveal load-reveal--media"
             style={revealSlot(feedRevealSlot(index))}
+            tabIndex={-1}
           >
-            <HomePhotoCard
-              {...photo}
-              logo={photo.logoSection ? findHomeSection(photo.logoSection)?.logo : undefined}
-              priority={index === 0}
+            <Image
+              src={photo.src}
+              alt={photo.alt}
+              width={photo.width}
+              height={photo.height}
+              sizes="(max-width: 900px) calc(100vw - 30px), 600px"
+              preload={index === 0}
+              className="about-photo__image"
             />
-          </div>
+            <figcaption className="about-photo__caption">
+              <span className="about-photo__title">{photo.title}</span>
+              <span className="about-photo__text">{photo.caption}</span>
+            </figcaption>
+          </figure>
         ))}
       </section>
     </div>
