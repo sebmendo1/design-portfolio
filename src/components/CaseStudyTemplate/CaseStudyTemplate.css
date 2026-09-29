@@ -1,22 +1,76 @@
-/* Case study template: the homepage shell (350 sidebar + 600 column) with long-form content. */
+/* Case study: full-width content + sticky right TOC; readable prose measure. */
 .study {
-  background: var(--color-background-home);
-}
-
-.study-layout {
   --study-section-gap: 128px;
   --study-block-gap: 24px;
   --study-tile-radius: 24px;
+  --study-rail-width: 220px;
+  --study-rail-gap: 40px;
+  /* Body/lede stay readable; figures use the full content column. */
+  --study-measure: 640px;
+  --study-content-max: 960px;
+  min-height: 100dvh;
+  background: var(--color-background-home);
+  color: var(--color-text-primary);
 }
 
-/* Sidebar */
-.study-sidebar__nav .home-nav__label {
-  padding-top: 32px;
-  padding-bottom: 8px;
+.study-shell {
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  max-width: var(--site-max);
+  min-height: 100dvh;
+  margin: 0 auto;
+  box-sizing: border-box;
 }
 
-.study-sidebar__toc {
-  padding: 0 24px;
+/* Top header: same chrome as before; menu stays open so about/social/theme remain reachable. */
+.study-topbar.home-feed__header {
+  position: sticky;
+  top: 0;
+  z-index: 10;
+  flex: 0 0 auto;
+  align-self: stretch;
+  padding: 24px var(--site-gutter) 16px;
+  background: var(--color-background-home);
+  --reveal-slot: 0;
+}
+
+.study-topbar__menu.home-feed__menu {
+  display: block;
+}
+
+.study-columns {
+  display: flex;
+  align-items: flex-start;
+  justify-content: center;
+  gap: var(--study-rail-gap);
+  width: 100%;
+  padding: 0 var(--site-gutter) 96px;
+  box-sizing: border-box;
+}
+
+/* Sticky right-hand section nav (desktop). */
+.study-rail {
+  position: sticky;
+  top: 88px;
+  flex: 0 0 var(--study-rail-width);
+  width: var(--study-rail-width);
+  max-height: calc(100dvh - 112px);
+  overflow-y: auto;
+  scrollbar-width: none;
+  --reveal-slot: 1;
+}
+
+.study-rail::-webkit-scrollbar {
+  display: none;
+}
+
+.study-rail__nav .home-nav__label {
+  padding: 8px 16px 4px;
+}
+
+.study-rail__toc {
+  padding: 0 8px;
 }
 
 /* Breadcrumb above the title */
@@ -71,10 +125,16 @@
   border-radius: 2px;
 }
 
-/* Main column */
-.study-main.home-feed__main {
+/* Main column: grows into the space left of the rail. */
+.study-main {
+  display: flex;
+  flex: 1 1 auto;
+  flex-direction: column;
   gap: var(--study-section-gap);
-  padding: 24px 0 96px;
+  width: 100%;
+  max-width: var(--study-content-max);
+  min-width: 0;
+  padding: 8px 0 0;
 }
 
 .study-article {
@@ -88,11 +148,11 @@
   display: flex;
   flex-direction: column;
   gap: var(--study-block-gap);
-  scroll-margin-top: 24px;
+  scroll-margin-top: 96px;
   outline: none;
 }
 
-/* Load-reveal order; sidebar slots come from HomeFeed.css. */
+/* Load-reveal order. */
 .study-crumbs {
   --reveal-slot: 2;
 }
@@ -125,6 +185,7 @@
   flex-direction: column;
   gap: 12px;
   padding-top: 8px;
+  max-width: var(--study-measure);
 }
 
 .study-eyebrow {
@@ -182,6 +243,7 @@
   display: flex;
   flex-direction: column;
   gap: 16px;
+  max-width: var(--study-measure);
   margin: 8px 0 0;
 }
 
@@ -202,6 +264,7 @@
   display: flex;
   flex-direction: column;
   gap: 16px;
+  max-width: var(--study-measure);
 }
 
 .study-prose p,
@@ -213,11 +276,24 @@
   text-wrap: pretty;
 }
 
-/* Figures: same well as the homepage card. */
+.study-heading,
+.study-decision__title,
+.study-metrics,
+.study-states,
+.study-actions {
+  max-width: var(--study-measure);
+}
+
+.study-body {
+  max-width: var(--study-measure);
+}
+
+/* Figures: full width of the content column. */
 .study-figure {
   display: flex;
   flex-direction: column;
   gap: 8px;
+  width: 100%;
   margin: 20px 0;
 }
 
@@ -364,6 +440,7 @@
 }
 
 .study-decision__aside {
+  max-width: var(--study-measure);
   margin: 0;
   font-size: 15px;
   line-height: 1.5;
@@ -576,16 +653,47 @@
   }
 }
 
+@media (max-width: 1024px) {
+  .study {
+    --study-rail-width: 200px;
+    --study-rail-gap: 28px;
+    --study-content-max: 100%;
+  }
+}
+
 @media (max-width: 900px) {
-  .study-layout {
+  .study {
     --study-section-gap: 96px;
     --study-block-gap: 20px;
+    --study-content-max: 600px;
   }
 
+  .study-topbar.home-feed__header {
+    padding: 16px;
+  }
 
-  .study-main.home-feed__main {
+  .study-topbar .home-feed__headline {
+    background: var(--color-surface-chip);
+    border-color: transparent;
+  }
+
+  .study-topbar .home-feed__headline:hover {
+    background: var(--color-border-pill);
+  }
+
+  .study-rail {
+    display: none;
+  }
+
+  .study-columns {
+    justify-content: center;
+    padding: 0 15px 32px;
+  }
+
+  .study-main {
+    max-width: var(--study-content-max);
     margin-top: 8px;
-    padding-bottom: 32px;
+    padding-top: 0;
   }
 
   .study-hero,
