@@ -67,7 +67,6 @@ export function HomeFeed({ projects, onNavigate }: HomeFeedProps) {
             <HomeMenu />
           </div>
         </header>
-        <IndexBio className="home-feed__bio load-reveal" />
         <nav aria-label="Projects" className="home-feed__nav load-reveal">
           <p className="home-nav__label">Projects</p>
           <HomeNavList sections={sections} activeId={activeId} onSelect={scrollToSection} />
@@ -76,6 +75,7 @@ export function HomeFeed({ projects, onNavigate }: HomeFeedProps) {
       </aside>
 
       <div className="home-feed__main">
+        <IndexBio className="home-feed__bio load-reveal" />
         {sections.map((section) => (
           <section
             key={section.id}

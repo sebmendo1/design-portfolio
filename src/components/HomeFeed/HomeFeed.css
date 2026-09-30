@@ -1,7 +1,7 @@
 /* Figma "Portfolio / Desktop": 350 sidebar + 24 gap + 600 feed, centred. */
 .home-feed {
   --home-sidebar-width: 350px;
-  --home-feed-width: 600px;
+  --home-feed-width: var(--content-media);
   --home-column-gap: 24px;
   --home-card-gap: 32px;
   display: flex;
@@ -73,8 +73,9 @@
 }
 
 .home-feed__bio {
-  max-width: 300px;
-  padding: 20px 24px 24px;
+  width: 100%;
+  max-width: var(--content-measure);
+  padding: 0;
 }
 
 .home-feed__links {
@@ -126,7 +127,7 @@
 
   .home-feed__main {
     flex: 1 1 auto;
-    max-width: 600px;
+    max-width: var(--home-feed-width);
   }
 }
 
@@ -170,9 +171,14 @@
   }
 
   .home-feed__bio {
-    max-width: 300px;
+    max-width: var(--content-measure);
+    width: 100%;
     padding: 0;
     text-align: center;
+  }
+
+  .about-feed .about-feed__intro {
+    text-align: left;
   }
 
   .home-feed__nav,

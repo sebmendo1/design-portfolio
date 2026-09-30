@@ -5,9 +5,9 @@
   --study-tile-radius: 24px;
   --study-rail-width: 220px;
   --study-rail-gap: 40px;
-  /* Body/lede stay readable; figures use the full content column. */
-  --study-measure: 640px;
-  --study-content-max: 960px;
+  /* Text and figures share the site content column. */
+  --study-measure: var(--content-measure);
+  --study-content-max: var(--content-media);
   min-height: 100dvh;
   background: var(--color-background-home);
   color: var(--color-text-primary);
@@ -322,6 +322,7 @@
 }
 
 .study-figure__caption {
+  max-width: var(--study-measure);
   font-size: 14px;
   line-height: 1.45;
   color: var(--color-text-muted);
@@ -657,7 +658,6 @@
   .study {
     --study-rail-width: 200px;
     --study-rail-gap: 28px;
-    --study-content-max: 100%;
   }
 }
 
@@ -665,7 +665,6 @@
   .study {
     --study-section-gap: 96px;
     --study-block-gap: 20px;
-    --study-content-max: 600px;
   }
 
   .study-topbar.home-feed__header {
