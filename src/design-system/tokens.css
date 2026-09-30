@@ -56,6 +56,15 @@
   --site-max: 1440px;
   --case-study-max: var(--site-max);
 
+  /*
+    One content column for the whole site.
+    600px is the homepage feed (350px sidebar + 24px gap + 600px feed)
+    and a readable measure for 16px body copy. Text and media share it
+    so bios, prose, cards, figures, and photos line up.
+  */
+  --content-measure: 600px;
+  --content-media: 600px;
+
   --font-size-nav: clamp(0.875rem, calc(0.875rem + (0.9375rem - 0.875rem) * var(--fluid-slope)), 0.9375rem);
   --font-size-display: clamp(2rem, calc(2rem + (4rem - 2rem) * var(--fluid-slope)), 4rem);
   --font-size-heading-xl: clamp(1.875rem, calc(1.875rem + (3.5rem - 1.875rem) * var(--fluid-slope)), 3.5rem);

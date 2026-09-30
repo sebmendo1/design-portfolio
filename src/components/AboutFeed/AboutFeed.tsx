@@ -74,29 +74,31 @@ export function AboutFeed() {
             <HomeMenu page="about" />
           </div>
         </header>
-        <AboutIntro />
         <HomePageLinks className="home-feed__links load-reveal" page="about" />
       </aside>
 
-      <section className="home-feed__main about-feed__photos" aria-label="Photos">
-        {ABOUT_ALBUM.map((photo, index) => (
-          <figure
-            key={photo.src}
-            className="about-photo load-reveal load-reveal--media"
-            style={revealSlot(feedRevealSlot(index))}
-          >
-            <Image
-              src={photo.src}
-              alt={photo.alt}
-              width={photo.width}
-              height={photo.height}
-              sizes="(max-width: 900px) calc(100vw - 30px), 600px"
-              preload={index === 0}
-              className="about-photo__image"
-            />
-          </figure>
-        ))}
-      </section>
+      <div className="home-feed__main">
+        <AboutIntro />
+        <section className="about-feed__photos" aria-label="Photos">
+          {ABOUT_ALBUM.map((photo, index) => (
+            <figure
+              key={photo.src}
+              className="about-photo load-reveal load-reveal--media"
+              style={revealSlot(feedRevealSlot(index))}
+            >
+              <Image
+                src={photo.src}
+                alt={photo.alt}
+                width={photo.width}
+                height={photo.height}
+                sizes="(max-width: 900px) calc(100vw - 30px), 600px"
+                preload={index === 0}
+                className="about-photo__image"
+              />
+            </figure>
+          ))}
+        </section>
+      </div>
     </div>
   );
 }

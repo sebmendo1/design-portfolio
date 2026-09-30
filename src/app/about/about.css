@@ -55,14 +55,17 @@ html:has(.about-page) body {
   border-radius: var(--border-radius-lg);
 }
 
-/* Three paragraphs read poorly centred, so the phone intro stays left-aligned at card width. */
-@media (max-width: 900px) {
-  .about-feed .about-feed__intro {
-    align-self: center;
-    width: calc(100% - 30px);
-    max-width: var(--home-feed-width);
-    box-sizing: border-box;
-    padding: 4px 4px 0;
-    text-align: left;
-  }
+/* Photos share the feed's column gap. The intro sits above them in the same column. */
+.about-feed__photos {
+  display: flex;
+  flex-direction: column;
+  gap: var(--home-card-gap);
+}
+
+/* Contact and privacy reuse these class names. Same text column, no type changes. */
+.about-page__content,
+.about-page .contact-cta {
+  width: min(calc(100% - 30px), var(--content-measure));
+  max-width: var(--content-measure);
+  margin-inline: auto;
 }
