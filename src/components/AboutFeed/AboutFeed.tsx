@@ -74,11 +74,11 @@ export function AboutFeed() {
             <HomeMenu page="about" />
           </div>
         </header>
+        <AboutIntro />
         <HomePageLinks className="home-feed__links load-reveal" page="about" />
       </aside>
 
       <div className="home-feed__main">
-        <AboutIntro />
         <section className="about-feed__photos" aria-label="Photos">
           {ABOUT_ALBUM.map((photo, index) => (
             <figure

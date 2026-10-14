@@ -1,6 +1,10 @@
-/* Figma "Portfolio / Desktop": 350 sidebar + 24 gap + 600 feed, centred. */
+/*
+  Intro column + 24px gap + 600px feed, centred.
+  The intro column is the 600px content measure plus the header's 24px
+  inset on each side, so the copy under the pill is that measure.
+*/
 .home-feed {
-  --home-sidebar-width: 350px;
+  --home-sidebar-width: calc(var(--content-measure) + 48px);
   --home-feed-width: var(--content-media);
   --home-column-gap: 24px;
   --home-card-gap: 32px;
@@ -74,8 +78,8 @@
 
 .home-feed__bio {
   width: 100%;
-  max-width: var(--content-measure);
-  padding: 0;
+  max-width: calc(var(--content-measure) + 48px);
+  padding: var(--spacing-sm) 24px 0;
 }
 
 .home-feed__links {
@@ -118,26 +122,29 @@
   --reveal-slot: 8;
 }
 
-@media (min-width: 901px) and (max-width: 1023px) {
+/* Two 600px columns need about 1272px. Below that they share the row. */
+@media (min-width: 901px) and (max-width: 1319px) {
   .home-feed {
-    --home-sidebar-width: clamp(280px, 30vw, 350px);
+    --home-sidebar-width: min(calc(var(--content-measure) + 48px), 48%);
     padding-inline: var(--site-gutter);
     box-sizing: border-box;
   }
 
   .home-feed__main {
     flex: 1 1 auto;
+    width: auto;
+    min-width: 0;
     max-width: var(--home-feed-width);
   }
 }
 
-/* Figma "Portfolio / Phone": sticky header, centred bio, stacked cards. */
+/* Phone: sticky header, intro directly under it, then the feed. */
 @media (max-width: 900px) {
   .home-feed {
     --home-card-gap: 20px;
     flex-direction: column;
     align-items: center;
-    gap: 20px;
+    gap: 0;
   }
 
   .home-feed--home {
@@ -171,10 +178,13 @@
   }
 
   .home-feed__bio {
-    max-width: var(--content-measure);
+    align-self: stretch;
     width: 100%;
-    padding: 0;
-    text-align: center;
+    max-width: var(--content-measure);
+    margin-right: auto;
+    margin-left: 0;
+    padding: 0 16px;
+    text-align: left;
   }
 
   .about-feed .about-feed__intro {

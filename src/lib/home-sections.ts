@@ -29,7 +29,7 @@ export type HomeSectionGroup = HomeSection & {
   items: PortfolioIndexEntry[];
 };
 
-/** Nav pill order is feed order. */
+/** Nav order is feed order. */
 export const HOME_SECTIONS: HomeSection[] = [
   {
     id: 'memento-ai',
