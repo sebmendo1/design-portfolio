@@ -65,6 +65,15 @@
   --content-measure: 600px;
   --content-media: 600px;
 
+  /*
+    Shared two-column template. The content column is the 600px measure.
+    The side column — intro on / and /about, section nav on a project —
+    is at most three quarters of that column.
+  */
+  --layout-content: var(--content-media);
+  --layout-side: calc(var(--layout-content) * 3 / 4);
+  --layout-gap: 24px;
+
   --font-size-nav: clamp(0.875rem, calc(0.875rem + (0.9375rem - 0.875rem) * var(--fluid-slope)), 0.9375rem);
   --font-size-display: clamp(2rem, calc(2rem + (4rem - 2rem) * var(--fluid-slope)), 4rem);
   --font-size-heading-xl: clamp(1.875rem, calc(1.875rem + (3.5rem - 1.875rem) * var(--fluid-slope)), 3.5rem);
