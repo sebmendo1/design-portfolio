@@ -1,12 +1,8 @@
-/*
-  Intro column + 24px gap + 600px feed, centred.
-  The intro column is the 600px content measure plus the header's 24px
-  inset on each side, so the copy under the pill is that measure.
-*/
+/* Side column (max 3/4 of the feed) + shared gap + 600px feed, centred. */
 .home-feed {
-  --home-sidebar-width: calc(var(--content-measure) + 48px);
-  --home-feed-width: var(--content-media);
-  --home-column-gap: 24px;
+  --home-sidebar-width: var(--layout-side);
+  --home-feed-width: var(--layout-content);
+  --home-column-gap: var(--layout-gap);
   --home-card-gap: 32px;
   display: flex;
   align-items: flex-start;
@@ -78,7 +74,7 @@
 
 .home-feed__bio {
   width: 100%;
-  max-width: calc(var(--content-measure) + 48px);
+  max-width: var(--layout-side);
   padding: var(--spacing-sm) 24px 0;
 }
 
@@ -122,10 +118,10 @@
   --reveal-slot: 8;
 }
 
-/* Two 600px columns need about 1272px. Below that they share the row. */
-@media (min-width: 901px) and (max-width: 1319px) {
+/* 450 + 24 + 600 needs about 1074px. Below that the columns share the row. */
+@media (min-width: 901px) and (max-width: 1100px) {
   .home-feed {
-    --home-sidebar-width: min(calc(var(--content-measure) + 48px), 48%);
+    --home-sidebar-width: min(var(--layout-side), 38%);
     padding-inline: var(--site-gutter);
     box-sizing: border-box;
   }
@@ -180,7 +176,7 @@
   .home-feed__bio {
     align-self: stretch;
     width: 100%;
-    max-width: var(--content-measure);
+    max-width: var(--layout-side);
     margin-right: auto;
     margin-left: 0;
     padding: 0 16px;

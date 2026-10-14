@@ -1,13 +1,13 @@
-/* Case study: full-width content + sticky right TOC; readable prose measure. */
+/* Same columns as / and /about: side nav, then the 600px content column. */
 .study {
   --study-section-gap: 128px;
   --study-block-gap: 24px;
   --study-tile-radius: 24px;
-  --study-rail-width: 220px;
-  --study-rail-gap: 40px;
+  --study-rail-width: var(--layout-side);
+  --study-rail-gap: var(--layout-gap);
   /* Text and figures share the site content column. */
   --study-measure: var(--content-measure);
-  --study-content-max: var(--content-media);
+  --study-content-max: var(--layout-content);
   min-height: 100dvh;
   background: var(--color-background-home);
   color: var(--color-text-primary);
@@ -30,6 +30,8 @@
   z-index: 10;
   flex: 0 0 auto;
   align-self: stretch;
+  justify-content: flex-start;
+  gap: 8px;
   padding: 24px var(--site-gutter) 16px;
   background: var(--color-background-home);
   --reveal-slot: 0;
@@ -45,17 +47,21 @@
   justify-content: center;
   gap: var(--study-rail-gap);
   width: 100%;
-  padding: 0 var(--site-gutter) 96px;
+  min-height: 100dvh;
+  padding: 0 0 96px;
   box-sizing: border-box;
 }
 
-/* Sticky right-hand section nav (desktop). */
+/* Sticky left section nav. Same side column as the homepage intro. */
 .study-rail {
   position: sticky;
-  top: 88px;
+  top: 0;
+  display: flex;
+  flex-direction: column;
   flex: 0 0 var(--study-rail-width);
   width: var(--study-rail-width);
-  max-height: calc(100dvh - 112px);
+  height: 100dvh;
+  max-height: 100dvh;
   overflow-y: auto;
   scrollbar-width: none;
   --reveal-slot: 1;
@@ -125,16 +131,16 @@
   border-radius: 2px;
 }
 
-/* Main column: grows into the space left of the rail. */
+/* Content column: same 600px width as homepage cards and about photos. */
 .study-main {
   display: flex;
-  flex: 1 1 auto;
+  flex: 0 0 var(--layout-content);
   flex-direction: column;
   gap: var(--study-section-gap);
-  width: 100%;
+  width: var(--layout-content);
   max-width: var(--study-content-max);
   min-width: 0;
-  padding: 8px 0 0;
+  padding: 24px 0 0;
 }
 
 .study-article {
@@ -654,10 +660,20 @@
   }
 }
 
-@media (max-width: 1024px) {
+@media (min-width: 901px) and (max-width: 1100px) {
   .study {
-    --study-rail-width: 200px;
-    --study-rail-gap: 28px;
+    --study-rail-width: min(var(--layout-side), 38%);
+  }
+
+  .study-shell {
+    padding-inline: var(--site-gutter);
+    box-sizing: border-box;
+  }
+
+  .study-main {
+    flex: 1 1 auto;
+    width: auto;
+    min-width: 0;
   }
 }
 
@@ -668,6 +684,8 @@
   }
 
   .study-topbar.home-feed__header {
+    justify-content: space-between;
+    gap: 0;
     padding: 16px;
   }
 
@@ -680,19 +698,31 @@
     background: var(--color-border-pill);
   }
 
+  .study-columns {
+    flex-direction: column;
+    align-items: stretch;
+    gap: 0;
+    min-height: 0;
+    padding: 0 0 32px;
+  }
+
   .study-rail {
+    display: contents;
+    height: auto;
+    max-height: none;
+  }
+
+  .study-rail__nav {
     display: none;
   }
 
-  .study-columns {
-    justify-content: center;
-    padding: 0 15px 32px;
-  }
-
   .study-main {
+    flex: none;
+    width: 100%;
     max-width: var(--study-content-max);
     margin-top: 8px;
-    padding-top: 0;
+    padding: 0 15px;
+    box-sizing: border-box;
   }
 
   .study-hero,

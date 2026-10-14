@@ -124,20 +124,25 @@ export function CaseStudyTemplate({ study, next }: CaseStudyTemplateProps) {
   return (
     <div className="study">
       <div className="study-shell">
-        <header className="home-feed__header study-topbar load-reveal">
-          <PageHeadline className="page-headline--home home-feed__headline" />
-          <div className="home-feed__menu study-topbar__menu">
-            <HomeMenu
-              sections={sections}
-              activeId={activeId}
-              onSelect={scrollToSection}
-              label="On this page"
-              variant="toc"
-            />
-          </div>
-        </header>
-
         <div className="study-columns">
+          <aside className="study-rail load-reveal" aria-label="On this page">
+            <header className="home-feed__header study-topbar load-reveal">
+              <PageHeadline className="page-headline--home home-feed__headline" />
+              <div className="home-feed__menu study-topbar__menu">
+                <HomeMenu
+                  sections={sections}
+                  activeId={activeId}
+                  onSelect={scrollToSection}
+                  label="On this page"
+                  variant="toc"
+                />
+              </div>
+            </header>
+            <nav className="study-rail__nav" aria-label="On this page">
+              {toc}
+            </nav>
+          </aside>
+
           <main id="main-content" className="study-main">
             <article className="study-article" aria-labelledby="study-title">
               <section id="overview" className="study-hero" aria-labelledby="study-title" tabIndex={-1}>
@@ -318,12 +323,6 @@ export function CaseStudyTemplate({ study, next }: CaseStudyTemplateProps) {
 
             <HomePageLinks className="study-footer-links load-reveal" />
           </main>
-
-          <aside className="study-rail load-reveal" aria-label="On this page">
-            <nav className="study-rail__nav" aria-label="On this page">
-              {toc}
-            </nav>
-          </aside>
         </div>
       </div>
     </div>
