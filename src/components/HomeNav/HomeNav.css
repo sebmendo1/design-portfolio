@@ -68,6 +68,54 @@
   color: var(--color-text-nav-active);
 }
 
+/* Plain text company list. Case-study TOC stays on StudyToc. */
+.home-nav--text {
+  gap: 0;
+  padding: 0 24px 8px;
+}
+
+.home-nav--text .home-nav__row {
+  display: inline-flex;
+  width: auto;
+  max-width: var(--content-measure);
+  min-width: 0;
+  height: auto;
+  min-height: 32px;
+  padding: 4px 0;
+  border-radius: 2px;
+  background: none;
+  color: var(--color-text-muted);
+  font-size: 16px;
+  font-weight: var(--font-weight-regular);
+  font-variation-settings: 'wght' 430, 'opsz' 16;
+  line-height: 22px;
+  text-decoration: none;
+  transition:
+    color var(--transition-base),
+    font-weight var(--transition-base);
+}
+
+@media (hover: hover) {
+  .home-nav--text .home-nav__row:hover {
+    color: var(--color-text-muted);
+    text-decoration: underline;
+    text-decoration-thickness: 1px;
+    text-underline-offset: 0.18em;
+  }
+}
+
+.home-nav--text .home-nav__row.is-active,
+.home-nav--text .home-nav__row.is-active:hover {
+  color: var(--color-text-primary);
+  font-weight: 550;
+  font-variation-settings: 'wght' 550, 'opsz' 16;
+}
+
+.home-nav--text .home-nav__row:focus-visible {
+  outline: 2px solid var(--color-focus-ring);
+  outline-offset: 2px;
+}
+
 .home-links {
   display: flex;
   flex-wrap: wrap;

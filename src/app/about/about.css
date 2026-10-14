@@ -55,7 +55,7 @@ html:has(.about-page) body {
   border-radius: var(--border-radius-lg);
 }
 
-/* Photos share the feed's column gap. The intro sits above them in the same column. */
+/* Photos share the feed's column gap. The intro sits under the header, beside this column. */
 .about-feed__photos {
   display: flex;
   flex-direction: column;

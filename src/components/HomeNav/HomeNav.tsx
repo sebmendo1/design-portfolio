@@ -18,17 +18,29 @@ type HomeNavListProps = {
   sections: NavSection[];
   activeId: string | null;
   onSelect: (id: string) => void;
+  /**
+   * `text` is the homepage company list under the intro.
+   * `pills` stays available so the case-study TOC is not restyled through this list.
+   */
+  variant?: 'pills' | 'text';
 };
 
-/** Sidebar pills (homepage / about). The header menu uses the project list instead. */
-export function HomeNavList({ sections, activeId, onSelect }: HomeNavListProps) {
+/** Homepage company list. The header menu uses the project list instead. */
+export function HomeNavList({
+  sections,
+  activeId,
+  onSelect,
+  variant = 'pills',
+}: HomeNavListProps) {
   function handleClick(event: MouseEvent<HTMLAnchorElement>, id: string) {
     event.preventDefault();
     onSelect(id);
   }
 
+  const text = variant === 'text';
+
   return (
-    <ul className="home-nav">
+    <ul className={text ? 'home-nav home-nav--text' : 'home-nav'}>
       {sections.map((section) => {
         const active = section.id === activeId;
         return (
@@ -39,7 +51,7 @@ export function HomeNavList({ sections, activeId, onSelect }: HomeNavListProps) 
               aria-current={active ? 'true' : undefined}
               onClick={(event) => handleClick(event, section.id)}
             >
-              <span className="home-nav__pill">{section.label}</span>
+              {text ? section.label : <span className="home-nav__pill">{section.label}</span>}
             </a>
           </li>
         );
