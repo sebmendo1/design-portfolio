@@ -304,6 +304,52 @@
   padding: 24px 24px 0;
 }
 
+/* Phone sheet. The desktop case-study menu keeps the project list above 900px. */
+.home-menu__minimal {
+  display: none;
+}
+
+.home-menu__links.home-menu__links--stack {
+  flex-direction: column;
+  flex-wrap: nowrap;
+  align-items: flex-start;
+  gap: 0;
+  padding: 4px 24px 8px;
+}
+
+.home-menu__links--stack .home-links__link {
+  display: flex;
+  align-items: center;
+  min-height: 36px;
+  padding: 8px 0;
+  border-radius: 2px;
+  font-size: 16px;
+  font-weight: var(--font-weight-regular);
+  line-height: 22px;
+}
+
+.home-menu__links--stack .theme-toggle {
+  align-self: flex-start;
+  min-height: 36px;
+  margin-top: 4px;
+  padding: 8px 0;
+}
+
+@media (max-width: 900px) {
+  .home-menu__identity,
+  .home-menu__desktop {
+    display: none;
+  }
+
+  .home-menu__minimal {
+    display: block;
+  }
+
+  .home-menu__header {
+    justify-content: flex-end;
+  }
+}
+
 .home-menu[open] .home-menu__sheet {
   animation: home-menu-in 0.36s cubic-bezier(0.22, 1, 0.36, 1) both;
 }
