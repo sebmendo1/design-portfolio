@@ -70,18 +70,19 @@ const PAGE_SWITCH_LINK: Record<HomePage, { href: string; label: string }> = {
 type HomePageLinksProps = {
   className?: string;
   page?: HomePage;
+  onNavigate?: () => void;
 };
 
-export function HomePageLinks({ className, page = 'work' }: HomePageLinksProps) {
+export function HomePageLinks({ className, page = 'work', onNavigate }: HomePageLinksProps) {
   const pageLink = PAGE_SWITCH_LINK[page];
 
   return (
     <div className={['home-links', className].filter(Boolean).join(' ')}>
-      <Link href={pageLink.href} className="home-links__link">
+      <Link href={pageLink.href} className="home-links__link" onClick={onNavigate}>
         {pageLink.label}
       </Link>
       {SITE_SOCIAL_NAV.map((link) => (
-        <a key={link.href} href={link.href} className="home-links__link" rel="me">
+        <a key={link.href} href={link.href} className="home-links__link" rel="me" onClick={onNavigate}>
           {link.label}
         </a>
       ))}
@@ -157,8 +158,8 @@ type HomeMenuProps = {
   /** Label for the optional in-page TOC block. */
   label?: string;
   /**
-   * `toc` keeps an "On this page" block under the project list (case-study phone).
-   * Project links always replace the old pills.
+   * `toc` keeps an "On this page" block in the desktop menu (case-study header).
+   * The phone sheet is a separate minimal list and does not use this variant.
    */
   variant?: 'pills' | 'toc';
 };
@@ -219,7 +220,7 @@ export function HomeMenu({
       >
         <div className="home-menu__sheet">
           <div className="home-menu__header">
-            <PageHeadline className="page-headline--chip" />
+            <PageHeadline className="page-headline--chip home-menu__identity" />
             <button
               type="button"
               className="home-menu__button"
@@ -229,19 +230,30 @@ export function HomeMenu({
               <CloseIcon />
             </button>
           </div>
-          <nav aria-label="Projects" className="home-menu__nav">
-            <p className="home-nav__label">Projects</p>
-            <MenuProjectList currentSlug={currentSlug} onNavigate={close} />
-          </nav>
-          {showToc ? (
-            <nav aria-label={label} className="home-menu__nav home-menu__nav--toc">
-              <p className="home-nav__label">{label}</p>
-              <div className="home-menu__toc">
-                <StudyToc sections={sections!} activeId={activeId} onSelect={handleSelect} />
-              </div>
+          {/* Wide case-study header. Hidden on the phone sheet. */}
+          <div className="home-menu__desktop">
+            <nav aria-label="Projects" className="home-menu__nav">
+              <p className="home-nav__label">Projects</p>
+              <MenuProjectList currentSlug={currentSlug} onNavigate={close} />
             </nav>
-          ) : null}
-          <HomePageLinks className="home-menu__links" page={page} />
+            {showToc ? (
+              <nav aria-label={label} className="home-menu__nav home-menu__nav--toc">
+                <p className="home-nav__label">{label}</p>
+                <div className="home-menu__toc">
+                  <StudyToc sections={sections!} activeId={activeId} onSelect={handleSelect} />
+                </div>
+              </nav>
+            ) : null}
+            <HomePageLinks className="home-menu__links" page={page} onNavigate={close} />
+          </div>
+          {/* Phone sheet: plain text only. No projects, logos, or name chip. */}
+          <nav className="home-menu__minimal" aria-label="Site">
+            <HomePageLinks
+              className="home-menu__links home-menu__links--stack"
+              page={page}
+              onNavigate={close}
+            />
+          </nav>
         </div>
       </dialog>
     </>
