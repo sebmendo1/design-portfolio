@@ -1,4 +1,6 @@
+import { cookies } from 'next/headers';
 import { notFound } from 'next/navigation';
+import { PROJECT_GATE_COOKIE, verifyProjectGateToken } from '@/lib/project-gate';
 import {
   AI_CORS_HEADERS,
   AI_ROUTE_HEADERS,
@@ -15,6 +17,17 @@ export async function generateStaticParams() {
 }
 
 export async function GET(_request: Request, { params }: Params) {
+  const token = (await cookies()).get(PROJECT_GATE_COOKIE)?.value;
+  if (!verifyProjectGateToken(token)) {
+    return new Response('Unauthorized\n', {
+      status: 401,
+      headers: {
+        'Content-Type': 'text/plain; charset=utf-8',
+        'Cache-Control': 'private, no-store',
+      },
+    });
+  }
+
   const { slug } = await params;
   const project = await getMergedProject(slug);
   if (!project) notFound();

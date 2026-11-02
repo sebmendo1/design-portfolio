@@ -212,6 +212,7 @@ export function CaseStudyTemplate({ study, next }: CaseStudyTemplateProps) {
                         <Link
                           key={link.href}
                           href={link.href}
+                          prefetch={link.href.startsWith('/work') ? false : undefined}
                           className="study-link-pill"
                         >
                           {link.label} <span aria-hidden="true">→</span>
@@ -307,6 +308,7 @@ export function CaseStudyTemplate({ study, next }: CaseStudyTemplateProps) {
                 <p className="study-eyebrow">Next case study</p>
                 <Link
                   href={`/work/${next.slug}`}
+                  prefetch={false}
                   className="study-next__link"
                 >
                   {nextLogo ? <HomeLogo logo={nextLogo} /> : null}

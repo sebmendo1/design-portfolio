@@ -1,4 +1,6 @@
-import { notFound } from 'next/navigation';
+import { Suspense } from 'react';
+import { cookies } from 'next/headers';
+import { notFound, redirect } from 'next/navigation';
 import type { Metadata } from 'next';
 import { CaseStudyPageContent } from '@/components/CaseStudyPageContent/CaseStudyPageContent';
 import { CaseStudySrArticle } from '@/components/CaseStudySrArticle/CaseStudySrArticle';
@@ -11,8 +13,18 @@ import { getMergedProject } from '@/lib/cms-data';
 import { resolveCaseStudyConfig } from '@/lib/case-study-config';
 import { exportMergedProject } from '@/lib/content-export';
 import { buildCreativeWorkGraph } from '@/lib/json-ld';
+import {
+  PROJECT_GATE_COOKIE,
+  projectGateHref,
+  verifyProjectGateToken,
+} from '@/lib/project-gate';
 import { getSiteUrl } from '@/lib/site';
 import './case-study.css';
+
+async function projectGateOpen(): Promise<boolean> {
+  const token = (await cookies()).get(PROJECT_GATE_COOKIE)?.value;
+  return verifyProjectGateToken(token);
+}
 
 interface Props {
   params: Promise<{ slug: string }>;
@@ -28,6 +40,12 @@ export async function generateStaticParams() {
 
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const { slug } = await params;
+  if (!(await projectGateOpen())) {
+    return {
+      title: { absolute: 'SebMendoDesign' },
+      robots: { index: false, follow: false },
+    };
+  }
   const project = await getMergedProject(slug);
   const study = getCaseStudy(slug);
   if (!project && !study) return {};
@@ -84,8 +102,22 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   };
 }
 
-export default async function CaseStudyPage({ params }: Props) {
+export default function CaseStudyPage({ params }: Props) {
+  return (
+    <Suspense fallback={<div className="page-loading" aria-busy="true" aria-label="Loading" />}>
+      <GatedCaseStudy params={params} />
+    </Suspense>
+  );
+}
+
+async function GatedCaseStudy({ params }: Props) {
   const { slug } = await params;
+  // Cookie check before any case-study markup so the load-reveal shell
+  // cannot include the project. The proxy redirects before this runs.
+  if (!(await projectGateOpen())) {
+    redirect(projectGateHref(`/work/${slug}`));
+  }
+
   const project = await getMergedProject(slug);
   const study = getCaseStudy(slug);
   if (!project && !study) notFound();

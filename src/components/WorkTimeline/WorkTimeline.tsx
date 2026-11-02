@@ -31,7 +31,7 @@ function groupShippedWork(entries: readonly ShippedWorkEntry[]): TimelineYearGro
 function TimelineItem({ entry }: { entry: ShippedWorkEntry }) {
   const meta = entry.pending ? `${entry.affiliation} · pending` : entry.affiliation;
   const title = entry.projectSlug ? (
-    <Link href={`/work/${entry.projectSlug}`} className="work-timeline__title">
+    <Link href={`/work/${entry.projectSlug}`} prefetch={false} className="work-timeline__title">
       {entry.title}
     </Link>
   ) : (

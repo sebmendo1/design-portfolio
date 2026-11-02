@@ -12,6 +12,12 @@ import {
   preferredType,
 } from '@/lib/accept-markdown';
 import {
+  PROJECT_GATE_COOKIE,
+  isProtectedProjectPath,
+  safeNextPath,
+  verifyProjectGateToken,
+} from '@/lib/project-gate';
+import {
   SITE_SESSION_COOKIE,
   isSiteProtectionEnabled,
   verifySiteSessionToken,
@@ -55,6 +61,48 @@ function handleSiteAuth(request: NextRequest): NextResponse | null {
   return NextResponse.redirect(loginUrl);
 }
 
+function denyProjectGate(request: NextRequest): NextResponse {
+  const { pathname, search } = request.nextUrl;
+  const accept = request.headers.get('accept') ?? '';
+  const isDataRequest =
+    !isRscNavigationRequest(request.headers) &&
+    (pathname.endsWith('.json') ||
+      pathname.endsWith('.md') ||
+      pathname.startsWith('/api/') ||
+      accept.includes('text/markdown'));
+
+  if (isDataRequest) {
+    return new NextResponse('Unauthorized\n', {
+      status: 401,
+      headers: {
+        'Content-Type': 'text/plain; charset=utf-8',
+        'Cache-Control': 'private, no-store',
+      },
+    });
+  }
+
+  const url = new URL('/gate', request.url);
+  url.searchParams.set('next', safeNextPath(`${pathname}${search}`));
+  const response = NextResponse.redirect(url);
+  response.headers.set('Cache-Control', 'private, no-store');
+  return response;
+}
+
+function withPrivateProjectCache(response: Response): Response {
+  response.headers.set('Cache-Control', 'private, no-store');
+  const vary = new Set(
+    (response.headers.get('Vary') ?? '')
+      .split(',')
+      .map((token) => token.trim())
+      .filter(Boolean),
+  );
+  if (![...vary].some((token) => token.toLowerCase() === 'cookie')) {
+    vary.add('Cookie');
+  }
+  response.headers.set('Vary', [...vary].join(', '));
+  return response;
+}
+
 export async function proxy(request: NextRequest) {
   const { pathname } = request.nextUrl;
 
@@ -63,11 +111,23 @@ export async function proxy(request: NextRequest) {
     if (siteResponse) return siteResponse;
   }
 
+  const projectLocked =
+    isProtectedProjectPath(pathname) &&
+    !verifyProjectGateToken(request.cookies.get(PROJECT_GATE_COOKIE)?.value);
+
+  if (projectLocked) {
+    return denyProjectGate(request);
+  }
+
   if (pathname.startsWith('/admin')) {
     return handleAdminAuth(request);
   }
 
-  return negotiateMarkdown(request);
+  const response = await negotiateMarkdown(request);
+  if (isProtectedProjectPath(pathname)) {
+    return withPrivateProjectCache(response);
+  }
+  return response;
 }
 
 const INTERNAL_MARKDOWN_HEADER = 'x-markdown-internal';
@@ -151,5 +211,7 @@ async function negotiateMarkdown(request: NextRequest): Promise<NextResponse | R
 export const config = {
   matcher: [
     '/((?!_next/static|_next/image|favicon.ico|assets/|.*\\.(?:svg|png|jpg|jpeg|gif|webp|ico|txt|xml|json)$).*)',
+    // Per-project JSON is excluded by the pattern above; still run the gate on it.
+    '/work/:path*',
   ],
 };

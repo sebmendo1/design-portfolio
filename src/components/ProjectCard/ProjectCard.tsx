@@ -114,6 +114,7 @@ export function ProjectCard({
   return (
     <Link
       href={href}
+      prefetch={false}
       className={`project-card project-card--${frame}`}
       style={{ backgroundColor: bg }}
       onClick={(event) => {
