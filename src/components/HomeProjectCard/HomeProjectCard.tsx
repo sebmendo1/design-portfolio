@@ -227,7 +227,12 @@ export function HomeProjectCard({
           {content}
         </a>
       ) : (
-        <Link href={href} className="home-card__link" onClick={handleClick}>
+        <Link
+          href={href}
+          prefetch={href.startsWith('/work') ? false : undefined}
+          className="home-card__link"
+          onClick={handleClick}
+        >
           {content}
         </Link>
       )}

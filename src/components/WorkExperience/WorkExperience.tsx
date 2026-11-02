@@ -66,7 +66,7 @@ function RoleEntry({ role }: { role: ProfileRole }) {
       {role.relatedProjectSlugs && role.relatedProjectSlugs.length > 0 && (
         <div className="work-experience__projects">
           {role.relatedProjectSlugs.map((slug) => (
-            <Link key={slug} href={`/work/${slug}`} className="work-experience__project-link">
+            <Link key={slug} href={`/work/${slug}`} prefetch={false} className="work-experience__project-link">
               View case study →
             </Link>
           ))}
@@ -94,7 +94,7 @@ export function WorkExperience() {
               {impact.projectSlug && (
                 <>
                   {' '}
-                  <Link href={`/work/${impact.projectSlug}`} className="work-experience__project-link">
+                  <Link href={`/work/${impact.projectSlug}`} prefetch={false} className="work-experience__project-link">
                     Case study
                   </Link>
                 </>

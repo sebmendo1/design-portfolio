@@ -132,6 +132,7 @@ function MenuProjectList({ currentSlug, onNavigate }: MenuProjectListProps) {
                 <li key={item.slug}>
                   <Link
                     href={item.href}
+                    prefetch={false}
                     className={`home-menu-projects__row${active ? ' is-active' : ''}`}
                     aria-current={active ? 'page' : undefined}
                     onClick={onNavigate}

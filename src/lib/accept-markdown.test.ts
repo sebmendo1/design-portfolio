@@ -58,6 +58,7 @@ test('skips negotiation for admin, login, api, and assets', () => {
   assert.equal(isMarkdownNegotiablePath('/about'), true);
   assert.equal(isMarkdownNegotiablePath('/admin/login'), false);
   assert.equal(isMarkdownNegotiablePath('/login'), false);
+  assert.equal(isMarkdownNegotiablePath('/gate'), false);
   assert.equal(isMarkdownNegotiablePath('/api/markdown/about'), false);
   assert.equal(isMarkdownNegotiablePath('/assets/nav.png'), false);
 });

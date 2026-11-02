@@ -16,6 +16,9 @@ Set these in Vercel (Production + Preview) and in `.env.local` for local dev:
 | `ADMIN_SECRET` | Yes (prod) | Strong password for `/admin` CMS login |
 | `BLOB_READ_WRITE_TOKEN` | Yes (prod) | Vercel Blob token for CMS + media |
 | `NEXT_PUBLIC_SITE_URL` | Recommended | Canonical URL, e.g. `https://your-domain.vercel.app` |
+| `PROJECT_GATE_PASSWORD` | No | Case-sensitive password for project pages (`/work/*`). Read only on the server. When unset, local dev uses `sebmendodesign`. |
+
+To change the project password in production, set `PROJECT_GATE_PASSWORD` on the Vercel project (Production and Preview). No code edit. Redeploy so new instances pick it up.
 
 If `NEXT_PUBLIC_SITE_URL` is unset, the app falls back to `VERCEL_PROJECT_PRODUCTION_URL` or `VERCEL_URL`.
 

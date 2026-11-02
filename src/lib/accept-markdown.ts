@@ -111,6 +111,7 @@ export function isRscNavigationRequest(headers: Headers): boolean {
 export function isMarkdownNegotiablePath(pathname: string): boolean {
   if (pathname.startsWith('/admin')) return false;
   if (pathname.startsWith('/login')) return false;
+  if (pathname.startsWith('/gate')) return false;
   if (pathname.startsWith('/api/')) return false;
   if (pathname.startsWith('/_next/')) return false;
   if (pathname.startsWith('/assets/')) return false;
