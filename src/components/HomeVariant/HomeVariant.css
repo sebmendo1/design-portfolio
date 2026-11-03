@@ -1,11 +1,13 @@
 /*
   Homepage variant of Figma frame Portfolio-Main (1200×1745, node 1080:39966).
-  Content column is 600px. The project rail is full-bleed; the first card
-  lines up with that column. Phone layout is authored here — the frame has none.
+  Text column is 720px and stays fluid below that. The project rail is
+  full-bleed; the first card lines up with that column. Phone layout is
+  authored here — the frame has none.
 */
 
 .home-variant {
-  --hv-column: 600px;
+  --hv-column: 720px;
+  --hv-stack: 64px;
   --hv-card: 600px;
   --hv-gap: 24px;
   --hv-radius: 28px;
@@ -34,7 +36,7 @@ html:has(.home-variant) body {
 }
 
 .home-variant__header {
-  padding: 24px max(20px, calc((100% - var(--hv-column)) / 2)) 12px;
+  padding: 24px max(20px, calc((100% - var(--hv-column)) / 2)) 0;
 }
 
 .home-variant__bar {
@@ -114,8 +116,7 @@ html:has(.home-variant) body {
   display: flex;
   align-items: flex-start;
   box-sizing: border-box;
-  min-height: 280px;
-  padding: 64px max(20px, calc((100% - var(--hv-column)) / 2)) 0;
+  padding: var(--hv-stack) max(20px, calc((100% - var(--hv-column)) / 2)) 0;
 }
 
 .home-variant__lede {
@@ -138,7 +139,7 @@ html:has(.home-variant) body {
   gap: var(--hv-gap);
   overflow-x: auto;
   overscroll-behavior-x: contain;
-  padding-top: 32px;
+  padding-top: var(--hv-stack);
   padding-bottom: 0;
   padding-inline-start: max(20px, calc((100% - var(--hv-column)) / 2));
   /* Enough end space that the last card can sit on the same line as the first. */
@@ -220,7 +221,7 @@ html:has(.home-variant) body {
 .home-variant__role-copy {
   display: flex;
   flex-direction: column;
-  gap: 2px;
+  gap: 4px;
   min-width: 0;
 }
 
@@ -309,12 +310,6 @@ a.home-variant__social-link:hover {
     --hv-card: 400px;
   }
 
-  .home-variant__intro {
-    min-height: 0;
-    padding-top: 40px;
-    padding-bottom: 8px;
-  }
-
   .home-variant__lede {
     font-size: 28px;
   }
@@ -387,6 +382,45 @@ a.home-variant__social-link:hover {
 
   .home-variant__name {
     font-size: 14px;
+  }
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  .home-variant__header,
+  .home-variant__lede,
+  .home-variant__experience,
+  .home-variant__footer {
+    animation: hv-arrive 0.85s cubic-bezier(0.25, 0.8, 0.25, 1) backwards;
+  }
+
+  .home-variant__rail {
+    animation: hv-arrive-solid 0.9s cubic-bezier(0.25, 0.8, 0.25, 1) backwards;
+    animation-delay: 140ms;
+  }
+
+  .home-variant__lede {
+    animation-delay: 70ms;
+  }
+
+  .home-variant__experience {
+    animation-delay: 210ms;
+  }
+
+  .home-variant__footer {
+    animation-delay: 280ms;
+  }
+}
+
+@keyframes hv-arrive {
+  from {
+    opacity: 0;
+    transform: translateY(12px);
+  }
+}
+
+@keyframes hv-arrive-solid {
+  from {
+    transform: translateY(16px);
   }
 }
 
