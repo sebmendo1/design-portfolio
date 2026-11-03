@@ -1,12 +1,14 @@
 /*
   Homepage variant of Figma frame Portfolio-Main (1200×1745, node 1080:39966).
-  Text column is 720px and stays fluid below that. The project rail is
-  full-bleed; the first card lines up with that column. Phone layout is
-  authored here — the frame has none.
+  The text column is about 70% of the page on a desktop, and fills the
+  viewport once 70% would be narrower than the page. Project cards stay
+  600×600. The rail is full-bleed; the first card lines up with the column.
 */
 
 .home-variant {
-  --hv-column: 720px;
+  /* About 70% of the page. Narrow viewports fill the width instead,
+     so the headline does not collapse into a thin column. */
+  --hv-column: min(1400px, 70vw);
   --hv-stack: 64px;
   --hv-card: 600px;
   --hv-gap: 24px;
@@ -27,6 +29,11 @@
   overflow-x: clip;
   font-family: var(--font-family-primary);
   font-variation-settings: 'wght' 430, 'opsz' 16;
+}
+
+.home-variant,
+.home-variant * {
+  font-family: var(--font-family-primary);
 }
 
 html:has(.home-variant),
@@ -243,6 +250,7 @@ html:has(.home-variant) body {
 .home-variant__period {
   flex: 0 0 auto;
   text-align: right;
+  font-feature-settings: 'tnum';
 }
 
 .home-variant__footer {
@@ -302,14 +310,16 @@ a.home-variant__social-link:hover {
   color: transparent;
   -webkit-text-fill-color: transparent;
   opacity: 0.2;
-  font-variation-settings: 'wght' 700, 'opsz' 72;
+  font-variation-settings: 'wght' 700, 'opsz' 32;
+}
+
+@media (max-width: 760px) {
+  .home-variant {
+    --hv-column: 100%;
+  }
 }
 
 @media (max-width: 700px) {
-  .home-variant {
-    --hv-card: 400px;
-  }
-
   .home-variant__lede {
     font-size: 28px;
   }
