@@ -1,0 +1,390 @@
+/*
+  Homepage variant of Figma frame Portfolio-Main (1200×1745, node 1080:39966).
+  Content column is 600px. The project rail is full-bleed; the first card
+  lines up with that column. Phone layout is authored here — the frame has none.
+*/
+
+.home-variant {
+  --hv-column: 600px;
+  --hv-card: 400px;
+  --hv-gap: 24px;
+  --hv-radius: 28px;
+  --hv-ink: #000000;
+  --hv-muted: rgba(0, 0, 0, 0.8);
+  --hv-line: rgba(0, 0, 0, 0.1);
+  --hv-card-fill: #f3f3f3;
+  --color-text-primary: #000000;
+  --color-text-muted: #747474;
+  --color-text-secondary: #666666;
+  --color-background-project-highlight: var(--hv-card-fill);
+  --color-focus-ring: #000000;
+  background: #ffffff;
+  color: var(--hv-ink);
+  color-scheme: light;
+  min-height: 100dvh;
+  overflow-x: clip;
+  font-family: var(--font-family-primary);
+  font-variation-settings: 'wght' 430, 'opsz' 16;
+}
+
+html:has(.home-variant),
+html:has(.home-variant) body {
+  background: #ffffff;
+  color-scheme: light;
+}
+
+.home-variant__header {
+  padding: 24px max(20px, calc((100% - var(--hv-column)) / 2)) 12px;
+}
+
+.home-variant__bar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  min-height: 40px;
+}
+
+.home-variant__brand {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  min-width: 0;
+  color: var(--hv-ink);
+  text-decoration: none;
+}
+
+.home-variant__brand:focus-visible,
+.home-variant__contact:focus-visible,
+.home-variant__social-link:focus-visible,
+.home-variant__rail:focus-visible {
+  outline: 2px solid var(--hv-ink);
+  outline-offset: 3px;
+}
+
+.home-variant__avatar {
+  position: relative;
+  width: 36px;
+  height: 36px;
+  flex-shrink: 0;
+  overflow: hidden;
+  border-radius: 100px;
+}
+
+.home-variant__avatar-img {
+  position: absolute;
+  left: -14.29%;
+  top: -19.69%;
+  width: 128.57%;
+  height: 134.02%;
+  max-width: none;
+  object-fit: cover;
+}
+
+.home-variant__name {
+  padding: 8px;
+  font-size: 18px;
+  line-height: normal;
+  letter-spacing: 0;
+  white-space: nowrap;
+  font-variation-settings: 'wght' 600, 'opsz' 18;
+}
+
+.home-variant__contact {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  padding: 10px 16px;
+  border-radius: 100px;
+  background: linear-gradient(to bottom, rgba(38, 38, 38, 0.9), #262626);
+  color: #ffffff;
+  text-decoration: none;
+  font-size: 16px;
+  line-height: normal;
+  white-space: nowrap;
+  font-variation-settings: 'wght' 530, 'opsz' 16;
+}
+
+.home-variant__contact:hover {
+  background: linear-gradient(to bottom, #3a3a3a, #1f1f1f);
+}
+
+.home-variant__intro {
+  display: flex;
+  align-items: flex-start;
+  box-sizing: border-box;
+  min-height: 280px;
+  padding: 64px max(20px, calc((100% - var(--hv-column)) / 2)) 0;
+}
+
+.home-variant__lede {
+  width: min(100%, var(--hv-column));
+  margin: 0;
+  color: var(--hv-muted);
+  font-size: 28px;
+  line-height: 1.2;
+  letter-spacing: 0;
+  text-wrap: pretty;
+  font-variation-settings: 'wght' 700, 'opsz' 32;
+}
+
+.home-variant__projects {
+  padding-bottom: 32px;
+}
+
+.home-variant__rail {
+  display: flex;
+  gap: var(--hv-gap);
+  overflow-x: auto;
+  overscroll-behavior-x: contain;
+  padding-top: 32px;
+  padding-bottom: 0;
+  padding-inline-start: max(20px, calc((100% - var(--hv-column)) / 2));
+  /* Enough end space that the last card can sit on the same line as the first. */
+  padding-inline-end: calc(
+    100% - var(--hv-card) - max(20px, calc((100% - var(--hv-column)) / 2))
+  );
+  scroll-padding-inline: max(20px, calc((100% - var(--hv-column)) / 2));
+  scroll-snap-type: x proximity;
+  scrollbar-width: none;
+  -webkit-overflow-scrolling: touch;
+}
+
+.home-variant__rail::-webkit-scrollbar {
+  display: none;
+}
+
+.home-variant__rail .home-card {
+  position: relative;
+  flex: 0 0 var(--hv-card);
+  width: var(--hv-card);
+  scroll-snap-align: start;
+}
+
+.home-variant__rail .home-card__link {
+  gap: 0;
+}
+
+.home-variant__rail .home-card__media {
+  aspect-ratio: 1;
+  border-radius: var(--hv-radius);
+  background: var(--hv-card-fill);
+}
+
+/* Titles stay in the link for assistive tech. The frame shows media only. */
+.home-variant__rail .home-card__meta {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border: 0;
+}
+
+.home-variant__experience {
+  padding: 64px max(20px, calc((100% - var(--hv-column)) / 2));
+}
+
+.home-variant__column {
+  width: min(100%, var(--hv-column));
+  margin-inline: auto;
+}
+
+.home-variant__roles {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+.home-variant__role {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  padding: 24px;
+  border-bottom: 1.5px solid var(--hv-line);
+}
+
+.home-variant__role:last-child {
+  border-bottom: 0;
+}
+
+.home-variant__role-copy {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  min-width: 0;
+}
+
+.home-variant__company,
+.home-variant__period {
+  margin: 0;
+  font-size: 18px;
+  line-height: 1.2;
+  font-variation-settings: 'wght' 700, 'opsz' 18;
+}
+
+.home-variant__role-title {
+  margin: 0;
+  font-size: 18px;
+  line-height: 1.2;
+  font-variation-settings: 'wght' 430, 'opsz' 18;
+}
+
+.home-variant__period {
+  flex: 0 0 auto;
+  text-align: right;
+}
+
+.home-variant__footer {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 64px;
+  padding-top: 32px;
+  padding-bottom: 12px;
+}
+
+.home-variant__social {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: center;
+  gap: 24px;
+  width: min(100%, var(--hv-column));
+  padding: 24px;
+}
+
+.home-variant__social-link {
+  color: var(--hv-ink);
+  text-decoration: none;
+  font-size: 18px;
+  line-height: 1.2;
+  white-space: nowrap;
+  font-variation-settings: 'wght' 700, 'opsz' 18;
+}
+
+a.home-variant__social-link:hover {
+  opacity: 0.55;
+}
+
+.home-variant__wordmark-slot {
+  container-type: inline-size;
+  width: 100%;
+  overflow: hidden;
+}
+
+.home-variant__wordmark {
+  margin: 0;
+  width: max-content;
+  margin-inline: auto;
+  font-size: 11.33cqi;
+  line-height: 1.2;
+  letter-spacing: 0;
+  white-space: nowrap;
+  text-align: center;
+  background-image: linear-gradient(
+    to bottom,
+    rgba(0, 0, 0, 0.8) 12.847%,
+    rgba(102, 102, 102, 0.32)
+  );
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+  -webkit-text-fill-color: transparent;
+  opacity: 0.2;
+  font-variation-settings: 'wght' 700, 'opsz' 72;
+}
+
+@media (max-width: 700px) {
+  .home-variant__intro {
+    min-height: 0;
+    padding-top: 40px;
+    padding-bottom: 8px;
+  }
+
+  .home-variant__lede {
+    font-size: 28px;
+  }
+
+  .home-variant__experience {
+    padding-top: 40px;
+    padding-bottom: 40px;
+  }
+
+  .home-variant__role {
+    padding: 20px 0;
+  }
+
+  .home-variant__footer {
+    gap: 40px;
+  }
+}
+
+@media (max-width: 520px) {
+  .home-variant {
+    --hv-card: calc(100vw - 84px);
+    --hv-gap: 16px;
+  }
+
+  .home-variant__header {
+    padding-inline: 16px;
+  }
+
+  .home-variant__intro,
+  .home-variant__experience {
+    padding-inline: 16px;
+  }
+
+  .home-variant__rail {
+    padding-inline-start: 16px;
+    padding-inline-end: calc(100% - var(--hv-card) - 16px);
+    scroll-padding-inline: 16px;
+  }
+
+  .home-variant__name {
+    padding: 6px;
+    font-size: 15px;
+  }
+
+  .home-variant__contact {
+    padding: 8px 12px;
+    font-size: 14px;
+  }
+
+  .home-variant__social {
+    gap: 14px 16px;
+    padding: 8px 16px 0;
+  }
+
+  .home-variant__social-link {
+    font-size: 16px;
+  }
+
+  .home-variant__company,
+  .home-variant__role-title,
+  .home-variant__period {
+    font-size: 16px;
+  }
+}
+
+@media (max-width: 380px) {
+  .home-variant__avatar {
+    width: 32px;
+    height: 32px;
+  }
+
+  .home-variant__name {
+    font-size: 14px;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .home-variant__rail {
+    scroll-behavior: auto;
+  }
+}
