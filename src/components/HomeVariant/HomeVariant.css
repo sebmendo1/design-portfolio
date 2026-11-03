@@ -6,7 +6,7 @@
 
 .home-variant {
   --hv-column: 600px;
-  --hv-card: 400px;
+  --hv-card: 600px;
   --hv-gap: 24px;
   --hv-radius: 28px;
   --hv-ink: #000000;
@@ -159,14 +159,18 @@ html:has(.home-variant) body {
   position: relative;
   flex: 0 0 var(--hv-card);
   width: var(--hv-card);
+  height: var(--hv-card);
   scroll-snap-align: start;
 }
 
 .home-variant__rail .home-card__link {
   gap: 0;
+  height: 100%;
 }
 
 .home-variant__rail .home-card__media {
+  width: 100%;
+  height: 100%;
   aspect-ratio: 1;
   border-radius: var(--hv-radius);
   background: var(--hv-card-fill);
@@ -301,6 +305,10 @@ a.home-variant__social-link:hover {
 }
 
 @media (max-width: 700px) {
+  .home-variant {
+    --hv-card: 400px;
+  }
+
   .home-variant__intro {
     min-height: 0;
     padding-top: 40px;
@@ -327,7 +335,6 @@ a.home-variant__social-link:hover {
 
 @media (max-width: 520px) {
   .home-variant {
-    --hv-card: calc(100vw - 84px);
     --hv-gap: 16px;
   }
 
@@ -342,7 +349,7 @@ a.home-variant__social-link:hover {
 
   .home-variant__rail {
     padding-inline-start: 16px;
-    padding-inline-end: calc(100% - var(--hv-card) - 16px);
+    padding-inline-end: max(16px, calc(100% - var(--hv-card) - 16px));
     scroll-padding-inline: 16px;
   }
 
